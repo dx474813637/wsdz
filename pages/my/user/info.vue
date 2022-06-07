@@ -3,26 +3,35 @@
 		<u--form
 			labelPosition="left"
 			:model="model"
-			:rules="rules"
 			ref="userform"
 			labelWidth="80"
-		>
+			>
 			<u-form-item
 				label="用户类型"
 				@click="showActions"
 				ref="item1"
-			>
-				<u--input
-					v-model="userType"
-					disabled
-					disabledColor="#ffffff"
-					placeholder="请选择用户类型"
-					border="none"
-				></u--input>
-				<u-icon
-					slot="right"
-					name="arrow-right"
-				></u-icon>
+			>	
+				<template v-if="!myCpy.hasOwnProperty('state')">
+					<u--input
+						v-model="userType"
+						disabled
+						disabledColor="#ffffff"
+						placeholder="请选择用户类型"
+						border="none"
+					></u--input>
+					<u-icon
+						slot="right"
+						name="arrow-right"
+					></u-icon>
+				</template>
+				<template v-else-if="myCpy.state == 1">
+					<view>{{userType + '（审核成功）'}}</view>
+				</template>
+				<template v-else-if="myCpy.state == 0">
+					<view>{{userType + '（审核中）'}}</view>
+				</template>
+				
+				
 			</u-form-item>
 			<u-action-sheet
 				:show="showUserType"
@@ -78,15 +87,15 @@
 				</u-form-item>
 				<u-form-item
 					label="所在地"
-					prop="userInfo.suozaidi"
-					ref="userInfo_suozaidi"
-					required
+					prop="userInfo.regional"
+					ref="userInfo_regional"
 				>
 					<uni-data-picker 
 						placeholder="所在地" 
 						popup-title="请选择所在地区" 
-						:localdata="dataTree" 
-						v-model="model.userInfo.suozaidi"
+						:localdata="addressArea" 
+						v-model="model.userInfo.regional"
+						@change="handleValAreaUser"
 					></uni-data-picker>
 				</u-form-item>
 				<u-form-item
@@ -95,7 +104,7 @@
 					ref="userInfo_address"
 				>
 					<u--textarea
-						v-model="model.cpyInfo.address" 
+						v-model="model.userInfo.address" 
 						placeholder="详细地址" 
 						height="90"
 					></u--textarea>
@@ -188,15 +197,15 @@
 				</u-form-item>
 				<u-form-item
 					label="所在地"
-					prop="cpyInfo.suozaidi"
-					ref="cpyInfo_suozaidi"
-					required
+					prop="cpyInfo.regional"
+					ref="cpyInfo_regional"
 				>
 					<uni-data-picker 
 						placeholder="所在地" 
 						popup-title="请选择所在地区" 
-						:localdata="dataTree" 
-						v-model="model.cpyInfo.suozaidi"
+						:localdata="addressArea" 
+						v-model="model.cpyInfo.regional"
+						@change="handleValAreaCpy"
 					></uni-data-picker>
 				</u-form-item>
 				<u-form-item
@@ -222,7 +231,7 @@
 						clearable
 					></u--input>
 				</u-form-item>
-				<u-form-item
+				<!-- <u-form-item
 					label="营业执照"
 					prop="cpyInfo.img"
 					ref="cpyInfo_img"
@@ -234,10 +243,7 @@
 						name="1"
 						:maxCount="1"
 					></u-upload>
-					<!-- <u--input
-						v-model="model.cpyInfo.img"
-					></u--input> -->
-				</u-form-item>
+				</u-form-item> -->
 			</template>
 			
 			
@@ -249,6 +255,7 @@
 </template>
 
 <script>
+	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
 	export default {
 		data() {
 			return {
@@ -256,91 +263,52 @@
 				showUserType: false,
 				userActions: [{
 						name: '个人用户',
+						type: 'C'
 					},
 					{
-						name: '企业用户'
+						name: '企业用户',
+						type: 'B'
 					},
 				],
 				model: {
 					userInfo: {
-						name: 'uView UI',
+						type: 'C',
+						name: '',
 						zip: '',
 						email: '',
 						mobile: '',
 						address: '',
 						credit_code: '',
 						regional: '',
-						suozaidi: ''
+						// suozaidi: ''
 					},
 					cpyInfo: {
-						name: 'uView UI2',
+						type: 'B',
+						name: '',
 						contact: '',
 						tel: '',
 						fax: '',
 						zip: '',
 						email: '',
 						mobile: '',
+						mobile_show: '',
+						regional: '',
 						address: '',
 						credit_code: '',
-						regional: '',
-						suozaidi: '',
-						img: ''
+						// suozaidi: '',
+						// img: ''
 					}
 				},
-				dataTree: [
-					{
-						text: "浙江省",
-						value: "zj",
-						children: [{
-							text: "杭州市",
-							value: "hz",
-							children: [
-								{
-									text: '西湖区',
-									value: 'xh'
-								},
-								{
-									text: '拱墅区',
-									value: 'gs'
-								},
-							]
-						},
-						{
-							text: "宁波市",
-							value: "nb"
-						}]
-					},
-					{
-						text: "北京市",
-						value: "bj",
-						children: [{
-							text: "朝阳区",
-							value: "cy"
-						},
-						{
-							text: "xx区",
-							value: "xx"
-						}]
-					},
-					{
-						text: "上海市",
-						value: "sh",
-						children: [{
-							text: "闵行区",
-							value: "mh"
-						},
-						{
-							text: "浦东区",
-							value: "pd"
-						}]
-					},
-				],
-				fileList1: [],
+				// fileList1: [],
 			}
 		},
 		computed: {
+			...mapState({
+				myCpy: state => state.user.myCpy,
+				addressArea: state => state.user.addressArea
+			}),
 			rules() {
-				// if(this.userType == '个人用户') {
+				if(this.userType == '个人用户') {
 					return {
 						'userInfo.name': {
 							type: 'string',
@@ -354,9 +322,10 @@
 							message: '请填写身份证',
 							trigger: ['blur', 'change']
 						},
-				// 	}
-				// }else if(this.userType == '企业用户') {
-				// 	return {
+					}
+				}
+				else {
+					return {
 						'cpyInfo.name': {
 							type: 'string',
 							required: true,
@@ -376,88 +345,130 @@
 							trigger: ['blur', 'change']
 						},
 					}
-				// }
+				}
+						
 			}
+		},
+		async onLoad() {
+			this.getAddressArea()
+			await this.myCompany()
 		},
 		onReady() {
 			this.$refs.userform.setRules(this.rules)
 		},
+		watch: {
+			myCpy: {
+				deep: true,
+				handler(n) {
+					console.log(n)
+					if(n.type == 'B') {
+						this.userType = '企业用户'
+						this.model.cpyInfo = n
+					}
+					else if(n.type == 'C') {
+						this.userType = '个人用户'
+						this.model.userInfo = n
+					}
+				}
+			}
+		},
 		methods: {
+			...mapActions({
+				myCompany: 'user/myCompany',
+				getAddressArea: 'user/getAddressArea'
+			}),
+			handleValAreaUser() {
+				// this.$refs.userform.validateField('userInfo.regional')
+			},
+			handleValAreaCpy() {
+				// this.$refs.userform.validateField('cpyInfo.regional')
+			},
 			userTypeSelect(e) {
-				this.userType = e.name
+				this.userType = e.name;
 				this.$refs.userform.setRules(this.rules)
 				// this.$refs.form1.validateField('userInfo.sex')
 			},
 			showActions() {
+				if(this.myCpy.state == 1) return
 				this.showUserType = true; 
 				uni.hideKeyboard()
 			},
-			submit() {
+			async submit() {
 				
-				this.$refs.userform.validate().then(res => {
-					
-					uni.$u.toast('校验通过')
+				this.$refs.userform.validate().then(async res => {
+					let type = this.userType
+					const list = await this.$api.editCompany({
+						params: {
+							...this.model[this.userType == '个人用户'? 'userInfo' : 'cpyInfo'],
+						}
+					})
+					if(list.code == 1) {
+						uni.showToast({
+							title: list.msg
+						})
+					}
 				}).catch(errors => {
+					console.log(errors)
 					uni.$u.toast('校验失败')
 				})
 			},
 			
-			// 删除图片
-			deletePic(event) {
-				this[`fileList${event.name}`].splice(event.index, 1)
-			},
-			// 新增图片
-			async afterRead(event) {
-				// 当设置 mutiple 为 true 时, file 为数组格式，否则为对象格式
-				let lists = [].concat(event.file)
-				let fileListLen = this[`fileList${event.name}`].length
-				lists.map((item) => {
-					this[`fileList${event.name}`].push({
-						...item,
-						status: 'uploading',
-						message: '上传中'
-					})
-				})
-				for (let i = 0; i < lists.length; i++) {
-					const result = await this.uploadFilePromise(lists[i].url)
-					let item = this[`fileList${event.name}`][fileListLen]
-					this[`fileList${event.name}`].splice(fileListLen, 1, Object.assign(item, {
-						status: 'success',
-						message: '',
-						url: result
-					}))
-					fileListLen++
-				}
-			},
-			uploadFilePromise(url) {
-				return new Promise((resolve, reject) => {
-					let a = uni.uploadFile({
-						url: 'http://192.168.2.21:7001/upload', // 仅为示例，非真实的接口地址
-						filePath: url,
-						name: 'file',
-						formData: {
-							user: 'test'
-						},
-						success: (res) => {
-							setTimeout(() => {
-								resolve(res.data.data)
-							}, 1000)
-						}
-					});
-				})
-			},
-			onnodeclick(e) {
-				console.log(e);
-			},
-			onpopupopened(e) {
-				console.log('popupopened');
-			},
-			onpopupclosed(e) {
-				console.log('popupclosed');
-			},
-			onchange(e) {
-				console.log('onchange:', e);
-			},
+			// // 删除图片
+			// deletePic(event) {
+			// 	this[`fileList${event.name}`].splice(event.index, 1)
+			// },
+			// // 新增图片
+			// async afterRead(event) {
+			// 	// 当设置 mutiple 为 true 时, file 为数组格式，否则为对象格式
+			// 	let lists = [].concat(event.file)
+			// 	let fileListLen = this[`fileList${event.name}`].length
+			// 	lists.map((item) => {
+			// 		this[`fileList${event.name}`].push({
+			// 			...item,
+			// 			status: 'uploading',
+			// 			message: '上传中'
+			// 		})
+			// 	})
+			// 	for (let i = 0; i < lists.length; i++) {
+			// 		const result = await this.uploadFilePromise(lists[i].url)
+			// 		let item = this[`fileList${event.name}`][fileListLen]
+			// 		this[`fileList${event.name}`].splice(fileListLen, 1, Object.assign(item, {
+			// 			status: 'success',
+			// 			message: '',
+			// 			url: result
+			// 		}))
+			// 		fileListLen++
+			// 	}
+			// },
+			// uploadFilePromise(url) {
+			// 	return new Promise((resolve, reject) => {
+			// 		let a = uni.uploadFile({
+			// 			url: 'http://192.168.2.21:7001/upload', // 仅为示例，非真实的接口地址
+			// 			filePath: url,
+			// 			name: 'file',
+			// 			formData: {
+			// 				user: 'test'
+			// 			},
+			// 			success: (res) => {
+			// 				setTimeout(() => {
+			// 					resolve(res.data.data)
+			// 				}, 1000)
+			// 			}
+			// 		});
+			// 	})
+			// },
+			// onnodeclick(e) {
+			// 	console.log(e);
+			// },
+			// onpopupopened(e) {
+			// 	console.log('popupopened');
+			// },
+			// onpopupclosed(e) {
+			// 	console.log('popupclosed');
+			// },
+			// onchange(e) {
+			// 	console.log('onchange:', e);
+			// },
 			
 		}
 	}

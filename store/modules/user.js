@@ -2,17 +2,18 @@
 // import * as apis from '@/config/api'
 
 let state = {
-		regionalList: [],
+		addressArea: [],
 		menusList: [],
 		login: 0,
 		auth: 0,
 		ppiCate: [],
+		myCpy: {}
 	},
 	getters = {
 	},
 	mutations = {
-		setRegionalList(state, data) {
-			state.regionalList = data
+		setAddressArea(state, data) {
+			state.addressArea = data
 		},
 		setMenusList(state, data) {
 			state.menusList = data
@@ -29,23 +30,32 @@ let state = {
 		setAuth(state, data) {
 			state.auth = data;
 		},
+		setMyCpy(state, data) {
+			state.myCpy = data;
+		},
 	},
 	actions = {
+		async myCompany({commit, state}) {
+			const res = await this._vm.$api.myCompany();
+			if(res.code == 1) {
+				commit('setMyCpy', res.list)
+			}
+		},
 		async wode({commit, state}) {
 			const res = await this._vm.$api.wode()
 			commit('setLogin', res.list.login)
 			commit('setAuth', res.list.auth)
 		},
-		async getRegionalList({commit, state}) {
+		async getAddressArea({commit, state}) {
 			//获取地区toCode 数据 存入vuex
-			if (state.regionalList.length != 0) {
+			if (state.addressArea.length != 0) {
 				return
 			}
-			const res = await this._vm.$api.getRegionalList()
+			const res = await this._vm.$api.addressArea()
 			// const resList = JSON.parse(res.list)
 			// const list = listMethods(resList)
 			// console.log(res)
-			commit('setRegionalList', res.columns)
+			commit('setAddressArea', res.list)
 		
 		},
 		async getMenusList({commit, state}) {

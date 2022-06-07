@@ -118,9 +118,9 @@
 				loadstatus: 'loadmore'
 			};
 		},
-		onLoad() {
+		async onLoad() {
 			uni.showLoading()
-			this.getData()
+			await this.getData()
 		},
 		computed: {
 			...mapState({
@@ -134,9 +134,9 @@
 			...mapMutations({
 				handleGoto: 'user/handleGoto'
 			}),
-			refreshList() {
+			async refreshList() {
 				this.initParamas()
-				this.getData()
+				await this.getData()
 			},
 			initParamas() {
 				this.curP = 1;
@@ -165,7 +165,7 @@
 			async getData() {
 				if(this.loadstatus != 'loadmore') return
 				this.loadstatus = 'loading'
-				const res = await this.$api.getBrokerProds()
+				const res = await this.$api.myProduct({params:{p: this.curP}})
 				if(res.code == 1) {
 					this.indexList = [...this.indexList, ...res.data]
 					if(this.curP == res.page_total) {

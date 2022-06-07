@@ -47,6 +47,12 @@
 						url: '/pages/my/user/info'
 					},
 					{
+						title: '地址管理',
+						icon: 'map',
+						type: 'cell',
+						url: '/pages/my/address/address'
+					},
+					{
 						title: '订阅管理',
 						type: 'label'
 					},

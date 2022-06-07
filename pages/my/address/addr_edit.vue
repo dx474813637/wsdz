@@ -1,300 +1,308 @@
 <template>
-	<view class="content">
-		<view class="row b-b">
-			<text class="tit">联系人</text>
-			<u-input class="input" type="text" v-model="addressData.name" placeholder="收货人姓名"
-				placeholder-class="placeholder" clearable />
-		</view>
-		<view class="row b-b">
-			<text class="tit">手机号</text>
-			<u-input class="input" type="number" v-model="addressData.mobile" placeholder="收货人手机号码"
-				placeholder-class="placeholder" clearable />
-		</view>
-		<view class="row b-b" @click="chooseLocation2">
-			<text class="tit">地区</text>
-			<text class="input">
-				{{addressData.regional_name || '请点击选择地区'}}
-			</text>
-			<u-icon name="arrow-down" size="24" ></u-icon>
-			<!-- <text class="yticon icon-shouhuodizhi"></text> -->
-			<!-- <input class="input" type="text" v-model="addressData.regional_name" placeholder="楼号、门牌" placeholder-class="placeholder" /> -->
-		</view>
-		<view class="row textarea b-b">
-			<text class="tit">住址</text>
-			<u--textarea 
-				v-model="addressData.address" 
-				placeholder="详细地址" 
-				height="90"
-				clearable
-			></u--textarea>
-			<!-- <u-input class="input" type="text" v-model="addressData.address" placeholder="收货人住址"
-				placeholder-class="placeholder" /> -->
-			<!-- <u-icon name="map-fill" size="36" color="#7181bd"></u-icon> -->
-			<!-- <text class="yticon icon-shouhuodizhi"></text> -->
-		</view>
-
-		<view class="row default-row u-flex-between">
-			<!-- <text class="tit">备注</text>
-			<input class="input" type="text" v-model="addressData.remark" placeholder="备注"
-				placeholder-class="placeholder" /> -->
-			<text class="tit">设为默认</text>
+	<view class="u-p-20">
+		<u--form
+			labelPosition="left"
+			:model="addressData"
+			ref="addrform"
+			labelWidth="80"
+		>
+			<u-form-item
+				label="地址类型"
+				prop="type"
+				ref="addressData_type"
+				required
+			>
+				<u-radio-group
+				    v-model="addressData.type"
+				    placement="row"
+				    @change="groupChange"
+				  >
+				    <u-radio
+				      :customStyle="{marginRight: '8px'}"
+				      v-for="(item, index) in radiolist1"
+				      :key="item.value"
+				      :label="item.name"
+				      :name="item.value"
+				    >
+				    </u-radio>
+				  </u-radio-group>
+			</u-form-item>
+			<u-form-item
+				label="联系人"
+				prop="contact"
+				ref="addressData_contact"
+				required
+			>
+				<u--input
+					v-model="addressData.contact"
+					clearable
+				></u--input>
+			</u-form-item>
+			<u-form-item
+				label="手机号"
+				prop="tel"
+				ref="addressData_tel"
+				required
+			>
+				<u--input
+					v-model="addressData.tel"
+					clearable
+					type="number"
+				></u--input>
+			</u-form-item>
+			<u-form-item
+				label="地区"
+				prop="regional"
+				ref="addressData_regional"
+				required
+			>
+				<uni-data-picker
+					placeholder="所在地" 
+					popup-title="请选择所在地区" 
+					:localdata="addressArea" 
+					v-model="addressData.regional"
+					@change="handleValArea"
+				></uni-data-picker>
+			</u-form-item>
+			<u-form-item
+				label="详细地址"
+				prop="address"
+				ref="addressData_address"
+			>
+				<u--textarea
+					v-model="addressData.address" 
+					placeholder="详细地址" 
+					height="90"
+				></u--textarea>
+			</u-form-item>
 			
-			<u-switch :active-color="theme.themeColor" v-model="addressData.autoCheck" @change="switchChange"></u-switch>
-			<!-- <switch :checked="addressData.defaule" @change="switchChange" /> -->
+			<u-form-item
+				label="设为默认"
+				v-if="type == 'edit'"
+			>
+				<u-switch v-model="addressData.autoCheck" :disabled="switchDisabled"></u-switch>
+			</u-form-item>
+			<u-form-item
+				label="备注"
+				prop="remark"
+				ref="addressData_remark"
+			>
+				<u--textarea
+					v-model="addressData.remark" 
+					placeholder="备注" 
+					height="90"
+				></u--textarea>
+			</u-form-item>
+		</u--form>
+		
+		<view class="u-p-t-20">
+			<u-button type="primary" @click="confirmAddr">提交</u-button>
 		</view>
-		<button class="add-btn u-m-t-20 u-m-b-20" @click="confirmAddr">提 交</button>
-		<button v-if="manageType == 'edit'" class="add-btn del-btn" @click="delAddrClick">删 除</button>
-		<u-picker 
-			:show="show" 
-			ref="uPicker" 
-			:columns="columns" 
-			:loading="loading"
-			@confirm="pickerConfirm" 
-			@change="changeHandler"
-		></u-picker>
-		<!-- <u-select v-model="show" mode="mutil-column-auto" :list="regionalList" @confirm="areaConfirm"
-			safe-area-inset-bottom :default-value="dArr"></u-select> -->
+		<view class="u-p-t-20 u-m-b-40" v-if="type == 'edit'">
+			<u-button type="error" @click="delAddrClick">删除地址</u-button>
+		</view>
 	</view>
 </template>
 
 <script>
-	// import listMethods from "./reglist2selectlist.js"
-	// import mixCheckLogin from '@/utils/mixCheckLoginStatus.js'
-	import {mapState, mapActions} from "vuex"
+	import {mapState, mapMutations, mapActions} from "vuex"
 	export default {
 		// mixins: [mixCheckLogin],
 		data() {
 			return {
 				show: false,
-				initDefault: false,
-				columns: [
-					['中国', '美国'],
-					['深圳', '厦门', '上海', '拉萨']
+				switchDisabled: false,
+				type: 'add',
+				radiolist1: [{
+						name: '收货',
+						value: 'R',
+						disabled: false
+					},
+					{
+						name: '发货',
+						value: 'S',
+						disabled: false
+					},
+					{
+						name: '收/发',
+						value: 'RS',
+						disabled: false
+					}
 				],
-				columnData: [
-					['深圳', '厦门', '上海', '拉萨'],
-					['得州', '华盛顿', '纽约', '阿拉斯加']
-				],
-				
 				addressData: {
+					type: "RS",
 					address: "",
-					mobile: '',
-					name: "",
+					tel: '',
+					contact: "",
 					regional: '',
 					regional_name: "",
 					remark: "",
 					autoCheck: false,
-					auto: 0
+					def: 0
 				},
-				dArr: [0, 0, 0],
-				manageType: ''
+				rules: {
+					contact: {
+						type: 'string',
+						required: true,
+						message: '请填写联系人',
+						trigger: ['blur', 'change']
+					},
+					tel: [
+						{
+							required: true, 
+							message: '请输入手机号',
+							trigger: ['change','blur'],
+						},
+						{
+							validator: (rule, value, callback) => uni.$u.test.mobile(value),
+							message: '手机号码格式不正确',
+							trigger: ['change','blur'],
+						}
+					],
+					regional: {
+						type: 'string',
+						required: true,
+						message: '请选择所在地',
+						trigger: ['blur', 'change']
+					}
+				}
 			}
+		},
+		onReady() {
+			this.$refs.addrform.setRules(this.rules)
 		},
 		computed: {
 			...mapState({
-				theme: (state) => state.user.theme,
-				regionalList: (state) => state.user.regionalList,
+				addressArea: (state) => state.user.addressArea,
 			}),
 			loading() {
-				return this.regionalList.length == 0
+				return this.addressArea.length == 0
 			}
 		},
 		watch: {
 			['addressData.autoCheck'](flag) {
 				if(flag) {
-					this.addressData.auto = 1
+					this.addressData.def = 1
 				}else {
-					this.addressData.auto = 0
+					this.addressData.def = 0
 				}
 			}
 		},
 		async onLoad(option) {
 			let title = '新增收货地址';
-			if (this.regionalList.length == 0) {
+			if (this.addressArea.length == 0) {
 				uni.showLoading({
 					title: '初始化地区列表中...'
 				})
-				await this.getRegionalList()
-				// uni.hideLoading()
+				await this.getAddressArea()
 			}
-			// this.regionalList = this.$store.state.regionalList
 			if (option.type === 'edit') {
 				title = '编辑收货地址'
 				// let res = await this.$http.get('address_detail', {params: {address_id:option.data.id}})
 				this.addressData = JSON.parse(decodeURIComponent(option.data))
-				if(this.addressData.auto == 1) {
-					this.$set(this.addressData, "autoCheck", true)
-					this.initDefault = true
+				console.log(this.addressData)
+				if(this.addressData.def == 1) {
+					this.$set(this.addressData, 'autoCheck', true)
+					this.switchDisabled = true
 				}else {
-					this.$set(this.addressData, "autoCheck", false)
+					this.$set(this.addressData, 'autoCheck', false)
 				}
-				// this.filterRegionalList(this.addressData.regional, this.regionalList)
+				// this.filterRegionalList(this.addressData.regional, this.addressArea)
 			}
 			
 			// console.log(this.addressData.regional)
-			this.manageType = option.type;
+			this.type = option.type;
 			uni.setNavigationBarTitle({
 				title
 			})
 		},
 		methods: {
-			...mapActions({
-				getRegionalList: 'user/getRegionalList'
+			...mapMutations({
+				handleGoto: 'user/handleGoto'
 			}),
-			changeHandler(e) {
-				const {
-					columnIndex,
-					value,
-					values, // values为当前变化列的数组内容
-					index,
-					// 微信小程序无法将picker实例传出来，只能通过ref操作
-					picker = this.$refs.uPicker
-				} = e
-				// 当第一列值发生变化时，变化第二列(后一列)对应的选项
-				if (columnIndex === 0) {
-					// picker为选择器this实例，变化第二列对应的选项
-					picker.setColumnValues(1, this.columnData[index])
-				}
+			...mapActions({
+				getAddressArea: 'user/getAddressArea'
+			}),
+			changeSwitch(e) {
+				console.log(e)
+				this.addressData.autoCheck = e
 			},
-			// 回调参数为包含columnIndex、value、values
-			pickerConfirm(e) {
-				console.log('confirm', e)
-				this.show = false
+			groupChange(n) {
+				console.log('groupChange', n);
 			},
-			switchChange(v) {
-				if(!v && this.initDefault) {
-					this.addressData.autoCheck = true
-					uni.showToast({
-						title: "至少一个默认地址",
-						icon: "none"
-					})
-				}
-				
+			handleValArea() {
+				this.$refs.addrform.validateField('addressData.regional')
 			},
-			filterRegionalList(code, list) {
-				if (!code) return
-				list.forEach((ele, index) => {
-					if (ele.children && ele.children.length > 0) {
-						ele.children.forEach((item, i) => {
-							if (item.value == code) {
-								this.dArr = [index, i, 0]
-								return
-							}
-							if (item.children && item.children.length > 0) {
-								item.children.forEach((item2, i2) => {
-									if (item2.value == code) {
-										this.dArr = [index, i, i2]
-										return
-									}
-								})
-								// this.dArr = [index, i]
-							}
-						})
-
-					}
-				})
-			},
-			chooseLocation2() {
-				this.show = true
-			},
-			// areaConfirm(e) {
-			// 	this.addressData.regional = e[2].value
-			// 	let name = e[0].label + e[1].label
-			// 	if(e[1].value !== e[2].value) name += e[2].label
-			// 	this.addressData.regional_name = name
-			// },
-			//地图选择地址
-			// chooseLocation() {
-			// 	console.log('x')
-			// 	uni.chooseLocation({
-			// 		success: (data) => {
-			// 			// console.log(data)
-			// 			// this.addressData.regional_name = data.address;
-			// 			this.addressData.address = data.address + ' ' + data.name;
-			// 			// this.addressData.area = data.name;
-			// 		}
-			// 	})
-			// },
-
 			//提交
 			async confirmAddr() {
-				let data = this.addressData;
-				if (!data.name) {
+				this.$refs.addrform.validate().then(async res => {
+					let flag = await this.submitData(this.addressData)
+					if(!flag) {
+						uni.showToast({
+							title: '提交操作有误',
+							icon: 'none'
+						})
+						return 
+					}
+					const arr = uni.$u.pages()
+					arr[arr.length - 2].$vm.refreshList(this.type);
 					uni.showToast({
-						icon: 'error',
-						title: '请填写联系人'
+						icon: 'success',
+						title: `地址${this.type=='edit' ? '修改': '添加'}成功`
 					})
-					return;
-				}
-				if (!/(^1[3|4|5|7|8][0-9]{9}$)/.test(data.mobile)) {
-					uni.showToast({
-						icon: 'error',
-						title: '请输入正确的手机号码'
-					})
-					return;
-				}
-				if (!data.regional_name) {
-					uni.showToast({
-						icon: 'error',
-						title: '请选择地区'
-					})
-					return;
-				}
-				if (!data.address) {
-					uni.showToast({
-						icon: 'error',
-						title: '请填写住址'
-					})
-					return;
-				}
-				await this.submitData(this.addressData)
-				//this.$utils.prePage()获取上一页实例，可直接调用上页所有数据和方法，在App.vue定义
-				this.$utils.prePage() && this.$utils.prePage().refreshList(this.manageType);
-				uni.showToast({
-					icon: 'success',
-					title: `地址${this.manageType=='edit' ? '修改': '添加'}成功`
+					setTimeout(() => {
+						this.handleGoto({type: 'navigateBack'})
+					}, 800)
+				}).catch(errors => {
+					console.log(errors)
+					uni.$u.toast('校验失败')
 				})
-				setTimeout(() => {
-					uni.navigateBack()
-				}, 800)
+				
+				//this.$utils.prePage()获取上一页实例，可直接调用上页所有数据和方法，在App.vue定义
+				
 			},
 			async delAddrClick() {
-				console.log(this.addressData)
 				uni.showModal({
 					title: '提示',
 					content: '是否删除该地址？',
 					success: async (res) => {
 						if (res.confirm) {
-							console.log('用户点击确定');
 							uni.showLoading()
-							const res = await this.$api.delAddress({params: {id: this.addressData.id}})
+							const res = await this.$api.deleteAddress({params: {id: this.addressData.id}})
 							if(res.code == 1) {
-								this.$utils.prePage() && this.$utils.prePage().refreshList(this.manageType);
+								const arr = uni.$u.pages()
+								arr[arr.length - 2].$vm.refreshList(this.type);
 								uni.showToast({
 									icon: 'success',
 									title: `删除成功`
 								})
 								setTimeout(() => {
-									uni.navigateBack()
+									this.handleGoto({type: 'navigateBack'})
 								}, 800)
 							}
 						}	
 					}
 				})
 			},
-			async submitData(addressData) {
+			async submitData(data) {
 				uni.showLoading({
 					title: '地址提交中...'
 				})
-				let res = await this.$api.submitAddrData({
-					name: addressData.name,
-					mobile: addressData.mobile,
-					regional: addressData.regional,
-					address: addressData.address,
-					remark: addressData.remark,
-					address_id: addressData.id,
-					auto: addressData.auto
-				})
+				let params = {
+					contact: data.contact,
+					tel: data.tel,
+					to_def: data.def,
+					regional: data.regional,
+					address: data.address,
+					remark: data.remark,
+					type: data.type,
+				}
+				if(this.type == 'edit') {
+					params.id = data.id
+				}
+				let res = await this.$api[this.type == 'add'? 'createAddress' : 'changeAddress'](params)
+				
+				return res.code == 1
 			}
 		}
 	}

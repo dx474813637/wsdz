@@ -1,3 +1,9 @@
+const type2str = v => {
+	if(v == 'B') return '企业用户'
+	else if(v == 'C') return '个人用户'
+	else return v
+}
+
 //时间简写 转 中文  'd'==>'天'  'h'==>'小时'
 const expressUnit = v => {
 	if(v == 'd') return '天'
@@ -48,6 +54,7 @@ const price2str = (price, dprice) => {
 }
 
 export default {
+	type2str,
 	expressUnit,
 	date2timestamp,
 	tradeType,

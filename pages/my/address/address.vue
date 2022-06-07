@@ -9,14 +9,21 @@
 					sactive: sid == item.id
 				}" @click="checkAddress(item)" v-for="(item, index) in addrfilter" :key="item.id">
 					<view class="wrapper">
-						<view class="u-box u-flex u-flex-items-center">
-							<text class="name">{{item.name}}</text>
-							<text class="mobile">{{item.mobile}}</text>
-							<text class="tag" v-if="item.auto == 1">默认</text>
-							
+						<view class="u-box u-flex u-flex-items-center u-flex-wrap">
+							<view class="name u-line-1">{{item.contact}}</view>
+							<view class="mobile">{{item.tel}}</view>
+							<view class="u-m-l-10">
+								<u-tag v-if="item.def == 1" text="默认" plain size="mini" type="error" plainFill></u-tag>
+							</view>	
+							<view class="u-m-l-10">
+								<u-tag v-if="item.type.includes('R')" text="收" plain size="mini" type="primary" plainFill></u-tag>
+							</view>	
+							<view class="u-m-l-10">
+								<u-tag v-if="item.type.includes('S')" text="发" plain size="mini" type="warning" plainFill></u-tag>
+							</view>	
 						</view>
 						<view class="address-box">
-							<text class="address">{{item.regional_name}} {{item.address}}</text>
+							<text class="address">{{item.Regionals.map(ele => ele.Particular.name).join('')}} {{item.address}}</text>
 						</view>
 					</view>
 					<view class="func u-flex u-flex-items-center u-flex-center">
@@ -32,13 +39,13 @@
 				:status="loadStatus" 
 				:icon-type="iconType" 
 				:load-text="loadText" 
-				margin-top="20"
+				margin-top="60"
 				margin-bottom="20"
 				color="#999"
 			/>
 		</template>
 		<template v-else>
-			<u-empty text="暂无收货地址" mode="list" margin-top="20"></u-empty>
+			<u-empty text="暂无收货地址" mode="data" :icon="typeConfig.white.empty" margin-top="20"></u-empty>
 		</template>
 		
 		<button class="add-btn" @click="addAddress('add')">新增地址</button>
@@ -50,6 +57,7 @@
 <script>
 	import listMethods from "./reglist2selectlist.js"
 	import mixCheckLogin from '@/config/mixins/mixCheckLoginStatus.js'
+	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
 	export default {
 		// mixins: [mixCheckLogin],
 		data() {
@@ -69,6 +77,10 @@
 			}
 		},
 		computed: {
+			...mapState({
+				addressArea: state => state.user.addressArea,
+				typeConfig: state => state.theme.typeConfig,
+			}),
 			addrfilter() {
 				if(this.addressList.length == 0) return []
 				if(this.source == 1 && this.sid && this.sid != -1) {
@@ -100,13 +112,17 @@
 				console.log(this.sid)
 			}
 			uni.showLoading()
-			this.getData()
+			await this.getData()
+			this.getAddressArea()
 			// this.getRegionalList()
 		},
 		onReachBottom() {
 			this.getNextData()
 		},
 		methods: {
+			...mapActions({
+				getAddressArea: 'user/getAddressArea'
+			}),
 			init(){
 				this.addressList = []
 				this.p = 1
@@ -131,15 +147,15 @@
 			},
 			async getData() {
 				this.loadStatus = 'loading'
-				const res = await this.$api.getInitData({params: {p: this.p, t:1}})
+				const res = await this.$api.myAddress({params: {p: this.p}})
 				console.log(res)
 				if(res.code == 1) {
-					let list = res.data
+					let list = res.list
 					// if(this.p == 1 && this.source != 1) list.splice(0, 1)
 					this.addressList = [...this.addressList, ...list]
 					
 					// console.log(this.addressList)
-					if(this.p == res.page_total) {
+					if(this.addressList.length >= res.total) {
 						this.endFlag = true
 						this.loadStatus = 'nomore'
 					}else this.loadStatus = 'loadmore'
@@ -270,7 +286,7 @@
 			padding: 2rpx 10rpx;
 		}
 		.name{
-			margin-right: 30rpx;
+			margin-right: 10rpx;
 			font-size: 32rpx;
 			font-weight: bold;
 			color: #000;

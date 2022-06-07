@@ -109,7 +109,7 @@ export const setPpiApplyBasket = (data, config={}) => http.post('m_ppi_apply_bas
 
 
 
-export const checkLogin = (data) => http.get('check_login', data)
+// export const checkLogin = (data) => http.get('check_login', data)
 
 /**
  * 
@@ -201,8 +201,7 @@ export const changeSell = (data) => http.get('change_sell', data)
 // 邮箱： email 
 // 联系手机： mobile 不传默认为注册手机号 
 // 手机是否前台显示： mobile_show 1-显示 
-// 所在地： regional 
-// 地区代码，如：110101 
+// 所在地： regional 地区代码，如：110101 
 // 详细地址： address 
 // 统一社会信用代码/身份证号： credit_code
 // 获取我的客户信息
@@ -212,8 +211,7 @@ export const editCompany = (data) => http.get('edit_company', data)
 
 // =====地址信息
 // 收/发地址： type *R-收S-发RS-收发 
-// 地区： regional 
-// 地区编码：110102-西城区 
+// 地区： regional  地区编码：110102-西城区 
 // 详细地址： address 
 // 联系人： contact 
 // 电话： tel 
@@ -223,9 +221,9 @@ export const myAddress = (data) => http.get('my_address', data)
 //  删除地址 参数id
 export const deleteAddress = (data) => http.get('delete_address', data)
 //  创建地址
-export const createAddress = (data) => http.get('create_address', data)
+export const createAddress = (data, config={}) => http.post('create_address', data, config)
 //  修改地址，比创建多参数id 和to_def 设为默认：1-默认
-export const changeAddress = (data) => http.get('change_address', data)
+export const changeAddress = (data, config={}) => http.post('change_address', data, config)
 //  地址编码
 export const addressArea = (data) => http.get('address_area', data)
 

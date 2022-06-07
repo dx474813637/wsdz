@@ -1,9 +1,0 @@
-{
-  "component": true,
-  "usingComponents": {
-    "u-tabs": "/uni_modules/uview-ui/components/u-tabs/u-tabs",
-    "u-loading-icon": "/uni_modules/uview-ui/components/u-loading-icon/u-loading-icon",
-    "u-scroll-list": "/uni_modules/uview-ui/components/u-scroll-list/u-scroll-list",
-    "u-empty": "/uni_modules/uview-ui/components/u-empty/u-empty"
-  }
-}

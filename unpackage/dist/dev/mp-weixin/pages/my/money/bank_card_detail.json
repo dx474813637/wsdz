@@ -1,7 +1,0 @@
-{
-  "navigationBarTitleText": "银行卡详情",
-  "enablePullDownRefresh": false,
-  "usingComponents": {
-    "bank-card": "/pages/my/components/BankCard/BankCard"
-  }
-}

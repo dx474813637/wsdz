@@ -1,9 +1,0 @@
-{
-  "navigationBarBackgroundColor": "#FFFFFF",
-  "navigationBarTitleText": "",
-  "enablePullDownRefresh": false,
-  "usingComponents": {
-    "u-code-input": "/uni_modules/uview-ui/components/u-code-input/u-code-input",
-    "u-code": "/uni_modules/uview-ui/components/u-code/u-code"
-  }
-}

@@ -1,1 +1,0 @@
-<view class="tabbar data-v-3bd8e2f8" style="{{$root.s0}}"><view class="c-w data-v-3bd8e2f8"><slot></slot></view><u-safe-bottom vue-id="605ec302-1" customStyle="{{$root.a0}}" class="data-v-3bd8e2f8" bind:__l="__l"></u-safe-bottom></view>

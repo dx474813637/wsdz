@@ -12,23 +12,31 @@
 			</view>
 		</u-navbar>
 		<view @click="handleGoto('/pages/my/user/info')" class="user u-flex u-flex-items-center u-p-20 u-p-t-50 u-m-b-26">
+			
 			<view class="user-img u-flex u-flex-items-center u-flex-center">
 				<i class="custom-icon-myfill custom-icon"></i>
 			</view>
 			<view class="user-info">
-				<view class="item u-flex u-flex-items-center">
-					<view class="name u-font-38">broker104</view>
-					<view class="sub text-white u-font-24 u-flex u-flex-items-center u-p-4 u-p-l-10 u-p-r-16 u-m-l-20">
-						<text >个人用户</text>
+				<template v-if="loading">
+					<u-loading-icon></u-loading-icon>
+				</template>
+				<template v-else>
+					<view class="item u-flex u-flex-items-center">
+						<view class="name u-font-38">{{myCpy.login}}</view>
+						<view class="sub text-white u-font-24 u-flex u-flex-items-center u-p-4 u-p-l-10 u-p-r-16 u-m-l-20">
+							<text >{{myCpy.type | type2str}}</text>
+						</view>
 					</view>
-				</view>
-				<view class="item">
-					<view class="sub2 u-font-28 text-light u-flex u-flex-items-center">
-						<text>宁波网盛大宗商品交易有限公司</text>
-						<i class="custom-icon-edit custom-icon u-font-28 text-light u-m-l-10"></i>
+					<view class="item">
+						<view class="sub2 u-font-28 text-light u-flex u-flex-items-center">
+							<text>{{myCpy.name}}</text>
+							<i class="custom-icon-edit custom-icon u-font-28 text-light u-m-l-10"></i>
+						</view>
 					</view>
-				</view>
+				</template>
+				
 			</view>
+			
 		</view>
 		
 		<view class="user-item-box u-p-28 u-p-b-38 bg-white u-m-b-26">
@@ -225,21 +233,36 @@
 </template>
 
 <script>
-	import {mapState, mapGetters, mapMutations} from 'vuex'
+	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
 	import mixCheckLoginStatus from '@/config/mixCheckLoginStatus'
 	export default {
 		// mixins: [mixCheckLoginStatus],
 		data() {
 			return {
-				
+				loading: false
 			};
 		},
+		computed: {
+			...mapState({
+				myCpy: state => state.user.myCpy
+			}),
+		},
 		async onLoad() {
-			
+			if(!this.myCpy.login) {
+				this.loading = true
+				uni.showLoading({
+					title: '获取最新用户信息中'
+				})
+				await this.myCompany()
+				this.loading = false
+			}
 		},
 		methods: {
 			...mapMutations({
 				handleGoto: 'user/handleGoto'
+			}),
+			...mapActions({
+				myCompany: 'user/myCompany'
 			}),
 			handleTakeAccount() {
 				uni.showToast({
