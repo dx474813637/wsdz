@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "u-switch": "/uni_modules/uview-ui/components/u-switch/u-switch",
+    "u-button": "/uni_modules/uview-ui/components/u-button/u-button"
+  }
+}

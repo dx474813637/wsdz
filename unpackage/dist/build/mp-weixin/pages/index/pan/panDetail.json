@@ -1,0 +1,17 @@
+{
+  "navigationStyle": "custom",
+  "navigationBarTextStyle": "white",
+  "usingComponents": {
+    "u-sticky": "/uni_modules/uview-ui/components/u-sticky/u-sticky",
+    "nav-bar": "/components/navBar/navBar",
+    "u-icon": "/uni_modules/uview-ui/components/u-icon/u-icon",
+    "u-line": "/uni_modules/uview-ui/components/u-line/u-line",
+    "u-empty": "/uni_modules/uview-ui/components/u-empty/u-empty",
+    "card-a": "/components/cardA/cardA",
+    "u-safe-bottom": "/uni_modules/uview-ui/components/u-safe-bottom/u-safe-bottom",
+    "u-popup": "/uni_modules/uview-ui/components/u-popup/u-popup",
+    "u-swiper": "/uni_modules/uview-ui/components/u-swiper/u-swiper",
+    "tab-bar": "/components/tabBar/tabBar",
+    "u-loading-page": "/uni_modules/uview-ui/components/u-loading-page/u-loading-page"
+  }
+}

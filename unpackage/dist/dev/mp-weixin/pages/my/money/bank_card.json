@@ -1,0 +1,13 @@
+{
+  "navigationBarTitleText": "银行账户列表",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "u-list": "/uni_modules/uview-ui/components/u-list/u-list",
+    "u-list-item": "/uni_modules/uview-ui/components/u-list-item/u-list-item",
+    "u-empty": "/uni_modules/uview-ui/components/u-empty/u-empty",
+    "u-loadmore": "/uni_modules/uview-ui/components/u-loadmore/u-loadmore",
+    "tab-bar": "/components/tabBar/tabBar",
+    "u-button": "/uni_modules/uview-ui/components/u-button/u-button",
+    "bank-card": "/pages/my/components/BankCard/BankCard"
+  }
+}

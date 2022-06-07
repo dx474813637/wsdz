@@ -1,0 +1,14 @@
+{
+  "onReachBottomDistance": 50,
+  "navigationStyle": "custom",
+  "navigationBarTextStyle": "white",
+  "usingComponents": {
+    "nav-bar": "/components/navBar/navBar",
+    "card-b": "/components/cardB/cardB",
+    "u-loadmore": "/uni_modules/uview-ui/components/u-loadmore/u-loadmore",
+    "u-safe-bottom": "/uni_modules/uview-ui/components/u-safe-bottom/u-safe-bottom",
+    "menus-popup": "/components/menusPopup/menusPopup",
+    "menus-bar": "/components/menusBar/menusBar",
+    "uni-ec-canvas": "/pages/baojia/components/uni-ec-canvas/uni-ec-canvas"
+  }
+}

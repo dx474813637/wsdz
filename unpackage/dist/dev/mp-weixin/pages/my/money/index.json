@@ -1,0 +1,12 @@
+{
+  "navigationStyle": "custom",
+  "navigationBarTextStyle": "white",
+  "navigationBarTitleText": "资金中心",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "u-popup": "/uni_modules/uview-ui/components/u-popup/u-popup",
+    "u-safe-bottom": "/uni_modules/uview-ui/components/u-safe-bottom/u-safe-bottom",
+    "menus-bar": "/components/menusBar/menusBar",
+    "money-card": "/pages/my/components/moneyCard/moneyCard"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "onReachBottomDistance": 50,
+  "navigationStyle": "custom",
+  "navigationBarTextStyle": "white",
+  "usingComponents": {
+    "nav-bar": "/components/navBar/navBar",
+    "u-status-bar": "/uni_modules/uview-ui/components/u-status-bar/u-status-bar",
+    "u-search": "/uni_modules/uview-ui/components/u-search/u-search",
+    "pan-card": "/components/panCard/panCard",
+    "u-scroll-list": "/uni_modules/uview-ui/components/u-scroll-list/u-scroll-list",
+    "u-safe-bottom": "/uni_modules/uview-ui/components/u-safe-bottom/u-safe-bottom",
+    "menus-bar": "/components/menusBar/menusBar"
+  }
+}

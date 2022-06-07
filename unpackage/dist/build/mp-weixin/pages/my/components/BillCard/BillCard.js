@@ -1,0 +1,10 @@
+require('../../common/vendor.js');(global["webpackJsonp"]=global["webpackJsonp"]||[]).push([["pages/my/components/BillCard/BillCard"],{"13ed":function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default=void 0;var u={name:"BillCard",props:{bgColor:{type:String,default:"#fff"},ids:{type:String,default:"ids"},pid:{type:String,default:"pid"},type:{type:String,default:"type"},name:{type:String,default:"name"},price:{type:String,default:"price"},date:{type:String,default:"date"},status:{type:String,default:"1"},boxShadow:{type:String,default:"0 0 10rpx rgba(0,0,0,.1)"},borderRadius:{type:String,default:"16rpx"},detailData:{type:Object,default:function(){return{}}}},data:function(){return{}},methods:{handleGotoDetail:function(){this.$emit("detail")}}};e.default=u},"865b":function(t,e,n){"use strict";n.d(e,"b",(function(){return r})),n.d(e,"c",(function(){return a})),n.d(e,"a",(function(){return u}));var u={"u-Text":function(){return Promise.all([n.e("common/vendor"),n.e("uni_modules/uview-ui/components/u--text/u--text")]).then(n.bind(null,"f9cd"))}},r=function(){var t=this,e=t.$createElement;t._self._c},a=[]},ce01:function(t,e,n){"use strict";n.r(e);var u=n("865b"),r=n("e787");for(var a in r)"default"!==a&&function(t){n.d(e,t,(function(){return r[t]}))}(a);n("e227");var i,d=n("f0c5"),f=Object(d["a"])(r["default"],u["b"],u["c"],!1,null,"099be7f8",null,!1,u["a"],i);e["default"]=f.exports},d21e:function(t,e,n){},e227:function(t,e,n){"use strict";var u=n("d21e"),r=n.n(u);r.a},e787:function(t,e,n){"use strict";n.r(e);var u=n("13ed"),r=n.n(u);for(var a in u)"default"!==a&&function(t){n.d(e,t,(function(){return u[t]}))}(a);e["default"]=r.a}}]);
+;(global["webpackJsonp"] = global["webpackJsonp"] || []).push([
+    'pages/my/components/BillCard/BillCard-create-component',
+    {
+        'pages/my/components/BillCard/BillCard-create-component':(function(module, exports, __webpack_require__){
+            __webpack_require__('543d')['createComponent'](__webpack_require__("ce01"))
+        })
+    },
+    [['pages/my/components/BillCard/BillCard-create-component']]
+]);

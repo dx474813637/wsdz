@@ -1,0 +1,13 @@
+{
+  "navigationBarTitleText": "我的关注列表",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "u-sticky": "/uni_modules/uview-ui/components/u-sticky/u-sticky",
+    "u-tabs": "/uni_modules/uview-ui/components/u-tabs/u-tabs",
+    "u-icon": "/uni_modules/uview-ui/components/u-icon/u-icon",
+    "u-safe-bottom": "/uni_modules/uview-ui/components/u-safe-bottom/u-safe-bottom",
+    "tab-bar": "/components/tabBar/tabBar",
+    "u-button": "/uni_modules/uview-ui/components/u-button/u-button",
+    "menus-popup": "/components/menusPopup/menusPopup"
+  }
+}

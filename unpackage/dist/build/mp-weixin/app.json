@@ -1,0 +1,77 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/index/login/login",
+    "pages/index/login/code",
+    "pages/index/pan/pan",
+    "pages/index/attention/attention",
+    "pages/index/market/market",
+    "pages/index/pan/panDetail",
+    "pages/index/search/search",
+    "pages/index/login/register"
+  ],
+  "subPackages": [
+    {
+      "root": "pages/baojia",
+      "pages": [
+        "list/list"
+      ]
+    },
+    {
+      "root": "pages/my",
+      "pages": [
+        "user/info",
+        "address/address",
+        "address/addr_edit",
+        "broker/list",
+        "broker/edit",
+        "order/order",
+        "order/order_detail",
+        "customer/customer",
+        "customer/customer_detail",
+        "broker/prod_set",
+        "user/subscribe_list",
+        "user/subscribe_set",
+        "user/subscribe_detail",
+        "broker/prod_edit",
+        "album/album",
+        "album/album_edit",
+        "album/album_imgs",
+        "album/album_imgs_edit",
+        "account/log",
+        "account/login_psw_update",
+        "account/bind_phone",
+        "account/bind_account",
+        "money/index",
+        "money/sino_info",
+        "money/sino_zh1",
+        "money/sino_zh2",
+        "money/sino_cz",
+        "money/sino_cz_list",
+        "money/bill",
+        "money/bill_detail",
+        "money/safe_list",
+        "money/sino_loginpw_update",
+        "money/sino_paypw_set",
+        "money/sino_paypw_forget",
+        "money/sino_reg",
+        "money/sino_bind",
+        "money/card_add",
+        "user/index",
+        "money/bank_card",
+        "money/sino_cz_detail",
+        "money/bank_card_detail",
+        "user/settings"
+      ]
+    }
+  ],
+  "window": {
+    "navigationBarTitleText": "网盛原材料撮合系统",
+    "navigationBarTextStyle": "black",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "lazyCodeLoading": "requiredComponents",
+  "usingComponents": {},
+  "sitemapLocation": "sitemap.json"
+}

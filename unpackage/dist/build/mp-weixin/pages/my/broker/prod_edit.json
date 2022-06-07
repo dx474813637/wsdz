@@ -1,0 +1,17 @@
+{
+  "navigationBarTitleText": "交易商品名编辑",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "u--form": "/uni_modules/uview-ui/components/u--form/u--form",
+    "u-form-item": "/uni_modules/uview-ui/components/u-form-item/u-form-item",
+    "u-input": "/uni_modules/uview-ui/components/u-input/u-input",
+    "menus-popup": "/components/menusPopup/menusPopup",
+    "u--input": "/uni_modules/uview-ui/components/u--input/u--input",
+    "u-radio-group": "/uni_modules/uview-ui/components/u-radio-group/u-radio-group",
+    "u-radio": "/uni_modules/uview-ui/components/u-radio/u-radio",
+    "u-upload": "/uni_modules/uview-ui/components/u-upload/u-upload",
+    "u--textarea": "/uni_modules/uview-ui/components/u--textarea/u--textarea",
+    "u-button": "/uni_modules/uview-ui/components/u-button/u-button",
+    "uni-section": "/pages/my/components/uni-section/uni-section"
+  }
+}

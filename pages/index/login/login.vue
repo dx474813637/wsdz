@@ -1,0 +1,300 @@
+<template>
+	<view class="wrap">
+		<view class="top"></view>
+		<view class="content">
+			<view class="title">欢迎登录</view>
+			<u--form 
+				labelPosition="top"
+				:model="form" 
+				ref="uForm" 
+			>
+				<u-form-item prop="login" >
+					<u--input 
+						v-model="form.login" 
+						prefixIcon="account-fill"
+						clearable
+						prefixIconStyle="color: #999"
+						:placeholder="`请输入${logintype == 1? '手机' :'账号/手机'}`" 
+					/>
+				</u-form-item>
+
+				<template v-if="logintype == 2">
+					<u-form-item prop="passwd" >
+						<u--input 
+							type="password" 
+							prefixIcon="lock-fill"
+							clearable
+							prefixIconStyle="color: #999"
+							v-model="form.passwd" 
+							placeholder="请输入密码"
+						 />
+					</u-form-item>
+				</template>
+			</u--form>
+			<!-- <view class="tips" v-if="logintype == 1">未注册的手机号验证后将自动注册</view> -->
+			<u-button type="primary" :ripple="true" @click="submit" :custom-style="inputStyle">
+				{{ logintype == 2 ? '登录' : '获取短信验证码'}}</u-button>
+
+
+			<view class="alternative">
+				<view class="password" @click="changeLoginType">{{ logintype == 1 ? '账号密码登录' : '手机验证码登录'}}</view>
+				<view class="issue" @click="handleGoto({url:'/pages/index/login/register'})">注册账号</view>
+			</view> 
+		</view>
+		<view class="buttom safe-area-inset-bottom">
+			<view class="hint">
+				注册/登录代表同意
+				<text class="link">平台用户协议、隐私政策，</text>
+				并授权使用您的平台账号信息（如昵称、头像、收获地址）以便您统一管理
+			</view>
+			<u-safe-bottom></u-safe-bottom>
+		</view>
+		
+	</view>
+</template>
+
+<script>
+	
+	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
+	export default {
+		data() {
+			return {
+				logintype: 2,
+				form: {
+					login: '',
+					passwd: '',
+				},
+				
+			}
+		},
+		onReady() {
+			this.handleSetRules()
+		},
+		computed: {
+			inputStyle() {
+				return {
+					'borderRadius': '10rpx',
+					// 'backgroundColor': this.$store.state.theme.themeColor,
+					'backgroundColor': '#007aff',
+					'marginTop': '40rpx'
+				}
+			},
+			rules() {
+				if(this.logintype == 2) {
+					return {
+						login: [{
+							required: true,
+							message: '请输入账号/手机号',
+							trigger: ['blur', 'change']
+						}, ],
+						passwd: [{
+							required: true,
+							message: '请输入密码',
+							trigger: ['blur', 'change']
+						}, ],
+					}
+				}
+				else if(this.logintype == 1) {
+					return {
+						login: [{
+								required: true,
+								message: '请输入手机号',
+								trigger: ['blur', 'change']
+							},
+							{
+								validator: (rule, value, callback) => {
+									console.log(uni.$u.test.mobile(value))
+									return uni.$u.test.mobile(value)
+								},
+								message: '请输入正确的11位手机号',
+								trigger: ['blur', 'change']
+							},
+						],
+					}
+				}
+			}
+		},
+		onLoad(){
+			
+		},
+		methods: {
+			...mapMutations({
+				setLogin: 'user/setLogin',
+				handleGoto: 'user/handleGoto'
+			}),
+			...mapActions({
+				wode: 'user/wode'
+			}),
+			handleSetRules() {
+				this.$refs.uForm.setRules(this.rules)
+			},
+			submit() {
+				this.$refs.uForm.validate().then(valid => {
+					if (valid) {
+						// console.log('验证通过');
+						if (this.logintype == 1) {
+							this.getCode()
+						} else {
+							this.getLogin()
+						}
+					} else {
+						// console.log('验证失败');
+					}
+				}).catch(errors => {
+					uni.$u.toast('校验失败')
+				});
+			},
+			getCode() {
+				uni.navigateTo({
+					url: `/pages/index/login/code?login=${this.form.login}`
+				})
+			},
+			async getLogin() {
+				uni.showLoading({
+					title: '登录信息验证中...'
+				})
+				// await uni.$u.sleep(1800)
+				let res = await this.$api.sunsirsLogin({
+					params: this.form
+				})
+				if(res.code == 1) {
+					// uni.setStorageSync('login', res.data.back.login)
+					// // uni.setStorageSync('mobile', res.data.back.mobile)
+					// // uni.setStorageSync('token', res.data.back.token)
+					this.setLogin(1)
+					this.wode()
+					this.naviBack()
+					 
+				}
+				
+			},
+			naviBack() {
+				if(uni.getStorageSync('prePage')) {
+					uni.redirectTo({
+						url: uni.getStorageSync('prePage'),
+						success() {
+							uni.showToast({
+								title: '登录成功',
+								icon: 'none'
+							})
+						}
+					})
+					uni.removeStorageSync('prePage')
+				}else {
+					uni.navigateTo({
+						url: '/pages/my/user/index',
+						success() {
+							uni.showToast({
+								title: '登录成功',
+								icon: 'none'
+							})
+						}
+					})
+				}
+			},
+			changeLoginType() {
+				this.logintype == 1 ? this.logintype = 2 : this.logintype = 1
+				this.$set(this.form, "login", "")
+				this.$refs.uForm.clearValidate()
+				this.handleSetRules()
+			}
+		}
+	};
+</script>
+
+<style lang="scss" scoped>
+	.u-border-bottom {
+		border-bottom: 1rpx solid #e7e7e7;
+	}
+
+	.login-box {
+		display: none;
+
+		&.tel,
+		&.pw {
+			display: block;
+		}
+	}
+
+	.inputRow {
+		margin-bottom: 30rpx;
+	}
+
+	.wrap {
+		font-size: 28rpx;
+
+		.content {
+			width: 600rpx;
+			margin: 80rpx auto 0;
+
+			.title {
+				text-align: left;
+				font-size: 50rpx;
+				font-weight: 500;
+				margin-bottom: 100rpx;
+			}
+
+			input {
+				text-align: left;
+				margin-bottom: 10rpx;
+				padding-bottom: 6rpx;
+			}
+
+			.tips {
+				color: #ffaa00;
+				margin-bottom: 60rpx;
+				margin-top: 8rpx;
+			}
+
+			.getCaptcha {
+				background-color: rgb(253, 243, 208);
+				color: $uni-color-warning;
+				border: none;
+				font-size: 30rpx;
+				padding: 12rpx 0;
+
+				&::after {
+					border: none;
+				}
+			}
+
+			.alternative {
+				color: #666;
+				display: flex;
+				justify-content: space-between;
+				margin-top: 30rpx;
+			}
+		}
+
+		.buttom {
+			position: fixed;
+			left: 0;
+			bottom: 0;
+			width: 100%;
+
+			.loginType {
+				display: flex;
+				padding: 350rpx 150rpx 150rpx 150rpx;
+				justify-content: space-between;
+
+				.item {
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+					color: #666;
+					font-size: 28rpx;
+				}
+			}
+
+			.hint {
+				padding: 20rpx 34rpx;
+				font-size: 24rpx;
+				color: $uni-color-warning;
+
+				.link {
+					color: $uni-color-warning;
+				}
+			}
+		}
+	}
+</style>

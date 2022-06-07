@@ -1,0 +1,332 @@
+{
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "",
+          "pathName": "pages/baojia/list/list",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/index/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/user/info",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/user/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/address/address",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/address/addr_edit",
+          "query": "type=edit&data=%7B%22id%22%3A1%2C%22auto%22%3A1%2C%22regional_name%22%3A%22%E5%B9%BF%E4%B8%9C%E7%9C%81%20%E4%B8%AD%E5%B1%B1%E5%B8%82%22%2C%22address%22%3A%22%E6%8B%B1%E5%A2%85%E5%8C%BA%E8%8E%AB%E5%B9%B2%E5%B1%B1%E8%B7%AF187%E5%8F%B7MOCK%E5%A4%A7%E5%8E%A613%E6%A5%BC2%E6%8B%B1%E5%A2%85%E5%8C%BA%E8%8E%AB%E5%B9%B2%E5%B1%B1%E8%B7%AF187%E5%8F%B7MOCK%E5%A4%A7%E5%8E%A613%E6%A5%BC2%22%2C%22name%22%3A%22%E8%91%A3%E6%B6%9B%22%2C%22mobile%22%3A%2218077735627%22%7D",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/broker/prod_set",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/broker/prod_edit",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/user/subscribe_set",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/user/subscribe_list",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/customer/customer",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/customer/customer_detail",
+          "query": "id=sid&data=%7B%22id%22%3A%22632522200905137636%22%2C%22c_account%22%3A%22dvglxjsc%22%2C%22c_pwd%22%3A%22sxxefrgb%22%2C%22c_name%22%3A%22%E4%B8%8A%E6%B5%B7%E5%B8%82%E8%AF%86%E9%A2%86%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8%22%2C%22c_contact%22%3A%22%E9%82%B5%E5%88%9A%22%2C%22c_phone%22%3A%2217415796458%22%2C%22c_email%22%3A%22m.gsozkrfbfp%40vdjwgjod.bj%22%2C%22c_status%22%3A%220%22%7D",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/account/login_psw_update",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/account/bind_phone",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/account/log",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/money/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/money/sino_info",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/money/sino_zh1",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/money/sino_cz_list",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/money/sino_cz_detail",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/money/bank_card",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/money/card_add",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/money/bank_card_detail",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/money/sino_reg",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/money/sino_bind",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/money/safe_list",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/money/sino_loginpw_update",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/money/sino_paypw_set",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/money/sino_paypw_forget",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/money/sino_cz",
+          "query": "cz=2",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/money/bill",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/money/bill_detail",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/broker/list",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/broker/edit",
+          "query": "pan=b",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/user/settings",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/account/bind_account",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/account/bind_phone",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/my/money/sino_zh_zz",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/index/login/login",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/index/login/code",
+          "query": "login=18757127948",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/index/pan/pan",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/index/market/market",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/index/search/search",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/index/pan/panDetail",
+          "query": "id=19687&pan=s",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/index/attention/attention",
+          "query": "current=2&list=%7B%22plate1%22%3A%22%E5%8E%9F%E6%B2%B9%7C2%2C%E5%A4%A9%E7%84%B6%E6%B0%94%7C3%2C%E7%BA%AF%E8%8B%AF%7C4%2C%E7%94%B2%E8%8B%AF%7C5%2C%E4%B8%99%E7%83%B7%7C8%22%2C%22plate2%22%3A%22%E5%8E%9F%E6%B2%B9%7C2%2C%E5%A4%A9%E7%84%B6%E6%B0%94%7C3%2C%E7%BA%AF%E8%8B%AF%7C4%2C%E7%94%B2%E8%8B%AF%7C5%2C%E4%B8%99%E7%83%B7%7C8%22%2C%22plate3%22%3A%22%E8%9E%BA%E7%BA%B9%E9%92%A2%7C927%2C%E5%8E%9F%E6%B2%B9%7C1036%2C%E7%94%B2%E9%85%B8%7C1302%22%7D",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/index/login/register",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        }
+      ]
+    }
+  },
+  "description": "项目私有配置文件。此文件中的内容将覆盖 project.config.json 中的相同字段。项目的改动优先同步到此文件中。详见文档：https://developers.weixin.qq.com/miniprogram/dev/devtools/projectconfig.html",
+  "libVersion": "2.21.0"
+}

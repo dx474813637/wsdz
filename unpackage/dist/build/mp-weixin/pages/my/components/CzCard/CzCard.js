@@ -1,0 +1,10 @@
+require('../../common/vendor.js');(global["webpackJsonp"]=global["webpackJsonp"]||[]).push([["pages/my/components/CzCard/CzCard"],{"07ba":function(t,e,n){"use strict";var a=n("3ddc"),u=n.n(a);u.a},"3ddc":function(t,e,n){},"5c7c":function(t,e,n){"use strict";n.d(e,"b",(function(){return u})),n.d(e,"c",(function(){return r})),n.d(e,"a",(function(){return a}));var a={"u-Text":function(){return Promise.all([n.e("common/vendor"),n.e("uni_modules/uview-ui/components/u--text/u--text")]).then(n.bind(null,"f9cd"))}},u=function(){var t=this,e=t.$createElement;t._self._c},r=[]},6629:function(t,e,n){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.default=void 0;var a={name:"CzCard",props:{bgColor:{type:String,default:"#fff"},ids:{type:String,default:"ids"},pid:{type:String,default:"pid"},type:{type:String,default:"type"},price:{type:String,default:"price"},date:{type:String,default:"date"},status:{type:String,default:"1"},boxShadow:{type:String,default:"0 0 10rpx rgba(0,0,0,.1)"},borderRadius:{type:String,default:"16rpx"},detailData:{type:Object,default:function(){return{}}}},data:function(){return{}},computed:{typeStr:function(){return 1==this.type?"提现":"充值"}},methods:{handleGotoDetail:function(){this.$emit("detail",{id:this.ids,detailData:this.detailData})}}};e.default=a},9143:function(t,e,n){"use strict";n.r(e);var a=n("5c7c"),u=n("9396");for(var r in u)"default"!==r&&function(t){n.d(e,t,(function(){return u[t]}))}(r);n("07ba");var i,d=n("f0c5"),o=Object(d["a"])(u["default"],a["b"],a["c"],!1,null,"5dd04a61",null,!1,a["a"],i);e["default"]=o.exports},9396:function(t,e,n){"use strict";n.r(e);var a=n("6629"),u=n.n(a);for(var r in a)"default"!==r&&function(t){n.d(e,t,(function(){return a[t]}))}(r);e["default"]=u.a}}]);
+;(global["webpackJsonp"] = global["webpackJsonp"] || []).push([
+    'pages/my/components/CzCard/CzCard-create-component',
+    {
+        'pages/my/components/CzCard/CzCard-create-component':(function(module, exports, __webpack_require__){
+            __webpack_require__('543d')['createComponent'](__webpack_require__("9143"))
+        })
+    },
+    [['pages/my/components/CzCard/CzCard-create-component']]
+]);

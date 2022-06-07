@@ -1,0 +1,416 @@
+{
+	"easycom": {
+		"^u-(.*)": "@/uni_modules/uview-ui/components/u-$1/u-$1.vue"
+	},
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				"onReachBottomDistance": 50,
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white"
+			}
+		}
+
+	    ,{
+            "path" : "pages/index/login/login",
+            "style" :                                                                                    
+            {
+				"navigationBarBackgroundColor":"#FFFFFF",
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+		,{
+		    "path" : "pages/index/login/code",
+		    "style" :                                                                                    
+		    {
+				"navigationBarBackgroundColor":"#FFFFFF",
+                "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		}
+        ,{
+            "path" : "pages/index/pan/pan",
+            "style" :                                                                                    
+            {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white"
+            }
+            
+        }
+        ,{
+            "path" : "pages/index/attention/attention",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "我的关注列表",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/index/market/market",
+            "style" :                                                                                    
+            {
+            	"navigationStyle": "custom",
+            	"navigationBarTextStyle": "white"
+            }
+            
+        }
+        ,{
+            "path" : "pages/index/pan/panDetail",
+            "style" :                                                                          
+            {
+            	"navigationStyle": "custom",
+            	"navigationBarTextStyle": "white"
+            }
+            
+        }
+        ,{
+            "path" : "pages/index/search/search",
+            "style" :                                                                                    
+            {
+            	"navigationStyle": "custom",
+            	"navigationBarTextStyle": "white"
+            }
+            
+        }
+        ,{
+            "path" : "pages/index/login/register",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
+	"subPackages": [{
+		"root": "pages/baojia",
+		"pages": [{
+			"path": "list/list",
+			"style": {
+				"onReachBottomDistance": 50,
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white"
+			}
+		}]
+	}, {
+		"root": "pages/my",
+		"pages": [{
+			"path": "user/info",
+			"style": {
+				"navigationBarTitleText": "用户信息"
+			}
+		}, {
+			"path": "address/address",
+			"style": {
+				"navigationBarTitleText": "地址列表",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "address/addr_edit",
+			"style": {
+				"navigationBarTitleText": "地址详情",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "broker/list",
+			"style": {
+				"navigationBarTitleText": "我的盘",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "broker/edit",
+			"style": {
+				"navigationBarTitleText": "编辑盘",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "order/order",
+			"style": {
+				"navigationBarTitleText": "我的订单",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "order/order_detail",
+			"style": {
+				"navigationBarTitleText": "订单详情",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "customer/customer",
+			"style": {
+				"navigationBarTitleText": "客户列表",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "customer/customer_detail",
+			"style": {
+				"navigationBarTitleText": "客户详情",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "broker/prod_set",
+			"style": {
+				"navigationBarTitleText": "交易商品名列表",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "user/subscribe_list",
+			"style": {
+				"navigationBarTitleText": "订阅通知",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "user/subscribe_set",
+			"style": {
+				"navigationBarTitleText": "订阅设置",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "user/subscribe_detail",
+			"style": {
+				"navigationBarTitleText": "通知详情",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "broker/prod_edit",
+			"style": {
+				"navigationBarTitleText": "交易商品名编辑",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "album/album",
+			"style": {
+				"navigationBarTitleText": "我的相册列表",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "album/album_edit",
+			"style": {
+				"navigationBarTitleText": "相册信息",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "album/album_imgs",
+			"style": {
+				"navigationBarTitleText": "相册图片列表",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "album/album_imgs_edit",
+			"style": {
+				"navigationBarTitleText": "图片信息",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "account/log",
+			"style": {
+				"navigationBarTitleText": "登录历史明细",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "account/login_psw_update",
+			"style": {
+				"navigationBarTitleText": "账号登录密码修改",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "account/bind_phone",
+			"style": {
+				"navigationBarTitleText": "绑定手机",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "account/bind_account",
+			"style": {
+				"navigationBarTitleText": "绑定账号",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "money/index",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white",
+				"navigationBarTitleText": "资金中心",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "money/sino_info",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white",
+				"navigationBarTitleText": "资金账号信息",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "money/sino_zh1",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white",
+				"navigationBarTitleText": "付款账户",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "money/sino_zh2",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white",
+				"navigationBarTitleText": "收款账户",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "money/sino_cz",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white",
+				"navigationBarTitleText": "我要充值",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "money/sino_cz_list",
+			"style": {
+				"navigationBarTitleText": "充提列表",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "money/bill",
+			"style": {
+				"navigationBarTitleText": "资金账单列表",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "money/bill_detail",
+			"style": {
+				"navigationBarTitleText": "资金账单详情",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "money/safe_list",
+			"style": {
+				"navigationBarTitleText": "安全设置",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "money/sino_loginpw_update",
+			"style": {
+				"navigationBarTitleText": "修改资金账号登录密码",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "money/sino_paypw_set",
+			"style": {
+				"navigationBarTitleText": "设置资金账号支付密码",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "money/sino_paypw_forget",
+			"style": {
+				"navigationBarTitleText": "忘记资金账号支付密码",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "money/sino_reg",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white"
+				// ,
+				// "navigationBarTitleText": "注册资金账户",
+				// "enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "money/sino_bind",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white"
+			}
+
+		}, {
+			"path": "money/card_add",
+			"style": {
+				"navigationBarTitleText": "银行卡绑定",
+				"enablePullDownRefresh": false
+			}
+
+		},{
+			"path": "user/index",
+			"style": {
+				"navigationStyle": "custom"
+				// "navigationBarTitleText": "我的",
+				// "enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "money/bank_card",
+			"style": {
+				"navigationBarTitleText": "银行账户列表",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "money/sino_cz_detail",
+			"style": {
+				"navigationBarTitleText": "详情",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "money/bank_card_detail",
+			"style": {
+				"navigationBarTitleText": "银行卡详情",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "user/settings",
+			"style": {
+				"navigationBarTitleText": "通用设置",
+				"enablePullDownRefresh": false
+			}
+
+		}]
+	}],
+	"globalStyle": {
+		"navigationBarTitleText": "网盛原材料撮合系统",
+		"navigationBarTextStyle": "black",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	}
+}

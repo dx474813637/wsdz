@@ -1,0 +1,13 @@
+{
+  "navigationBarTitleText": "我的订单",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "u-search": "/uni_modules/uview-ui/components/u-search/u-search",
+    "u-tabs": "/uni_modules/uview-ui/components/u-tabs/u-tabs",
+    "u-list": "/uni_modules/uview-ui/components/u-list/u-list",
+    "u-list-item": "/uni_modules/uview-ui/components/u-list-item/u-list-item",
+    "u-empty": "/uni_modules/uview-ui/components/u-empty/u-empty",
+    "u-loadmore": "/uni_modules/uview-ui/components/u-loadmore/u-loadmore",
+    "order-card": "/pages/my/components/OrderCard/OrderCard"
+  }
+}
