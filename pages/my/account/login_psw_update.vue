@@ -4,7 +4,6 @@
 		<u--form
 			labelPosition="left"
 			:model="model"
-			:rules="rules"
 			ref="from"
 			labelWidth="80"
 		>
@@ -69,36 +68,32 @@
 						trigger: ['blur', 'change']
 					},
 					npasswd: [{
-							type: 'string',
 							required: true,
-							message: '请填写新密码',
+							message: '请输入密码',
 							trigger: ['blur', 'change']
 						},
 						{
-							type: 'string',
-							message: '新密码格式不正确',
-							trigger: ['blur'],
 							validator: (rule, value, callback) => {
-								const reg1 = new RegExp(/[a-zA-Z]/)
-								const reg2 = new RegExp(/[\d]/)
-								return reg1.test(value) && reg2.test(value) && value.length >= 5 ;
+								const RegExpObject = /^[0-9A-Za-z]{5,}$/
+								return RegExpObject.test(value)
 							},
+							message: '密码可使用任何英文字母以及阿拉伯数字组合，不得少于5个字符并区分英文大小写',
+							trigger: ['blur', 'change']
 						},
 					],
 					cpasswd: [{
-							type: 'string',
 							required: true,
-							message: '请填写确认密码',
+							message: '请确认密码',
 							trigger: ['blur', 'change']
-						},{
-							type: 'string',
-							message: '确认密码与新密码不一致',
-							trigger: ['blur', 'change'],
-							validator: (rule, value, callback) => {
-								return this.model.npasswd == value;
-							},
 						},
-					]
+						{
+							validator: (rule, value, callback) => {
+								return this.model.npasswd == value
+							},
+							message: '密码不一致',
+							trigger: ['blur', 'change']
+						},
+					],
 				}
 			}
 		},
@@ -111,18 +106,18 @@
 				
 				this.$refs.from.validate().then(async res => {
 					uni.showLoading()
-					const r = await this.$api.changeLoginPwd({params: {...this.model}})
-					console.log(r)
+					const r = await this.$api.passwdResetA({params: {...this.model}})
+					
 					if(r.code == 1) {
-						// this.$utils.prePage() && this.$utils.prePage().refreshList();
-						uni.showToast({
-							title: r.msg,
-							icon: 'none'
-						})
 						
-						setTimeout(() => {
-							uni.navigateBack()
-						}, 800)
+						uni.navigateBack({
+							success() {
+								uni.showToast({
+									title: r.msg,
+									icon: 'none'
+								})
+							}
+						})
 					}
 				}).catch(errors => {
 					uni.$u.toast('校验失败')

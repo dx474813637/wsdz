@@ -2,52 +2,73 @@
 	<view class="wrap">
 		<view class="top"></view>
 		<view class="content">
-			<view class="title">欢迎登录</view>
+			<view class="title">登录密码重设</view>
 			<u--form 
 				labelPosition="top"
 				:model="form" 
 				ref="uForm" 
 			>
-				<u-form-item prop="login" >
+				<u-form-item prop="mobile" >
 					<u--input 
-						v-model="form.login" 
-						prefixIcon="account-fill"
+						v-model="form.mobile" 
+						prefixIcon="phone-fill"
 						clearable
 						prefixIconStyle="color: #999"
-						:placeholder="`请输入${logintype == 1? '手机' :'账号/手机'}`" 
+						placeholder="请输入手机号" 
 					/>
 				</u-form-item>
 
-				<template v-if="logintype == 2">
-					<u-form-item prop="passwd" >
-						<u--input 
-							type="password" 
-							prefixIcon="lock-fill"
-							clearable
-							prefixIconStyle="color: #999"
-							v-model="form.passwd" 
-							placeholder="请输入密码"
-						 />
-					</u-form-item>
-				</template>
+				<u-form-item prop="passwd" >
+					<u--input 
+						type="password" 
+						prefixIcon="lock-fill"
+						clearable
+						prefixIconStyle="color: #999"
+						v-model="form.passwd" 
+						placeholder="请输入新密码"
+					 />
+				</u-form-item>
+				<u-form-item prop="passwd2" >
+					<u--input 
+						type="password" 
+						prefixIcon="lock-fill"
+						clearable
+						prefixIconStyle="color: #999"
+						v-model="form.passwd2" 
+						placeholder="确认新密码"
+					 />
+				</u-form-item>
+				<u-form-item prop="captcha" >
+					<u-input 
+						v-model="form.captcha" 
+						prefixIcon="tags-fill"
+						clearable
+						prefixIconStyle="color: #999"
+						placeholder="验证码" 
+					>
+						<template slot="suffix">
+							<u-code
+								ref="uCode"
+								@change="codeChange"
+								seconds="60"
+								changeText="X秒重新获取"
+							></u-code>
+							<u-button
+								@tap="getCode"
+								:text="tips"
+								type="warning"
+								size="mini"
+							></u-button>
+						</template>
+					</u-input>
+				</u-form-item>
 			</u--form>
-			<!-- <view class="tips" v-if="logintype == 1">未注册的手机号验证后将自动注册</view> -->
-			<u-button type="primary" :ripple="true" @click="submit" :custom-style="inputStyle">
-				{{ logintype == 2 ? '登录' : '获取短信验证码'}}</u-button>
+			<u-button type="primary" :ripple="true" @click="submit" :custom-style="inputStyle">提交</u-button>
 
 
 			<view class="alternative">
-				<view class="password" @click="changeLoginType">{{ logintype == 1 ? '账号密码登录' : '手机验证码登录'}}</view>
-				<view class="issue" @click="handleGoto({url:'/pages/index/login/register'})">注册账号</view>
+				<view class="issue" @click="handleGoto({url:'/pages/index/login/login', type: 'reLaunch'})">返回登录</view>
 			</view> 
-			
-			<view class="u-p-t-80 u-m-t-80 u-flex u-flex-center">
-				<view>
-					<u--text type="warning" decoration="underline" text="忘记密码？" @click="handleGoto('/pages/index/login/resetPwd')"></u--text>
-				</view>
-				
-				
-			</view>
 		</view>
 		<view class="buttom safe-area-inset-bottom">
 			<view class="hint">
@@ -67,12 +88,13 @@
 	export default {
 		data() {
 			return {
-				logintype: 2,
 				form: {
-					login: '',
+					mobile: '',
 					passwd: '',
+					passwd2: '',
+					captcha: '',
 				},
-				
+				tips: '获取验证码',
 			}
 		},
 		onReady() {
@@ -88,36 +110,51 @@
 				}
 			},
 			rules() {
-				if(this.logintype == 2) {
-					return {
-						login: [{
+				return {
+					mobile: [{
 							required: true,
-							message: '请输入账号/手机号',
+							message: '请输入手机号',
 							trigger: ['blur', 'change']
-						}, ],
-						passwd: [{
+						},
+						{
+							validator: (rule, value, callback) => {
+								return uni.$u.test.mobile(value)
+							},
+							message: '请输入正确的11位手机号',
+							trigger: ['blur', 'change']
+						},
+					],
+					passwd: [{
 							required: true,
 							message: '请输入密码',
 							trigger: ['blur', 'change']
-						}, ],
-					}
-				}
-				else if(this.logintype == 1) {
-					return {
-						login: [{
-								required: true,
-								message: '请输入手机号',
-								trigger: ['blur', 'change']
+						},
+						{
+							validator: (rule, value, callback) => {
+								const RegExpObject = /^[0-9A-Za-z]{5,}$/
+								return RegExpObject.test(value)
 							},
-							{
-								validator: (rule, value, callback) => {
-									console.log(uni.$u.test.mobile(value))
-									return uni.$u.test.mobile(value)
-								},
-								message: '请输入正确的11位手机号',
-								trigger: ['blur', 'change']
+							message: '密码可使用任何英文字母以及阿拉伯数字组合，不得少于5个字符并区分英文大小写',
+							trigger: ['blur', 'change']
+						},
+					],
+					passwd2: [{
+							required: true,
+							message: '请确认密码',
+							trigger: ['blur', 'change']
+						},
+						{
+							validator: (rule, value, callback) => {
+								return this.form.passwd == value
 							},
-						],
+							message: '密码不一致',
+							trigger: ['blur', 'change']
+						},
+					],
+					captcha: {
+						required: true,
+						message: '请输入验证码',
+						trigger: ['blur', 'change']
 					}
 				}
 			}
@@ -139,12 +176,7 @@
 			submit() {
 				this.$refs.uForm.validate().then(valid => {
 					if (valid) {
-						// console.log('验证通过');
-						if (this.logintype == 1) {
-							this.getCode()
-						} else {
-							this.getLogin()
-						}
+						this.passwdReset()
 					} else {
 						// console.log('验证失败');
 					}
@@ -152,59 +184,66 @@
 					uni.$u.toast('校验失败')
 				});
 			},
-			getCode() {
-				uni.navigateTo({
-					url: `/pages/index/login/code?login=${this.form.login}`
-				})
+			
+			codeChange(text) {
+				this.tips = text;
 			},
-			async getLogin() {
-				uni.showLoading({
-					title: '登录信息验证中...'
+			getCode() {
+				this.$refs.uForm.validateField('mobile', async (err) => {
+					console.log(err)
+					if(err && err.length > 0) return
+					if (this.$refs.uCode.canGetCode) {
+					  // 模拟向后端请求验证码
+					  uni.showLoading()
+					  const res = await this.$api.passwdReset({
+						  params: {
+							  ...this.form,
+							  flag: 1
+						  }
+					  })
+					  if(res.code == 1) {
+						  uni.$u.toast('验证码已发送');
+						  this.$refs.uCode.start();
+					  }
+					} else {
+					  uni.$u.toast('倒计时结束后再发送');
+					}
 				})
-				// await uni.$u.sleep(1800)
-				let res = await this.$api.sunsirsLogin({
-					params: this.form
+				
+			},
+			async passwdReset() {
+				uni.showLoading()
+				
+				let res = await this.$api.passwdReset({
+					params: {
+						...this.form,
+						flag: 2
+					}
 				})
 				if(res.code == 1) {
 					// uni.setStorageSync('login', res.data.back.login)
 					// // uni.setStorageSync('mobile', res.data.back.mobile)
 					// // uni.setStorageSync('token', res.data.back.token)
-					this.setLogin(1)
-					this.wode()
+					// this.setLogin(1)
+					// this.wode()
 					this.naviBack()
 					 
 				}
 				
 			},
 			naviBack() {
-				if(uni.getStorageSync('prePage')) {
-					uni.redirectTo({
-						url: uni.getStorageSync('prePage'),
-						success() {
-							uni.showToast({
-								title: '登录成功',
-								icon: 'none'
-							})
-						}
-					})
-					uni.removeStorageSync('prePage')
-				}else {
-					uni.navigateTo({
-						url: '/pages/my/user/index',
-						success() {
-							uni.showToast({
-								title: '登录成功',
-								icon: 'none'
-							})
-						}
-					})
-				}
+				uni.reLaunch({
+					url: '/pages/index/login/login',
+					success() {
+						uni.showToast({
+							icon: 'none',
+							title: res.msg,
+						})
+					}
+				})
 			},
 			changeLoginType() {
-				this.logintype == 1 ? this.logintype = 2 : this.logintype = 1
-				this.$set(this.form, "login", "")
-				this.$refs.uForm.clearValidate()
-				this.handleSetRules()
+				
 			}
 		}
 	};

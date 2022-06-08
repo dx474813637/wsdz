@@ -21,7 +21,7 @@ const tradeType = v => {
 	else if(v == '2') return '即期现货'
 	else return v
 }
-//现货类型 1合约 2即期
+//现货类型 1合约 2现货
 const tradeType2 = v => {
 	if(v == '1') return '合约'
 	else if(v == '2') return '现货'

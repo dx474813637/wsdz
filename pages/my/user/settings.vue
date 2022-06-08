@@ -79,10 +79,16 @@
 						url: '/pages/my/account/log'
 					},
 					{
-						title: '密码修改',
+						title: '修改密码',
 						icon: 'lock',
 						type: 'cell',
 						url: '/pages/my/account/login_psw_update'
+					},
+					{
+						title: '短信重设密码',
+						icon: 'email',
+						type: 'cell',
+						url: '/pages/my/account/login_psw_reset'
 					},
 					{
 						title: '绑定账号',

@@ -35,7 +35,7 @@ export const getCompany = (data) => http.get('company', data)
 export const getCompanyDetail = (data) => http.get('company_detail', data)
 //获取 客户商品列表 参数login、p
 export const getCompanyProduct = (data) => http.get('company_product', data)
-//获取 客户商品明细（商品明细） 参数id
+//获取 客户商品明细（商品明细） 参数id  
 export const getCompanyProductDetail = (data) => http.get('company_product_detail', data)
 
 /**
@@ -127,8 +127,10 @@ export const register = (data) => http.get('register', data)
 export const sunsirsLogin = (data) => http.get('sunsirs_login', data)
 // 手机登录 参数mobile captcha flag* 1为获取手机验证码 2为校验并登录
 export const loginMobile = (data) => http.get('login_mobile', data)
-// 修改密码 参数mobile passwd新密码 captcha flag* 1为获取手机验证码 2为校验并登录
+// 手机短信修改密码 参数mobile passwd新密码 captcha flag* 1为获取手机验证码 2为校验并登录
 export const passwdReset = (data) => http.get('passwd_reset', data)
+// 修改密码 参数opasswd原密码 npasswd新密码
+export const passwdResetA = (data) => http.get('passwd_reseta', data)
 
 
 //  我的接口，通过list.login有值登录，0未登录。未登录状态，
@@ -157,9 +159,9 @@ export const logout = (data) => http.get('logout', data)
 // 我的买盘 参数p
 export const myBuy = (data) => http.get('my_buy', data)
 // 创建买盘
-export const createBuy = (data) => http.get('create_buy', data)
+export const createBuy = (data, config={}) => http.post('create_buy', data, config)
 // 修改买盘 多一个参数买盘id
-export const changeBuy = (data) => http.get('change_buy', data)
+export const changeBuy = (data, config={}) => http.post('change_buy', data, config)
 // 修改买盘状态 参数id 买盘id state 1-激活 0-取消激活
 export const ableBuy = (data) => http.get('able_buy', data)
 // 删除买盘 参数id 买盘id
@@ -187,9 +189,9 @@ export const ableSell = (data) => http.get('able_sell', data)
 //  删除卖盘 参数id 卖盘id
 export const deleteSell = (data) => http.get('delete_sell', data)
 //  创建卖盘
-export const createSell = (data) => http.get('create_sell', data)
+export const createSell = (data, config={}) => http.post('create_sell', data, config)
 //  修改卖盘 多一个参数卖盘id
-export const changeSell = (data) => http.get('change_sell', data)
+export const changeSell = (data, config={}) => http.post('change_sell', data, config)
 
 // =======客户信息
 // 用户类型： type *B-企业C-个人 
@@ -249,9 +251,9 @@ export const deleteProduct = (data) => http.get('delete_product', data)
 // 改变商品状态 参数id state
 export const ableProduct = (data) => http.get('able_product', data)
 // 创建商品
-export const createProduct = (data) => http.get('create_product', data)
+export const createProduct = (data, config={}) => http.post('create_product', data, config)
 //  编辑商品 多一个参数id
-export const changeProduct = (data) => http.get('change_product', data)
+export const changeProduct = (data, config={}) => http.post('change_product', data, config)
 
 
 

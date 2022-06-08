@@ -121,12 +121,13 @@
 			},
 			rules() {
 				return {
-					login: [
+					login: [{
+							required: true,
+							message: '请填写账号',
+							trigger: ['blur', 'change']
+						},
 						{
 							validator: (rule, value, callback) => {
-								if(!value) {
-									return true
-								}
 								const RegExpObject = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{5,}$/
 								return RegExpObject.test(value)
 							},

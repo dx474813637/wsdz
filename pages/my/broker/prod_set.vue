@@ -1,6 +1,6 @@
 <template>
 	<view class="w">
-		<view class="search-wrapper u-flex u-p-l-20 u-p-r-20">
+		<!-- <view class="search-wrapper u-flex u-p-l-20 u-p-r-20">
 			<view class="item u-flex-1 u-p-b-10">
 				<u-search 
 					placeholder="检索名称" 
@@ -12,7 +12,7 @@
 				></u-search>
 			</view>
 			
-		</view>
+		</view> -->
 		<view class="tabs-w">
 			<u-tabs
 				:list="tabs_list"
@@ -49,11 +49,12 @@
 				>
 					<view class="u-p-10">
 						<ProdSetCard
+							:origin="item"
 							:pid="item.id"
 							:name="item.name"
-							:pp="item.attr_common_11"
-							:status="item.status"
-							:shuxing="item.attr_common_12"
+							:pp="item.attrObj.attr_common_11"
+							:status="item.state"
+							:shuxing="item.attrObj.attr_common_12"
 							@changeStatus="handleChangeStatus"
 							@delet="handleDelet"
 							@add="handleAdd"
@@ -102,16 +103,19 @@
 				tabs_list: [
 					{
 						name: '全部',
+						trade_type: 'bs',
 						disabled: false,
 					},
-					{
-						name: '买盘',
-						disabled: false,
-					},
-					{
-						name: '卖盘',
-						disabled: false,
-					},
+					// {
+					// 	name: '买盘',
+					// 	trade_type: 'b',
+					// 	disabled: false,
+					// },
+					// {
+					// 	name: '卖盘',
+					// 	trade_type: 's',
+					// 	disabled: false,
+					// },
 				],
 				indexList: [],
 				curP: 1,
@@ -153,6 +157,7 @@
 				})
 			},
 			async handleTabsChange(value) {
+				this.tabs_current = value.index
 				this.changeTabsStatus('disabled', true)
 				this.initParamas();
 				uni.showLoading();
@@ -165,10 +170,22 @@
 			async getData() {
 				if(this.loadstatus != 'loadmore') return
 				this.loadstatus = 'loading'
-				const res = await this.$api.myProduct({params:{p: this.curP}})
+				const res = await this.$api.myProduct({params:{
+					p: this.curP,
+					// trade_type: this.tabs_list[this.tabs_current].trade_type
+				}})
 				if(res.code == 1) {
-					this.indexList = [...this.indexList, ...res.data]
-					if(this.curP == res.page_total) {
+					this.indexList = [...this.indexList, ...res.list.map(ele => {
+						const obj = {}
+						ele.attributes.forEach(item => {
+							obj[item.code] = item.value
+						})
+						return {
+							...ele,
+							attrObj: obj
+						}
+					})]
+					if(!res.list || res.list.length == 0) {
 						this.loadstatus = 'nomore'
 					}else {
 						this.loadstatus = 'loadmore'
@@ -180,11 +197,11 @@
 				this.curP ++
 				await this.getData()
 			},
-			async handleChangeStatus({status, id}) {
-				const res = await this.$api.changeProdStatus({params: {id, status}})
+			async handleChangeStatus({state, id}) {
+				const res = await this.$api.ableProduct({params: {id, state}})
 				if(res.code == 1) {
 					const index = this.indexList.findIndex(ele => ele.id == id)
-					this.indexList[index].status = !this.indexList[index].status
+					this.indexList[index].state = 1-this.indexList[index].state
 					
 				}
 			},
@@ -192,7 +209,8 @@
 				
 			},
 			async handleDelet({id}) {
-				const res = await this.$api.deletProds({params: {id}})
+				uni.showLoading()
+				const res = await this.$api.deleteProduct({params: {id}})
 				if(res.code == 1) {
 					uni.showToast({
 						title: '删除成功'
@@ -203,10 +221,10 @@
 				
 				
 			},
-			handleProdDetail({pid}) {
+			handleProdDetail({pid, data}) {
 				
 				uni.navigateTo({
-					url: `/pages/my/broker/prod_edit?pid=${pid}`
+					url: `/pages/my/broker/prod_edit?pid=${pid}&data=${encodeURIComponent(JSON.stringify(data))}`
 				})
 			}
 		}
@@ -223,7 +241,7 @@
 		height: 100%;
 	}
 	.list {
-		height: calc(100% - 83px);
+		height: calc(100% - 44px);
 		
 	}
 </style>

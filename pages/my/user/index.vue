@@ -22,9 +22,14 @@
 				</template>
 				<template v-else>
 					<view class="item u-flex u-flex-items-center">
-						<view class="name u-font-38">{{myCpy.login}}</view>
+						<view class="name u-line-1 u-font-38">{{login || myCpy.mobile}}</view>
 						<view class="sub text-white u-font-24 u-flex u-flex-items-center u-p-4 u-p-l-10 u-p-r-16 u-m-l-20">
 							<text >{{myCpy.type | type2str}}</text>
+						</view>
+						<view 
+							style="background: #f90;"
+							v-if="myCpy.state == 0" class="sub text-white u-font-24 u-flex u-flex-items-center u-p-4 u-p-l-10 u-p-r-16 u-m-l-20">
+							<text>审核中</text>
 						</view>
 					</view>
 					<view class="item">
@@ -72,7 +77,7 @@
 			</view>
 		</view>
 		
-		<view class="user-item-box u-p-24 bg-white u-m-b-26">
+		<view class="user-item-box u-p-24 bg-white u-m-b-26" v-if="auth == 1">
 			<view @click="handleGoto('/pages/my/customer/customer')" class="u-flex u-flex-items-center u-p-t-6 u-p-b-30  u-border-bottom" style="border-color: #f8f8f8!important;">
 				<view class="radius-50 bg-primary text-white u-flex u-flex-items-center u-flex-center u-p-16">
 					<i class=" custom-icon-friend custom-icon u-font-40"></i>
@@ -108,18 +113,18 @@
 					<i class="custom-icon-goods custom-icon u-font-40"></i>
 					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">商品列表</text>
 				</view>
-				<view @click="handleGoto('/pages/my/broker/list')" class="item u-text-center u-flex-1">
+				<view @click="handleGoto({url: '/pages/my/broker/list', params: {pan: 'b'}})" class="item u-text-center u-flex-1">
 					<i class="custom-icon-jinhuoqu custom-icon u-font-40"></i>
 					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">我的买盘</text>
 				</view>
-				<view @click="handleGoto('/pages/my/broker/list')" class="item u-text-center u-flex-1">
+				<view @click="handleGoto({url: '/pages/my/broker/list', params: {pan: 's'}})" class="item u-text-center u-flex-1">
 					<i class="custom-icon-zu555 custom-icon u-font-40"></i>
 					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">我的卖盘</text>
 				</view>
 			</view>
 		</view>
 		
-		<view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26">
+		<!-- <view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26">
 			<view class="box-header u-flex u-flex-items-end u-border-bottom u-p-b-14 u-p-l-30 u-p-r-30" style="border-color: #f8f8f8!important;">
 				<view class="u-font-34">订单中心</view>
 				
@@ -224,7 +229,7 @@
 					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">菜单名</text>
 				</view>
 			</view>
-		</view>
+		</view> -->
 		
 		
 		<u-safe-bottom></u-safe-bottom>
@@ -244,11 +249,13 @@
 		},
 		computed: {
 			...mapState({
-				myCpy: state => state.user.myCpy
+				myCpy: state => state.user.myCpy,
+				login: state => state.user.login,
+				auth: state => state.user.auth
 			}),
 		},
 		async onLoad() {
-			if(!this.myCpy.login) {
+			if(!this.myCpy.mobile) {
 				this.loading = true
 				uni.showLoading({
 					title: '获取最新用户信息中'
@@ -338,6 +345,7 @@
 				background-color: #7da5e2;
 				background-image: linear-gradient(to right, #a1c3f7, #86b0f8);
 				border-radius: 6rpx;
+				white-space: nowrap;
 			}
 			.sub2 {
 				

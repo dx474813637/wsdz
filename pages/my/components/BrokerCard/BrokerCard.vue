@@ -8,13 +8,13 @@
 		
 		>
 		<view class="card-header u-flex u-flex-between u-flex-items-center u-p-10">
-			<view class="item u-flex-1" @click="handleGotoDetail">
+			<view class="item u-flex-1 u-p-r-20" @click="handleGotoDetail">
 				<view class="item u-flex u-flex-items-center u-m-b-10">
-					<u-tag :text="type" size="mini" plain plainFill :custionStyle="{height: '18px', minHeight: '18px'}"></u-tag>
-					<text class="name u-p-l-10">{{name}}</text>
-					<text class="pp text-primary">{{price}} 元 / {{unit}}</text>
+					<u-tag :text="type | tradeType2" size="mini" plain plainFill :custionStyle="{height: '18px', minHeight: '18px'}"></u-tag>
+					<text class="name u-line-1 u-p-l-10">{{name}}</text>
+					<text class="pp text-error">{{price | price2str(dprice)}} <template v-if="price>0">元/{{unit}}</template></text>
 				</view>
-				<view class="item item-sub u-line-1">{{pp}}</view>
+				<view class="item item-sub u-line-1">{{remark}}</view>
 			</view>
 			<view class="item">
 				<u-switch 
@@ -28,7 +28,7 @@
 		<view class="card-footer u-flex u-flex-between u-flex-items-center u-p-12">
 			<view class="item text-light u-font-28">{{date}}</view>
 			<view class="item u-flex u-flex-items-center">
-				<view class="u-p-l-12">
+				<!-- <view class="u-p-l-12">
 					<u-button 
 						type="primary" 
 						size="mini" 
@@ -37,7 +37,7 @@
 						:disabled="doing"
 						@click.stop="handleResubmit"
 					>重发</u-button>
-				</view>
+				</view> -->
 				<view class="u-p-l-12">
 					<u-button 
 						type="error" 
@@ -66,9 +66,9 @@
 				type: String,
 				default: '名称',
 			},
-			pp: {
+			remark: {
 				type: String,
-				default: '品牌',
+				default: 'remark',
 			},
 			pid: {
 				type: String,
@@ -77,6 +77,10 @@
 			price: {
 				type: String,
 				default: 'price',
+			},
+			dprice: {
+				type: String,
+				default: 'dprice',
 			},
 			unit: {
 				type: String,
@@ -91,8 +95,14 @@
 				default: 'type',
 			},
 			status: {
-				type: Boolean,
-				default: false,
+				type: String,
+				default: '0',
+			},
+			origin: {
+				type: Object,
+				default:() => {
+					return {}
+				},
 			},
 			boxShadow: {
 				type: String,
@@ -117,11 +127,10 @@
 		},
 		watch: {
 			status: {
-				deep: true,
 				immediate: true,
 				handler(flag) {
-					// console.log(flag)
-					this.switch_status = flag;
+					if(flag == '1') this.switch_status = true;
+					else this.switch_status = false;
 					this.loading = false;
 				}
 			}
@@ -135,7 +144,7 @@
 					success: (res) => {
 						if (res.confirm) {
 							this.loading = true;
-							this.$emit('changeStatus', {status: value, id: this.pid})
+							this.$emit('changeStatus',  {state: value?'1':'0', id: this.pid})
 						} else if (res.cancel) {
 							console.log('用户点击取消');
 						}
@@ -162,7 +171,7 @@
 				this.$emit('resubmit', {id: this.pid})
 			},
 			handleGotoDetail() {
-				this.$emit('detail', {pid: this.pid})
+				this.$emit('detail', {pid: this.pid, data: this.origin})
 			}
 		}
 	}
@@ -172,10 +181,12 @@
 	.name {
 		color: #000;
 		font-size: 34rpx;
+		word-break: break-all;
 	}
 	.pp {
 		color: #999;
 		padding-left: 10rpx;
+		white-space: nowrap;
 	}
 	.item-sub {
 		color: #666;

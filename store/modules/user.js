@@ -7,7 +7,8 @@ let state = {
 		login: 0,
 		auth: 0,
 		ppiCate: [],
-		myCpy: {}
+		myCpy: {},
+		myProduct: []
 	},
 	getters = {
 	},
@@ -33,8 +34,17 @@ let state = {
 		setMyCpy(state, data) {
 			state.myCpy = data;
 		},
+		setMyProduct(state, data) {
+			state.myProduct = data;
+		},
 	},
 	actions = {
+		async getCompanyProduct({commit, state}) {
+			const res = await this._vm.$api.getCompanyProduct({params: {login: state.login, p: 1}});
+			if(res.code == 1) {
+				commit('setMyProduct', res.list)
+			}
+		},
 		async myCompany({commit, state}) {
 			const res = await this._vm.$api.myCompany();
 			if(res.code == 1) {

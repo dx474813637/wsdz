@@ -1,13 +1,18 @@
 <template>
 	<view class="w">
 		<view class="search-wrapper u-p-l-20 u-p-r-20">
-			<view class="item u-p-b-10">
-					<uni-combox
-						:candidates="candidates" 
-						placeholder="请选择下拉匹配选项" 
-						v-model="product"
-						@blur="comboxBlur1"
-					></uni-combox>
+			<view class="item u-p-b-10" @click="show = true">
+				<u-input
+					:value="product"
+					placeholder="点击选择标准商品" 
+					readonly
+				>
+					<template slot="suffix">
+						<view class="">
+							<i class="custom-icon-unfold custom-icon"></i>
+						</view>	
+					</template>
+				</u-input>
 			</view>
 			<view class="item u-flex-1 u-p-b-10 u-flex u-flex-items-center">
 				
@@ -43,12 +48,14 @@
 						<BrokerCard
 							:pid="item.id"
 							:name="item.name"
-							:pp="item.pp"
-							:status="item.status"
-							:type="item.type"
+							:remark="item.remark"
+							:status="item.state"
+							:type="item.trade_type"
 							:date="item.date"
 							:price="item.price"
+							:dprice="item.dprice"
 							:unit="item.unit"
+							:origin="item"
 							@changeStatus="handleChangeStatus"
 							@delet="handleDelet"
 							@resubmit="handleResubmit"
@@ -74,6 +81,19 @@
 				</template>
 			</u-list>
 		</view>
+		<tabBar :customStyle="{
+			'boxShadow': '0 0 10rpx rgba(0,0,0,.1)'
+		}">
+			<view @click="handleGoto({url: '/pages/my/broker/edit', params:{pan: pan}})" class=" u-flex u-flex-items-center u-flex-center u-p-20">
+				<u-button type="primary" shape="circle" icon="plus-circle">发布{{pan == 's'? '卖盘' :'买盘'}}</u-button>
+			</view>
+		</tabBar>
+		<menusPopup 
+			:show="show" 
+			theme="white"
+			@close="show = false"
+			@confirm="menusConfirm"
+		></menusPopup>
 	</view>
 </template>
 
@@ -83,33 +103,23 @@
 	export default {
 		data() {
 			return {
+				show: false,
 				keyword: '',
-				list1: [
-					{
-						label: '菜单1',
-						value: 'caidan1'
-					},
-					{
-						label: '菜单2',
-						value: 'caidan2'
-					},
-					{
-						label: '菜单3',
-						value: 'caidan3'
-					},
-					{
-						label: '菜单4',
-						value: 'caidan4'
-					}
-				],
 				product: "",
 				product_id: "",
 				indexList: [],
 				curP: 1,
-				loadstatus: 'loadmore'
+				loadstatus: 'loadmore',
+				pan: 's',
 			};
 		},
-		onLoad() {
+		onLoad(options) {
+			if(options.hasOwnProperty('pan')) {
+				this.pan = options.pan
+			}
+			uni.setNavigationBarTitle({
+				title: this.pan == 's'? '我的卖盘': '我的买盘'
+			})
 			uni.showLoading()
 			this.getData()
 		},
@@ -117,23 +127,19 @@
 			...mapState({
 				typeConfig: state => state.theme.typeConfig,
 			}),
-			candidates() {
-				return this.list1.map(ele => ele.label)
-			},
 		},
 		components: {
 			BrokerCard
 		},
 		methods: {
-			comboxBlur1(e) {
-				const index = this.candidates.indexOf(e)
-				if(index != -1) {
-					this.product_id = this.list1[index].value
-					this.product = e
-				}else {
-					this.product_id = '';
-					this.product = ''
-				}
+			...mapMutations({
+				handleGoto: 'user/handleGoto'
+			}),
+			async menusConfirm(data) {
+				this.product = data.name
+				this.product_id = data.id
+				
+				this.show = false;
 			},
 			refreshList() {
 				this.initParamas()
@@ -171,10 +177,14 @@
 			async getData() {
 				if(this.loadstatus != 'loadmore') return
 				this.loadstatus = 'loading'
-				const res = await this.$api.getBrokerList()
+				const res = await this.$api[this.pan == 's'? 'mySell': 'myBuy']({
+					params: {
+						p: this.curP
+					}
+				})
 				if(res.code == 1) {
-					this.indexList = [...this.indexList, ...res.data]
-					if(this.curP == res.page_total) {
+					this.indexList = [...this.indexList, ...res.list]
+					if(this.indexList.length >= res.total) {
 						this.loadstatus = 'nomore'
 					}else {
 						this.loadstatus = 'loadmore'
@@ -186,11 +196,11 @@
 				this.curP ++
 				await this.getData()
 			},
-			async handleChangeStatus({status, id}) {
-				const res = await this.$api.changeProdStatus({params: {id, status}})
+			async handleChangeStatus({state, id}) {
+				const res = await this.$api[this.pan == 's'? 'ableSell' : 'ableBuy']({params: {id, state}})
 				if(res.code == 1) {
 					const index = this.indexList.findIndex(ele => ele.id == id)
-					this.indexList[index].status = !this.indexList[index].status
+					this.indexList[index].state = state
 					
 				}
 			},
@@ -198,7 +208,7 @@
 				
 			},
 			async handleDelet({id}) {
-				const res = await this.$api.deletProds({params: {id}})
+				const res = await this.$api[this.pan == 's'? 'deleteSell' : 'deleteBuy']({params: {id}})
 				if(res.code == 1) {
 					uni.showToast({
 						title: '删除成功'
@@ -209,10 +219,14 @@
 				
 				
 			},
-			handleProdDetail({pid}) {
-				
-				uni.navigateTo({
-					url: `/pages/my/broker/edit?pid=${pid}`
+			handleProdDetail({pid, data}) {
+				this.handleGoto({
+					url: '/pages/my/broker/edit',
+					params: {
+						pid: pid,
+						pan: this.pan,
+						data: encodeURIComponent(JSON.stringify(data)),
+					}
 				})
 			}
 		}
@@ -226,10 +240,10 @@
 </style>
 <style lang="scss" scoped>
 	.w {
-		height: 100%;
+		height: 100vh;
 	}
 	.list {
-		height: calc(100% - 85px);
+		height: calc(100% - 146px - env(safe-area-inset-bottom));
 		
 	}
 </style>

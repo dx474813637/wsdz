@@ -23,13 +23,15 @@
 							<text class="u-font-34">高级筛选</text>
 						</view>
 						<view class="item u-flex-1 u-text-right">
-							<text class="u-primary" @click="refresh">刷新数据</text>
+							<text class="u-primary" @click="refresh" v-if="!isMyProduct">刷新数据</text>
+							<text class="u-primary" v-else @click="handleGoto('/pages/my/broker/list')">管理列表</text>
 						</view>
 					</view>
 					<view class="u-flex u-flex-items-center"  v-if="!loading">
 						<view class="u-flex u-flex-items-center u-p-10 u-p-r-30"
 							style="color: #999"
 							@click="changeAllHide"
+							v-if="!isMyProduct"
 						>
 							<i class="custom-icon "
 							:class="{
@@ -94,6 +96,32 @@
 										text="搜索无匹配项，可置空搜索栏列表查看"
 									></u-empty>
 								</template>
+							</template>
+							<template v-else-if="isMyProduct">
+								<u-list-item
+									v-for="(item, index) in myProduct"
+									:key="item.name">
+									<view class="u-p-10">
+										<view class="u-p-20 u-flex u-flex-items-center"
+											:style="{
+												backgroundColor: themeConfig.boxBg,
+												borderRadius: '10rpx'
+											}"
+											@click="selectLabel(item)"
+										>
+											<view class="u-font-34"
+												:style="{
+													color: themeConfig.baseText
+												}"
+											>{{item.name}}</view>
+											<view class="u-font-28 u-p-l-20 u-flex-1 u-line-1"
+												:style="{
+													color: themeConfig.pageTextSub
+												}"
+											>{{item.intro}}</view>
+										</view>
+									</view>
+								</u-list-item>
 							</template>
 							<template v-else>
 								<u-list-item
@@ -165,7 +193,7 @@
 </template>
 
 <script>
-	import {mapState, mapGetters, mapActions} from 'vuex'
+	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
 	export default {
 		name:"menusPopup",
 		props: {
@@ -190,6 +218,10 @@
 				default: false
 			},
 			multiple: {
+				type: Boolean,
+				default: false
+			},
+			isMyProduct: {
 				type: Boolean,
 				default: false
 			},
@@ -258,6 +290,7 @@
 			...mapState({
 				menusList: state => state.user.menusList,
 				ppiCate: state => state.user.ppiCate, 
+				myProduct: state => state.user.myProduct, 
 				typeConfig: state => state.theme.typeConfig
 			}),
 			themeConfig() {
@@ -274,9 +307,13 @@
 			},
 		},
 		methods: {
+			...mapMutations({
+				handleGoto: 'user/handleGoto'
+			}),
 			...mapActions({
 				getMenusList: 'user/getMenusList',
-				getPPiCate: 'user/getPPiCate'
+				getPPiCate: 'user/getPPiCate',
+				getCompanyProduct: 'user/getCompanyProduct'
 			}),
 			initSelect() {
 				this.multipleList = []
@@ -297,10 +334,11 @@
 				})
 			},
 			initMenusStatus() {
+				if(this.isMyProduct) return
 				//初始化菜单所有状态
 				// console.log(this.isPPI)
 				let arr = uni.$u.deepClone(this.isPPI ? this.ppiCate : this.menusList);
-				console.log(arr)
+				// console.log(arr)
 				arr.forEach(ele => {
 					ele.show = true;
 					ele.num = 0
@@ -332,26 +370,41 @@
 			},
 			searchMenus() {
 				this.searchRes = []
-				this.menusList2.forEach(ele => {
-					ele.list.forEach(item => {
-						let i = item.name.indexOf(this.keyword)
+				if(this.isMyProduct) {
+					this.myProduct.forEach(ele => {
+						let i = ele.name.indexOf(this.keyword)
 						if(i > -1) {
-							item.pp = [i, this.keyword.length]
-							this.searchRes.push(item)
+							ele.pp = [i, this.keyword.length]
+							this.searchRes.push(ele)
 						}
 					})
-					return ele
-				})
+				}else {
+					this.menusList2.forEach(ele => {
+						ele.list.forEach(item => {
+							let i = item.name.indexOf(this.keyword)
+							if(i > -1) {
+								item.pp = [i, this.keyword.length]
+								this.searchRes.push(item)
+							}
+						})
+						return ele
+					})
+				}
+				
 			},
 			async refresh() {
 				if(this.loading) return
 				this.loading = true
-				// await uni.$u.sleep(2000)
 				this.isPPI ? await this.getPPiCate() : await this.getMenusList()
 				this.loading = false
 			},
 			async open() {
-				if(this[this.isPPI ? 'ppiCate': 'menusList'].length == 0) {
+				if(this.isMyProduct) {
+					this.loading = true
+					await this.getCompanyProduct()
+					this.loading = false;
+				}
+				else if(this[this.isPPI ? 'ppiCate': 'menusList'].length == 0) {
 					this.refresh()
 				}
 			},

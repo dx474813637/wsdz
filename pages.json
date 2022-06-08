@@ -12,81 +12,73 @@
 			}
 		}
 
-	    ,{
-            "path" : "pages/index/login/login",
-            "style" :                                                                                    
-            {
-				"navigationBarBackgroundColor":"#FFFFFF",
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-		,{
-		    "path" : "pages/index/login/code",
-		    "style" :                                                                                    
-		    {
-				"navigationBarBackgroundColor":"#FFFFFF",
-                "navigationBarTitleText": "",
-		        "enablePullDownRefresh": false
-		    }
-		    
-		}
-        ,{
-            "path" : "pages/index/pan/pan",
-            "style" :                                                                                    
-            {
+		, {
+			"path": "pages/index/login/login",
+			"style": {
+				"navigationBarBackgroundColor": "#FFFFFF",
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/index/login/code",
+			"style": {
+				"navigationBarBackgroundColor": "#FFFFFF",
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/index/pan/pan",
+			"style": {
 				"navigationStyle": "custom",
 				"navigationBarTextStyle": "white"
-            }
-            
-        }
-        ,{
-            "path" : "pages/index/attention/attention",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "我的关注列表",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/index/market/market",
-            "style" :                                                                                    
-            {
-            	"navigationStyle": "custom",
-            	"navigationBarTextStyle": "white"
-            }
-            
-        }
-        ,{
-            "path" : "pages/index/pan/panDetail",
-            "style" :                                                                          
-            {
-            	"navigationStyle": "custom",
-            	"navigationBarTextStyle": "white"
-            }
-            
-        }
-        ,{
-            "path" : "pages/index/search/search",
-            "style" :                                                                                    
-            {
-            	"navigationStyle": "custom",
-            	"navigationBarTextStyle": "white"
-            }
-            
-        }
-        ,{
-            "path" : "pages/index/login/register",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+			}
+
+		}, {
+			"path": "pages/index/attention/attention",
+			"style": {
+				"navigationBarTitleText": "我的关注列表",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/index/market/market",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white"
+			}
+
+		}, {
+			"path": "pages/index/pan/panDetail",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white"
+			}
+
+		}, {
+			"path": "pages/index/search/search",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white"
+			}
+
+		}, {
+			"path": "pages/index/login/register",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/index/login/resetPwd",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}
+	],
 	"subPackages": [{
 		"root": "pages/baojia",
 		"pages": [{
@@ -369,7 +361,7 @@
 				"enablePullDownRefresh": false
 			}
 
-		},{
+		}, {
 			"path": "user/index",
 			"style": {
 				"navigationStyle": "custom"
@@ -402,6 +394,13 @@
 			"path": "user/settings",
 			"style": {
 				"navigationBarTitleText": "通用设置",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "account/login_psw_reset",
+			"style": {
+				"navigationBarTitleText": "短信重设密码",
 				"enablePullDownRefresh": false
 			}
 

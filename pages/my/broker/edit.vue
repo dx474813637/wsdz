@@ -4,24 +4,48 @@
 		<u--form
 			labelPosition="left"
 			:model="model"
-			:rules="rules"
 			ref="from"
 			labelWidth="80"
 		>
 			
 				<u-form-item
 					label="商品"
-					prop="product_id"
-					ref="product_id"
+					prop="standard"
+					ref="standard"
 					required
 				>
-					<uni-combox 
-						:candidates="candidates" 
-						placeholder="请选择下拉匹配选项" 
-						v-model="product"
-						@blur="comboxBlur1"
-					></uni-combox>
+					<view @click="show = true">
+						<u-input
+							:value="product"
+							placeholder="点击选择标准商品" 
+							readonly
+						>
+							<template slot="suffix">
+								<view class="">
+									<i class="custom-icon-unfold custom-icon"></i>
+								</view>	
+							</template>
+						</u-input>
+					</view>
+					
 				</u-form-item>
+				<u-form-item
+					label=" "
+					v-if="prodInfo.length > 0 || prodInfoLoading"
+				>
+					<template v-if="prodInfoLoading">
+						<u-loading-icon></u-loading-icon>
+					</template>
+					
+					<text v-else class="text-base">{{prodInfo}}</text>
+				</u-form-item>
+				<menusPopup 
+					:show="show" 
+					theme="white"
+					:isMyProduct="true"
+					@close="show = false"
+					@confirm="menusConfirm"
+				></menusPopup>
 				<u-form-item
 					label="标题"
 					prop="name"
@@ -72,6 +96,51 @@
 					    </u-radio>
 					  </u-radio-group>
 				</u-form-item>
+				<u-form-item
+					label="交收期"
+					prop="settle_month"
+					ref="settle_month"
+					required
+					v-if="model.trade_type == 1"
+				>
+					<view class="u-flex u-flex-items-center">
+						<view @click="showSettleMonth = true" class="u-flex-2">
+							<u--input
+								:value="model.settle_month_label"
+								suffixIcon="arrow-down"
+								placeholder="月份" 
+								readonly
+							></u--input>
+						</view>
+						
+						<view @click="showSettleDate = true" class="u-flex-1 u-p-l-20">
+							<u--input
+								:value="model.settle_date_label"
+								suffixIcon="arrow-down"
+								placeholder="旬" 
+								readonly
+							></u--input>
+						</view>
+					</view>
+				</u-form-item>
+				<u-picker
+					closeOnClickOverlay
+					:show="showSettleMonth" 
+					:columns="settleMonth"
+					@confirm="confirmSettleMonth"
+					keyName="label"
+					@close="showSettleMonth = false"
+					@cancel="showSettleMonth = false"
+				></u-picker>
+				<u-picker
+					closeOnClickOverlay
+					:show="showSettleDate" 
+					:columns="settleDate"
+					@confirm="confirmSettleDate"
+					keyName="label"
+					@close="showSettleDate = false"
+					@cancel="showSettleDate = false"
+				></u-picker>
 				
 				<u-form-item
 					:label="pan == 's'? '单价' : '意向单价'"
@@ -85,8 +154,11 @@
 						type="digit"
 					></u--input>
 				</u-form-item>
+				<u-form-item label=" ">
+					<view class="text-base">填0表示点价，请说明点价规则</view>
+				</u-form-item>
 				<u-form-item
-					v-if="pan == 's'"
+					v-if="model.price.length != 0 && model.price == 0"
 					label="点价规则"
 					prop="dprice"
 					ref="dprice"
@@ -123,8 +195,8 @@
 				</u-form-item>
 				<u-form-item
 					label="有效时间"
-					prop="express_unit"
-					ref="express_unit"
+					prop="express_time"
+					ref="express_time"
 					required
 				>
 					<view class="u-flex u-flex-items-center">
@@ -132,6 +204,7 @@
 							<u--input
 								v-model="model.express_time"
 								clearable
+								type="number"
 							></u--input>
 						</view>
 						
@@ -163,7 +236,7 @@
 					<uni-data-picker 
 						placeholder="请选择交货地" 
 						popup-title="请选择所在地区" 
-						:localdata="dataTree" 
+						:localdata="addressArea" 
 						v-model="model.delivery_place"
 						@change="onchange" 
 						@nodeclick="onnodeclick" 
@@ -175,7 +248,7 @@
 					label="交收方式"
 					prop="settle_mode"
 					ref="settle_mode"
-					v-if="pan == 's'"
+					v-if="pan == 's' && auth == 1"
 				>
 					 <u-radio-group
 					    v-model="model.settle_mode"
@@ -191,10 +264,10 @@
 					    </u-radio>
 					  </u-radio-group>
 				</u-form-item>
-				<u-form-item
+				<!-- <u-form-item
 					label="图片"
-					prop="imgs"
-					ref="imgs"
+					prop="pics"
+					ref="pics"
 					v-if="pan == 's'"
 				>
 					<u-upload
@@ -205,57 +278,56 @@
 						multiple
 						:maxCount="5"
 					></u-upload>
-				</u-form-item>
-				<u-form-item
-					label="报盘企业"
-					prop="customer_value"
-					ref="customer_value"
-				>
-					<uni-combox 
-						:candidates="candidates2" 
-						placeholder="请选择下拉匹配选项" 
-						v-model="customer_name"
-						@blur="comboxBlur2"
-					></uni-combox>
-				</u-form-item>
-				<u-form-item
-					label="企业角色"
-					prop="mdu"
-					ref="mdu"
-				>
-					 <u-radio-group
-					    v-model="model.mdu"
-					    placement="row"
-					  >
-					    <u-radio
-					      :customStyle="{marginRight: '8px'}"
-					      v-for="(item, index) in radiolist_mdu"
-					      :key="item.value"
-					      :label="item.name"
-					      :name="item.value"
-					    >
-					    </u-radio>
-					  </u-radio-group>
-				</u-form-item>
-				<u-form-item
-					label="报盘类型"
-					prop="post_type"
-					ref="post_type"
-				>
-					 <u-radio-group
-					    v-model="model.post_type"
-					    placement="row"
-					  >
-					    <u-radio
-					      :customStyle="{marginRight: '8px'}"
-					      v-for="(item, index) in radiolist_post_type"
-					      :key="item.value"
-					      :label="item.name"
-					      :name="item.value"
-					    >
-					    </u-radio>
-					  </u-radio-group>
-				</u-form-item>
+				</u-form-item> -->
+				<template v-if="auth == 1">
+					<u-form-item
+						label="报盘企业"
+						prop="customer_value"
+						ref="customer_value"
+						
+					>
+						
+					</u-form-item>
+					<u-form-item
+						label="企业角色"
+						prop="mdu"
+						ref="mdu"
+					>
+						 <u-radio-group
+						    v-model="model.mdu"
+						    placement="row"
+						  >
+						    <u-radio
+						      :customStyle="{marginRight: '8px'}"
+						      v-for="(item, index) in radiolist_mdu"
+						      :key="item.value"
+						      :label="item.name"
+						      :name="item.value"
+						    >
+						    </u-radio>
+						  </u-radio-group>
+					</u-form-item>
+					<u-form-item
+						label="报盘类型"
+						prop="post_type"
+						ref="post_type"
+					>
+						 <u-radio-group
+						    v-model="model.post_type"
+						    placement="row"
+						  >
+						    <u-radio
+						      :customStyle="{marginRight: '8px'}"
+						      v-for="(item, index) in radiolist_post_type"
+						      :key="item.value"
+						      :label="item.name"
+						      :name="item.value"
+						    >
+						    </u-radio>
+						  </u-radio-group>
+					</u-form-item>
+				</template>
+				
 				<u-form-item
 					label="详细需求"
 					prop="intro"
@@ -290,58 +362,29 @@
 </template>
 
 <script>
+	import {mapState, mapMutations, mapActions} from "vuex"
 	// import uniSection from '@/pages/my/components/uni-section/uni-section'
 	export default {
 		data() {
 			return {
 				pid: '',
 				pan: 'b',
-				list1: [
-					{
-						label: '菜单1',
-						value: 'caidan1'
-					},
-					{
-						label: '菜单2',
-						value: 'caidan2'
-					},
-					{
-						label: '菜单3',
-						value: 'caidan3'
-					},
-					{
-						label: '菜单4',
-						value: 'caidan4'
-					}
-				],
-				list2: [
-					{
-						label: '菜单b-1',
-						value: 'caidan1'
-					},
-					{
-						label: '菜单b-2',
-						value: 'caidan2'
-					},
-					{
-						label: '菜单b-3',
-						value: 'caidan3'
-					},
-					{
-						label: '菜单b-4',
-						value: 'caidan4'
-					}
-				],
 				product: '',
+				prodInfo: '',
+				prodInfoLoading: false,
 				model: {
 					product_id: '',
 					name: '',
 					order_type: '1',
 					trade_type: '2',
+					settle_month_label: '',
+					settle_month: '',
+					settle_date_label: '',
+					settle_date: '',
+					spec: '',
 					price: '',
 					dprice: '',
 					amount: '',
-					spec: '',
 					express_time: '',
 					express_unit_label: '天',
 					express_unit: 'd',
@@ -352,7 +395,7 @@
 					intro: '',
 					settle_mode: '',
 					remark: '',
-					imgs: []
+					pics: []
 				},
 				fileList1: [],
 				radiolist_order_type: [
@@ -421,68 +464,44 @@
 					},
 				],
 				showExpressUnit: false,
+				showSettleMonth: false,
+				showSettleDate: false,
+				show: false,
 				expressUnit: [
 					[{label: '天', value: 'd'}, {label: '小时', value: 'h'}]
 				],
-				customer_name: '',
-				dataTree: [
-					{
-						text: "浙江省",
-						value: "zj",
-						children: [{
-							text: "杭州市",
-							value: "hz",
-							children: [
-								{
-									text: '西湖区',
-									value: 'xh'
-								},
-								{
-									text: '拱墅区',
-									value: 'gs'
-								},
-							]
-						},
-						{
-							text: "宁波市",
-							value: "nb"
-						}]
-					},
-					{
-						text: "北京市",
-						value: "bj",
-						children: [{
-							text: "朝阳区",
-							value: "cy"
-						},
-						{
-							text: "xx区",
-							value: "xx"
-						}]
-					},
-					{
-						text: "上海市",
-						value: "sh",
-						children: [{
-							text: "闵行区",
-							value: "mh"
-						},
-						{
-							text: "浦东区",
-							value: "pd"
-						}]
-					},
+				settleMonth: [
+					[
+						{label: '1月', value: '1'},
+						{label: '2月', value: '2'},
+						{label: '3月', value: '3'},
+						{label: '4月', value: '4'},
+						{label: '5月', value: '5'},
+						{label: '6月', value: '6'},
+						{label: '7月', value: '7'},
+						{label: '8月', value: '8'},
+						{label: '9月', value: '9'},
+						{label: '10月', value: '10'},
+						{label: '11月', value: '11'},
+						{label: '12月', value: '12'},
+					]
+				],
+				settleDate: [
+					[
+						{label: '上旬', value: 'ftd'},
+						{label: '中旬', value: 'mtd'},
+						{label: '下旬', value: 'ltd'},
+					]
 				],
 				
 			}
 		},
 		computed: {
-			candidates() {
-				return this.list1.map(ele => ele.label)
-			},
-			candidates2() {
-				return this.list2.map(ele => ele.label)
-			},
+			...mapState({
+				addressArea: state => state.user.addressArea,
+				login: state => state.user.login,
+				auth: state => state.user.auth
+			}),
 			rules() {
 				let baseRules = {
 					'product_id': {
@@ -497,16 +516,23 @@
 						message: '请填写名称',
 						trigger: ['blur', 'change']
 					},
-					'price': {
+					'price': [{
 						type: 'string',
 						required: true,
-						message: '请填写单价',
+						message: '请填写金额',
 						trigger: ['blur', 'change']
-					},
+					},{
+						type: 'string',
+						validator: (rule, value, callback) => {
+							return Number(value) >= 0
+						},
+						message: '请填写正确的金额',
+						trigger: ['blur', 'change']
+					}],
 					'express_time': {
 						type: 'string',
 						required: true,
-						message: '请填写单价',
+						message: '请填写有效时间',
 						trigger: ['blur', 'change']
 					},
 					'delivery_place': {
@@ -515,14 +541,28 @@
 						message: '请选择交货地',
 						trigger: ['blur', 'change']
 					},
-				}
-				let bRules = {
 					'amount': {
 						type: 'string',
-						required: true,
-						message: '请输入有效时间',
+						validator: (rule, value, callback) => {
+							return Number(value) > 0.01
+						},
+						message: '请输入大于0.01的数字',
 						trigger: ['blur', 'change']
 					},
+					settle_month: {
+						validator: (rule, value, callback) => {
+							if(this.model.trade_type == 1) {
+								if(value && this.model.settle_date) return true
+								else return false
+							}
+							return true
+						},
+						message: '交收期不能为空',
+						trigger: ['change','blur'],
+					}
+				}
+				let bRules = {
+					
 					'spec': {
 						type: 'string',
 						required: true,
@@ -530,7 +570,8 @@
 						trigger: ['blur', 'change']
 					},
 				}
-				let sRules = {}
+				let sRules = {
+				}
 				if(this.pan == 'b') {
 					return {
 						...baseRules,
@@ -546,12 +587,46 @@
 				
 			}
 		},
-		onLoad(options) {
+		async onLoad(options) {
 			if(options.hasOwnProperty('pid')) {
-				this.pid = options.pid
+				await this.getAddressArea()
+			}else {
+				this.getAddressArea()
 			}
+			
 			if(options.hasOwnProperty('pan')) {
 				this.pan = options.pan
+			}
+			if(options.hasOwnProperty('pid')) {
+				this.pid = options.pid
+				const data = JSON.parse(decodeURIComponent(options.data))
+				console.log(data)
+				this.model.delivery_place = data.delivery_place
+				this.model.product_id = data.product_id
+				this.model.name = data.name
+				this.model.order_type = data.order_type
+				this.model.trade_type = data.trade_type
+				this.model.price = data.price
+				this.model.dprice = data.dprice
+				this.model.amount = data.amount
+				this.model.express_time = data.express_time
+				this.model.express_unit = data.express_unit
+				this.model.express_unit_label = this.expressUnit[0].filter(ele => ele.value == data.express_unit)[0]?.label
+				this.model.settle_month = data.settle_month
+				this.model.settle_month_label = this.settleMonth[0].filter(ele => ele.value == data.settle_month)[0]?.label
+				this.model.settle_date = data.settle_date
+				this.model.settle_date_label = this.settleDate[0].filter(ele => ele.value == data.settle_date)[0]?.label
+				this.model.delivery_place = data.delivery_place
+				if(this.pan == 's') {
+					this.model.remark = data.remark
+					this.model.pics = data.list_pics
+				}else {
+					this.model.spec = data.spec
+					this.model.intro = data.intro
+				}
+				this.prodInfoLoading = true
+				await this.getCompanyProductDetail()
+				this.prodInfoLoading = false
 			}
 			this.setPageTitle()
 		},
@@ -559,6 +634,20 @@
 			this.$refs.from.setRules(this.rules)
 		},
 		methods: {
+			...mapActions({
+				getAddressArea: 'user/getAddressArea'
+			}),
+			async getCompanyProductDetail() {
+				const res = await this.$api.getCompanyProductDetail({params: {id: this.model.product_id}})
+				if(res.code == 1) {
+					this.product = res.list.name
+					this.prodInfo = res.list.list_product_attrs.reduce((pre, cur) => {
+						return pre + `${cur.Attr.name}：${cur.value}\n`
+					}, '')
+					
+					
+				}
+			},
 			onnodeclick(e) {
 				console.log(e);
 			},
@@ -573,33 +662,39 @@
 				console.log('onchange:', e);
 				this.$refs.from.validateField('delivery_place')
 			},
-			comboxBlur2(e) {
-				const index = this.candidates2.indexOf(e)
-				if(index != -1) {
-					this.model.customer_value = this.list2[index].value
-					this.customer_name = e
-				}else {
-					this.model.customer_value = '';
-					this.customer_name = ''
+			async menusConfirm(data) {
+				console.log(data)
+				this.product = data.name
+				this.model.product_id = data.id
+				if(!this.model.name) this.model.name = data.name
+				this.show = false;
+				
+				this.prodInfoLoading = true
+				await this.getCompanyProductDetail()
+				this.prodInfoLoading = false
+				if(this.pan == 'b') {
+					this.model.spec = this.prodInfo
 				}
-				this.$refs.from.validateField('customer_value')
-			},
-			comboxBlur1(e) {
-				const index = this.candidates.indexOf(e)
-				if(index != -1) {
-					this.model.product_id = this.list1[index].value
-					this.product = e
-				}else {
-					this.model.product_id = '';
-					this.product = ''
-				}
-				this.$refs.from.validateField('product_id')
 			},
 			confirmExpressUnit(e) {
 				console.log(e)
 				this.model.express_unit_label = e.value[0].label
 				this.model.express_unit = e.value[0].value
 				this.showExpressUnit = false
+			},
+			confirmSettleMonth(e) {
+				console.log(e)
+				this.model.settle_month_label = e.value[0].label
+				this.model.settle_month = e.value[0].value
+				this.showSettleMonth = false
+				this.$refs.from.validateField('settle_month')
+			},
+			confirmSettleDate(e) {
+				console.log(e)
+				this.model.settle_date_label = e.value[0].label
+				this.model.settle_date = e.value[0].value
+				this.showSettleDate = false
+				this.$refs.from.validateField('settle_month')
 			},
 			setPageTitle() {
 				let title = '';
@@ -617,22 +712,43 @@
 				
 				this.$refs.from.validate().then(async res => {
 					uni.showLoading()
-					console.log(this.model)
-					// uni.$u.toast('校验通过')
-					const r = await this.$api.editProd({...this.model.prod, id: this.pid})
-					console.log(r)
+					
+					let func = ''
+					if(this.pan == 's') {
+						if(this.pid) {
+							func = 'changeSell'
+						}else {
+							func = 'createSell'
+						}
+					}else {
+						if(this.pid) {
+							func = 'changeBuy'
+						}else {
+							func = 'createBuy'
+						}
+					}
+					let params = {...this.model};
+					if(this.pid) params.id = this.pid
+					const r = await this.$api[func](params)
 					if(r.code == 1) {
-						this.$utils.prePage() && this.$utils.prePage().refreshList();
+						const arr = uni.$u.pages()
+						arr[arr.length - 2].$vm?.refreshList();
 						uni.showToast({
 							title: r.msg,
 							icon: 'none'
 						})
 						
-						setTimeout(() => {
-							uni.navigateBack()
-						}, 800)
+						uni.navigateBack({
+							success() {
+								uni.showToast({
+									title: r.msg,
+									icon: 'none'
+								})
+							}
+						})
 					}
 				}).catch(errors => {
+					console.log(errors)
 					uni.$u.toast('校验失败')
 				})
 			},

@@ -11,8 +11,8 @@
 			
 				<u-form-item
 					label="标准商品"
-					prop="product_id"
-					ref="product_id"
+					prop="standard"
+					ref="standard"
 					required
 				>
 					<view @click="show = true">
@@ -52,62 +52,65 @@
 					label="单位"
 					prop="unit"
 					ref="unit"
+					required
 				>
 					<u--input
 						v-model="model.unit"
 						clearable
+						placeholder="平方米，立方米，吨，升，米，千克"
 					></u--input>
 				</u-form-item>
-				<!-- <uni-section title="属性" type="circle" padding border> -->
-					<u-form-item
-						label="规格属性"
-						prop="attr_common_12"
-						ref="attr_common_12"
-					>
-						<u--input
-							v-model="model.attr_common_12"
-							clearable
-						></u--input>
-					</u-form-item>
-					<u-form-item
-						label="品牌/产地"
-						prop="attr_common_11"
-						ref="attr_common_11"
-					>
-						<u--input
-							v-model="model.attr_common_11"
-							clearable
-						></u--input>
-					</u-form-item>
-					<u-form-item
-						label="生产商"
-						prop="attr_common_13"
-						ref="attr_common_13"
-					>
-						<u--input
-							v-model="model.attr_common_13"
-							clearable
-						></u--input>
-					</u-form-item>
-					<u-form-item
-						label="质量标准"
-						prop="attr_common_14"
-						ref="attr_common_14"
-					>
-						<u--input
-							v-model="model.attr_common_14"
-							clearable
-						></u--input>
-					</u-form-item>
-				<!-- </uni-section> -->
+				<view class=""
+					:key="item.key"
+					v-for="(item, index) in attrObj">
+					<template v-if="item.type == 'base'">
+						<u-form-item
+							:label="item.label"
+						>
+							<u--input
+								v-model="item.value"
+								clearable
+							></u--input>
+						</u-form-item>
+					</template>
+					<template v-else>
+						<view class="u-flex u-flex-items-center u-m-t-10 u-m-b-30">
+							<view class="u-p-r-10" style="width: 75px;">
+								<u--input
+									v-model="item.label"
+									clearable
+									placeholder="属性名"
+								></u--input>
+							</view>
+							<view class="u-flex-1">
+								<u--input
+									v-model="item.value"
+									clearable
+									placeholder="属性值"
+								></u--input>
+							</view>
+							<view class="u-p-l-20 u-p-r-10">
+								<u-icon @click="removeCustomAttr(item.key)" name="minus-circle-fill" size="20" color="#ff0000"></u-icon>
+							</view>
+							
+						</view>
+					</template>
+				</view>
 				
+				<view class="u-p-40 u-border u-flex u-flex-items-center u-flex-center"
+					style="border-style: dashed;border-radius: 20rpx; color: #999;background-color: #f8f8f8;"
+					@click="addCustomAttr"
+				>
+					<u-icon name="plus-circle" color="#999"></u-icon>
+					<text class="u-p-l-20 u-font-28">新增自定义属性</text>
+				</view>
 				<u-form-item
 					label="需求类型"
 					prop="type"
 					ref="type"
 				>
 					 <u-radio-group
-					    v-model="model.type"
+					    v-model="model.trade_type"
 					    placement="row"
 					  >
 					    <u-radio
@@ -120,10 +123,10 @@
 					    </u-radio>
 					  </u-radio-group>
 				</u-form-item>
-				<u-form-item
+				<!-- <u-form-item
 					label="图片"
-					prop="img"
-					ref="img"
+					prop="pic1"
+					ref="pic1"
 				>
 					<u-upload
 						:fileList="fileList1"
@@ -132,10 +135,7 @@
 						name="1"
 						:maxCount="1"
 					></u-upload>
-					<!-- <u--input
-						v-model="model.img"
-					></u--input> -->
-				</u-form-item>
+				</u-form-item> -->
 				
 				<u-form-item
 					label="商品简介"
@@ -166,46 +166,38 @@
 				product: '',
 				show: false,
 				model: {
-					product_id: '',
-					name: 'uView UI',
+					standard: '',
+					name: '',
 					unit: '',
-					attr_common_12: '',
-					attr_common_11: '',
-					attr_common_13: '',
-					attr_common_14: '',
 					intro: '',
-					type: 'bs',
-					img: ''
+					trade_type: 'bs',
+					pic1: ''
 				},
-				list: [
+				attrObj: [
 					{
-						label: '菜单1',
-						value: 'caidan1'
+						label: '品牌',
+						key: 'attr_common_11',
+						value: '',
+						type: 'base'
 					},
 					{
-						label: '菜单2',
-						value: 'caidan2'
+						label: '规格属性',
+						key: 'attr_common_12',
+						value: '',
+						type: 'base'
 					},
 					{
-						label: '菜单3',
-						value: 'caidan3'
+						label: '生产商',
+						key: 'attr_common_13',
+						value: '',
+						type: 'base'
 					},
 					{
-						label: '菜单4',
-						value: 'caidan4'
+						label: '质量标准',
+						key: 'attr_common_14',
+						value: '',
+						type: 'base'
 					},
-					{
-						label: '菜单21',
-						value: 'caidan21'
-					},
-					{
-						label: '菜单31',
-						value: 'caidan31'
-					},
-					{
-						label: '菜单41',
-						value: 'caidan41'
-					}
 				],
 				fileList1: [],
 				radiolist_type: [
@@ -230,7 +222,7 @@
 		computed: {
 			rules() {
 				return {
-					'product_id': {
+					'standard': {
 						type: 'string',
 						required: true,
 						message: '请选择商品',
@@ -242,10 +234,13 @@
 						message: '请填写名称',
 						trigger: ['blur', 'change']
 					},
+					'unit': {
+						type: 'string',
+						required: true,
+						message: '请填写单位',
+						trigger: ['blur', 'change']
+					},
 				}
-			},
-			candidates() {
-				return this.list.map(ele => ele.label)
 			},
 		},
 		onLoad(options) {
@@ -254,7 +249,10 @@
 					title: '交易商品名添加'
 				})
 			}else {
+				let obj = JSON.parse(decodeURIComponent(options.data))
 				this.pid = options.pid
+				this.product = obj.Standard.name
+				this.getEditData()
 			}
 			
 		},
@@ -265,105 +263,101 @@
 			this.$refs.from.setRules(this.rules)
 		},
 		methods: {
-			
-			async menusConfirm(data) {
-				console.log(data)
-				uni.showToast({
-					title: `点击了：${data.name}项`,
-					icon: 'none'
+			removeCustomAttr(key) {
+				let i = this.attrObj.map(ele => ele.key).indexOf(key);
+				
+				this.attrObj.splice(i, 1)
+			},
+			addCustomAttr() {
+				this.$set(this.attrObj, this.attrObj.length, {
+					label: '',
+					value: '',
+					type: 'custom',
+					key: 'custom'+ new Date().getTime()
 				})
+			},
+			async getEditData() {
+				uni.showLoading()
+				const res = await this.$api.getCompanyProductDetail({params: {id: this.pid}})
+				if(res.code == 1) {
+					this.model.standard = res.list.standard
+					this.model.name = res.list.name
+					this.model.unit = res.list.unit
+					this.model.intro = res.list.intro
+					this.model.trade_type = res.list.trade_type
+					this.model.pic1 = res.list.pic1
+					this.bianliAttr(res.list.list_product_attrs)
+				}
+			},
+			bianliAttr(attrObj) {
+				const attrBase = this.attrObj.map(ele => ele.key)
+				attrObj.forEach(ele => {
+					let i = attrBase.indexOf(ele.code);
+					if(i != -1) {
+						this.attrObj[i].value = ele.value
+						this.attrObj[i].label = ele.Attr.name
+					} else {
+						this.$set(this.attrObj, this.attrObj.length, {
+							label: ele.Attr.name,
+							value: ele.value,
+							key: ele.code,
+							type: 'custom'
+						})
+					}
+				})
+			},
+			async menusConfirm(data) {
 				this.product = data.name
-				this.model.product_id = data.pid
+				this.model.standard = data.id
+				if(!this.model.name) this.model.name = data.name
+				this.$refs.from.validateField('standard')
+				this.$refs.from.validateField('name')
 				this.show = false;
-			},
-			typeSelect(e) {
-				console.log(e)
-				this.model.type = e.value
-				this.type = e.name
-			},
-			showActions() {
-				this.showType = true; 
-				uni.hideKeyboard()
 			},
 			submit() {
 				
 				this.$refs.from.validate().then(async res => {
-					
+					uni.showLoading()
 					// uni.$u.toast('校验通过')
-					const r = await this.$api.editProd({...this.model.prod, id: this.pid})
-					console.log(r)
+					let attrBaseObj = {}
+					let attrCustomObj = {
+						attr_custom_key: [],
+						attr_custom_val: [],
+					}
+					this.attrObj.forEach(ele => {
+						if(ele.type == 'base') {
+							attrBaseObj[ele.key] = ele.value
+						}else {
+							attrCustomObj.attr_custom_key.push(ele.label)
+							attrCustomObj.attr_custom_val.push(ele.value)
+						}
+					})
+					let params = {
+						...this.model,
+						...attrBaseObj,
+						...attrCustomObj
+					}
+					if(this.pid) params.id = this.pid
+					const r = await this.$api[this.pid? 'changeProduct' : 'createProduct'](params)
 					if(r.code == 1) {
-						this.$utils.prePage() && this.$utils.prePage().refreshList();
-						uni.showToast({
-							title: r.msg,
-							icon: 'none'
+						const arr = uni.$u.pages()
+						arr[arr.length - 2].$vm?.refreshList();
+						uni.navigateBack({
+							success() {
+								uni.showToast({
+									title: r.msg,
+									icon: 'none'
+								})
+							}
 						})
-						
-						setTimeout(() => {
-							uni.navigateBack()
-						}, 800)
 					}
 				}).catch(errors => {
 					uni.$u.toast('校验失败')
 				})
 			},
 			
-			// 删除图片
-			deletePic(event) {
-				this[`fileList${event.name}`].splice(event.index, 1)
-			},
-			// 新增图片
-			async afterRead(event) {
-				// 当设置 mutiple 为 true 时, file 为数组格式，否则为对象格式
-				let lists = [].concat(event.file)
-				let fileListLen = this[`fileList${event.name}`].length
-				lists.map((item) => {
-					this[`fileList${event.name}`].push({
-						...item,
-						status: 'uploading',
-						message: '上传中'
-					})
-				})
-				for (let i = 0; i < lists.length; i++) {
-					const result = await this.uploadFilePromise(lists[i].url)
-					let item = this[`fileList${event.name}`][fileListLen]
-					this[`fileList${event.name}`].splice(fileListLen, 1, Object.assign(item, {
-						status: 'success',
-						message: '',
-						url: result
-					}))
-					fileListLen++
-				}
-			},
-			uploadFilePromise(url) {
-				return new Promise((resolve, reject) => {
-					let a = uni.uploadFile({
-						url: 'http://192.168.2.21:7001/upload', // 仅为示例，非真实的接口地址
-						filePath: url,
-						name: 'file',
-						formData: {
-							user: 'test'
-						},
-						success: (res) => {
-							setTimeout(() => {
-								resolve(res.data.data)
-							}, 1000)
-						}
-					});
-				})
-			},
 			
-			comboxBlur(e) {
-				const index = this.candidates.indexOf(e)
-				if(index != -1) {
-					this.model.product_id = this.list[index].value
-					this.product = e
-				}else {
-					this.model.product_id = '';
-					this.product = ''
-				}
-				this.$refs.from.validateField('product_id')
-			},
+			
 		}
 	}
 </script>

@@ -63,6 +63,12 @@
 	export default {
 		name: 'ProdSetCard',
 		props: {
+			origin: {
+				type: Object,
+				default: () => {
+					return {}
+				}
+			},
 			bgColor: {
 				type: String,
 				default: '#fff',
@@ -84,8 +90,8 @@
 				default: '',
 			},
 			status: {
-				type: Boolean,
-				default: false,
+				type: String,
+				default: '0',
 			},
 			boxShadow: {
 				type: String,
@@ -110,11 +116,10 @@
 		},
 		watch: {
 			status: {
-				deep: true,
 				immediate: true,
 				handler(flag) {
-					// console.log(flag)
-					this.switch_status = flag;
+					if(flag == '1') this.switch_status = true;
+					else this.switch_status = false;
 					this.loading = false;
 				}
 			}
@@ -128,7 +133,7 @@
 					success: (res) => {
 						if (res.confirm) {
 							this.loading = true;
-							this.$emit('changeStatus', {status: value, id: this.pid})
+							this.$emit('changeStatus', {state: value?1:0, id: this.pid})
 						} else if (res.cancel) {
 							console.log('用户点击取消');
 						}
@@ -155,7 +160,7 @@
 				this.$emit('add', {type, id: this.pid})
 			},
 			handleGotoDetail() {
-				this.$emit('detail', {pid: this.pid})
+				this.$emit('detail', {pid: this.pid, data: this.origin})
 			}
 		}
 	}
