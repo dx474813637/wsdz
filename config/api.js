@@ -52,6 +52,7 @@ export const getCompanyProductDetail = (data) => http.get('company_product_detai
  * 现货类型 trdtype 1合约2即期
  * 交货地 dplace 地区编码 
  */
+//获取 买盘列表 参数p
 export const getBuy = (data) => http.get('buy', data)
 //获取 买盘明细 参数id
 export const getBuyDetail = (data) => http.get('buy_detail', data)

@@ -48,7 +48,7 @@
 						<BrokerCard
 							:pid="item.id"
 							:name="item.name"
-							:remark="item.remark"
+							:sub="item.remark || item.spec"
 							:status="item.state"
 							:type="item.trade_type"
 							:date="item.date"
@@ -126,6 +126,7 @@
 		computed: {
 			...mapState({
 				typeConfig: state => state.theme.typeConfig,
+				login: state => state.user.login,
 			}),
 		},
 		components: {
@@ -150,13 +151,18 @@
 				this.indexList = [];
 				this.loadstatus = 'loadmore'
 			},
-			handleSearch() {
-				console.log(this.keyword)
+			async handleSearch() {
+				if(!this.keyword && !this.product_id) return
+				uni.showLoading()
+				this.initParamas() 
+				await this.getSearchData()
 			},
 			resetSearch() {
 				this.keyword = "";
-				this.product_id = ""
-				this.product = ''
+				this.product_id = "";
+				this.product = '';
+				uni.showLoading()
+				this.refreshList()
 			},
 			changeTabsStatus(key, value) {
 				this.tabs_list = this.tabs_list.map(ele => {
@@ -179,7 +185,27 @@
 				this.loadstatus = 'loading'
 				const res = await this.$api[this.pan == 's'? 'mySell': 'myBuy']({
 					params: {
-						p: this.curP
+						p: this.curP,
+					}
+				})
+				if(res.code == 1) {
+					this.indexList = [...this.indexList, ...res.list]
+					if(this.indexList.length >= res.total) {
+						this.loadstatus = 'nomore'
+					}else {
+						this.loadstatus = 'loadmore'
+					}
+				}
+			},
+			async getSearchData() {
+				if(this.loadstatus != 'loadmore') return
+				this.loadstatus = 'loading'
+				const res = await this.$api[this.pan == 's'? 'getSell' : 'getBuy']({
+					params: {
+						login: this.login,
+						p: this.curP,
+						terms: this.keyword,
+						standard: this.product_id
 					}
 				})
 				if(res.code == 1) {
@@ -194,7 +220,12 @@
 			async getMoreData() {
 				if(this.loadstatus != 'loadmore') return
 				this.curP ++
-				await this.getData()
+				if(this.keyword || this.product_id) {
+					await this.getSearchData()
+				}else {
+					await this.getData()
+				}
+				
 			},
 			async handleChangeStatus({state, id}) {
 				const res = await this.$api[this.pan == 's'? 'ableSell' : 'ableBuy']({params: {id, state}})

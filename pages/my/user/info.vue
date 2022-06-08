@@ -363,16 +363,19 @@
 					console.log(n)
 					if(n.type == 'B') {
 						this.userType = '企业用户'
-						this.model.cpyInfo = n
+						this.model.cpyInfo = uni.$u.deepClone(n)
 					}
 					else if(n.type == 'C') {
 						this.userType = '个人用户'
-						this.model.userInfo = n
+						this.model.userInfo = uni.$u.deepClone(n)
 					}
 				}
 			}
 		},
 		methods: {
+			...mapMutations({
+				setMyCpy: 'user/setMyCpy'
+			}),
 			...mapActions({
 				myCompany: 'user/myCompany',
 				getAddressArea: 'user/getAddressArea'
@@ -397,12 +400,14 @@
 				
 				this.$refs.userform.validate().then(async res => {
 					let type = this.userType
+					const data = this.model[this.userType == '个人用户'? 'userInfo' : 'cpyInfo']
 					const list = await this.$api.editCompany({
 						params: {
-							...this.model[this.userType == '个人用户'? 'userInfo' : 'cpyInfo'],
+							...data,
 						}
 					})
 					if(list.code == 1) {
+						this.setMyCpy(data)
 						uni.showToast({
 							title: list.msg
 						})

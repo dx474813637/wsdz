@@ -67,6 +67,9 @@ export default {
 		}
 	},
 	methods: {
+		...mapMutations({
+			setLogin: 'user/setLogin',
+		}),
 		...mapActions({
 			wode: 'user/wode'
 		}),
@@ -100,21 +103,38 @@ export default {
 			// uni.hideLoading()
 			if(res.code == 1) {
 				// uni.setStorageSync('login', res.data.back.login)
+				this.setLogin(1)
 				this.wode()
-				uni.reLaunch({
-					url: '/pages/my/user/index',
-					success() {
-						uni.showToast({
-							icon: 'none',
-							title: res.msg,
-						})
-					}
-				})
+				this.naviBack()
 				
 			}else {
 				this.value = '' 
 			}
 			
+		},
+		naviBack() {
+			if(uni.getStorageSync('prePage')) { 
+				uni.redirectTo({
+					url: uni.getStorageSync('prePage'),
+					success() {
+						uni.showToast({
+							title: '登录成功',
+							icon: 'none'
+						})
+					}
+				})
+				uni.removeStorageSync('prePage')
+			}else {
+				uni.reLaunch({
+					url: '/pages/my/user/index',
+					success() {
+						uni.showToast({
+							title: '登录成功',
+							icon: 'none'
+						})
+					}
+				})
+			}
 		},
 	}
 };

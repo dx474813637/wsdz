@@ -52,32 +52,32 @@
 						type: 'cell',
 						url: '/pages/my/address/address'
 					},
-					{
-						title: '订阅管理',
-						type: 'label'
-					},
-					{
-						title: '订阅设置',
-						icon: 'bookmark',
-						type: 'cell',
-						url: '/pages/my/user/subscribe_set'
-					},
-					{
-						title: '订阅列表',
-						icon: 'bell',
-						type: 'cell',
-						url: '/pages/my/user/subscribe_list'
-					},
+					// {
+					// 	title: '订阅管理',
+					// 	type: 'label'
+					// },
+					// {
+					// 	title: '订阅设置',
+					// 	icon: 'bookmark',
+					// 	type: 'cell',
+					// 	url: '/pages/my/user/subscribe_set'
+					// },
+					// {
+					// 	title: '订阅列表',
+					// 	icon: 'bell',
+					// 	type: 'cell',
+					// 	url: '/pages/my/user/subscribe_list'
+					// },
 					{
 						title: '账号管理',
 						type: 'label'
 					},
-					{
-						title: '登录历史记录',
-						icon: 'clock',
-						type: 'cell',
-						url: '/pages/my/account/log'
-					},
+					// {
+					// 	title: '登录历史记录',
+					// 	icon: 'clock',
+					// 	type: 'cell',
+					// 	url: '/pages/my/account/log'
+					// },
 					{
 						title: '修改密码',
 						icon: 'lock',
@@ -90,29 +90,33 @@
 						type: 'cell',
 						url: '/pages/my/account/login_psw_reset'
 					},
-					{
-						title: '绑定账号',
-						icon: 'man-add',
-						type: 'cell',
-						url: '/pages/my/account/bind_account'
-					},
-					{
-						title: '绑定手机',
-						icon: 'phone',
-						type: 'cell',
-						url: '/pages/my/account/bind_phone'
-					},
+					// {
+					// 	title: '绑定账号',
+					// 	icon: 'man-add',
+					// 	type: 'cell',
+					// 	url: '/pages/my/account/bind_account'
+					// },
+					// {
+					// 	title: '绑定手机',
+					// 	icon: 'phone',
+					// 	type: 'cell',
+					// 	url: '/pages/my/account/bind_phone'
+					// },
 				]
 			};
 		},
 		methods: {
 			...mapMutations({
-				setLogin: 'user/setLogin'
+				setLogin: 'user/setLogin',
+				setMyCpy: 'user/setMyCpy',
+				setMyProduct: 'user/setMyProduct',
 			}),
 			async handleLogout() {
 				const res = await this.$api.logout();
 				if(res.code == 1) {
 					this.setLogin(0)
+					this.setMyCpy({})
+					this.setMyProduct([])
 					uni.reLaunch({
 						url: '/pages/index/login/login',
 						success() {

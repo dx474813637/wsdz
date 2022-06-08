@@ -14,7 +14,7 @@
 					<text class="name u-line-1 u-p-l-10">{{name}}</text>
 					<text class="pp text-error">{{price | price2str(dprice)}} <template v-if="price>0">元/{{unit}}</template></text>
 				</view>
-				<view class="item item-sub u-line-1">{{remark}}</view>
+				<view class="item item-sub u-line-1">{{sub}}</view>
 			</view>
 			<view class="item">
 				<u-switch 
@@ -66,9 +66,9 @@
 				type: String,
 				default: '名称',
 			},
-			remark: {
+			sub: {
 				type: String,
-				default: 'remark',
+				default: 'sub',
 			},
 			pid: {
 				type: String,

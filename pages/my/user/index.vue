@@ -291,6 +291,8 @@
 	}
 	.wrapper {
 		padding-bottom: 50px;
+		min-height: 100vh;
+		box-sizing: border-box;
 		background-image: linear-gradient(45deg, #eef1f6 75%, #d5fdf6 95%);
 	}
 	.menus-name {
