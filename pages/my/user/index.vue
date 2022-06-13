@@ -23,7 +23,7 @@
 				<template v-else>
 					<view class="item u-flex u-flex-items-center">
 						<view class="name u-line-1 u-font-38">{{login || myCpy.mobile}}</view>
-						<view class="sub text-white u-font-24 u-flex u-flex-items-center u-p-4 u-p-l-10 u-p-r-16 u-m-l-20">
+						<view v-if="myCpy.type" class="sub text-white u-font-24 u-flex u-flex-items-center u-p-4 u-p-l-10 u-p-r-16 u-m-l-20">
 							<text >{{myCpy.type | type2str}}</text>
 						</view>
 						<view 
@@ -34,7 +34,8 @@
 					</view>
 					<view class="item">
 						<view class="sub2 u-font-28 text-light u-flex u-flex-items-center">
-							<text>{{myCpy.name}}</text>
+							<text v-if="myCpy.name">{{myCpy.name}}</text>
+							<text v-else>点击完善用户信息，解锁更多功能</text>
 							<i class="custom-icon-edit custom-icon u-font-28 text-light u-m-l-10"></i>
 						</view>
 					</view>
@@ -77,7 +78,7 @@
 			</view>
 		</view>
 		
-		<view class="user-item-box u-p-24 bg-white u-m-b-26" v-if="auth == 1">
+		<view class="user-item-box u-p-24 bg-white u-m-b-26" v-if="sh != 1 && auth == 1">
 			<view @click="handleGoto('/pages/my/customer/customer')" class="u-flex u-flex-items-center u-p-t-6 u-p-b-30  u-border-bottom" style="border-color: #f8f8f8!important;">
 				<view class="radius-50 bg-primary text-white u-flex u-flex-items-center u-flex-center u-p-16">
 					<i class=" custom-icon-friend custom-icon u-font-40"></i>
@@ -124,7 +125,7 @@
 			</view>
 		</view>
 		
-		<!-- <view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26">
+		<view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26" v-if="sh != 1">
 			<view class="box-header u-flex u-flex-items-end u-border-bottom u-p-b-14 u-p-l-30 u-p-r-30" style="border-color: #f8f8f8!important;">
 				<view class="u-font-34">订单中心</view>
 				
@@ -150,7 +151,7 @@
 		</view>
 		
 		
-		<view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26">
+		<view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26" v-if="sh != 1">
 			<view class="box-header u-flex u-flex-items-end u-border-bottom u-p-b-14 u-p-l-30 u-p-r-30" style="border-color: #f8f8f8!important;">
 				<view class="u-font-34">资金中心</view>
 				
@@ -175,7 +176,7 @@
 			</view>
 		</view>
 		
-		<view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26">
+		<!-- <view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26">
 			<view class="box-header u-flex u-flex-items-end u-p-b-14 u-p-l-30 u-p-r-30">
 				<view class="u-font-34">其他设置</view>
 			</view>
@@ -251,17 +252,20 @@
 			...mapState({
 				myCpy: state => state.user.myCpy,
 				login: state => state.user.login,
-				auth: state => state.user.auth
+				auth: state => state.user.auth,
+				sh: state => state.user.sh
 			}),
 		},
 		async onLoad() {
-			if(!this.myCpy.mobile) {
+			if(!this.myCpy.id) {
 				this.loading = true
 				uni.showLoading({
 					title: '获取最新用户信息中'
 				})
 				await this.myCompany()
 				this.loading = false
+			}else {
+				this.myCompany()
 			}
 		},
 		methods: {

@@ -67,6 +67,8 @@
 							:express_unit="item.express_unit"
 							:trade_type="item.trade_type"
 							:pubDate="item.post_time"
+							:tims="item.Tims"
+							@tims="handleClickTims"
 							@detail="handleRouteTo"
 						></cardA>
 					</view>
@@ -168,7 +170,6 @@
 			}
 			else if(options.hasOwnProperty('data')) {
 				const data = JSON.parse(options.data)
-			console.log(data)
 				this.menusConfirm({
 					name: data.name,
 					standard: data.id,
@@ -180,7 +181,6 @@
 				uni.showLoading()
 				this.getData()
 			}
-			
 		},
 		methods: {
 			...mapMutations({
@@ -188,11 +188,6 @@
 			}),
 			async menusConfirm(data) {
 				console.log(data)
-				// uni.showToast({
-				// 	title: `点击了：${data.name}项`,
-				// 	icon: 'none'
-				// })
-				// this.keyword = ""
 				this.tabs_list.push({
 					name: data.name,
 					standard: data.id,
@@ -256,6 +251,19 @@
 					url: `/pages/index/pan/panDetail?id=${id}&pan=${this.pan}`
 				})
 			},
+			handleClickTims({tims, id}) {
+				this.handleGoto({
+					url: '/pages/index/webview/webview',
+					params: {
+						_a: 'msg',
+						f: 'detail',
+						id: `${tims.id}_${tims.ctime}`,
+						ttype: this.pan == 's'? 'sell': 'buy',
+						tid: id,
+						tims: '1'
+					}
+				})
+			}
 		}
 	}
 </script>

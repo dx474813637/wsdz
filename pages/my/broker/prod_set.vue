@@ -206,7 +206,9 @@
 				}
 			},
 			handleAdd({type, id}) {
-				
+				uni.navigateTo({
+					url: `/pages/my/broker/edit?pan=${type}&product_id=${id}`
+				})
 			},
 			async handleDelet({id}) {
 				uni.showLoading()

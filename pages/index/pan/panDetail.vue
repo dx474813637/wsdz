@@ -12,7 +12,7 @@
 			></navBar>
 		</u-sticky>
 		
-		
+		<u-notice-bar bgColor="#ff6a00" color="#fff" text="已过期" v-if="list.hasOwnProperty('expressed') && list.expressed <= 0"></u-notice-bar>
 		<view class="pan-header u-p-10" :style="{
 			backgroundColor: themeConfig.pan.headerBg,
 		}">
@@ -317,7 +317,7 @@
 					backgroundColor: themeConfig.tabBg,
 				}"
 			>
-				<view class="item-btn u-flex-1  u-flex u-flex-items-center u-flex-center">
+				<view @click="handleTimesBtn" class="item-btn u-flex-1  u-flex u-flex-items-center u-flex-center">
 					<i class="custom-icon-tims custom-icon"></i>
 					<text>在线联系</text>
 				</view>
@@ -332,8 +332,16 @@
 				</view>
 				<u-line direction="col" :color="themeConfig.pageTextSub" length="30%"></u-line>
 				<view class="item-btn u-flex-1  u-flex u-flex-items-center u-flex-center">
-					<i class="custom-icon-forward custom-icon"></i>
-					<text class="u-p-l-10">转发</text>
+					<u-button open-type="share" :customStyle="{
+						color: themeConfig.tabText,
+						backgroundColor: 'transparent',
+						border: 'none',
+						fontSize: '16px'
+					}">
+						<i class="custom-icon-forward custom-icon"></i>
+						<text class="u-p-l-10">转发</text>
+					</u-button>
+					
 				</view>
 			</view>
 			
@@ -394,6 +402,7 @@
 		computed: {
 			...mapState({
 				typeActive: state => state.theme.typeActive,
+				sh: state => state.user.sh,
 			}),
 			...mapGetters({
 				themeConfig: 'theme/themeConfig',
@@ -401,6 +410,9 @@
 			})
 		},
 		methods: {
+			...mapMutations({
+				handleGoto: 'user/handleGoto'
+			}),
 			handleBackEvent() {
 				uni.navigateBack()
 			},
@@ -427,11 +439,11 @@
 				// this.loadstatus = 'loading'
 				const res = await this.$api[this.pan == 's'?'getSell': 'getBuy']({params: {
 						login: this.list.login, 
-						standard: this.list.standard,
+						// standard: this.list.standard,
 						p: 1,
 					}})
 				if(res.code == 1) {
-					this.indexList = [...this.indexList, ...res.list]
+					this.indexList = res.list.filter(ele => ele.id != this.id)
 					// if(this.curP == res.page_total) {
 					// 	this.loadstatus = 'nomore'
 					// }else {
@@ -445,6 +457,20 @@
 					url: `/pages/index/pan/panDetail?id=${id}&pan=${this.pan}`
 				})
 			},
+			handleTimesBtn() {
+				// if(this.sh == 1) return
+				this.handleGoto({
+					url: '/pages/index/webview/webview',
+					params: {
+						_a: 'msg',
+						f: 'detail',
+						id: `${this.list.Tims.id}_${this.list.Tims.ctime}`,
+						ttype: this.pan == 's'? 'sell': 'buy',
+						tid: this.id,
+						tims: '1'
+					}
+				})
+			}
 		}
 	}
 </script>
@@ -473,6 +499,9 @@
 		height: 100%;
 		.item-btn {
 			height: 100%;
+			&.share-btn {
+				
+			}
 		}
 	}
 	.pan-main {

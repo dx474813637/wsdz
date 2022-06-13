@@ -1,359 +1,361 @@
 <template>
-	<view class="u-p-20">
-		
-		<u--form
-			labelPosition="left"
-			:model="model"
-			ref="from"
-			labelWidth="80"
-		>
-			
-				<u-form-item
-					label="商品"
-					prop="standard"
-					ref="standard"
-					required
+	<view class="u-p-20 u-p-l-40 u-p-r-40">
+		<view class="">
+			<u--form
+				labelPosition="left"
+				:model="model"
+				ref="from"
+				labelWidth="80"
 				>
-					<view @click="show = true">
-						<u-input
-							:value="product"
-							placeholder="点击选择标准商品" 
-							readonly
-						>
-							<template slot="suffix">
-								<view class="">
-									<i class="custom-icon-unfold custom-icon"></i>
-								</view>	
-							</template>
-						</u-input>
-					</view>
+				
+					<u-form-item
+						label="商品"
+						prop="standard"
+						ref="standard"
+						required
+					>
+						<view @click="show = true">
+							<u-input
+								:value="product"
+								placeholder="点击选择标准商品" 
+								readonly
+							>
+								<template slot="suffix">
+									<view class="">
+										<i class="custom-icon-unfold custom-icon"></i>
+									</view>	
+								</template>
+							</u-input>
+						</view>
+						
+					</u-form-item>
+					<u-form-item
+						label=" "
+						v-if="prodInfo.length > 0 || prodInfoLoading"
+					>
+						<template v-if="prodInfoLoading">
+							<u-loading-icon></u-loading-icon>
+						</template>
+						
+						<text v-else class="text-base">{{prodInfo}}</text>
+					</u-form-item>
+					<menusPopup 
+						:show="show" 
+						theme="white"
+						:isMyProduct="true"
+						@close="show = false"
+						@confirm="menusConfirm"
+					></menusPopup>
+					<u-form-item
+						label="标题"
+						prop="name"
+						ref="name"
+						required
+					>
+						<u--input
+							v-model="model.name"
+							clearable
+						></u--input>
+					</u-form-item>
+					<u-form-item
+						label="订单类型"
+						prop="order_type"
+						ref="order_type"
+					>
+						 <u-radio-group
+						    v-model="model.order_type"
+						    placement="row"
+						  >
+						    <u-radio
+						      :customStyle="{marginRight: '8px'}"
+						      v-for="(item, index) in radiolist_order_type"
+						      :key="item.value"
+						      :label="item.name"
+						      :name="item.value"
+						    >
+						    </u-radio>
+						  </u-radio-group>
+					</u-form-item>
 					
-				</u-form-item>
-				<u-form-item
-					label=" "
-					v-if="prodInfo.length > 0 || prodInfoLoading"
-				>
-					<template v-if="prodInfoLoading">
-						<u-loading-icon></u-loading-icon>
+					<u-form-item
+						label="现货类型"
+						prop="trade_type"
+						ref="trade_type"
+					>
+						 <u-radio-group
+						    v-model="model.trade_type"
+						    placement="row"
+						  >
+						    <u-radio
+						      :customStyle="{marginRight: '8px'}"
+						      v-for="(item, index) in radiolist_trade_type"
+						      :key="item.value"
+						      :label="item.name"
+						      :name="item.value"
+						    >
+						    </u-radio>
+						  </u-radio-group>
+					</u-form-item>
+					<u-form-item
+						label="交收期"
+						prop="settle_month"
+						ref="settle_month"
+						required
+						v-if="model.trade_type == 1"
+					>
+						<view class="u-flex u-flex-items-center">
+							<view @click="showSettleMonth = true" class="u-flex-2">
+								<u--input
+									:value="model.settle_month_label"
+									suffixIcon="arrow-down"
+									placeholder="月份" 
+									readonly
+								></u--input>
+							</view>
+							
+							<view @click="showSettleDate = true" class="u-flex-1 u-p-l-20">
+								<u--input
+									:value="model.settle_date_label"
+									suffixIcon="arrow-down"
+									placeholder="旬" 
+									readonly
+								></u--input>
+							</view>
+						</view>
+					</u-form-item>
+					<u-picker
+						closeOnClickOverlay
+						:show="showSettleMonth" 
+						:columns="settleMonth"
+						@confirm="confirmSettleMonth"
+						keyName="label"
+						@close="showSettleMonth = false"
+						@cancel="showSettleMonth = false"
+					></u-picker>
+					<u-picker
+						closeOnClickOverlay
+						:show="showSettleDate" 
+						:columns="settleDate"
+						@confirm="confirmSettleDate"
+						keyName="label"
+						@close="showSettleDate = false"
+						@cancel="showSettleDate = false"
+					></u-picker>
+					
+					<u-form-item
+						:label="pan == 's'? '单价' : '意向单价'"
+						prop="price"
+						ref="price"
+						required
+					>
+						<u--input
+							v-model="model.price"
+							clearable
+							type="digit"
+						></u--input>
+					</u-form-item>
+					<u-form-item label=" ">
+						<view class="text-base">填0表示点价，请说明点价规则</view>
+					</u-form-item>
+					<u-form-item
+						v-if="model.price.length != 0 && model.price == 0"
+						label="点价规则"
+						prop="dprice"
+						ref="dprice"
+					>
+						<u--input
+							v-model="model.dprice"
+							clearable
+						></u--input>
+					</u-form-item>
+					<u-form-item
+						label="数量"
+						prop="amount"
+						ref="amount"
+						required
+					>
+						<u--input
+							v-model="model.amount"
+							clearable
+							type="digit"
+						></u--input>
+					</u-form-item>
+					<u-form-item
+						v-if="pan == 'b'"
+						label="主规格"
+						prop="spec"
+						ref="spec"
+						required
+					>
+						<u--textarea
+							v-model="model.spec" 
+							placeholder="主规格" 
+							height="90"
+						></u--textarea>
+					</u-form-item>
+					<u-form-item
+						label="有效时间"
+						prop="express_time"
+						ref="express_time"
+						required
+					>
+						<view class="u-flex u-flex-items-center">
+							<view class="u-flex-2">
+								<u--input
+									v-model="model.express_time"
+									clearable
+									type="number"
+								></u--input>
+							</view>
+							
+							<view @click="showExpressUnit = true" class="u-flex-1 u-p-l-20">
+								<u--input
+									:value="model.express_unit_label"
+									suffixIcon="arrow-down"
+									readonly
+									clearable
+								></u--input>
+							</view>
+						</view>
+					</u-form-item>
+					<u-picker 
+						closeOnClickOverlay
+						:show="showExpressUnit" 
+						:columns="expressUnit"
+						keyName="label"
+						@confirm="confirmExpressUnit"
+						@close="showExpressUnit = false"
+						@cancel="showExpressUnit = false"
+					></u-picker>
+					<u-form-item
+						label="交货地"
+						prop="delivery_place"
+						ref="delivery_place"
+						required
+					>
+						<uni-data-picker 
+							placeholder="请选择交货地" 
+							popup-title="请选择所在地区" 
+							:localdata="addressArea" 
+							v-model="model.delivery_place"
+							@change="onchange" 
+							@nodeclick="onnodeclick" 
+							@popupopened="onpopupopened" 
+							@popupclosed="onpopupclosed"
+						></uni-data-picker>
+					</u-form-item>
+					<u-form-item
+						label="交收方式"
+						prop="settle_mode"
+						ref="settle_mode"
+						v-if="pan == 's' && auth == 1"
+					>
+						 <u-radio-group
+						    v-model="model.settle_mode"
+						    placement="row"
+						  >
+						    <u-radio
+						      :customStyle="{marginRight: '8px'}"
+						      v-for="(item, index) in radiolist_settle_mode"
+						      :key="item.value"
+						      :label="item.name"
+						      :name="item.value"
+						    >
+						    </u-radio>
+						  </u-radio-group>
+					</u-form-item>
+					<!-- <u-form-item
+						label="图片"
+						prop="pics"
+						ref="pics"
+						v-if="pan == 's'"
+					>
+						<u-upload
+							:fileList="fileList1"
+							@afterRead="afterRead"
+							@delete="deletePic"
+							name="1"
+							multiple
+							:maxCount="5"
+						></u-upload>
+					</u-form-item> -->
+					<template v-if="auth == 1">
+						<u-form-item
+							label="报盘企业"
+							prop="customer_value"
+							ref="customer_value"
+							
+						>
+							
+						</u-form-item>
+						<u-form-item
+							label="企业角色"
+							prop="mdu"
+							ref="mdu"
+						>
+							 <u-radio-group
+							    v-model="model.mdu"
+							    placement="row"
+							  >
+							    <u-radio
+							      :customStyle="{marginRight: '8px'}"
+							      v-for="(item, index) in radiolist_mdu"
+							      :key="item.value"
+							      :label="item.name"
+							      :name="item.value"
+							    >
+							    </u-radio>
+							  </u-radio-group>
+						</u-form-item>
+						<u-form-item
+							label="报盘类型"
+							prop="post_type"
+							ref="post_type"
+						>
+							 <u-radio-group
+							    v-model="model.post_type"
+							    placement="row"
+							  >
+							    <u-radio
+							      :customStyle="{marginRight: '8px'}"
+							      v-for="(item, index) in radiolist_post_type"
+							      :key="item.value"
+							      :label="item.name"
+							      :name="item.value"
+							    >
+							    </u-radio>
+							  </u-radio-group>
+						</u-form-item>
 					</template>
 					
-					<text v-else class="text-base">{{prodInfo}}</text>
-				</u-form-item>
-				<menusPopup 
-					:show="show" 
-					theme="white"
-					:isMyProduct="true"
-					@close="show = false"
-					@confirm="menusConfirm"
-				></menusPopup>
-				<u-form-item
-					label="标题"
-					prop="name"
-					ref="name"
-					required
-				>
-					<u--input
-						v-model="model.name"
-						clearable
-					></u--input>
-				</u-form-item>
-				<u-form-item
-					label="订单类型"
-					prop="order_type"
-					ref="order_type"
-				>
-					 <u-radio-group
-					    v-model="model.order_type"
-					    placement="row"
-					  >
-					    <u-radio
-					      :customStyle="{marginRight: '8px'}"
-					      v-for="(item, index) in radiolist_order_type"
-					      :key="item.value"
-					      :label="item.name"
-					      :name="item.value"
-					    >
-					    </u-radio>
-					  </u-radio-group>
-				</u-form-item>
-				
-				<u-form-item
-					label="现货类型"
-					prop="trade_type"
-					ref="trade_type"
-				>
-					 <u-radio-group
-					    v-model="model.trade_type"
-					    placement="row"
-					  >
-					    <u-radio
-					      :customStyle="{marginRight: '8px'}"
-					      v-for="(item, index) in radiolist_trade_type"
-					      :key="item.value"
-					      :label="item.name"
-					      :name="item.value"
-					    >
-					    </u-radio>
-					  </u-radio-group>
-				</u-form-item>
-				<u-form-item
-					label="交收期"
-					prop="settle_month"
-					ref="settle_month"
-					required
-					v-if="model.trade_type == 1"
-				>
-					<view class="u-flex u-flex-items-center">
-						<view @click="showSettleMonth = true" class="u-flex-2">
-							<u--input
-								:value="model.settle_month_label"
-								suffixIcon="arrow-down"
-								placeholder="月份" 
-								readonly
-							></u--input>
-						</view>
-						
-						<view @click="showSettleDate = true" class="u-flex-1 u-p-l-20">
-							<u--input
-								:value="model.settle_date_label"
-								suffixIcon="arrow-down"
-								placeholder="旬" 
-								readonly
-							></u--input>
-						</view>
-					</view>
-				</u-form-item>
-				<u-picker
-					closeOnClickOverlay
-					:show="showSettleMonth" 
-					:columns="settleMonth"
-					@confirm="confirmSettleMonth"
-					keyName="label"
-					@close="showSettleMonth = false"
-					@cancel="showSettleMonth = false"
-				></u-picker>
-				<u-picker
-					closeOnClickOverlay
-					:show="showSettleDate" 
-					:columns="settleDate"
-					@confirm="confirmSettleDate"
-					keyName="label"
-					@close="showSettleDate = false"
-					@cancel="showSettleDate = false"
-				></u-picker>
-				
-				<u-form-item
-					:label="pan == 's'? '单价' : '意向单价'"
-					prop="price"
-					ref="price"
-					required
-				>
-					<u--input
-						v-model="model.price"
-						clearable
-						type="digit"
-					></u--input>
-				</u-form-item>
-				<u-form-item label=" ">
-					<view class="text-base">填0表示点价，请说明点价规则</view>
-				</u-form-item>
-				<u-form-item
-					v-if="model.price.length != 0 && model.price == 0"
-					label="点价规则"
-					prop="dprice"
-					ref="dprice"
-				>
-					<u--input
-						v-model="model.dprice"
-						clearable
-					></u--input>
-				</u-form-item>
-				<u-form-item
-					label="数量"
-					prop="amount"
-					ref="amount"
-					required
-				>
-					<u--input
-						v-model="model.amount"
-						clearable
-						type="digit"
-					></u--input>
-				</u-form-item>
-				<u-form-item
-					v-if="pan == 'b'"
-					label="主规格"
-					prop="spec"
-					ref="spec"
-					required
-				>
-					<u--textarea
-						v-model="model.spec" 
-						placeholder="主规格" 
-						height="90"
-					></u--textarea>
-				</u-form-item>
-				<u-form-item
-					label="有效时间"
-					prop="express_time"
-					ref="express_time"
-					required
-				>
-					<view class="u-flex u-flex-items-center">
-						<view class="u-flex-2">
-							<u--input
-								v-model="model.express_time"
-								clearable
-								type="number"
-							></u--input>
-						</view>
-						
-						<view @click="showExpressUnit = true" class="u-flex-1 u-p-l-20">
-							<u--input
-								:value="model.express_unit_label"
-								suffixIcon="arrow-down"
-								readonly
-								clearable
-							></u--input>
-						</view>
-					</view>
-				</u-form-item>
-				<u-picker 
-					closeOnClickOverlay
-					:show="showExpressUnit" 
-					:columns="expressUnit"
-					keyName="label"
-					@confirm="confirmExpressUnit"
-					@close="showExpressUnit = false"
-					@cancel="showExpressUnit = false"
-				></u-picker>
-				<u-form-item
-					label="交货地"
-					prop="delivery_place"
-					ref="delivery_place"
-					required
-				>
-					<uni-data-picker 
-						placeholder="请选择交货地" 
-						popup-title="请选择所在地区" 
-						:localdata="addressArea" 
-						v-model="model.delivery_place"
-						@change="onchange" 
-						@nodeclick="onnodeclick" 
-						@popupopened="onpopupopened" 
-						@popupclosed="onpopupclosed"
-					></uni-data-picker>
-				</u-form-item>
-				<u-form-item
-					label="交收方式"
-					prop="settle_mode"
-					ref="settle_mode"
-					v-if="pan == 's' && auth == 1"
-				>
-					 <u-radio-group
-					    v-model="model.settle_mode"
-					    placement="row"
-					  >
-					    <u-radio
-					      :customStyle="{marginRight: '8px'}"
-					      v-for="(item, index) in radiolist_settle_mode"
-					      :key="item.value"
-					      :label="item.name"
-					      :name="item.value"
-					    >
-					    </u-radio>
-					  </u-radio-group>
-				</u-form-item>
-				<!-- <u-form-item
-					label="图片"
-					prop="pics"
-					ref="pics"
-					v-if="pan == 's'"
-				>
-					<u-upload
-						:fileList="fileList1"
-						@afterRead="afterRead"
-						@delete="deletePic"
-						name="1"
-						multiple
-						:maxCount="5"
-					></u-upload>
-				</u-form-item> -->
-				<template v-if="auth == 1">
 					<u-form-item
-						label="报盘企业"
-						prop="customer_value"
-						ref="customer_value"
-						
+						label="详细需求"
+						prop="intro"
+						ref="intro"
+						v-if="pan == 'b'"
 					>
-						
+						<u--textarea
+							v-model="model.intro" 
+							placeholder="详细需求" 
+							height="90"
+						></u--textarea>
 					</u-form-item>
+					
 					<u-form-item
-						label="企业角色"
-						prop="mdu"
-						ref="mdu"
+						label="备注"
+						prop="remark"
+						ref="remark"
+						v-if="pan == 's'"
 					>
-						 <u-radio-group
-						    v-model="model.mdu"
-						    placement="row"
-						  >
-						    <u-radio
-						      :customStyle="{marginRight: '8px'}"
-						      v-for="(item, index) in radiolist_mdu"
-						      :key="item.value"
-						      :label="item.name"
-						      :name="item.value"
-						    >
-						    </u-radio>
-						  </u-radio-group>
+						<u--textarea
+							v-model="model.remark" 
+							placeholder="备注" 
+							height="90"
+						></u--textarea>
 					</u-form-item>
-					<u-form-item
-						label="报盘类型"
-						prop="post_type"
-						ref="post_type"
-					>
-						 <u-radio-group
-						    v-model="model.post_type"
-						    placement="row"
-						  >
-						    <u-radio
-						      :customStyle="{marginRight: '8px'}"
-						      v-for="(item, index) in radiolist_post_type"
-						      :key="item.value"
-						      :label="item.name"
-						      :name="item.value"
-						    >
-						    </u-radio>
-						  </u-radio-group>
-					</u-form-item>
-				</template>
-				
-				<u-form-item
-					label="详细需求"
-					prop="intro"
-					ref="intro"
-					v-if="pan == 'b'"
-				>
-					<u--textarea
-						v-model="model.intro" 
-						placeholder="详细需求" 
-						height="90"
-					></u--textarea>
-				</u-form-item>
-				
-				<u-form-item
-					label="备注"
-					prop="remark"
-					ref="remark"
-					v-if="pan == 's'"
-				>
-					<u--textarea
-						v-model="model.remark" 
-						placeholder="备注" 
-						height="90"
-					></u--textarea>
-				</u-form-item>
-		</u--form>
+			</u--form>
+			
+		</view>
 		<view class="u-p-t-20 u-m-b-40">
 			<u-button type="primary" @click="submit">提交</u-button>
 		</view>
@@ -588,42 +590,52 @@
 			}
 		},
 		async onLoad(options) {
-			if(options.hasOwnProperty('pid')) {
+			if(options.hasOwnProperty('data')) {
 				await this.getAddressArea()
 			}else {
 				this.getAddressArea()
 			}
+			
 			
 			if(options.hasOwnProperty('pan')) {
 				this.pan = options.pan
 			}
 			if(options.hasOwnProperty('pid')) {
 				this.pid = options.pid
-				const data = JSON.parse(decodeURIComponent(options.data))
-				console.log(data)
-				this.model.delivery_place = data.delivery_place
-				this.model.product_id = data.product_id
-				this.model.name = data.name
-				this.model.order_type = data.order_type
-				this.model.trade_type = data.trade_type
-				this.model.price = data.price
-				this.model.dprice = data.dprice
-				this.model.amount = data.amount
-				this.model.express_time = data.express_time
-				this.model.express_unit = data.express_unit
-				this.model.express_unit_label = this.expressUnit[0].filter(ele => ele.value == data.express_unit)[0]?.label
-				this.model.settle_month = data.settle_month
-				this.model.settle_month_label = this.settleMonth[0].filter(ele => ele.value == data.settle_month)[0]?.label
-				this.model.settle_date = data.settle_date
-				this.model.settle_date_label = this.settleDate[0].filter(ele => ele.value == data.settle_date)[0]?.label
-				this.model.delivery_place = data.delivery_place
-				if(this.pan == 's') {
-					this.model.remark = data.remark
-					this.model.pics = data.list_pics
-				}else {
-					this.model.spec = data.spec
-					this.model.intro = data.intro
+				if(options.hasOwnProperty('data')) {
+					const data = JSON.parse(decodeURIComponent(options.data))
+					console.log(data)
+					this.model.delivery_place = data.delivery_place
+					this.model.product_id = data.product_id
+					this.model.name = data.name
+					this.model.order_type = data.order_type
+					this.model.trade_type = data.trade_type
+					this.model.price = data.price
+					this.model.dprice = data.dprice
+					this.model.amount = data.amount
+					this.model.express_time = data.express_time
+					this.model.express_unit = data.express_unit
+					this.model.express_unit_label = this.expressUnit[0].filter(ele => ele.value == data.express_unit)[0]?.label
+					this.model.settle_month = data.settle_month
+					this.model.settle_month_label = this.settleMonth[0].filter(ele => ele.value == data.settle_month)[0]?.label
+					this.model.settle_date = data.settle_date
+					this.model.settle_date_label = this.settleDate[0].filter(ele => ele.value == data.settle_date)[0]?.label
+					this.model.delivery_place = data.delivery_place
+					if(this.pan == 's') {
+						this.model.remark = data.remark
+						this.model.pics = data.list_pics
+					}else {
+						this.model.spec = data.spec
+						this.model.intro = data.intro
+					}
 				}
+				
+				this.prodInfoLoading = true
+				await this.getCompanyProductDetail()
+				this.prodInfoLoading = false
+			}
+			else if(options.hasOwnProperty('product_id')) {
+				this.model.product_id = options.product_id
 				this.prodInfoLoading = true
 				await this.getCompanyProductDetail()
 				this.prodInfoLoading = false
@@ -731,14 +743,8 @@
 					if(this.pid) params.id = this.pid
 					const r = await this.$api[func](params)
 					if(r.code == 1) {
-						const arr = uni.$u.pages()
-						arr[arr.length - 2].$vm?.refreshList();
-						uni.showToast({
-							title: r.msg,
-							icon: 'none'
-						})
-						
-						uni.navigateBack({
+						uni.redirectTo({
+							url: `/pages/my/broker/list?pan=${this.pan}`,
 							success() {
 								uni.showToast({
 									title: r.msg,

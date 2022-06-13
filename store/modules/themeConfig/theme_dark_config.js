@@ -60,6 +60,7 @@ export default {
 	marketCard: {
 		tBg: '#24253a',
 		boxBg: '#232439',
+		jiaoColor: '#1e1f31',
 		boxBgTop: '#1e1f31',
 		boxBgBottom: '#24253a',
 		boxShadow: '0 0 10rpx rgba(0,0,0,.1)',
@@ -97,5 +98,12 @@ export default {
 		tagClose: '#5a5988',
 		activeColor: '#4e5784',
 		inactiveColor: '#5c679c',
+	},
+	sharePan: {
+		cpyTitle: '#bfc5e4',
+		cpySub: '#71788e',
+		cpyBg: '#1e1f31',
+		tagColor: '#7e8cea',
+		tagBorderColor: '#7e8cea',
 	}
 }

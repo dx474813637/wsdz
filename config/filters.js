@@ -46,6 +46,11 @@ const postType2fbr = v => {
 	if(v == '1') return '撮合员'
 	else return '交易商'
 }
+const auth2str = v => {
+	if(v == 1) return '撮合员'
+	else if(v == 0)  return '交易商'
+	else return ''
+}
 
 const price2str = (price, dprice) => {
 	if(price != 0) return price;
@@ -62,5 +67,6 @@ export default {
 	settleMode,
 	date2szx,
 	postType2fbr,
+	auth2str,
 	price2str
 }

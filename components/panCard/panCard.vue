@@ -52,10 +52,10 @@
 							@click="handleGoto({url: '/pages/index/pan/panDetail', params: {pan: pan, id: item.id}})"
 						>
 							<view class="u-flex u-flex-items-baseline u-m-b-10">
-								<text class="u-font-30" :style="{color: themeConfig.followCard.baseText}">{{item.name}}</text>
-								<text class="u-font-26 u-p-l-10" :style="{color: themeConfig.followCard.subText}">{{item.trade_type | tradeType2}}</text>
+								<text class="u-font-30 u-line-1" :style="{color: themeConfig.followCard.baseText}">{{item.name}}</text>
+								<text class="u-font-26 u-p-l-10" :style="{color: themeConfig.followCard.subText, whiteSpace: 'nowrap'}">{{item.trade_type | tradeType2}}</text>
 							</view>
-							<view class="u-font-32 u-m-b-10" :style="{color: pan == 's'? themeConfig.warn: themeConfig.error}">
+							<view class="u-font-32 u-m-b-10 u-line-1" :style="{color: pan == 's'? themeConfig.warn: themeConfig.error}">
 								<text>{{item.price | price2str(item.dprice)}}</text>
 								<text class="u-font-28 u-p-l-10" v-if="item.price>0">元/{{item.unit}}</text>
 							</view>

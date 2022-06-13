@@ -6,6 +6,7 @@ let state = {
 		menusList: [],
 		login: 0,
 		auth: 0,
+		sh: 1, //接口接收隐藏一些结构用
 		ppiCate: [],
 		myCpy: {},
 		myProduct: []
@@ -31,6 +32,9 @@ let state = {
 		setAuth(state, data) {
 			state.auth = data;
 		},
+		setSh(state, data) {
+			state.sh = data;
+		},
 		setMyCpy(state, data) {
 			state.myCpy = data;
 		},
@@ -55,6 +59,7 @@ let state = {
 			const res = await this._vm.$api.wode()
 			commit('setLogin', res.list.login)
 			commit('setAuth', res.list.auth)
+			commit('setSh', res.list.sh)
 		},
 		async getAddressArea({commit, state}) {
 			//获取地区toCode 数据 存入vuex

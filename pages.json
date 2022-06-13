@@ -78,7 +78,25 @@
 			}
 
 		}
-	],
+	    ,{
+            "path" : "pages/index/pan/panShare",
+            "style" :                                                                                    
+            {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white"
+            }
+            
+        }
+        ,{
+            "path" : "pages/index/webview/webview",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
 	"subPackages": [{
 		"root": "pages/baojia",
 		"pages": [{

@@ -33,7 +33,7 @@
 			
 		</view>
 		
-		<view class="list">
+		<view class="list u-p-l-20 u-p-r-20">
 			<u-list
 				height="100%"
 				enableBackToTop
@@ -84,8 +84,13 @@
 		<tabBar :customStyle="{
 			'boxShadow': '0 0 10rpx rgba(0,0,0,.1)'
 		}">
-			<view @click="handleGoto({url: '/pages/my/broker/edit', params:{pan: pan}})" class=" u-flex u-flex-items-center u-flex-center u-p-20">
-				<u-button type="primary" shape="circle" icon="plus-circle">发布{{pan == 's'? '卖盘' :'买盘'}}</u-button>
+			<view class=" u-flex u-flex-items-center u-flex-around u-p-20">
+				<view class="item u-m-r-10 u-flex-1" @click="handleGoto({url: '/pages/my/broker/edit', params:{pan: pan}})">
+					<u-button type="primary" icon="plus-circle">发布{{pan == 's'? '卖盘' :'买盘'}}</u-button>
+				</view>
+				<view class="item u-m-l-10 u-flex-1" @click="setShareList">
+					<u-button type="primary" plain icon="order">生成{{pan == 's'? '卖盘' :'买盘'}}清单</u-button>
+				</view>
 			</view>
 		</tabBar>
 		<menusPopup 
@@ -98,7 +103,7 @@
 </template>
 
 <script>
-	import {mapState, mapGetters, mapMutations} from 'vuex'
+	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
 	import BrokerCard from '@/pages/my/components/BrokerCard/BrokerCard.vue'
 	export default {
 		data() {
@@ -127,6 +132,8 @@
 			...mapState({
 				typeConfig: state => state.theme.typeConfig,
 				login: state => state.user.login,
+				auth: state => state.user.auth,
+				myCpy: state => state.user.myCpy,
 			}),
 		},
 		components: {
@@ -136,6 +143,28 @@
 			...mapMutations({
 				handleGoto: 'user/handleGoto'
 			}),
+			...mapActions({
+				myCompany: 'user/myCompany'
+			}),
+			async setShareList() {
+				if(!this.myCpy.id) {
+					uni.showLoading()
+					await this.myCompany()
+					if(!this.myCpy.id) return
+				}
+				
+				this.handleGoto({
+					url: '/pages/index/pan/panShare',
+					params: {
+						pan: this.pan,
+						auth: this.auth,
+						contact: this.myCpy.contact,
+						name: this.myCpy.name,
+						mobile: this.myCpy.mobile,
+						id: this.myCpy.id,
+					}
+				})
+			},
 			async menusConfirm(data) {
 				this.product = data.name
 				this.product_id = data.id

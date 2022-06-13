@@ -1,5 +1,5 @@
 <template>
-	<view class="u-p-20">
+	<view class="u-p-20 u-p-l-40 u-p-r-40">
 		<u--form
 			labelPosition="left"
 			:model="addressData"

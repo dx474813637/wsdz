@@ -155,10 +155,16 @@
 				type: String,
 				default: ''
 			},
+			tims: {
+				type: Object,
+				default: () => ({})
+			},
+			
 		},
 		computed: {
 			...mapState({
-				typeActive: state => state.theme.typeActive
+				typeActive: state => state.theme.typeActive,
+				sh: state => state.user.sh
 			}),
 			...mapGetters({
 				themeConfig: 'theme/themeConfig',
@@ -175,7 +181,8 @@
 				
 			},
 			handleTimesBtn() {
-				console.log('tims')
+				// if(this.sh == 1) return
+				this.$emit('tims', {tims: this.tims, id: this.pid})
 			}
 		}
 	}

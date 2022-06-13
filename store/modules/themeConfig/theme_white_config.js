@@ -15,7 +15,7 @@ export default {
 	light_btn: '#007aff',
 	light_btn2: '#c3bbff',
 	tabTextActive: '#007aff', //'#007aff',
-	tabTextInactive: '#999',
+	tabTextInactive: '#333',
 	dataText: '#007aff',
 	redText: '#fa2d47',
 	greenText: '#01c301',
@@ -59,6 +59,7 @@ export default {
 	},
 	marketCard: {
 		boxBg: '#007aff',
+		jiaoColor: '#d0e1f7',
 		tBg: '#dde9ff',
 		boxBgTop: '#ecf4ff',
 		boxBgBottom: '#fff',
@@ -97,6 +98,13 @@ export default {
 		tagClose: '#ccc',
 		activeColor: '#007aff',
 		inactiveColor: '#666',
+	},
+	sharePan: {
+		cpyTitle: '#fff',
+		cpySub: '#a8c3ff',
+		cpyBg: '#007aff',
+		tagColor: '#abffff',
+		tagBorderColor: '#abffff',
 	}
 	
 }

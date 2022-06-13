@@ -37,9 +37,7 @@
 							v-if="index == 0"
 							class="u-m-b-20"
 						>
-							<view class="title-card u-m-t-20" :style="{
-								boxShadow: themeConfig.marketCard.boxShadow
-							}">
+							<view class="title-card u-m-t-20">
 								<view class="title-top"
 									:style="{
 										backgroundColor: themeConfig.marketCard.boxBgTop,
@@ -48,7 +46,7 @@
 									<view class="t u-font-36 u-text-center u-p-15"
 										:style="{
 											backgroundColor: themeConfig.marketCard.tBg,
-											color: themeConfig.marketCard.boxBgTop,
+											color: themeConfig.marketCard.jiaoColor,
 										}"
 									><text :style="{color: themeConfig.tabTextActive}">{{tabs_list[tabs_current].name}}商品市场</text></view>
 								</view>

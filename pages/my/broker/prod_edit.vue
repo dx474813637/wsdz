@@ -2,7 +2,7 @@
 	<view class="w" :class="{
 		active: tabs_current != 0
 	}">
-		<u-sticky bgColor="#f8f8f8">
+		<!-- <u-sticky bgColor="#f8f8f8">
 			<view class="tabs-w">
 				<u-tabs
 					:list="tabs_list"
@@ -13,10 +13,10 @@
 					@change="handleTabsChange"
 				></u-tabs>
 			</view>	
-		</u-sticky>
+		</u-sticky> -->
 		<view class="u-p-l-20 u-p-r-20 main-w">
 			
-			<view class="u-p-20 main" v-if="tabs_current == 0">
+			<view class="u-p-20 main" >
 				<u--form
 					labelPosition="left"
 					:model="model"
@@ -170,7 +170,7 @@
 					<u-button type="primary" @click="submit">提交</u-button>
 				</view>
 			</view>
-			<view class="main2 ">
+			<!-- <view class="main2 ">
 				<view class="list" v-if="tabs_current != 0">
 					<u-list
 						height="100%"
@@ -221,7 +221,7 @@
 				</view>
 					
 			</view>
-			
+			 -->
 		</view>
 	</view>
 </template>
@@ -367,85 +367,85 @@
 			...mapMutations({
 				handleGoto: 'user/handleGoto'
 			}),
-			async handleChangeStatus({state, id}) {
-				const res = await this.$api[this.tabs_list[this.tabs_current].pan == 's'? 'ableSell' : 'ableBuy']({params: {id, state}})
-				if(res.code == 1) {
-					const index = this.indexList.findIndex(ele => ele.id == id)
-					this.indexList[index].state = state
+			// async handleChangeStatus({state, id}) {
+			// 	const res = await this.$api[this.tabs_list[this.tabs_current].pan == 's'? 'ableSell' : 'ableBuy']({params: {id, state}})
+			// 	if(res.code == 1) {
+			// 		const index = this.indexList.findIndex(ele => ele.id == id)
+			// 		this.indexList[index].state = state
 					
-				}
-			},
-			handleProdDetail({pid, data}) {
-				this.handleGoto({
-					url: '/pages/my/broker/edit',
-					params: {
-						pid: pid,
-						pan: this.tabs_list[this.tabs_current].pan,
-						data: encodeURIComponent(JSON.stringify(data)),
-					}
-				})
-			},
-			async handleDelet({id}) {
-				const res = await this.$api[this.tabs_list[this.tabs_current].pan == 's'? 'deleteSell' : 'deleteBuy']({params: {id}})
-				if(res.code == 1) {
-					uni.showToast({
-						title: '删除成功'
-					})
-					const index = this.indexList.findIndex(ele => ele.id == id)
-					this.indexList.splice(index, 1)
-				}
+			// 	}
+			// },
+			// handleProdDetail({pid, data}) {
+			// 	this.handleGoto({
+			// 		url: '/pages/my/broker/edit',
+			// 		params: {
+			// 			pid: pid,
+			// 			pan: this.tabs_list[this.tabs_current].pan,
+			// 			data: encodeURIComponent(JSON.stringify(data)),
+			// 		}
+			// 	})
+			// },
+			// async handleDelet({id}) {
+			// 	const res = await this.$api[this.tabs_list[this.tabs_current].pan == 's'? 'deleteSell' : 'deleteBuy']({params: {id}})
+			// 	if(res.code == 1) {
+			// 		uni.showToast({
+			// 			title: '删除成功'
+			// 		})
+			// 		const index = this.indexList.findIndex(ele => ele.id == id)
+			// 		this.indexList.splice(index, 1)
+			// 	}
 				
 				
-			},
-			changeTabsStatus(key, value) {
-				this.tabs_list = this.tabs_list.map(ele => {
-					ele[key] = value;
-					return ele
-				})
-			},
-			initParamas() {
-				this.curP = 1;
-				this.indexList = [];
-				this.loadstatus = 'loadmore'
-			},
-			async handleTabsChange(value) {
-				this.tabs_current = value.index
-				this.changeTabsStatus('disabled', true)
-				this.initParamas();
-				if(value.index != 0) {
-					uni.showLoading();
-					await this.getMyPanData()
-				}
+			// },
+			// changeTabsStatus(key, value) {
+			// 	this.tabs_list = this.tabs_list.map(ele => {
+			// 		ele[key] = value;
+			// 		return ele
+			// 	})
+			// },
+			// initParamas() {
+			// 	this.curP = 1;
+			// 	this.indexList = [];
+			// 	this.loadstatus = 'loadmore'
+			// },
+			// async handleTabsChange(value) {
+			// 	this.tabs_current = value.index
+			// 	this.changeTabsStatus('disabled', true)
+			// 	this.initParamas();
+			// 	if(value.index != 0) {
+			// 		uni.showLoading();
+			// 		await this.getMyPanData()
+			// 	}
 				
-				this.changeTabsStatus('disabled', false)
-			},
-			scrolltolower() {
-				this.getMoreData()
-			},
-			async getMoreData() {
-				if(this.loadstatus != 'loadmore') return
-				this.curP ++
-				await this.getMyPanData()
-			},
-			async getMyPanData() {
-				if(this.loadstatus != 'loadmore') return
-				this.loadstatus = 'loading'
-				const res = await this.$api[this.tabs_list[this.tabs_current].pan == 's'? 'mySell': 'myBuy']({
-					params: {
-						// login: this.login,
-						p: this.curP,
-						// standard: this.pid
-					}
-				})
-				if(res.code == 1) {
-					this.indexList = [...this.indexList, ...res.list]
-					if(this.indexList.length >= res.total) {
-						this.loadstatus = 'nomore'
-					}else {
-						this.loadstatus = 'loadmore'
-					}
-				}
-			},
+			// 	this.changeTabsStatus('disabled', false)
+			// },
+			// scrolltolower() {
+			// 	this.getMoreData()
+			// },
+			// async getMoreData() {
+			// 	if(this.loadstatus != 'loadmore') return
+			// 	this.curP ++
+			// 	await this.getMyPanData()
+			// },
+			// async getMyPanData() {
+			// 	if(this.loadstatus != 'loadmore') return
+			// 	this.loadstatus = 'loading'
+			// 	const res = await this.$api[this.tabs_list[this.tabs_current].pan == 's'? 'mySell': 'myBuy']({
+			// 		params: {
+			// 			// login: this.login,
+			// 			p: this.curP,
+			// 			// standard: this.pid
+			// 		}
+			// 	})
+			// 	if(res.code == 1) {
+			// 		this.indexList = [...this.indexList, ...res.list]
+			// 		if(this.indexList.length >= res.total) {
+			// 			this.loadstatus = 'nomore'
+			// 		}else {
+			// 			this.loadstatus = 'loadmore'
+			// 		}
+			// 	}
+			// },
 			removeCustomAttr(key) {
 				let i = this.attrObj.map(ele => ele.key).indexOf(key);
 				
@@ -523,9 +523,8 @@
 					if(this.pid) params.id = this.pid
 					const r = await this.$api[this.pid? 'changeProduct' : 'createProduct'](params)
 					if(r.code == 1) {
-						const arr = uni.$u.pages()
-						arr[arr.length - 2].$vm?.refreshList();
-						uni.navigateBack({
+						uni.redirectTo({
+							url: '/pages/my/broker/prod_set',
 							success() {
 								uni.showToast({
 									title: r.msg,
@@ -535,6 +534,7 @@
 						})
 					}
 				}).catch(errors => {
+					console.log(errors)
 					uni.$u.toast('校验失败')
 				})
 			},
@@ -546,7 +546,7 @@
 </script>
 <style lang="scss">
 	page {
-		background-color: #f8f8f8;
+		// background-color: #f8f8f8;
 	}
 </style>
 <style scoped lang="scss">

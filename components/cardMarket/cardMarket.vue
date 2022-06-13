@@ -1,19 +1,18 @@
 <template>
-	<view :style="{
-			boxShadow: themeConfig.marketCard.boxShadow
-		}"
-	>
+	<view >
 		<view class="radius text-gray u-font-30" @click="handleGotoDetail"
 			:style="{
 				color: themeConfig.pageTextSub,
-				boxShadow: themeConfig.boxShadow
+				
 			}"
 		>	
 			<view class="u-p-30" :style="{
 				backgroundColor: themeConfig.marketCard.boxBgTop,
 				color: themeConfig.baseText
 			}">
-				<view class="rows u-flex u-flex-between u-flex-items-center">
+				<view class="rows u-flex u-flex-between u-flex-items-center" :style="{
+					boxShadow: themeConfig.boxShadow
+				}">
 					<view class="item u-flex u-flex-items-center market-label"
 						:style="{
 							backgroundColor: themeConfig.marketCard.label_bg,

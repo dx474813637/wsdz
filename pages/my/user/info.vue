@@ -1,5 +1,5 @@
 <template>
-	<view class="u-p-20">
+	<view class="u-p-20 u-p-l-40 u-p-r-40">
 		<u--form
 			labelPosition="left"
 			:model="model"
@@ -7,29 +7,44 @@
 			labelWidth="80"
 			>
 			<u-form-item
+				label="您的撮合员"
+				v-if="myCpy.hasOwnProperty('Broker')"
+			>
+				<view class="u-flex u-flex-items-center ">
+					<text>{{myCpy.Broker.contact}} ({{myCpy.Broker.mobile}})</text>
+					<i @click="handleTimesBtn" class="text-primary u-m-l-10 custom-icon-tims custom-icon u-font-28"></i>
+				</view>
+			</u-form-item>
+			<u-form-item
 				label="用户类型"
 				@click="showActions"
 				ref="item1"
 			>	
-				<template v-if="!myCpy.hasOwnProperty('state')">
-					<u--input
-						v-model="userType"
-						disabled
-						disabledColor="#ffffff"
-						placeholder="请选择用户类型"
-						border="none"
-					></u--input>
+				<view>
+					<template v-if="!myCpy.hasOwnProperty('state')">
+						<u--input
+							v-model="userType"
+							disabled
+							disabledColor="#ffffff"
+							placeholder="请选择用户类型"
+							border="none"
+						></u--input>
+					</template>
+					<template v-else-if="myCpy.state == 1">
+						{{userType + '（审核成功）'}}
+					</template>
+					<template v-else-if="myCpy.state == 0">
+						{{userType + '（审核中）'}}
+					</template>
+				</view>
+				
+				<view slot="right">
 					<u-icon
-						slot="right"
+						 v-if="myCpy.state != 1"
 						name="arrow-right"
 					></u-icon>
-				</template>
-				<template v-else-if="myCpy.state == 1">
-					<view>{{userType + '（审核成功）'}}</view>
-				</template>
-				<template v-else-if="myCpy.state == 0">
-					<view>{{userType + '（审核中）'}}</view>
-				</template>
+				</view>
+				
 				
 				
 			</u-form-item>
@@ -78,6 +93,7 @@
 					label="联系手机"
 					prop="userInfo.mobile"
 					ref="userInfo_mobile"
+					v-if="model.userInfo.mobile"
 				>
 					<u--input
 						v-model="model.userInfo.mobile"
@@ -188,6 +204,7 @@
 					label="联系手机"
 					prop="cpyInfo.mobile"
 					ref="cpyInfo_mobile"
+					v-if="model.userInfo.mobile"
 				>
 					<u--input
 						v-model="model.cpyInfo.mobile"
@@ -374,7 +391,8 @@
 		},
 		methods: {
 			...mapMutations({
-				setMyCpy: 'user/setMyCpy'
+				setMyCpy: 'user/setMyCpy',
+				handleGoto: 'user/handleGoto'
 			}),
 			...mapActions({
 				myCompany: 'user/myCompany',
@@ -417,7 +435,17 @@
 					uni.$u.toast('校验失败')
 				})
 			},
-			
+			handleTimesBtn() {
+				this.handleGoto({
+					url: '/pages/index/webview/webview',
+					params: {
+						_a: 'msg',
+						f: 'detail',
+						name: this.myCpy.Broker.login,
+						tims: '1'
+					}
+				})
+			},
 			// // 删除图片
 			// deletePic(event) {
 			// 	this[`fileList${event.name}`].splice(event.index, 1)
