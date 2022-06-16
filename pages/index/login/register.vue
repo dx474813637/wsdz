@@ -18,13 +18,19 @@
 					/>
 				</u-form-item>
 				<u-form-item prop="mobile" >
-					<u--input 
+					<u-input 
 						v-model="form.mobile" 
 						prefixIcon="phone-fill"
 						clearable
 						prefixIconStyle="color: #999"
 						placeholder="请输入手机号" 
-					/>
+					>
+						<template slot="suffix">
+							<u-loading-icon show v-if="searching" size="16" color="#007aff"></u-loading-icon>
+							<u-icon v-else-if="searchRes == '2'" name="error-circle" color="#da0000"></u-icon>
+							<u-icon v-else-if="searchRes == '1'" name="checkmark-circle" color="#00aa7f"></u-icon>
+						</template>
+					</u-input>
 				</u-form-item>
 
 				<u-form-item prop="passwd" >
@@ -105,6 +111,9 @@
 					captcha: '',
 				},
 				tips: '获取验证码',
+				searching: false,
+				searchRes: 0,
+				timer: null,
 			}
 		},
 		onReady() {
@@ -135,18 +144,59 @@
 							trigger: ['blur', 'change']
 						},
 					],
-					mobile: [{
-							required: true,
-							message: '请输入手机号',
-							trigger: ['blur', 'change']
-						},
+					mobile: [
+						// {
+						// 	required: true,
+						// 	message: '请输入手机号',
+						// 	trigger: ['blur', 'change']
+						// },
+						// {
+						// 	validator: (rule, value, callback) => {
+						// 		return uni.$u.test.mobile(value)
+						// 	},
+						// 	message: '请输入正确的11位手机号',
+						// 	trigger: ['blur', 'change']
+						// },
 						{
-							validator: (rule, value, callback) => {
-								return uni.$u.test.mobile(value)
-							},
-							message: '请输入正确的11位手机号',
-							trigger: ['blur', 'change']
-						},
+							asyncValidator:  (rule, value, callback) => {
+								// this.searchRes = '0'
+								// this.searching = false
+								if(!uni.$u.test.mobile(value)) {
+									callback(new Error('请输入正确的11位手机号'))
+									clearTimeout(this.timer)
+									this.searchRes = '2'
+									this.searching = false
+									this.timer = null
+									return
+								}
+								if(this.timer) {
+									clearTimeout(this.timer)
+									this.timer = null
+								}
+								this.timer = setTimeout(async () => {
+									console.log(value)
+									if(this.searching) {
+										// this.searchRes = '0'
+										// this.searching = false
+										return
+									}
+									this.searching = true
+									
+									const res = await this.$api.searchMobile({params: {mobile: value}})
+									
+									this.searching = false
+									if(res.code == 1) {
+										this.searchRes = '1'
+										callback()
+									}else {
+										this.searchRes = '2'
+										callback(new Error(res.msg))
+									}
+									clearTimeout(this.timer)
+									this.timer = null
+								}, 1000)
+							}
+						}
 					],
 					passwd: [{
 							required: true,
@@ -160,7 +210,7 @@
 							},
 							message: '密码可使用任何英文字母以及阿拉伯数字组合，不得少于5个字符并区分英文大小写',
 							trigger: ['blur', 'change']
-						},
+						}
 					],
 					passwd2: [{
 							required: true,
@@ -212,12 +262,14 @@
 			codeChange(text) {
 				this.tips = text;
 			},
-			getCode() {
-				this.$refs.uForm.validateField('mobile', async (err) => {
-					console.log(err)
-					if(err && err.length > 0) return
+			async getCode() {
+				// this.$refs.uForm.validateField('mobile', async (err) => {
+					// console.log(err)
+					if(this.searchRes != '1' || this.searching) return
+					// if(err && err.length > 0) return
 					if (this.$refs.uCode.canGetCode) {
 					  // 模拟向后端请求验证码
+					  console.log('fasong')
 					  uni.showLoading()
 					  const res = await this.$api.register({
 						  params: {
@@ -232,10 +284,11 @@
 					} else {
 					  uni.$u.toast('倒计时结束后再发送');
 					}
-				})
+				// })
 				
 			},
 			async getReg() {
+				if(this.searchRes != '1' || this.searching) return
 				uni.showLoading({
 					title: '注册信息验证中...'
 				})
