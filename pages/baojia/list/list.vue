@@ -131,8 +131,8 @@
 				id: '927',
 				dir: 'futures',
 				onlineControl: {
-					share_title: '生意社期限实时报价系统',
-					title: '生意社期限实时报价系统'
+					share_title: '价格大数据',
+					title: '价格大数据'
 				},
 				memu_show: 0,
 				tabbar_show: 0,
@@ -218,18 +218,11 @@
 		// 	};
 		// },
 		async onLoad(options) {
-			options.login ? uni.setStorageSync('login', options.login) : {};
-			options.id ? this.id = options.id : {};
-			options.dir ? this.dir = options.dir : {};
-			// this.get_cate();
-			// this.ave();
-			// this.newsUrl();
-			// this.initEcConfig()
+			// options.login ? uni.setStorageSync('login', options.login) : "";
+			options.id ? this.id = options.id : "";
+			options.dir ? this.dir = options.dir : "";
+			
 			await this.getIndexData()
-			// this.$api.getPpiBasketCap({params: {id: '1036', dir: 'nyhy'}})
-			// this.$api.getPpiPer({params: {id: '1036', dir: 'nyhy'}})
-			// this.$api.getPpiBasketBuy({params: {id: '1036', dir: 'nyhy'}})
-			// this.$api.getPpiBasketSell({params: {id: '1036', dir: 'nyhy'}})
 		},
 		mounted() {
 		},
@@ -285,7 +278,7 @@
 						p: this.p
 					},
 				})
-				
+				this.setOnlineControl(res)
 				if(res.code == 1 && res.list) {
 					this.indexData = res.list
 					this.list_table = res.list.list_table
@@ -453,7 +446,7 @@
 				return await this.$api.getPpiPer({
 					params: {
 						id: this.id,
-						login: uni.getStorageSync('login'),
+						// login: uni.getStorageSync('login'),
 					}
 				})
 			},
@@ -461,7 +454,7 @@
 				return await this.$api.getPpiAve({
 					params: {
 						id: this.id,
-						login: uni.getStorageSync('login'),
+						// login: uni.getStorageSync('login'),
 					}
 				})
 				

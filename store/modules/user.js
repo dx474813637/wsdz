@@ -9,7 +9,7 @@ let state = {
 		sh: 1, //接口接收隐藏一些结构用
 		ppiCate: [],
 		myCpy: {},
-		myProduct: []
+		myProduct: [],
 	},
 	getters = {
 	},

@@ -321,7 +321,7 @@
 					<i class="custom-icon-tims custom-icon"></i>
 					<text>在线联系</text>
 				</view>
-				<u-line direction="col" :color="themeConfig.pageTextSub" length="30%"></u-line>
+				<!-- <u-line direction="col" :color="themeConfig.pageTextSub" length="30%"></u-line>
 				<view class="item-btn u-flex-1 u-flex u-flex-items-center u-flex-center"
 					:style="{
 						color: themeConfig.tabTextActive
@@ -329,7 +329,7 @@
 				>
 					<i class="custom-icon-add-product custom-icon"></i>
 					<text class="u-p-l-10">立即下单</text>
-				</view>
+				</view> -->
 				<u-line direction="col" :color="themeConfig.pageTextSub" length="30%"></u-line>
 				<view class="item-btn u-flex-1  u-flex u-flex-items-center u-flex-center">
 					<u-button open-type="share" :customStyle="{

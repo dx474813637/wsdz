@@ -9,8 +9,10 @@ export default {
 		}
 	},
 	async onLoad(options) {
-		if(options && options.login) {
-			uni.setStorageSync('sharelogin', options.login);
+		if(options && options.poster) {
+			this.$http.setToken({
+				poster: options.poster
+			})
 		}
 	},
 	onShareTimeline(){
@@ -43,7 +45,7 @@ export default {
 		},
 		getQuery() {
 			let fullPath = this.$scope.$page.fullPath
-			let login = `login=${uni.getStorageSync('login')}`
+			let login = `poster=${uni.getStorageSync('poster')}`
 			let query = ''
 			if(fullPath.includes('?')) {
 				query = fullPath.split('?')[1] + '&' + login
@@ -55,12 +57,13 @@ export default {
 		},
 		getPath() {
 			let fullPath = this.$scope.$page.fullPath
-			let login = `login=${uni.getStorageSync('login')}`
+			let login = `poster=${uni.getStorageSync('poster')}`
 			if (fullPath.includes('?')) {
 				login = '&' + login
 			} else {
 				login = '?' + login
 			}
+			console.log(fullPath + login)
 			return fullPath + login
 		},
 		// getShareTitle() {

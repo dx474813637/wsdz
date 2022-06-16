@@ -65,6 +65,8 @@
 							:express_unit="item.express_unit"
 							:trade_type="item.trade_type"
 							:pubDate="item.post_time"
+							:tims="item.Tims"
+							@tims="handleClickTims"
 							@detail="handleRouteTo"
 						></cardA>
 					</view>
@@ -153,6 +155,9 @@
 			}
 		},
 		methods: {
+			...mapMutations({
+				handleGoto: 'user/handleGoto'
+			}),
 			refreshList() {
 				uni.showLoading()
 				this.initParamas()
@@ -191,6 +196,19 @@
 				})
 			},
 			
+			handleClickTims({tims, id}) {
+				this.handleGoto({
+					url: '/pages/index/webview/webview',
+					params: {
+						_a: 'msg',
+						f: 'detail',
+						id: `${tims.id}_${tims.ctime}`,
+						ttype: this.pan == 's'? 'sell': 'buy',
+						tid: id,
+						tims: '1'
+					}
+				})
+			},
 			handleBackEvent() {
 				uni.navigateBack()
 			},

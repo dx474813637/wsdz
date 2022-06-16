@@ -15,11 +15,15 @@ export default function(vm) {
 	let md5flag = false
 	let requests = [] // 存储无token的请求队列
 	let isRefreshing = false //正在刷新token
-	http.setToken = (token, md5flag) => {
-		http.config.header['userid'] = token
+	http.setToken = (obj, md5flag) => {
+		http.config.header = {
+			...http.config.header,
+			...obj
+		}
+		// http.config.header['userid'] = token
 		if(!md5flag) {
 			// 不存在md5时保存userid
-			uni.setStorageSync('userid', token) 
+			uni.setStorageSync('userid', obj.userid) 
 		}
 		
 	}
@@ -67,6 +71,7 @@ export default function(vm) {
 		const token = getTokenStorage()
 		config.header = {
 			...config.header,
+			// 'shareid': vm.$store.state.user.shareid,
 			'userid': token
 		}
 		
@@ -77,17 +82,21 @@ export default function(vm) {
 		if (!token) {
 			// 立即刷新token
 			if (!isRefreshing) {
-				console.log('刷新token ing')
+				console.log('刷新token ing', config.url)
 				isRefreshing = true
 				refreshToken().then(res => {
 					console.log('获取token成功，存入头部',res)
+					uni.setStorageSync('poster', res.poster) 
 					let userid = ""
 					// if(res.errMsg != "request:ok") {
 					// 	userid = md5Libs.md5(formatDate(new Date()) + 'wsdz')
 					// 	http.setToken(userid, true)
 					// }else {
 					userid = res.userid
-					http.setToken(userid)
+					http.setToken({
+						userid: userid
+					})
+					
 					// }
 					
 					console.log('刷新token成功，执行队列')
