@@ -164,18 +164,21 @@
 			if(options.hasOwnProperty('pan')) {
 				this.pan = options.pan
 			}
-			if(options.hasOwnProperty('keyword')) {
-				// this.keyword = options.keyword
-				this.menusConfirm({keyword: options.keyword, name: `搜索${options.keyword}结果`})
-			}
-			else if(options.hasOwnProperty('data')) {
-				const data = JSON.parse(options.data)
+			if(options.hasOwnProperty('data')) {
+				const data = JSON.parse(decodeURIComponent(options.data))
+				// console.log(data)
 				this.menusConfirm({
 					name: data.name,
-					standard: data.id,
+					id: data.standard,
 					keyword: data.keyword || "",
 					disabled: false,
 				})
+				this.tabs_current = 1
+			}
+			else if(options.hasOwnProperty('keyword')) {
+				// this.keyword = options.keyword
+				this.menusConfirm({keyword: options.keyword, name: `搜索${options.keyword}结果`})
+				this.tabs_current = 1
 			}
 			else {
 				uni.showLoading()
@@ -190,9 +193,9 @@
 				console.log(data)
 				this.tabs_list.push({
 					name: data.name,
-					standard: data.id,
 					keyword: data.keyword || "",
 					disabled: false,
+					standard: data.id,
 				})
 				this.show = false;
 				this.handleTabsChange({index: this.tabs_list.length - 1})
@@ -215,6 +218,12 @@
 			},
 			async handleTabsChange(obj) {
 				this.tabs_current = obj.index
+				if(obj.index == 0) {
+					delete this.customShareParams.data
+				}else {
+					this.customShareParams.data = encodeURIComponent(JSON.stringify(this.tabs_list[obj.index]))
+				}
+				
 				this.changeTabsStatus('disabled', true)
 				this.initParamas();
 				uni.showLoading();
@@ -227,10 +236,10 @@
 			async getData() {
 				if(this.loadstatus != 'loadmore') return
 				this.loadstatus = 'loading'
-				console.log(this.tabs_current)
+				// console.log(this.tabs_current)
 				const res = await this.$api[this.pan == 's'?'getSell':'getBuy']({params: this.paramsObj})
 				// const res = await this.$api.getPanList()
-				console.log(res)
+				// console.log(res)
 				if(res.code == 1) {
 					this.setOnlineControl(res)
 					this.indexList = [...this.indexList, ...res.list]

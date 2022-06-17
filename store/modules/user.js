@@ -10,6 +10,7 @@ let state = {
 		ppiCate: [],
 		myCpy: {},
 		myProduct: [],
+		moreMenus: {},
 	},
 	getters = {
 	},
@@ -40,6 +41,9 @@ let state = {
 		},
 		setMyProduct(state, data) {
 			state.myProduct = data;
+		},
+		setMoreMenus(state, data) {
+			state.moreMenus = data;
 		},
 	},
 	actions = {

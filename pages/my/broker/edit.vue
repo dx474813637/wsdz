@@ -377,7 +377,7 @@
 				model: {
 					product_id: '',
 					name: '',
-					order_type: '1',
+					order_type: '2',
 					trade_type: '2',
 					settle_month_label: '',
 					settle_month: '',

@@ -101,7 +101,7 @@
 		</view>
 		
 		<view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26">
-			<view class="box-header u-flex u-flex-items-end u-border-bottom u-p-b-14 u-p-l-30 u-p-r-30" style="border-color: #f8f8f8!important;">
+			<view class="box-header u-flex u-flex-items-end u-border-bottom u-p-b-14 u-p-l-30 u-p-r-30">
 				<view class="u-font-34">买盘卖盘</view>
 				<view class="text-light u-font-26 u-p-l-10">发布前设置交易商品</view>
 			</view>
@@ -126,7 +126,7 @@
 		</view>
 		
 		<view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26" v-if="sh != 1">
-			<view class="box-header u-flex u-flex-items-end u-border-bottom u-p-b-14 u-p-l-30 u-p-r-30" style="border-color: #f8f8f8!important;">
+			<view class="box-header u-flex u-flex-items-end u-border-bottom u-p-b-14 u-p-l-30 u-p-r-30">
 				<view class="u-font-34">订单中心</view>
 				
 			</view>
@@ -152,7 +152,7 @@
 		
 		
 		<view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26" v-if="sh != 1">
-			<view class="box-header u-flex u-flex-items-end u-border-bottom u-p-b-14 u-p-l-30 u-p-r-30" style="border-color: #f8f8f8!important;">
+			<view class="box-header u-flex u-flex-items-end u-border-bottom u-p-b-14 u-p-l-30 u-p-r-30">
 				<view class="u-font-34">资金中心</view>
 				
 			</view>
@@ -176,11 +176,11 @@
 			</view>
 		</view>
 		
-		<!-- <view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26">
-			<view class="box-header u-flex u-flex-items-end u-p-b-14 u-p-l-30 u-p-r-30">
-				<view class="u-font-34">其他设置</view>
+		<view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26" v-if="moreMenus.menusShow == 1">
+			<view class="box-header u-border-bottom u-flex u-flex-items-end u-p-b-14 u-p-l-30 u-p-r-30">
+				<view class="u-font-34">{{moreMenus.menusTitle}}</view>
 			</view>
-			<view class="box-row u-flex u-flex-items-center u-p-30 ts-bg u-p-b-40">
+			<!-- <view class="box-row u-flex u-flex-items-center u-p-30 ts-bg u-p-b-40">
 				<view class="item u-p-16 bg-warning radius-50">
 					<i class="custom-icon-forward custom-icon u-font-40 text-white"></i>
 				</view>
@@ -193,44 +193,19 @@
 						<u-button size="mini" type="warning" shape="circle" :customStyle="{backgroundImage: 'linear-gradient(to right, #ffa509, #ff7903 )', height: '25px'}">推送通知</u-button>
 					</view>
 				</view>
-			</view>
-			<view class="box-row u-flex u-flex-between u-flex-items-center u-p-t-20 u-p-b-10">
-				<view class="item u-text-center u-flex-1">
-					<i class="custom-icon-edit custom-icon u-font-40"></i>
-					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">菜单名</text>
-				</view>
-				<view class="item u-text-center u-flex-1">
-					<i class="custom-icon-edit custom-icon u-font-40"></i>
-					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">菜单名</text>
-				</view>
-				<view class="item u-text-center u-flex-1">
-					<i class="custom-icon-edit custom-icon u-font-40"></i>
-					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">菜单名</text>
-				</view>
-				<view class="item u-text-center u-flex-1">
-					<i class="custom-icon-edit custom-icon u-font-40"></i>
-					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">菜单名</text>
+			</view> -->
+			<view class="box-row other-menus u-flex u-flex-wrap u-flex-items-center u-p-t-20 u-p-b-10">
+				<view 
+					class="item u-text-center u-m-b-26" 
+					v-for="(item, index) in moreMenus.menusList" 
+					:key="index"
+					@click="handleMenusClick(item)"
+					>
+					<image class="icon-img" :src="item.icon" mode=""></image>
+					<text class="u-font-26 u-p-t-12 u-line-1 menus-name">{{item.name}}</text>
 				</view>
 			</view>
-			<view class="box-row u-flex u-flex-between u-flex-items-center u-p-t-20 u-p-b-10">
-				<view class="item u-text-center u-flex-1">
-					<i class="custom-icon-edit custom-icon u-font-40"></i>
-					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">菜单名</text>
-				</view>
-				<view class="item u-text-center u-flex-1">
-					<i class="custom-icon-edit custom-icon u-font-40"></i>
-					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">菜单名</text>
-				</view>
-				<view class="item u-text-center u-flex-1">
-					<i class="custom-icon-edit custom-icon u-font-40"></i>
-					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">菜单名</text>
-				</view>
-				<view class="item u-text-center u-flex-1">
-					<i class="custom-icon-edit custom-icon u-font-40"></i>
-					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">菜单名</text>
-				</view>
-			</view>
-		</view> -->
+		</view>
 		
 		
 		<u-safe-bottom></u-safe-bottom>
@@ -253,10 +228,12 @@
 				myCpy: state => state.user.myCpy,
 				login: state => state.user.login,
 				auth: state => state.user.auth,
-				sh: state => state.user.sh
+				sh: state => state.user.sh,
+				moreMenus: state => state.user.moreMenus,
 			}),
 		},
 		async onLoad() {
+			await this.wode()
 			if(!this.myCpy.id) {
 				this.loading = true
 				uni.showLoading({
@@ -273,12 +250,38 @@
 				handleGoto: 'user/handleGoto'
 			}),
 			...mapActions({
-				myCompany: 'user/myCompany'
+				myCompany: 'user/myCompany',
+				wode: 'user/wode'
 			}),
-			handleTakeAccount() {
-				uni.showToast({
-					title: '成功领取账号'
-				})
+			async handleTakeAccount() {
+				uni.showLoading()
+				const res = await this.$api.addCustomer();
+				if(res.code == 1) {
+					uni.showToast({
+						title: '成功领取账号'
+					})
+				}
+				
+			},
+			handleMenusClick(item) {
+				if(item.type == 1 ){
+					uni.reLaunch({
+						url: item.url
+					})
+				}
+				else if(item.type == 2 ){
+					uni.redirectTo({
+						url: item.url
+					})
+				}
+				else if(item.type == 3 ){
+					uni.navigateTo({
+						url: item.url
+					})
+				}
+				
+				
+				
 			}
 		}
 	}
@@ -292,6 +295,15 @@
 <style lang="scss" scoped>
 	.box-row .custom-icon {
 		color: #333;
+	}
+	.other-menus {
+		.item {
+			flex: 0 0 25%;
+			.icon-img {
+				width: 20px;
+				height: 20px;
+			}
+		}
 	}
 	.wrapper {
 		padding-bottom: 50px;

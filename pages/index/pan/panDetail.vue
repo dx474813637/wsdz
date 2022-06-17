@@ -177,9 +177,14 @@
 							<view class="item-label" :style="{
 								color: themeConfig.pan.pageTextSub
 							}">手机</view>
-							<view class="item-content" :style="{
-								color: themeConfig.pan.baseText
-							}">{{cpy.mobile_show ? cpy.mobile : cpy.mobile1}}</view>
+							<view class="item-content u-flex u-flex-items-center" 
+								@click="makePhone(cpy.mobile)"
+								:style="{
+									color: themeConfig.pan.baseText
+								}">
+								{{cpy.mobile_show ? cpy.mobile : cpy.mobile1}}
+								<i class="custom-icon-shouji custom-icon u-m-l-10"></i>
+							</view>
 						</view>
 						<view class="item u-flex u-flex-items-baseline u-m-b-20" v-if="cpy.email">
 							<view class="item-label" :style="{
@@ -413,6 +418,11 @@
 			...mapMutations({
 				handleGoto: 'user/handleGoto'
 			}),
+			makePhone(mobile) {
+				uni.makePhoneCall({
+					phoneNumber: mobile 
+				});
+			},
 			handleBackEvent() {
 				uni.navigateBack()
 			},

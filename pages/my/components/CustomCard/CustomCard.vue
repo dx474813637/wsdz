@@ -11,34 +11,38 @@
 			<view class="item u-m-b-20">
 				<view class="item u-flex u-flex-between u-flex-items-center u-m-b-14">
 					<view class="name">账号</view>
-					<view class="pp">{{c_account}}</view>
+					<view class="pp">{{originalData.login}}</view>
 				</view>
-				<view v-if="c_status != 1" class="item u-flex u-flex-between u-flex-items-center u-m-b-14">
+				<view v-if="originalData.to_state != 1" class="item u-flex u-flex-between u-flex-items-center u-m-b-14">
 					<view class="name">初始密码</view>
-					<view class="pp">{{c_pwd}}</view>
+					<view class="pp">{{originalData.to_passwd}}</view>
 				</view>
-				<view v-if="c_name" class="item u-flex u-flex-between u-flex-items-center u-m-b-14">
+				<view v-if="originalData.to_name" class="item u-flex u-flex-between u-flex-items-center u-m-b-14">
 					<view class="name">客户名称</view>
-					<view class="pp">{{c_name}}</view>
+					<view class="pp">{{originalData.to_name}}</view>
 				</view>
-				<view v-if="c_contact" class="item u-flex u-flex-between u-flex-items-center u-m-b-14">
+				<view v-if="originalData.to_contact" class="item u-flex u-flex-between u-flex-items-center u-m-b-14">
 					<view class="name">联系人</view>
-					<view class="pp">{{c_contact}}</view>
+					<view class="pp">{{originalData.to_contact}}</view>
 				</view>
-				<view v-if="c_phone" class="item u-flex u-flex-between u-flex-items-center u-m-b-14">
+				<view v-if="originalData.to_mobile" class="item u-flex u-flex-between u-flex-items-center u-m-b-14">
 					<view class="name">手机</view>
-					<view class="pp">{{c_phone}}</view>
+					<view class="pp">{{originalData.to_mobile}}</view>
+				</view>
+				<view v-if="originalData.to_ctime" class="item u-flex u-flex-between u-flex-items-center u-m-b-14">
+					<view class="name">登记日</view>
+					<view class="pp">{{originalData.to_ctime | date2timestamp | timeFrom}}</view>
 				</view>
 			</view>
 			
 		</view>
 		<view class="card-footer u-flex u-flex-between u-flex-items-center u-p-b-12 u-p-t-12">
-			<view></view>
+			<view class="item  u-flex u-flex-items-center"></view>
 			<view class="item " :class="{
-				'text-primary': c_status == 1,
-				'text-light': c_status != 1,
+				'text-primary': originalData.to_state == 1,
+				'text-light': originalData.to_state != 1,
 			}">
-				{{c_status == 1 ? '已使用' : '未使用'}}
+				{{originalData.to_state == 1 ? '已使用' : '未使用'}}
 			</view>
 		</view>
 	</view>
@@ -92,7 +96,7 @@
 				type: String,
 				default: '16rpx',
 			},
-			customData: {
+			originalData: {
 				type: Object,
 				default: () => ({})
 			}
@@ -102,14 +106,9 @@
 				
 			}
 		},
-		computed: {
-			psub() {
-				return `${this.type == 's'? '卖盘': '买盘'}：${this.pid}`
-			}
-		},
 		methods: {
 			handleGotoDetail() {
-				this.$emit('detail', {id: this.ids, customData: this.customData})
+				this.$emit('detail', {id: this.ids, originalData: this.originalData})
 			}
 		}
 	}

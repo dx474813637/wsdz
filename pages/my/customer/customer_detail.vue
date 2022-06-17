@@ -8,11 +8,9 @@
 		>
 			<u-form-item
 				label="账号"
-				prop="account"
-				ref="account"
 			>
 				<u--input
-					v-model="customData.account"
+					:value="origin.login"
 					border="none"
 					disabledColor="#fff"
 					color="#666"
@@ -22,12 +20,10 @@
 			
 			<u-form-item
 				label="初始密码"
-				prop="pwd"
-				ref="pwd"
-				v-if="customData.status != 1"
+				v-if="origin.to_state != 1"
 			>
 				<u--input
-					v-model="customData.pwd"
+					:value="origin.to_passwd"
 					border="none"
 					disabledColor="#fff"
 					color="#666"
@@ -36,11 +32,9 @@
 			</u-form-item>
 			<u-form-item
 				label="状态"
-				prop="status"
-				ref="status"
 			>
 				<u--input
-					:value="customData.status == 1 ?'已使用' : '未使用'"
+					:value="origin.to_state == 1 ?'已使用' : '未使用'"
 					border="none"
 					disabledColor="#fff"
 					color="#007aff"
@@ -53,7 +47,7 @@
 				ref="name"
 			>
 				<u--input
-					:value="customData.name"
+					v-model="customData.name"
 					clearable
 				></u--input>
 			</u-form-item>
@@ -63,7 +57,7 @@
 				ref="contact"
 			>
 				<u--input
-					:value="customData.contact"
+					v-model="customData.contact"
 					clearable
 				></u--input>
 			</u-form-item>
@@ -73,17 +67,17 @@
 				ref="email"
 			>
 				<u--input
-					:value="customData.email"
+					v-model="customData.email"
 					clearable
 				></u--input>
 			</u-form-item>
 			<u-form-item
 				label="手机"
-				prop="phone"
-				ref="phone"
+				prop="mobile"
+				ref="mobile"
 			>
 				<u--input
-					:value="customData.phone"
+					v-model="customData.mobile"
 					clearable
 				></u--input>
 			</u-form-item>
@@ -102,54 +96,53 @@
 			return {
 				customData: {
 					id: '',
-					account: '',
-					pwd: '',
-					status: '',
+					// login: '',
+					// pwd: '',
+					// status: '',
 					name: '',
 					contact: '',
 					email: '',
-					phone: ''
+					mobile: ''
 				},
+				origin: {},
 				rules: {
-					'account': {
-						type: 'string',
-						required: true,
-						message: '请填写账号',
-						trigger: ['blur', 'change']
-					},
+					// 'login': {
+					// 	type: 'string',
+					// 	required: true,
+					// 	message: '请填写账号',
+					// 	trigger: ['blur', 'change']
+					// },
 				}
 			}
 		},
 		onReady() {
-			this.$refs.form.setRules(this.rules)
+			// this.$refs.form.setRules(this.rules)
 		},
 		onLoad(options) {
 			const custom = JSON.parse(decodeURIComponent(options.data));
 			let {
-				c_account,
-				c_contact,
-				c_email,
-				c_name,
-				c_phone,
-				c_pwd,
-				c_status,
-				id
+				to_contact,
+				to_email,
+				to_name,
+				to_mobile,
+				to_id
 			} = custom
-			this.customData.account = c_account
-			this.customData.contact = c_contact
-			this.customData.email = c_email
-			this.customData.name = c_name
-			this.customData.phone = c_phone
-			this.customData.pwd = c_pwd
-			this.customData.id = id
-			this.customData.status = c_status
+			this.origin = custom
+			// this.customData.login = login
+			this.customData.contact = to_contact
+			this.customData.email = to_email
+			this.customData.name = to_name
+			this.customData.mobile = to_mobile
+			// this.customData.pwd = c_pwd
+			this.customData.id = to_id
+			// this.customData.status = c_status
 		},
 		methods: {
 			async submit() {
-				this.$refs.form.validate().then(async res => {
-					console.log('submit 客户详情')
+				// this.$refs.form.validate().then(async res => {
+				// 	console.log('submit 客户详情')
 					uni.showLoading()
-					const r = await this.$api.editCostomDetail(this.customData)
+					const r = await this.$api.editCustomer(this.customData)
 					if(r.code == 1) {
 						this.$utils.prePage() && this.$utils.prePage().refreshList();
 						uni.showToast({
@@ -161,9 +154,9 @@
 							uni.navigateBack()
 						}, 800)
 					}
-				}).catch(errors => {
-					uni.$u.toast('校验失败')
-				})
+				// }).catch(errors => {
+				// 	uni.$u.toast('校验失败')
+				// })
 			}
 		}
 	}

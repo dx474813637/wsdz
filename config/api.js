@@ -257,15 +257,46 @@ export const createProduct = (data, config={}) => http.post('create_product', da
 export const changeProduct = (data, config={}) => http.post('change_product', data, config)
 
 
+// =============风险评级
+// 评级字段说明
+export const sinoaaaIndex = (data) => http.get('sinoaaa_index', data)
+// 搜索 精准 参数name 企业名称
+export const sinoaaaSearch = (data) => http.get('sinoaaa_search', data)
+
+// 发布黑名单
+export const blacklist = (data) => http.get('blacklist', data)
+// 供应链服务
+export const scm = (data) => http.get('scm', data)
+
+// =====客户管理 
+// broker  客户管理列表 
+// 参数state 1-已使用 0-未使用 p页数
+export const broker = (data) => http.get('broker', data)
+// add_customer 领取客户账号 
+export const addCustomer = (data) => http.get('add_customer', data)
 
 
+// 参数：
+// 客户ID：id * 客户列表（broker）里的to_id
+// 客户名称：name
+// 联系人：contact
+// 邮箱：email
+// 手机：mobile
+// edit_customer 修改我的客户信息
+export const editCustomer = (data, config={}) => http.post('edit_customer', data, config={})
+// broker_buy 参数 terms商品名称搜索 product_id商品ID搜索 p页数
+export const brokerBuy = (data) => http.get('broker_buy', data)
+// broker_change_buy 修改客户委托买盘 参数跟修改买盘一致
+export const brokerChangeBuy = (data) => http.get('broker_change_buy', data)
+// broker_able_buy 修改客户委托买盘状态 参数跟修改买盘状态一致
+export const brokerAbleBuy = (data) => http.get('broker_able_buy', data)
 
-
-
-
-
-
-
+// broker_sell 客户委托卖盘 参数 terms商品名称搜索 product_id商品ID搜索 p页数
+export const brokerSell = (data) => http.get('broker_sell', data)
+// broker_change_sell 修改客户委托卖盘 参数跟修改卖盘一致
+export const brokerChangeSell = (data) => http.get('broker_change_sell', data)
+// broker_able_sell 修改客户委托卖盘状态 参数跟修改卖盘状态一致
+export const brokerAbleSell = (data) => http.get('broker_able_sell', data)
 
 
 
@@ -274,6 +305,10 @@ export const changeProduct = (data, config={}) => http.post('change_product', da
 
 
 // =====================>下列测试mock拦截api用
+
+export const getMsg = (data) => http.get('/api/getMsg', data)
+
+export const getMsgDetail = (data) => http.get('/api/getMsgDetail', data)
 
 export const getInitData = (data) => http.get('/api/initData', data)
 

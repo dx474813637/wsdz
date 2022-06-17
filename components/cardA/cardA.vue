@@ -176,12 +176,14 @@
 			};
 		},
 		methods: {
+			...mapMutations({
+				handleGoto: 'user/handleGoto'
+			}),
 			handleGotoDetail() {
 				this.$emit('detail', {id: this.pid})
 				
 			},
 			handleTimesBtn() {
-				// if(this.sh == 1) return
 				this.$emit('tims', {tims: this.tims, id: this.pid})
 			}
 		}

@@ -77,26 +77,22 @@
 				"enablePullDownRefresh": false
 			}
 
-		}
-	    ,{
-            "path" : "pages/index/pan/panShare",
-            "style" :                                                                                    
-            {
+		}, {
+			"path": "pages/index/pan/panShare",
+			"style": {
 				"navigationStyle": "custom",
 				"navigationBarTextStyle": "white"
-            }
-            
-        }
-        ,{
-            "path" : "pages/index/webview/webview",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+			}
+
+		}, {
+			"path": "pages/index/webview/webview",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}
+	],
 	"subPackages": [{
 		"root": "pages/baojia",
 		"pages": [{
@@ -420,6 +416,42 @@
 			"style": {
 				"navigationBarTitleText": "短信重设密码",
 				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "moreMenus/blacklist",
+			"style": {
+				"navigationBarTitleText": "发布黑名单",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "moreMenus/sc",
+			"style": {
+				"navigationBarTitleText": "供应链服务",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "moreMenus/sinoaaa",
+			"style": {
+				"navigationBarTitleText": "风险评级",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#fff"
+			}
+
+		}, {
+			"path": "msg/msg",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white"
+			}
+
+		}, {
+			"path": "msg/msgDetail",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white"
 			}
 
 		}]
