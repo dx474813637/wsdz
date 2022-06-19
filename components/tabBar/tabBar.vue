@@ -1,6 +1,6 @@
 <template>
 	<view class="tabbar" :style="[customStyle]">
-		<view class="c-w">
+		<view class="c-w" :style="[mainStyle]">
 			<slot></slot>
 		</view>
 		
@@ -23,10 +23,16 @@
 					return {}
 				}
 			},
+			mainStyle: {
+				type: Object,
+				defualt: () => {
+					return {}
+				}
+			},
 			theme: {
 				type: String,
 				defalut: 'white'
-			}
+			},
 		},
 		computed: {
 			...mapState({

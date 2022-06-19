@@ -4,6 +4,37 @@ Mock.setup({
 })
 //dev2222
 //dev111
+// 获取消息列表
+Mock.mock(/\/api\/getMsgList/, 'get', {
+	'code': 1,
+	'msg': 'mock测试，获取消息列表',
+	'total': 42,
+	'list|10': [{
+		'id': '@id',
+		'name|1': ['@province()@cword(2,5)有限公司', '@cname'],
+		'avatar': 'https://cdn.uviewui.com/uview/album/1.jpg',
+		'content': '@cparagraph(1, 3)',
+		'time': '@datetime()',
+		'readed|1': ['0', '1'] 
+	}]
+})
+//获取消息详情
+Mock.mock(/\/api\/getMsgDetail/, 'get', {
+	'code': 1,
+	'msg': 'mock测试，获取消息详情',
+	'total': 32,
+	'cpy': {
+		'name|1': ['@province()@cword(2,5)有限公司', '@cname'],
+		'avatar': 'https://cdn.uviewui.com/uview/album/1.jpg',
+	},
+	'list|10': [{
+		'id': '@id',
+		'avatar': 'https://cdn.uviewui.com/uview/album/1.jpg',
+		'isMe|1': ['1', '0'],
+		'content': '@cparagraph(1, 3)',
+		'time': '@datetime()',
+	}]
+})
 //获取用户收货地址列表 带分页
 Mock.mock(/\/api\/initData/, 'get', {
 	'code': 1,

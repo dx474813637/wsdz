@@ -77,26 +77,22 @@
 				"enablePullDownRefresh": false
 			}
 
-		}
-	    ,{
-            "path" : "pages/index/pan/panShare",
-            "style" :                                                                                    
-            {
+		}, {
+			"path": "pages/index/pan/panShare",
+			"style": {
 				"navigationStyle": "custom",
 				"navigationBarTextStyle": "white"
-            }
-            
-        }
-        ,{
-            "path" : "pages/index/webview/webview",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+			}
+
+		}, {
+			"path": "pages/index/webview/webview",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}
+	],
 	"subPackages": [{
 		"root": "pages/baojia",
 		"pages": [{
@@ -420,6 +416,22 @@
 			"style": {
 				"navigationBarTitleText": "短信重设密码",
 				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "msg/msg",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "消息列表",
+				"navigationBarTextStyle": "white"
+			}
+
+		}, {
+			"path": "msg/msgDetail",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "消息详情",
+				"navigationBarTextStyle": "white"
 			}
 
 		}]

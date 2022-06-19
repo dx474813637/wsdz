@@ -275,6 +275,10 @@ export const changeProduct = (data, config={}) => http.post('change_product', da
 
 // =====================>下列测试mock拦截api用
 
+export const getMsgList = (data) => http.get('/api/getMsgList', data)
+
+export const getMsgDetail = (data) => http.get('/api/getMsgDetail', data)
+
 export const getInitData = (data) => http.get('/api/initData', data)
 
 export const getRegionalList = (data) => http.get('/api/regional_list', data)

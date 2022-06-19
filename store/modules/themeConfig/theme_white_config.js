@@ -105,6 +105,25 @@ export default {
 		cpyBg: '#007aff',
 		tagColor: '#abffff',
 		tagBorderColor: '#abffff',
+	},
+	msg: {
+		rows: {
+			cardBg: '#fff',
+			titleColor: '#000',
+			contentColor: '#999',
+			subColor: '#aaa',
+			borderColor: '#e0daec',
+			newlabel: '#e50000',
+		},
+		detail: {
+			btnBg: '#007aff',
+			btnColor: '#ffffff',
+			areaBg: '#eee',
+			areaColor: '#ffffff',
+			contentBg: '#007aff',
+			contentColor: '#000',
+			timeColor: '#999',
+		}
 	}
 	
 }

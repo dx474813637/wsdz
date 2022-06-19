@@ -105,5 +105,25 @@ export default {
 		cpyBg: '#1e1f31',
 		tagColor: '#7e8cea',
 		tagBorderColor: '#7e8cea',
+	},
+	msg: {
+		rows: {
+			cardBg: '#171827',
+			titleColor: '#fff',
+			contentColor: '#7d7c86',
+			subColor: '#6b6871',
+			borderColor: '#1e1f31',
+			newlabel: '#ff373a',
+		},
+		detail: {
+			btnBg: '#2c2e4a',
+			btnColor: '#c8dbf0',
+			areaBg: '#111224',
+			areaColor: '#c8dbf0',
+			contentBg1: '#00aa7f',
+			contentBg2: '#1e1f31',
+			contentColor: '#fff',
+			timeColor: '#5d6376',
+		}
 	}
 }
