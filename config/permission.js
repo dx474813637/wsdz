@@ -9,7 +9,7 @@ import store from '@/store'
 const whiteList = [
   '/', 
   { pattern: /^\/pages\/list.*/ },
-  { pattern: /^\/pages\/index\/login*/ },
+  // { pattern: /^\/pages\/index\/login*/ },
   { pattern: /^\/pages\/baojia*/ },
   { pattern: /^\/pages\/index*/ },
   // { pattern: /^\/pages\/index\/(?!attention).*/ },

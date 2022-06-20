@@ -1,6 +1,6 @@
 <template>
 	<view class="w">
-		<view class="search-wrapper u-flex u-p-l-20 u-p-r-20">
+		<!-- <view class="search-wrapper u-flex u-p-l-20 u-p-r-20">
 			<view class="item u-flex-1 u-p-b-10">
 				<u-search 
 					placeholder="检索账号/名称/联系人/手机" 
@@ -12,7 +12,7 @@
 				></u-search>
 			</view>
 			
-		</view>
+		</view> -->
 		<view class="tabs-w">
 			<u-tabs
 				:list="tabs_list"
@@ -25,6 +25,7 @@
 				<view
 					slot="right"
 					class="u-p-r-20 u-flex u-flex-items-center"
+					@click="addCustomer"
 				>
 					<i class="custom-icon-friend custom-icon"></i>
 					<!-- <u-icon
@@ -49,15 +50,7 @@
 				>
 					<view class="u-p-10">
 						<CustomCard
-							:ids="item.id"
-							:c_account="item.c_account"
-							:c_pwd="item.c_pwd"
-							:c_name="item.c_name"
-							:c_contact="item.c_contact"
-							:c_phone="item.c_phone"
-							:c_email="item.c_email"
-							:c_status="item.c_status"
-							:customData="item"
+							:originalData="item"
 							@detail="handleCustomDetail"
 						></CustomCard>
 					</view>
@@ -127,11 +120,32 @@
 			...mapState({
 				typeConfig: state => state.theme.typeConfig,
 			}),
+			paramsObj() {
+				let base = {
+					p: this.curP
+				}
+				if(this.tabs_current == 1) {
+					base.state = 1
+				}
+				if(this.tabs_current == 2) {
+					base.state = 0
+				}
+				console.log(base)
+				return base
+			}
 		},
 		components: {
 			CustomCard
 		},
 		methods: {
+			async addCustomer() {
+				uni.showLoading()
+				const res = await this.$api.addCustomer();
+				if(res.code == 1) {
+					this.tabs_current = 0
+					this.refreshList()
+				}
+			},
 			refreshList() {
 				this.initParamas()
 				this.getData()
@@ -151,6 +165,7 @@
 				})
 			},
 			async handleTabsChange(value) {
+				this.tabs_current = value.index
 				this.changeTabsStatus('disabled', true)
 				this.initParamas();
 				uni.showLoading();
@@ -163,10 +178,12 @@
 			async getData() {
 				if(this.loadstatus != 'loadmore') return
 				this.loadstatus = 'loading'
-				const res = await this.$api.getCustomerList()
+				const res = await this.$api.broker({
+					params: this.paramsObj
+				})
 				if(res.code == 1) {
-					this.indexList = [...this.indexList, ...res.data]
-					if(this.curP == res.page_total) {
+					this.indexList = [...this.indexList, ...res.list]
+					if(this.indexList.length >= res.total) {
 						this.loadstatus = 'nomore'
 					}else {
 						this.loadstatus = 'loadmore'
@@ -178,10 +195,10 @@
 				this.curP ++
 				await this.getData()
 			},
-			handleCustomDetail({id, customData}) {
+			handleCustomDetail({id, originalData}) {
 				
 				uni.navigateTo({
-					url: `/pages/my/customer/customer_detail?id=${id}&data=${encodeURIComponent(JSON.stringify(customData))}`
+					url: `/pages/my/customer/customer_detail?id=${id}&data=${encodeURIComponent(JSON.stringify(originalData))}`
 				})
 			}
 		}
@@ -198,7 +215,7 @@
 		height: 100%;
 	}
 	.list {
-		height: calc(100% - 83px);
+		height: calc(100% - 44px);
 		
 	}
 </style>

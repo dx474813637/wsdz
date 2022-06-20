@@ -23,15 +23,16 @@
 							<text class="u-font-34">高级筛选</text>
 						</view>
 						<view class="item u-flex-1 u-text-right">
-							<text class="u-primary" @click="refresh" v-if="!isMyProduct">刷新数据</text>
-							<text class="u-primary" v-else @click="handleGoto('/pages/my/broker/list')">管理列表</text>
+							<text class="u-primary" v-if="isMyProduct" @click="handleGoto('/pages/my/broker/list')">商品管理</text>
+							<text class="u-primary" v-else-if="isMyAllCpy" @click="handleGoto('/pages/my/customer/customer')">客户管理</text>
+							<text class="u-primary" @click="refresh" v-else >刷新数据</text>
 						</view>
 					</view>
 					<view class="u-flex u-flex-items-center"  v-if="!loading">
 						<view class="u-flex u-flex-items-center u-p-10 u-p-r-30"
 							style="color: #999"
 							@click="changeAllHide"
-							v-if="!isMyProduct"
+							v-if="showMode == 'grid'"
 						>
 							<i class="custom-icon "
 							:class="{
@@ -97,6 +98,32 @@
 									></u-empty>
 								</template>
 							</template>
+							<template v-else-if="isMyAllCpy">
+								<u-list-item
+									v-for="(item, index) in myAllCpy"
+									:key="item.id">
+									<view class="u-p-10">
+										<view class="u-p-20 u-flex u-flex-items-center"
+											:style="{
+												backgroundColor: themeConfig.boxBg,
+												borderRadius: '10rpx'
+											}"
+											@click="selectLabel(item)"
+										>
+											<view class="u-font-32"
+												:style="{
+													color: themeConfig.baseText
+												}"
+											>{{item.to_name}}</view>
+											<view class="u-font-28 u-p-l-20 u-flex-1 u-line-1"
+												:style="{
+													color: themeConfig.pageTextSub
+												}"
+											>{{item.to_contact}}</view>
+										</view>
+									</view>
+								</u-list-item>
+							</template>
 							<template v-else-if="isMyProduct">
 								<u-list-item
 									v-for="(item, index) in myProduct"
@@ -109,7 +136,7 @@
 											}"
 											@click="selectLabel(item)"
 										>
-											<view class="u-font-34"
+											<view class="u-font-32"
 												:style="{
 													color: themeConfig.baseText
 												}"
@@ -118,7 +145,7 @@
 												:style="{
 													color: themeConfig.pageTextSub
 												}"
-											>{{item.intro}}</view>
+											>{{item.attributes | filterAttributes}}</view>
 										</view>
 									</view>
 								</u-list-item>
@@ -225,6 +252,14 @@
 				type: Boolean,
 				default: false
 			},
+			isMyAllCpy: {
+				type: Boolean,
+				default: false
+			},
+			showMode: {
+				type: String,
+				default: 'grid' //grid or list
+			},
 			mainkey: {
 				type: String,
 				default: 'id'
@@ -291,7 +326,8 @@
 				menusList: state => state.user.menusList,
 				ppiCate: state => state.user.ppiCate, 
 				myProduct: state => state.user.myProduct, 
-				typeConfig: state => state.theme.typeConfig
+				myAllCpy: state => state.user.myAllCpy,
+				typeConfig: state => state.theme.typeConfig,
 			}),
 			themeConfig() {
 				return this.typeConfig[this.theme]
@@ -313,7 +349,8 @@
 			...mapActions({
 				getMenusList: 'user/getMenusList',
 				getPPiCate: 'user/getPPiCate',
-				getCompanyProduct: 'user/getCompanyProduct'
+				getCompanyProduct: 'user/getCompanyProduct',
+				getAllCompany: 'user/getAllCompany'
 			}),
 			initSelect() {
 				this.multipleList = []
@@ -334,7 +371,7 @@
 				})
 			},
 			initMenusStatus() {
-				if(this.isMyProduct) return
+				if(this.isMyProduct || this.isMyAllCpy) return
 				//初始化菜单所有状态
 				// console.log(this.isPPI)
 				let arr = uni.$u.deepClone(this.isPPI ? this.ppiCate : this.menusList);
@@ -378,6 +415,15 @@
 							this.searchRes.push(ele)
 						}
 					})
+				}else if(this.isMyAllCpy) {
+					this.myAllCpy.forEach(ele => {
+						ele.name = ele.to_name
+						let i = ele.name.indexOf(this.keyword)
+						if(i > -1) {
+							ele.pp = [i, this.keyword.length]
+							this.searchRes.push(ele)
+						}
+					})
 				}else {
 					this.menusList2.forEach(ele => {
 						ele.list.forEach(item => {
@@ -402,6 +448,11 @@
 				if(this.isMyProduct) {
 					this.loading = true
 					await this.getCompanyProduct()
+					this.loading = false;
+				}
+				else if(this.isMyAllCpy) {
+					this.loading = true
+					await this.getAllCompany()
 					this.loading = false;
 				}
 				else if(this[this.isPPI ? 'ppiCate': 'menusList'].length == 0) {

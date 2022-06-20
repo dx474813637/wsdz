@@ -93,13 +93,23 @@
 					label="联系手机"
 					prop="userInfo.mobile"
 					ref="userInfo_mobile"
-					v-if="model.userInfo.mobile"
 				>
 					<u--input
 						v-model="model.userInfo.mobile"
 						disabled
 						disabledColor="#f8f8f8"
 					></u--input>
+				</u-form-item>
+				<u-form-item
+					label="展示手机"
+				>
+					<u-checkbox-group
+						v-model="checkbox_show_mobile1"
+						@change="checkboxChange1">
+						<view style="width: 100%;">
+							<u-checkbox name="show" label="联系手机在前台完整展示"></u-checkbox>
+						</view>
+					</u-checkbox-group>
 				</u-form-item>
 				<u-form-item
 					label="所在地"
@@ -204,13 +214,25 @@
 					label="联系手机"
 					prop="cpyInfo.mobile"
 					ref="cpyInfo_mobile"
-					v-if="model.userInfo.mobile"
 				>
 					<u--input
 						v-model="model.cpyInfo.mobile"
 						disabled
 						disabledColor="#f8f8f8"
 					></u--input>
+				</u-form-item>
+				<u-form-item
+					label="展示手机"
+					
+				>
+					<u-checkbox-group
+					    v-model="checkbox_show_mobile2"
+						@change="checkboxChange2">
+						<view style="width: 100%;">
+							<u-checkbox name="show" label="联系手机在前台完整展示"></u-checkbox>
+						</view>
+						
+					</u-checkbox-group>
 				</u-form-item>
 				<u-form-item
 					label="所在地"
@@ -287,6 +309,8 @@
 						type: 'B'
 					},
 				],
+				checkbox_show_mobile1: ['show'],
+				checkbox_show_mobile2: ['show'],
 				model: {
 					userInfo: {
 						type: 'C',
@@ -294,6 +318,7 @@
 						zip: '',
 						email: '',
 						mobile: '',
+						mobile_show: '1',
 						address: '',
 						credit_code: '',
 						regional: '',
@@ -308,7 +333,7 @@
 						zip: '',
 						email: '',
 						mobile: '',
-						mobile_show: '',
+						mobile_show: '1',
 						regional: '',
 						address: '',
 						credit_code: '',
@@ -374,6 +399,21 @@
 			this.$refs.userform.setRules(this.rules)
 		},
 		watch: {
+			['model.userInfo.mobile_show'](n) {
+				if(n == '1') {
+					this.checkbox_show_mobile1 = ['show']
+				}else {
+					this.checkbox_show_mobile1 = []
+				}
+			},
+			['model.cpyInfo.mobile_show'](n) {
+				console.log(n)
+				if(n == '1') {
+					this.checkbox_show_mobile2 = ['show']
+				}else {
+					this.checkbox_show_mobile2 = []
+				}
+			},
 			myCpy: {
 				deep: true,
 				handler(n) {
@@ -413,6 +453,12 @@
 				if(this.myCpy.state == 1) return
 				this.showUserType = true; 
 				uni.hideKeyboard()
+			},
+			checkboxChange1(v) {
+				this.model.userInfo.mobile_show = v[0] ? '1': '0'
+			},
+			checkboxChange2(v) {
+				this.model.cpyInfo.mobile_show = v[0] ? '1': '0'
 			},
 			async submit() {
 				

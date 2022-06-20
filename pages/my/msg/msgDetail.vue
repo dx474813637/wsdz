@@ -177,6 +177,11 @@
 			this.scrollToBottom()  
 			this.lunxun()
 		},
+		onUnload() {
+			console.log('onUnload')
+			clearInterval(this.timer)
+			this.timer = null
+		},
 		mounted() {  
 			query = uni.createSelectorQuery()
 			query.select('#scrollview').boundingClientRect()  

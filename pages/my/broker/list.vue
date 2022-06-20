@@ -51,7 +51,7 @@
 							:sub="item.remark || item.spec"
 							:status="item.state"
 							:type="item.trade_type"
-							:date="item.date"
+							:date="item.post_time"
 							:price="item.price"
 							:dprice="item.dprice"
 							:unit="item.unit"

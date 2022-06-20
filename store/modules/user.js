@@ -9,7 +9,9 @@ let state = {
 		sh: 1, //接口接收隐藏一些结构用
 		ppiCate: [],
 		myCpy: {},
+		myAllCpy: [],
 		myProduct: [],
+		moreMenus: {},
 	},
 	getters = {
 	},
@@ -38,8 +40,14 @@ let state = {
 		setMyCpy(state, data) {
 			state.myCpy = data;
 		},
+		setAllCpy(state, data) {
+			state.myAllCpy = data;
+		},
 		setMyProduct(state, data) {
 			state.myProduct = data;
+		},
+		setMoreMenus(state, data) {
+			state.moreMenus = data;
 		},
 	},
 	actions = {
@@ -47,6 +55,12 @@ let state = {
 			const res = await this._vm.$api.getCompanyProduct({params: {login: state.login, p: 1}});
 			if(res.code == 1) {
 				commit('setMyProduct', res.list)
+			}
+		},
+		async getAllCompany({commit, state}) {
+			const res = await this._vm.$api.getAllCompany();
+			if(res.code == 1) {
+				commit('setAllCpy', res.list)
 			}
 		},
 		async myCompany({commit, state}) {

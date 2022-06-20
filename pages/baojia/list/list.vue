@@ -161,29 +161,17 @@
 						icon: 'custom-icon-zhuzhuangtu'
 					},
 					{
-						name: '买盘',
-						url: '/pages/index/pan/pan?pan=b',
+						name: '定价中心',
+						isDev: 1,
 						type: 1,
-						icon: 'custom-icon-jinhuoqu'
+						icon: 'custom-icon-recharge'
 					},
 					{
-						name: '卖盘',
-						url: '/pages/index/pan/pan?pan=s',
+						name: '产业链',
+						url: '/pages/baojia/ichain/ichain',
 						type: 1,
-						icon: 'custom-icon-zu555'
+						icon: 'custom-icon-lianjie'
 					},
-					// {
-					// 	name: '定价中心',
-					// 	url: '/pages/baojia/list/list',
-					// 	type: 1,
-					// 	icon: 'custom-icon-caiyouduo_zhuye-weixuanzhong'
-					// },
-					// {
-					// 	name: '生意群',
-					// 	url: '/pages/baojia/list/list',
-					// 	type: 1,
-					// 	icon: 'custom-icon-caiyouduo_zhuye-weixuanzhong'
-					// },
 				],
 				memub: [],
 				ec: {
@@ -357,6 +345,13 @@
 				this.renderEc()
 			},
 			handleClickEcTabs(item) {
+				if(item.isDev == 1) {
+					uni.showToast({
+						title: '该功能正在拼命建设中',
+						icon: 'none'
+					})
+					return
+				}
 				if(item.hasOwnProperty('ec_type')) {
 					this.ecType = item.ec_type
 				}else {

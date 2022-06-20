@@ -7,27 +7,17 @@
 				ref="from"
 				labelWidth="80"
 				>
-				
 					<u-form-item
-						label="商品"
-						prop="standard"
-						ref="standard"
+						label="委托客户"
 						required
 					>
-						<view @click="show = true">
-							<u-input
-								:value="product"
-								placeholder="点击选择标准商品" 
-								readonly
-							>
-								<template slot="suffix">
-									<view class="">
-										<i class="custom-icon-unfold custom-icon"></i>
-									</view>	
-								</template>
-							</u-input>
-						</view>
-						
+						<view>{{model.Customer.name}}</view>
+					</u-form-item>
+					<u-form-item
+						label="商品"
+						required
+					>
+						<view>{{product}}</view>
 					</u-form-item>
 					<u-form-item
 						label=" "
@@ -272,96 +262,7 @@
 							:maxCount="5"
 						></u-upload>
 					</u-form-item> -->
-					<template v-if="auth == 1">
-						<u-form-item
-							label="报盘企业"
-							prop="customer_id"
-							ref="customer_id"
-							
-						>
-							<view @click="show2 = true">
-								<u-input
-									:value="model.customer_name"
-									placeholder="点击选择报盘企业" 
-									readonly
-								>
-									<template slot="suffix">
-										<view class="">
-											<i class="custom-icon-unfold custom-icon"></i>
-										</view>	
-									</template>
-								</u-input>
-							</view>
-						</u-form-item>
-						<u-form-item
-							label="企业角色"
-							prop="mdu"
-							ref="mdu"
-						>
-							 <u-radio-group
-							    v-model="model.mdu"
-							    placement="row"
-							  >
-							    <u-radio
-							      :customStyle="{marginRight: '8px'}"
-							      v-for="(item, index) in radiolist_mdu"
-							      :key="item.value"
-							      :label="item.name"
-							      :name="item.value"
-							    >
-							    </u-radio>
-							  </u-radio-group>
-						</u-form-item>
-						<u-form-item
-							label="报盘类型"
-							prop="post_type"
-							ref="post_type"
-						>
-							 <u-radio-group
-							    v-model="model.post_type"
-							    placement="row"
-							  >
-							    <u-radio
-							      :customStyle="{marginRight: '8px'}"
-							      v-for="(item, index) in radiolist_post_type"
-							      :key="item.value"
-							      :label="item.name"
-							      :name="item.value"
-							    >
-							    </u-radio>
-							  </u-radio-group>
-						</u-form-item>
-					</template>
-					<template v-if="myCpy.hasOwnProperty('Broker')">
-						<u-form-item
-							label="撮合员"
-						>
-							<view class="u-flex u-flex-items-center u-font-32">
-								<text>{{myCpy.Broker.contact}} ({{myCpy.Broker.mobile}})</text>
-								<i @click="handleGoto({
-									url: '/pages/index/webview/webview',
-									params: {
-										_a: 'msg',
-										f: 'detail',
-										name: this.myCpy.Broker.login,
-										tims: '1'
-									}
-								})" class="text-primary u-m-l-10 custom-icon-tims custom-icon u-font-28"></i>
-							</view>
-						</u-form-item>
-						<u-form-item
-							label="委托撮合"
-						>
-							<u-checkbox-group 
-							    v-model="checkbox_broker_login"
-								@change="checkboxChange">
-								<view style="width: 100%;">
-									<u-checkbox :name="myCpy.Broker.login" label="委托客户经理撮合，同时报盘中显示撮合员的联系方式。"></u-checkbox>
-								</view>
-								
-							</u-checkbox-group>
-						</u-form-item>
-					</template>
+					
 					
 					<u-form-item
 						label="详细需求"
@@ -390,23 +291,7 @@
 					</u-form-item>
 			</u--form>
 			
-			<menusPopup 
-				:show="show" 
-				theme="white"
-				:isMyProduct="true"
-				showMode="list"
-				@close="show = false"
-				@confirm="menusConfirm1"
-			></menusPopup>
 			
-			<menusPopup 
-				:show="show2" 
-				theme="white"
-				:isMyAllCpy="true"
-				showMode="list"
-				@close="show2 = false"
-				@confirm="menusConfirm2"
-			></menusPopup>
 		</view>
 		<view class="u-p-t-20 u-m-b-40">
 			<u-button type="primary" @click="submit">提交</u-button>
@@ -423,11 +308,11 @@
 			return {
 				pid: '',
 				pan: 'b',
-				cpy: '',
 				product: '',
 				prodInfo: '',
 				prodInfoLoading: false,
 				model: {
+					Customer: {name: ''},
 					product_id: '',
 					name: '',
 					order_type: '2',
@@ -551,7 +436,6 @@
 						{label: '下旬', value: 'ltd'},
 					]
 				],
-				checkbox_broker_login:[],
 				
 			}
 		},
@@ -663,6 +547,7 @@
 				if(options.hasOwnProperty('data')) {
 					const data = JSON.parse(decodeURIComponent(options.data))
 					console.log(data)
+					this.model.Customer = data.Customer
 					this.model.delivery_place = data.delivery_place
 					this.model.product_id = data.product_id
 					this.model.name = data.name
@@ -677,7 +562,6 @@
 					this.model.post_type = data.post_type
 					this.model.express_time = data.express_time
 					this.model.broker_login = data.broker_login
-					this.checkbox_broker_login = [data.broker_login]
 					this.model.express_unit = data.express_unit
 					this.model.express_unit_label = this.expressUnit[0].filter(ele => ele.value == data.express_unit)[0]?.label
 					this.model.settle_month = data.settle_month
@@ -716,10 +600,6 @@
 			...mapActions({
 				getAddressArea: 'user/getAddressArea'
 			}),
-			checkboxChange(v) {
-				console.log(v)
-				this.model.broker_login = v[0] ? v[0]: ''
-			},
 			async getCompanyProductDetail() {
 				const res = await this.$api.getCompanyProductDetail({params: {id: this.model.product_id}})
 				if(res.code == 1) {
@@ -744,20 +624,6 @@
 			onchange(e) {
 				console.log('onchange:', e);
 				this.$refs.from.validateField('delivery_place')
-			},
-			async menusConfirm1(data) {
-				console.log(data)
-				this.product = data.name
-				this.model.product_id = data.id
-				if(!this.model.name) this.model.name = data.name
-				this.show = false;
-				
-				this.prodInfoLoading = true
-				await this.getCompanyProductDetail()
-				this.prodInfoLoading = false
-				if(this.pan == 'b') {
-					this.model.spec = this.prodInfo
-				}
 			},
 			async menusConfirm2(data) {
 				console.log(data)
@@ -786,12 +652,10 @@
 				this.$refs.from.validateField('settle_month')
 			},
 			setPageTitle() {
-				let title = '';
-				if(this.pid) title = '更新'
-				else title = '发布'
+				let title = '客户委托';
 				
-				if(this.pan == 'b') title += '买盘'
-				else if(this.pan == 's') title += '卖盘'
+				if(this.pan == 'b') title += '买盘详情'
+				else if(this.pan == 's') title += '卖盘详情'
 				
 				uni.setNavigationBarTitle({
 					title: title
@@ -804,24 +668,17 @@
 					
 					let func = ''
 					if(this.pan == 's') {
-						if(this.pid) {
-							func = 'changeSell'
-						}else {
-							func = 'createSell'
-						}
+						func = 'brokerChangeSell'
+						
 					}else {
-						if(this.pid) {
-							func = 'changeBuy'
-						}else {
-							func = 'createBuy'
-						}
+						func = 'brokerChangeBuy'
 					}
 					let params = {...this.model};
 					if(this.pid) params.id = this.pid
 					const r = await this.$api[func](params)
 					if(r.code == 1) {
 						uni.redirectTo({
-							url: `/pages/my/broker/list?pan=${this.pan}`,
+							url: `/pages/my/broker/auth_list?pan=${this.pan}`,
 							success() {
 								uni.showToast({
 									title: r.msg,

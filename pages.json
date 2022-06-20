@@ -102,6 +102,18 @@
 				"navigationStyle": "custom",
 				"navigationBarTextStyle": "white"
 			}
+		},{
+			"path": "ichain/ichain",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white"
+			}
+		},{
+			"path": "ichain/detail",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white"
+			}
 		}]
 	}, {
 		"root": "pages/my",
@@ -419,10 +431,31 @@
 			}
 
 		}, {
+			"path": "moreMenus/blacklist",
+			"style": {
+				"navigationBarTitleText": "发布黑名单",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "moreMenus/sc",
+			"style": {
+				"navigationBarTitleText": "供应链服务",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "moreMenus/sinoaaa",
+			"style": {
+				"navigationBarTitleText": "风险评级",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#fff"
+			}
+
+		}, {
 			"path": "msg/msg",
 			"style": {
 				"navigationStyle": "custom",
-				"navigationBarTitleText": "消息列表",
 				"navigationBarTextStyle": "white"
 			}
 
@@ -430,8 +463,21 @@
 			"path": "msg/msgDetail",
 			"style": {
 				"navigationStyle": "custom",
-				"navigationBarTitleText": "消息详情",
 				"navigationBarTextStyle": "white"
+			}
+
+		}, {
+			"path": "broker/auth_list",
+			"style": {
+				"navigationBarTitleText": "客户委托列表",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "broker/auth_list_edit",
+			"style": {
+				"navigationBarTitleText": "客户委托详情",
+				"enablePullDownRefresh": false
 			}
 
 		}]

@@ -158,6 +158,7 @@
 			}
 		},
 		async onLoad(options) {
+			console.log(options)
 			if(options.hasOwnProperty('current')) {
 				this.tabs_current = Number(options.current)
 			}
@@ -192,6 +193,7 @@
 			},
 			async handleTabsChange(obj) {
 				this.tabs_current = obj.index
+				this.customShareParams.current = obj.index
 				this.changeTabsStatus('disabled', true)
 				this.initParamas();
 				uni.showLoading();
@@ -206,6 +208,7 @@
 				this.loadstatus = 'loading'
 				const res = await this.$api.getPidTrade({params: this.paramsObj})
 				if(res.code == 1) {
+					this.setOnlineControl(res)
 					this.indexList = [...this.indexList, ...res.list]
 					if(this.indexList.length == res.total) {
 						this.loadstatus = 'nomore'

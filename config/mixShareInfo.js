@@ -4,8 +4,9 @@ export default {
 			onlineControl: {
 				share_img: '',
 				share_title: '',
-				title: ''
+				title: '',
 			},
+			customShareParams: {}
 		}
 	},
 	async onLoad(options) {
@@ -39,32 +40,36 @@ export default {
 					title: res.title 
 				})
 			}
-			
-			
-			
 		},
 		getQuery() {
-			let fullPath = this.$scope.$page.fullPath
-			let login = `poster=${uni.getStorageSync('poster')}`
-			let query = ''
-			if(fullPath.includes('?')) {
-				query = fullPath.split('?')[1] + '&' + login
-			} else {
-				query = login
+			let options = {
+				...this.$scope.options,
+				...this.customShareParams,
+				poster: uni.getStorageSync('poster')
 			}
+			let query = ''
+			query += Object.keys(options).map(ele => {
+				return `${ele}=${options[ele]}`
+			}).join('&')
 			console.log(query)
-			return query
+			return {
+				query
+			}
 		},
 		getPath() {
-			let fullPath = this.$scope.$page.fullPath
-			let login = `poster=${uni.getStorageSync('poster')}`
-			if (fullPath.includes('?')) {
-				login = '&' + login
-			} else {
-				login = '?' + login
+			
+			let basePath = this.$scope.route
+			let options = {
+				...this.$scope.options,
+				...this.customShareParams,
+				poster: uni.getStorageSync('poster')
 			}
-			console.log(fullPath + login)
-			return fullPath + login
+			let query = `/${basePath}?`
+			query += Object.keys(options).map(ele => {
+				return `${ele}=${options[ele]}`
+			}).join('&')
+			console.log(query)
+			return query
 		},
 		// getShareTitle() {
 		// 	let title = uni.getStorageSync('home').title || '旺铺'

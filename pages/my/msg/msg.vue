@@ -103,6 +103,7 @@
 			this.lunxun()
 		},
 		onUnload() {
+					console.log('onUnload')
 			clearInterval(this.timer)
 			this.timer = null
 		},
@@ -118,6 +119,7 @@
 				clearInterval(this.timer)
 				this.timer = null
 				this.timer = setInterval(async () => {
+					console.log('setIn')
 					if(this.refresher || this.loading || this.lunxunLoading || this.loadstatus == 'loading') return
 					this.lunxunLoading = true;
 					this.initParamas()
@@ -182,7 +184,7 @@
 					url: `/pages/my/msg/msgDetail?id=${id}`
 				})
 			},
-		}
+		},
 	}
 </script>
 

@@ -26,7 +26,7 @@
 			</view>
 		</view>
 		<view class="card-footer u-flex u-flex-between u-flex-items-center u-p-12">
-			<view class="item text-light u-font-28">{{date}}</view>
+			<view class="item text-light u-font-28">更新于{{date | date2timestamp | timeFrom}}</view>
 			<view class="item u-flex u-flex-items-center">
 				<!-- <view class="u-p-l-12">
 					<u-button 
@@ -38,7 +38,7 @@
 						@click.stop="handleResubmit"
 					>重发</u-button>
 				</view> -->
-				<view class="u-p-l-12">
+				<view class="u-p-l-12" v-if="!isAuth">
 					<u-button 
 						type="error" 
 						size="mini" 
@@ -103,6 +103,10 @@
 				default:() => {
 					return {}
 				},
+			},
+			isAuth: {
+				type: Boolean,
+				default: false
 			},
 			boxShadow: {
 				type: String,

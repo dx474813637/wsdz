@@ -31,6 +31,8 @@ export const getStancate = (data) => http.get('stancate', data)
 export const getStandard = (data) => http.get('standard', data)
 //获取 客户信息列表 参数p
 export const getCompany = (data) => http.get('company', data)
+//获取 全部客户信息列表
+export const getAllCompany = (data) => http.get('all_customer', data)
 //获取 客户信息明细 参数login
 export const getCompanyDetail = (data) => http.get('company_detail', data)
 //获取 客户商品列表 参数login、p
@@ -51,6 +53,11 @@ export const getCompanyProductDetail = (data) => http.get('company_product_detai
  * 价格区间 minp - maxp 元
  * 现货类型 trdtype 1合约2即期
  * 交货地 dplace 地区编码 
+ * 
+ * 委托撮合 broker_login 
+ * 委托客户经理撮合，同时报盘中显示撮合员的联系方式。
+ * (只有c开头的账号允许填写)
+ * 
  */
 //获取 买盘列表 参数p
 export const getBuy = (data) => http.get('buy', data)
@@ -157,6 +164,10 @@ export const logout = (data) => http.get('logout', data)
 // 交收期-旬： settle_date td-上旬mtd-中旬td-下旬*现货类型为1-合约现货时必输
 // 交货地： delivery_place *地区编码：110102-西城区
 // 详细需求： intro
+// 报盘企业id: customer_id   brokert填写调用报盘企业列表-broker 
+// 报盘企业名：customer_name   brokert填写调用报盘企业列表-broker 
+// 企业角色： mdu   broker填写D-经销商U-下游用户 
+// 报盘类型： post_type  brokert填写1-替报0-自报
 // 我的买盘 参数p
 export const myBuy = (data) => http.get('my_buy', data)
 // 创建买盘
@@ -183,6 +194,10 @@ export const deleteBuy = (data) => http.get('delete_buy', data)
 // 交货地： delivery_place *地区编码：110102-西城区
 // 图片： pics 多个图片用，逗▣号隔开
 // 备注： remark
+// 报盘企业id: customer_id   brokert填写调用报盘企业列表-broker 
+// 报盘企业名：customer_name   brokert填写调用报盘企业列表-broker 
+// 企业角色： mdu   broker填写D-经销商U-下游用户 
+// 报盘类型： post_type  brokert填写1-替报0-自报
 // 我的卖盘 参数p
 export const mySell = (data) => http.get('my_sell', data)
 // 修改卖盘状态 参数id 卖盘id state 1-激活 0-取消激活
@@ -257,15 +272,46 @@ export const createProduct = (data, config={}) => http.post('create_product', da
 export const changeProduct = (data, config={}) => http.post('change_product', data, config)
 
 
+// =============风险评级
+// 评级字段说明
+export const sinoaaaIndex = (data) => http.get('sinoaaa_index', data)
+// 搜索 精准 参数name 企业名称
+export const sinoaaaSearch = (data) => http.get('sinoaaa_search', data)
+
+// 发布黑名单
+export const blacklist = (data) => http.get('blacklist', data)
+// 供应链服务
+export const scm = (data) => http.get('scm', data)
+
+// =====客户管理 
+// broker  客户管理列表 
+// 参数state 1-已使用 0-未使用 p页数
+export const broker = (data) => http.get('broker', data)
+// add_customer 领取客户账号 
+export const addCustomer = (data) => http.get('add_customer', data)
 
 
+// 参数：
+// 客户ID：id * 客户列表（broker）里的to_id
+// 客户名称：name
+// 联系人：contact
+// 邮箱：email
+// 手机：mobile
+// edit_customer 修改我的客户信息
+export const editCustomer = (data, config={}) => http.post('edit_customer', data, config)
+// broker_buy 参数 terms商品名称搜索 product_id商品ID搜索 p页数
+export const brokerBuy = (data) => http.get('broker_buy', data)
+// broker_change_buy 修改客户委托买盘 参数跟修改买盘一致
+export const brokerChangeBuy = (data, config={}) => http.post('broker_change_buy', data, config)
+// broker_able_buy 修改客户委托买盘状态 参数跟修改买盘状态一致
+export const brokerAbleBuy = (data) => http.get('broker_able_buy', data)
 
-
-
-
-
-
-
+// broker_sell 客户委托卖盘 参数 terms商品名称搜索 product_id商品ID搜索 p页数
+export const brokerSell = (data) => http.get('broker_sell', data)
+// broker_change_sell 修改客户委托卖盘 参数跟修改卖盘一致
+export const brokerChangeSell = (data, config={}) => http.post('broker_change_sell', data, config)
+// broker_able_sell 修改客户委托卖盘状态 参数跟修改卖盘状态一致
+export const brokerAbleSell = (data) => http.get('broker_able_sell', data)
 
 
 

@@ -177,9 +177,14 @@
 							<view class="item-label" :style="{
 								color: themeConfig.pan.pageTextSub
 							}">手机</view>
-							<view class="item-content" :style="{
-								color: themeConfig.pan.baseText
-							}">{{cpy.mobile_show ? cpy.mobile : cpy.mobile1}}</view>
+							<view class="item-content u-flex u-flex-items-center" 
+								@click="makePhone(cpy.mobile)"
+								:style="{
+									color: themeConfig.pan.baseText
+								}">
+								{{cpy.mobile_show ? cpy.mobile : cpy.mobile1}}
+								<i class="custom-icon-shouji custom-icon u-m-l-10"></i>
+							</view>
 						</view>
 						<view class="item u-flex u-flex-items-baseline u-m-b-20" v-if="cpy.email">
 							<view class="item-label" :style="{
@@ -311,27 +316,32 @@
 			:customStyle="{
 				'boxShadow': '0 0 10rpx rgba(0,0,0,.1)'
 			}">
-			<view class="pan-tabbar u-flex u-flex-items-center u-flex-between "
+			<view class="pan-tabbar u-flex u-flex-items-center u-flex-around "
 				:style="{
 					color: themeConfig.tabText,
 					backgroundColor: themeConfig.tabBg,
 				}"
 			>
-				<view @click="handleTimesBtn" class="item-btn u-flex-1  u-flex u-flex-items-center u-flex-center">
+				<view @click="handleGoto('/pages/index/index')" class="item-btn  u-flex u-flex-items-center u-flex-center">
+					<text>首页</text>
+				</view>
+				<u-line direction="col" :color="themeConfig.pageTextSub" length="30%"></u-line>
+				<view @click="handleTimesBtn" class="item-btn  u-flex u-flex-items-center u-flex-center">
 					<i class="custom-icon-tims custom-icon"></i>
 					<text>在线联系</text>
 				</view>
-				<!-- <u-line direction="col" :color="themeConfig.pageTextSub" length="30%"></u-line>
-				<view class="item-btn u-flex-1 u-flex u-flex-items-center u-flex-center"
+				<u-line direction="col" :color="themeConfig.pageTextSub" length="30%"></u-line>
+				<!-- <view class="item-btn u-flex u-flex-items-center u-flex-center"
 					:style="{
 						color: themeConfig.tabTextActive
 					}"
 				>
 					<i class="custom-icon-add-product custom-icon"></i>
 					<text class="u-p-l-10">立即下单</text>
-				</view> -->
+				</view>
 				<u-line direction="col" :color="themeConfig.pageTextSub" length="30%"></u-line>
-				<view class="item-btn u-flex-1  u-flex u-flex-items-center u-flex-center">
+				 -->
+				 <view class="item-btn  u-flex u-flex-items-center u-flex-center">
 					<u-button open-type="share" :customStyle="{
 						color: themeConfig.tabText,
 						backgroundColor: 'transparent',
@@ -413,6 +423,11 @@
 			...mapMutations({
 				handleGoto: 'user/handleGoto'
 			}),
+			makePhone(mobile) {
+				uni.makePhoneCall({
+					phoneNumber: mobile 
+				});
+			},
 			handleBackEvent() {
 				uni.navigateBack()
 			},

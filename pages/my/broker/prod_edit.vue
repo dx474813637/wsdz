@@ -170,58 +170,6 @@
 					<u-button type="primary" @click="submit">提交</u-button>
 				</view>
 			</view>
-			<!-- <view class="main2 ">
-				<view class="list" v-if="tabs_current != 0">
-					<u-list
-						height="100%"
-						enableBackToTop
-						@scrolltolower="scrolltolower"
-						:preLoadingScreen="100"
-					>
-						<u-list-item
-							v-for="(item, index) in indexList"
-							:key="item.id"
-						>
-							<view class="u-p-10">
-								<BrokerCard
-									:pid="item.id"
-									:name="item.name"
-									:sub="item.remark || item.spec"
-									:status="item.state"
-									:type="item.trade_type"
-									:date="item.date"
-									:price="item.price"
-									:dprice="item.dprice"
-									:unit="item.unit"
-									:origin="item"
-									@changeStatus="handleChangeStatus"
-									@delet="handleDelet"
-									@resubmit="handleResubmit"
-									@detail="handleProdDetail"
-								></BrokerCard>
-							</view>
-							
-						</u-list-item>
-						
-						<template name="dataStatus">
-							<template v-if="indexList.length == 0">
-								<u-empty
-									mode="data"
-									:icon="typeConfig.white.empty"
-								>
-								</u-empty>
-							</template>
-							<template v-else>
-								<u-loadmore
-									:status="loadstatus"
-								/>
-							</template>
-						</template>
-					</u-list>
-				</view>
-					
-			</view>
-			 -->
 		</view>
 	</view>
 </template>

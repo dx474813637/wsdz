@@ -34,7 +34,7 @@
 </template>
 
 <script>
-	import {mapState} from 'vuex'
+	import {mapState, mapMutations} from 'vuex'
 	export default {
 		props: {
 			theme: {
@@ -74,10 +74,18 @@
 			this.getData();
 		},
 		methods: {
+			...mapMutations({
+				setMoreMenus: 'user/setMoreMenus'
+			}),
 			async getData() {
 				const res = await this.$api.getMenus();
 				if(res.code == 1) {
 					this.list = res.list
+					this.setMoreMenus({
+						menusList: res.wd_memu,
+						menusTitle: res.wd_memu_name,
+						menusShow: res.wd_memu_show,
+					})
 				}
 			},
 			handleClick(index) {

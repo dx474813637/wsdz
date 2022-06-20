@@ -10,6 +10,18 @@ const expressUnit = v => {
 	else if(v == 'h') return '小时'
 	else return v
 }
+//过滤商品属性值用于显示
+const filterAttributes = v => {
+	if(!v || v.length == 0) return ''
+	return v.filter(ele => ele.code == 'attr_common_11' || ele.code == 'attr_common_12')
+			.reduce((pre, item, index) => {
+				let str = '';
+				if(item.code == 'attr_common_12') str += '规格属性：'
+				else if(item.code == 'attr_common_11') str += '品牌/产地：'
+				
+				return `${pre}${str}${item.value}。`
+			}, '')
+}
 //时间日期 转 时间戳
 const date2timestamp = v => {
 	if(!v) return ''
@@ -68,5 +80,6 @@ export default {
 	date2szx,
 	postType2fbr,
 	auth2str,
-	price2str
+	price2str,
+	filterAttributes
 }
