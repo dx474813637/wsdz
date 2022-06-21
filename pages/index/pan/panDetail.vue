@@ -292,6 +292,7 @@
 						:express_unit="item.express_unit"
 						:trade_type="item.trade_type"
 						:pubDate="item.post_time"
+						@tims="handleClickTims"
 						@detail="handleRouteTo"
 					></cardA>
 				</view>
@@ -485,6 +486,16 @@
 					url: `/pages/index/pan/panDetail?id=${id}&pan=${this.pan}`
 				})
 			},
+			
+			handleClickTims({tims, id}) {
+				this.handleGoto({
+					url: '/pages/my/msg/msgDetail',
+					params: {
+						login: `${tims.login}`,
+						content: ``
+					}
+				})
+			}
 			handleTimesBtn() {
 				// if(this.sh == 1) return
 				this.handleGoto({
