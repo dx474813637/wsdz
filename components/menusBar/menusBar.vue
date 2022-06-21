@@ -75,12 +75,14 @@
 		},
 		methods: {
 			...mapMutations({
-				setMoreMenus: 'user/setMoreMenus'
+				setMoreMenus: 'user/setMoreMenus',
+				setNewMsg: 'user/setNewMsg'
 			}),
 			async getData() {
 				const res = await this.$api.getMenus();
 				if(res.code == 1) {
 					this.list = res.list
+					this.setNewMsg(res.news)
 					this.setMoreMenus({
 						menusList: res.wd_memu,
 						menusTitle: res.wd_memu_name,

@@ -70,6 +70,23 @@ const price2str = (price, dprice) => {
 	else return '点价'
 }
 
+const chatTimeFilter = (v, flag) => {
+	if(!flag) v = v*1000
+	console.log(v)
+	if(!v) return uni.$u.timeFormat(new Date().getTime(), 'yyyy年mm月dd日 hh:MM')
+	const yesterday_start = new Date(new Date(new Date() - 24*60*60*1000).toLocaleDateString()).getTime()
+	const yesterday_end = new Date(new Date().toLocaleDateString()).getTime()
+	const cur_year = new Date(`${new Date().getFullYear()}/01/01`).getTime()
+	if(v >= yesterday_end) return uni.$u.timeFormat(v, 'hh:MM')
+	else if(v >= yesterday_start) return '昨天' + uni.$u.timeFormat(v, 'hh:MM')
+	else if(v >= cur_year) return uni.$u.timeFormat(v, 'mm月dd日 hh:MM')
+	else  return uni.$u.timeFormat(v, 'yyyy年mm月dd日 hh:MM')
+	
+	// new Date().getTime() - new Date(new Date().toLocaleDateString()).getTime()
+
+
+}
+
 export default {
 	type2str,
 	expressUnit,
@@ -81,5 +98,6 @@ export default {
 	postType2fbr,
 	auth2str,
 	price2str,
-	filterAttributes
+	filterAttributes,
+	chatTimeFilter
 }

@@ -313,7 +313,17 @@ export const brokerChangeSell = (data, config={}) => http.post('broker_change_se
 // broker_able_sell 修改客户委托卖盘状态 参数跟修改卖盘状态一致
 export const brokerAbleSell = (data) => http.get('broker_able_sell', data)
 
+// tims_news_list 未读消息列表
+export const timsNewsList = (data) => http.get('tims_news_list', data)
+// tims_send 发送消息 参数login body
+export const timsSend = (data, config={}) => http.post('tims_send', data, config)
+// tims_news 未读消息 参数login 进聊天界面的未读消息
+export const timsNews = (data) => http.get('tims_news', data)
+// tims_news_history 历史消息 参数login  历史消息
+export const timsNewsHistory = (data) => http.get('tims_news_history', data)
 
+
+// （弃）tims_news_history2 历史消息2 参数login 昨天之前的历史消息
 
 
 

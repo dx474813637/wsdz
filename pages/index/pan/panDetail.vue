@@ -173,7 +173,7 @@
 								color: themeConfig.pan.baseText
 							}">{{cpy.address}}</view>
 						</view>
-						<view class="item u-flex u-flex-items-baseline u-m-b-20">
+						<view class="item u-flex u-flex-items-baseline u-m-b-20" v-if="cpy.mobile">
 							<view class="item-label" :style="{
 								color: themeConfig.pan.pageTextSub
 							}">手机</view>
@@ -183,7 +183,20 @@
 									color: themeConfig.pan.baseText
 								}">
 								{{cpy.mobile_show ? cpy.mobile : cpy.mobile1}}
-								<i class="custom-icon-shouji custom-icon u-m-l-10"></i>
+								<i class="custom-icon-dianhua custom-icon u-m-l-10"></i>
+							</view>
+						</view>
+						<view class="item u-flex u-flex-items-baseline u-m-b-20" v-if="cpy.tel">
+							<view class="item-label" :style="{
+								color: themeConfig.pan.pageTextSub
+							}">联系</view>
+							<view class="item-content u-flex u-flex-items-center" 
+								@click="makePhone(cpy.tel)"
+								:style="{
+									color: themeConfig.pan.baseText
+								}">
+								{{cpy.tel}}
+								<i class="custom-icon-dianhua custom-icon u-m-l-10"></i>
 							</view>
 						</view>
 						<view class="item u-flex u-flex-items-baseline u-m-b-20" v-if="cpy.email">
@@ -259,7 +272,7 @@
 				:style="{
 					color: themeConfig.pan.lightcolor
 				}"
-			>该卖家的其他供位</view>
+			>{{`该${pan == 's'? '卖家的其他供应' : '买家的其他求购'}`}}</view>
 			
 			<view class="other-list">
 				<view class="item u-m-b-20"
@@ -436,8 +449,8 @@
 				// console.log(res)
 				if(res.code == 1) {
 					this.list = res.list
-					this.tabs_desc[0].content = this.list.Product?.intro
-					this.tabs_desc[1].content = this.list.Product?.remark
+					this.tabs_desc[0].content = this.list.intro
+					this.tabs_desc[1].content = this.list.remark
 					this.setOnlineControl(res)
 				}
 			},
@@ -475,16 +488,23 @@
 			handleTimesBtn() {
 				// if(this.sh == 1) return
 				this.handleGoto({
-					url: '/pages/index/webview/webview',
+					url: '/pages/my/msg/msgDetail',
 					params: {
-						_a: 'msg',
-						f: 'detail',
-						id: `${this.list.Tims.id}_${this.list.Tims.ctime}`,
-						ttype: this.pan == 's'? 'sell': 'buy',
-						tid: this.id,
-						tims: '1'
+						login: `${this.list.Tims.login}`,
+						content: ``
 					}
 				})
+				// this.handleGoto({
+				// 	url: '/pages/index/webview/webview',
+				// 	params: {
+				// 		_a: 'msg',
+				// 		f: 'detail',
+				// 		id: `${this.list.Tims.id}_${this.list.Tims.ctime}`,
+				// 		ttype: this.pan == 's'? 'sell': 'buy',
+				// 		tid: this.id,
+				// 		tims: '1'
+				// 	}
+				// })
 			}
 		}
 	}

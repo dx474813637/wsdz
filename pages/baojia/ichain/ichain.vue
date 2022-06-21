@@ -29,8 +29,8 @@
 							<view class="u-p-10 u-font-32">
 								{{item.pname}}
 							</view>
-							<view class="u-p-10 u-font-24 text-gray">
-								<rich-text :nodes="item.spec" class="u-line-4"></rich-text>
+							<view class="u-p-l-10 u-p-r-10 u-font-24 text-gray xx">
+								<rich-text :nodes="`<div style='display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 4;line-clamp: 4;overflow: hidden;height: 128rpx;'>${item.spec}</div>`"></rich-text>
 							</view>
 							<view class="u-p-20">
 								<u-line color="#e2e2e2"></u-line>
@@ -48,8 +48,8 @@
 							<view class="u-p-10 u-font-32">
 								{{item.name}}
 							</view>
-							<view class="u-p-10 u-font-24 text-gray">
-								<rich-text :nodes="item.spec" class="u-line-4"></rich-text>
+							<view class="u-p-l-10 u-p-r-10  u-font-24 text-gray xx">
+								<rich-text :nodes="`<div style='display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 4;line-clamp: 4;overflow: hidden;height: 128rpx;'>${item.spec}</div>`"></rich-text>
 							</view>
 							<view class="u-p-20">
 								<u-line color="#e2e2e2"></u-line>
@@ -172,6 +172,15 @@ export default {
 </script>
 
 <style lang="scss">
+	.xx {
+		>rich-text {
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: 4;
+			overflow: hidden;
+			height: 128rpx;
+		}
+	}
 .text-dark {
 	color: #333;
 }

@@ -1,38 +1,68 @@
 <template>
 	<view class="card-w"
 		:class="{
-			'isMe': msg.isMe == 1
+			'isMe': msg.sender == login
 		}"
 	>
 		<view class="chat-time u-text-center u-p-20 u-font-28" :style="{
 			color: themeConfig.msg.detail.timeColor
 		}"
 			v-if="msg.showTime == 1"
-		>{{msg.time | date2timestamp | timeFrom}}</view>
+		>{{msg.sendtime | chatTimeFilter}}</view>
 		<view class=" u-flex"
 			:class="{
-				'u-flex-x-reverse': msg.isMe == 1
+				'u-flex-x-reverse': msg.sender == login
 			}">
 			<view class="item item-avatar u-flex u-flex-center">
-				<u-image 
+				<view class="wrapper u-flex u-flex-items-center u-flex-center"
+					:style="{
+						backgroundColor: themeConfig.msg.detail.avatarBg,
+					}"
+				>
+					<i class="custom-icon-myfill custom-icon u-font-28":style="{
+						color: themeConfig.msg.detail.avatarColor,
+					}"></i>
+				</view>
+				
+				<!-- <u-image 
 					:src="msg.avatar" 
 					radius="5"
 					width="35" 
 					height="35"
-				 ></u-image>
+				 ></u-image> -->
 			</view>
 			<view class="item item-info u-p-15 u-p-l-20 u-p-r-20 "
 					:style="{
-						color: msg.isMe == 1 ? themeConfig.msg.detail.contentBg1 : themeConfig.msg.detail.contentBg2,
-						background: msg.isMe == 1 ? themeConfig.msg.detail.contentBg1: themeConfig.msg.detail.contentBg2
+						color: msg.sender == login ? themeConfig.msg.detail.contentBg1 : themeConfig.msg.detail.contentBg2,
+						background: msg.sender == login ? themeConfig.msg.detail.contentBg1: themeConfig.msg.detail.contentBg2
 					}">
-				<rich-text 
-					:nodes="msg.content"
-					class="u-font-28"
-					:style="{
-						color: themeConfig.msg.detail.contentColor
-					}"
-				></rich-text>
+					<view class="u-content"
+						:style="{
+							color: themeConfig.msg.detail.contentColor
+						}"
+					>
+						<u-parse :content="msg.body"></u-parse>
+					</view>
+				
+			</view>
+			<view class="item u-p-l-20 u-p-t-12 u-p-r-20 " v-if="msg.hasOwnProperty('state')">
+				<template v-if="msg.state == 'loading'">
+					<u-loading-icon 
+						show 
+						mode="circle" 
+						size="20"
+						:inactiveColor="themeConfig.msg.detail.loading"
+						:color="themeConfig.msg.detail.inactiveloading"
+					></u-loading-icon>
+				</template>
+				<template v-if="msg.state == 'error'">
+					<u-icon 
+						@click="$emit('reset', msg)"
+						name="error-circle-fill" 
+						size="20" 
+						:color="themeConfig.redText"
+					></u-icon>
+				</template>
 			</view>
 		</view>
 		
@@ -57,6 +87,7 @@
 		computed: {
 			...mapState({
 				typeActive: state => state.theme.typeActive,
+				login: state => state.user.login,
 			}),
 			...mapGetters({
 				themeConfig: 'theme/themeConfig'
@@ -69,6 +100,9 @@
 </script>
 
 <style lang="scss" scoped>
+	.u-content {
+		font-size: 14px;
+	}
 	.pos {
 		position: relative;
 	}
@@ -86,6 +120,11 @@
 		}
 		.item-avatar{
 			width: 60px;
+			.wrapper {
+				width: 35px;
+				height: 35px;
+				border-radius: 5px;
+			}
 		}
 		.item-avatar,
 		.item-info {

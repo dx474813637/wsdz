@@ -198,14 +198,10 @@
 			
 			handleClickTims({tims, id}) {
 				this.handleGoto({
-					url: '/pages/index/webview/webview',
+					url: '/pages/my/msg/msgDetail',
 					params: {
-						_a: 'msg',
-						f: 'detail',
-						id: `${tims.id}_${tims.ctime}`,
-						ttype: this.pan == 's'? 'sell': 'buy',
-						tid: id,
-						tims: '1'
+						login: `${tims.login}`,
+						content: ``
 					}
 				})
 			},

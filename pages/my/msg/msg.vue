@@ -30,7 +30,6 @@
 					:refresher-default-style="typeActive == 'dark'?'white': 'black' "
 					:refresher-triggered="refresher"
 					@refresherrefresh="refresherrefresh"
-					@scrolltolower="scrolltolower"
 				>
 					<view
 						v-for="(item, index) in indexList"
@@ -52,11 +51,11 @@
 						>
 						</u-empty>
 					</template>
-					<template v-else>
+					<!-- <template v-else>
 						<u-loadmore
 							:status="loadstatus"
 						/>
-					</template>
+					</template> -->
 				</scroll-view>
 			</template>
 		
@@ -120,13 +119,9 @@
 				this.timer = null
 				this.timer = setInterval(async () => {
 					console.log('setIn')
-					if(this.refresher || this.loading || this.lunxunLoading || this.loadstatus == 'loading') return
+					// if(this.refresher || this.loading || this.lunxunLoading || this.loadstatus == 'loading') return
 					this.lunxunLoading = true;
-					this.initParamas()
-					const res = await this.$api.getMsgList({params: this.paramsObj})
-					if(res.code == 1) {
-						this.indexList = res.list
-					}
+					await this.refreshList()
 					this.lunxunLoading = false;
 					// const list = []
 					// for(let i = 0; i < this.curP; i++) {
@@ -136,21 +131,21 @@
 					// 	console.log(res)
 					// })
 					
-				}, 30000)
+				}, 10000)
 			},
 			async refreshList() {
 				this.initParamas()
 				await this.getData()
 			},
 			initParamas() {
-				this.curP = 1;
+				// this.curP = 1;
 				// this.indexList = [];
 				this.loadstatus = 'loadmore'
 			},
-			scrolltolower() {
-				if(this.lunxunLoading) return
-				this.getMoreData()
-			},
+			// scrolltolower() {
+			// 	if(this.lunxunLoading) return
+			// 	this.getMoreData()
+			// },
 			async refresherrefresh() {
 				uni.showLoading()
 				this.refresher = true;
@@ -160,28 +155,32 @@
 			async getData() {
 				if(this.loadstatus != 'loadmore') return
 				this.loadstatus = 'loading'
-				await uni.$u.sleep(1000)
-				const res = await this.$api.getMsgList({params: this.paramsObj})
+				const res = await this.$api.timsNewsList()
 				
 				if(res.code == 1) {
 					this.loading = false
-					if(this.curP == 1) this.indexList = res.list
-					else this.indexList = [...this.indexList, ...res.list]
-					if(this.indexList.length >= res.total) {
-						this.loadstatus = 'nomore'
-					}else {
-						this.loadstatus = 'loadmore'
-					}
+					this.indexList = res.list
+					// if(this.curP == 1) this.indexList = res.list
+					// else this.indexList = [...this.indexList, ...res.list]
+					// if(this.indexList.length >= res.total) {
+					// 	this.loadstatus = 'nomore'
+					// }else {
+					// 	this.loadstatus = 'loadmore'
+					// }
 				}
 			},
-			async getMoreData() {
-				if(this.loadstatus != 'loadmore') return
-				this.curP ++
-				await this.getData()
-			},
-			handleRouteTo({id}) {
+			// async getMoreData() {
+			// 	if(this.loadstatus != 'loadmore') return
+			// 	this.curP ++
+			// 	await this.getData()
+			// },
+			handleRouteTo(data) {
+				
 				uni.navigateTo({
-					url: `/pages/my/msg/msgDetail?id=${id}`
+					url: `/pages/my/msg/msgDetail?login=${data.clogin}`,
+					success:() => {
+						this.indexList[this.indexList.findIndex(ele => ele.id == data.id)].read = 0
+					}
 				})
 			},
 		},

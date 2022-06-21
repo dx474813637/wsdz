@@ -483,12 +483,10 @@
 			},
 			handleTimesBtn() {
 				this.handleGoto({
-					url: '/pages/index/webview/webview',
+					url: '/pages/my/msg/msgDetail',
 					params: {
-						_a: 'msg',
-						f: 'detail',
-						name: this.myCpy.Broker.login,
-						tims: '1'
+						login: this.myCpy.Broker.login,
+						content: ``
 					}
 				})
 			},

@@ -12,6 +12,7 @@ let state = {
 		myAllCpy: [],
 		myProduct: [],
 		moreMenus: {},
+		newMsg: 0,
 	},
 	getters = {
 	},
@@ -48,6 +49,9 @@ let state = {
 		},
 		setMoreMenus(state, data) {
 			state.moreMenus = data;
+		},
+		setNewMsg(state, data) {
+			state.newMsg = data;
 		},
 	},
 	actions = {

@@ -161,12 +161,13 @@
 			}
 		},
 		onLoad(options) {
+			// console.log(options)
 			if(options.hasOwnProperty('pan')) {
 				this.pan = options.pan
 			}
 			if(options.hasOwnProperty('data')) {
 				const data = JSON.parse(decodeURIComponent(options.data))
-				// console.log(data)
+				// console.log(encodeURIComponent(JSON.stringify(data)))
 				this.menusConfirm({
 					name: data.name,
 					id: data.standard,
@@ -262,16 +263,23 @@
 			},
 			handleClickTims({tims, id}) {
 				this.handleGoto({
-					url: '/pages/index/webview/webview',
+					url: '/pages/my/msg/msgDetail',
 					params: {
-						_a: 'msg',
-						f: 'detail',
-						id: `${tims.id}_${tims.ctime}`,
-						ttype: this.pan == 's'? 'sell': 'buy',
-						tid: id,
-						tims: '1'
+						login: `${tims.login}`,
+						content: ``
 					}
 				})
+				// this.handleGoto({
+				// 	url: '/pages/index/webview/webview',
+				// 	params: {
+				// 		_a: 'msg',
+				// 		f: 'detail',
+				// 		id: `${tims.id}_${tims.ctime}`,
+				// 		ttype: this.pan == 's'? 'sell': 'buy',
+				// 		tid: id,
+				// 		tims: '1'
+				// 	}
+				// })
 			}
 		}
 	}

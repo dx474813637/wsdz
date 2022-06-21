@@ -31,38 +31,45 @@
 					scroll-anchoring
 					:scroll-top="scrollTop"
 					:scroll-into-view="target"
-					@scrolltoupper="scrolltoupper"
+					refresher-enabled
+					:refresher-default-style="typeActive == 'dark'? 'white': 'black'"
+					:refresher-triggered="refresher"
+					@refresherrefresh="scrolltoupper"
 				>
 					
 					<view
 						id="msglistview"
 					>
-						<template v-if="indexList.length == 0">
+						<view class="u-p-10">
+							<u-loadmore
+								:status="loadstatus"
+								:loadmore-text="loadmoreText" 
+							/>
+						</view>
+						<template v-if="list.length == 0">
 							<u-empty
 								mode="data"
 								:icon="themeConfig.empty"
 								marginTop="80"
+								text='暂无消息'
 								:textColor="themeConfig.pageTextSub"
 							>
 							</u-empty>
 						</template>
-						<template v-else>
-							<view class="u-p-10">
-								<u-loadmore
-									:status="loadstatus"
-								/>
-							</view>
-							
-						</template>
+						
 						<view
-							v-for="(item, index) in indexList"
+							v-for="(item, index) in list"
 							:key="item.id"
-							:id="'msg'+item.id"
+							:id="item.id"
 							class="u-p-b-20"
 						>
-							<MsgChatCard
-								:msg="item"
-							></MsgChatCard>
+							<u-transition show >
+								<MsgChatCard
+									:msg="item"
+									@reset="handleResetMsg"
+								></MsgChatCard>
+							</u-transition>
+							
 							
 						</view>
 					</view>
@@ -114,6 +121,7 @@
 							width: '80px',
 							border: 0
 						}"
+						@click="sendMsg"
 					>发送</u-button>
 				</view>
 			</view>
@@ -129,14 +137,15 @@
 	export default {
 		data() {
 			return {
-				id: '',
-				title: '消息详情',
+				login: '',
 				loading: true,
 				indexList: [],
+				sendingList: [],
 				cpy: {},
 				refresher: false,
 				curP: 1,
 				loadstatus: 'loadmore',
+				loadmoreText: '下拉刷新历史消息',
 				scrollTop: 0,
 				val: '',
 				tabHeight: 60,
@@ -151,6 +160,7 @@
 		computed: {
 			...mapState({
 				typeActive: state => state.theme.typeActive,
+				myLogin: state => state.user.login,
 			}),
 			...mapGetters({
 				themeConfig: 'theme/themeConfig',
@@ -158,21 +168,34 @@
 			}),
 			paramsObj() {
 				return {
-					p: this.curP,
-					id: this.id
+					// p: this.curP,
+					login: this.login
 				}
 			},
+			list() {
+				return this.filterData([...this.indexList, ...this.sendingList].sort((a,b) => b.sendtime - a.sendtime)).reverse()
+			},
+			title() {
+				return this.cpy.name || this.login
+			}
 		},
 		
 		async onLoad(options) {
-			if(options.hasOwnProperty('id')) {
-				this.id = options.id
+			if(options.hasOwnProperty('login')) {
+				this.login = options.login
 			}else {
 				uni.reLaunch({
-					url: '/pages/my/msg/msg'
+					url: '/pages/my/msg/msg',
+					success() {
+						uni.showToast({
+							title: 'login参数有误',
+							icon: 'none'
+						})
+					}
 				})
 				return
 			}
+			this.getInfo()
 			await this.refreshList()
 			this.scrollToBottom()  
 			this.lunxun()
@@ -210,6 +233,12 @@
 				this.initParamas()
 				await this.getData()
 			},
+			async getInfo() {
+				const res = await this.$api.getCompanyDetail({params: {login: this.login}});
+				if(res.code == 1) {
+					this.cpy = res.list
+				}
+			},
 			initParamas() {
 				this.curP = 1;
 				// this.indexList = [];
@@ -219,34 +248,37 @@
 				uni.navigateBack()
 			},
 			async scrolltoupper() {
-				const target = 'msg'+this.indexList[0].id
-				await this.getMoreData()
-				this.target = target
+				this.refresher = true
+				const target = this.indexList[0]?.id
+				await this.getData('history')
+				if(this.target) this.target = target
+				else this.scrollToBottom()
+				this.refresher = false
 			},
-			async getData() {
-				if(this.loadstatus != 'loadmore') return
+			async getData(type = 'new') {
+				if(this.loadstatus != 'loadmore' && type != 'new') return
 				this.loadstatus = 'loading'
-				await uni.$u.sleep(1000)
-				const res = await this.$api.getMsgDetail({params: this.paramsObj})
+				let func = type == 'new' ? 'timsNews' : 'timsNewsHistory'
+				const res = await this.$api[func]({params: this.paramsObj})
 				
 				if(res.code == 1) {
 					this.loading = false
-					res.list = this.filterData(res.list)
-					if(this.curP == 1) this.indexList = res.list.reverse()
-					else this.indexList = [...res.list.reverse(), ...this.indexList]
-					this.cpy = res.cpy
-					console.log(this.indexList)
-					if(this.indexList.length >= res.total) {
-						this.loadstatus = 'nomore'
-					}else {
+					if(type == 'new') this.indexList = [...this.indexList, ...res.list.reverse()] //新消息 拼接
+					else this.indexList = res.list.reverse() //历史消息 覆盖数据
+					
+					// this.cpy = res.cpy
+					// console.log(this.indexList)
+					// if(type == 'history') {
+					// 	this.loadstatus = 'nomore'
+					// }else {
 						this.loadstatus = 'loadmore'
-					}
+					// }
 				}
 			},
-			async getMoreData() {
+			async getMoreData(type) {
 				if(this.loadstatus != 'loadmore') return
 				this.curP ++
-				await this.getData()
+				await this.getData(type)
 			},
 			linechange(e) {
 				// console.log(e.detail)
@@ -263,8 +295,8 @@
 						ele.pre = '0'
 						ele.showTime = '1'
 					}else {
-						ele.pre = (ele.isMe == data[index + 1].isMe ? '1' : '0')
-						ele.showTime = Math.abs(new Date(ele.time.replace(/-/g,'/')).getTime() - new Date(data[index + 1].time.replace(/-/g,'/')).getTime()) > 5*60*1000  ? '1' : '0'
+						ele.pre = (ele.sender == data[index + 1].sender ? '1' : '0')
+						ele.showTime = Math.abs(ele.sendtime - data[index + 1].sendtime) > 5*60  ? '1' : '0'
 					}
 					
 				})
@@ -275,19 +307,84 @@
 				clearInterval(this.timer)
 				this.timer = null
 				this.timer = setInterval(async () => {
-					if(this.refresher || this.loading || this.lunxunLoading || this.loadstatus == 'loading') return
 					this.lunxunLoading = true;
-					this.initParamas()
-					const res = await this.$api.getMsgDetail({params: this.paramsObj})
-					if(res.code == 1) {
-						res.list = this.filterData(res.list)
-						this.indexList = res.list
-					}
-					this.$nextTick(() => {
-						this.scrollToBottom()
-					})
+					let flag = await this.getData('new')
+					
+					// this.$nextTick(() => {
+					// 	this.scrollToBottom()
+					// })
 					this.lunxunLoading = false;
-				}, 60000)
+				}, 10000)
+			},
+			async sendMsg() {
+				console.log(this.val)
+				if(!this.val) {
+					uni.showToast({
+						title: '不能发送空的内容'
+					})
+					return
+				}
+				let obj = this.toSendingList(this.val)
+				this.val = ""
+				this.$nextTick(() => {
+					this.scrollToBottom()
+				})
+				const res = await this.$api.timsSend({login: this.login, body: obj.body});
+				let i = this.sendingList.findIndex(ele => ele.id == obj.id)
+				
+				if(res.code == 1) {
+					const flag = await this.getData('new')
+					this.sendingList.splice(i, 1)
+					
+					this.indexList.push(obj)
+					this.indexList[this.indexList.length - 1].state = 'success'
+					this.$nextTick(() => {
+						if(flag) this.scrollToBottom()
+					})
+				}else {
+					
+					this.sendingList[i].state = 'error'
+				}
+			},
+			toSendingList(val) {
+				let id = "send_" + new Date().getTime()
+				let data = {
+						body: val,
+						id: id,
+						receiver: this.login,
+						sender: this.myLogin,
+						sendtime: new Date().getTime()/1000,
+						state: 'loading',
+						showTime: this.sendingList.length == 0? '1' : '0',
+						pre: '1'
+					}
+				this.sendingList.push(data)
+				return data
+			},
+			handleResetMsg(data) {
+				uni.showModal({
+					title: '提示',
+					content: '重发该条消息？',
+					success: async (result) => {
+						if (result.confirm) {
+							this.sendingList.splice(this.sendingList.findIndex(ele => ele.id == data.id), 1)
+							let obj = this.toSendingList(data.body)
+							
+							const res = await this.$api.timsSend({login: this.login, body: data.body});
+							let i = this.sendingList.findIndex(ele => ele.id == obj.id)
+							if(res.code == 1) {
+								await this.getData('new')
+								obj.state = 'success'
+								this.sendingList.splice(i, 1)
+								this.indexList.push(obj)
+							}else {
+								this.sendingList[i].state = 'error'
+							}
+						} else if (result.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				});
 			},
 		},
 	}

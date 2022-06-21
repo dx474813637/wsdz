@@ -124,6 +124,10 @@ export default {
 			contentBg2: '#1e1f31',
 			contentColor: '#fff',
 			timeColor: '#5d6376',
+			loading: '#546288',
+			inactiveloading: '#38425b',
+			avatarBg: '#1e1f31',
+			avatarColor: '#4e5784',
 		}
 	}
 }

@@ -5,9 +5,13 @@
 			bgColor="transparent"
 			:fixed="false"
 		>
-			<view slot="left">
+			<view class="u-flex u-flex-items-center" slot="left">
 				<view @click="handleGoto('/pages/my/user/settings')" class="item u-p-10">
 					<i class="custom-icon-shezhi1 custom-icon u-font-38"></i>
+				</view>
+				<view @click="handleGoto('/pages/my/msg/msg')" class="item u-p-10" style="position: relative;">
+					<i class="custom-icon-comment custom-icon u-font-40"></i>
+					<u-badge absolute :offset="[5,3]" isDot :show="newMsg == '1'" bgColor="#ff2225"></u-badge>
 				</view>
 			</view>
 		</u-navbar>
@@ -230,7 +234,7 @@
 		// mixins: [mixCheckLoginStatus],
 		data() {
 			return {
-				loading: false
+				loading: false,
 			};
 		},
 		computed: {
@@ -240,6 +244,7 @@
 				auth: state => state.user.auth,
 				sh: state => state.user.sh,
 				moreMenus: state => state.user.moreMenus,
+				newMsg: state => state.user.newMsg, 
 			}),
 		},
 		async onLoad() {

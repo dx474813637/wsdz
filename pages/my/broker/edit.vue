@@ -338,15 +338,13 @@
 						>
 							<view class="u-flex u-flex-items-center u-font-32">
 								<text>{{myCpy.Broker.contact}} ({{myCpy.Broker.mobile}})</text>
-								<i @click="handleGoto({
-									url: '/pages/index/webview/webview',
-									params: {
-										_a: 'msg',
-										f: 'detail',
-										name: this.myCpy.Broker.login,
-										tims: '1'
-									}
-								})" class="text-primary u-m-l-10 custom-icon-tims custom-icon u-font-28"></i>
+								<i @click="andleGoto({
+										url: '/pages/my/msg/msgDetail',
+										params: {
+											login: myCpy.Broker.login,
+											content: ``
+										}
+									})" class="text-primary u-m-l-10 custom-icon-tims custom-icon u-font-28"></i>
 							</view>
 						</u-form-item>
 						<u-form-item

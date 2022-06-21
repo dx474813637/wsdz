@@ -120,9 +120,14 @@ export default {
 			btnColor: '#ffffff',
 			areaBg: '#eee',
 			areaColor: '#ffffff',
-			contentBg: '#007aff',
+			contentBg1: '#95ec69',
+			contentBg2: '#ffffff',
 			contentColor: '#000',
 			timeColor: '#999',
+			loading: '#9cb6ef',
+			inactiveloading: '#d8dffd',
+			avatarBg: '#eee',
+			avatarColor: '#999',
 		}
 	}
 	
