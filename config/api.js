@@ -222,10 +222,13 @@ export const changeSell = (data, config={}) => http.post('change_sell', data, co
 // 所在地： regional 地区代码，如：110101 
 // 详细地址： address 
 // 统一社会信用代码/身份证号： credit_code
+// 营业执照图片地址： pic1 第一次传图片的时候不用填用户信息里的图片地址（上传后平台系统自动生成的地址） 
+// 营业执照图片（内容base64): pic1_base64 传这个参数，图片上传 
+// 营业执照图片名称： pic1_name 营业执照图片（内容base64)传时必输比如测试jpg
 // 获取我的客户信息
 export const myCompany = (data) => http.get('my_company', data)
 // 创建/修改客户信息
-export const editCompany = (data) => http.get('edit_company', data)
+export const editCompany = (data, config={}) => http.post('edit_company', data, config)
 
 // =====地址信息
 // 收/发地址： type *R-收S-发RS-收发 
@@ -325,6 +328,10 @@ export const timsNewsHistory = (data) => http.get('tims_news_history', data)
 
 // （弃）tims_news_history2 历史消息2 参数login 昨天之前的历史消息
 
+
+// bangding 绑定手机号/修改绑定手机号 
+// 参数：mobile flag1-获取短信 2-提交验证码 captcha
+export const bindMobile = (data) => http.get('bangding', data)
 
 
 

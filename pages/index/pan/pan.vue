@@ -68,6 +68,7 @@
 							:trade_type="item.trade_type"
 							:pubDate="item.post_time"
 							:tims="item.Tims"
+							:origin="item"
 							@tims="handleClickTims"
 							@detail="handleRouteTo"
 						></cardA>

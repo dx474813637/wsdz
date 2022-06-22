@@ -66,6 +66,7 @@
 							:trade_type="item.trade_type"
 							:pubDate="item.post_time"
 							:tims="item.Tims"
+							:origin="item"
 							@tims="handleClickTims"
 							@detail="handleRouteTo"
 						></cardA>
@@ -120,7 +121,8 @@
 			if(options.hasOwnProperty('auth') && options.hasOwnProperty('id') && options.hasOwnProperty('pan')) {
 				this.auth = options.auth
 				this.pan = options.pan
-				this.contact = decodeURIComponent(options.contact)
+				this.contact = options.contact ? '' : decodeURIComponent(options.contact)
+				console.log(this.contact)
 				this.mobile = options.mobile
 				this.name = decodeURIComponent(options.name)
 				this.id = options.id

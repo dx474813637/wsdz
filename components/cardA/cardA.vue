@@ -74,6 +74,14 @@
 							{{spec}}
 						</view>
 					</view>
+					<view class="u-flex" v-if="trade_type == 1">
+						<view class="u-flex-1  lbdq">交收期</view>
+						<view class="u-flex-4 u-m-10 u-line-1 ppi_gray" :style="{
+							color: themeConfig.pageText
+						}">
+							{{origin.settle_month}}月 {{origin.settle_date | date2szx}}
+						</view>
+					</view>
 					<view class="u-flex">
 						<view class="u-flex-1  lbdq">交货地</view>
 						<view class="u-flex-4 u-m-10 ppi_gray">
@@ -103,6 +111,12 @@
 	export default {
 		name:"cardA",
 		props: {
+			origin: {
+				type: Object,
+				default: () => {
+					return {}
+				}
+			},
 			pid: {
 				type: String,
 				default: ''

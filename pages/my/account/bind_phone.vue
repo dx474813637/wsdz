@@ -2,8 +2,8 @@
 	<view class="u-p-20">
 		<view class="u-p-t-20 u-p-b-20">
 			<u-steps :current="current">
-				<u-steps-item title="验证信息" ></u-steps-item>
-				<u-steps-item title="绑定新号码"  ></u-steps-item>
+				<!-- <u-steps-item title="验证信息"></u-steps-item> -->
+				<u-steps-item title="绑定新手机"  ></u-steps-item>
 				<u-steps-item title="完成绑定" ></u-steps-item>
 			</u-steps>
 		</view>
@@ -15,7 +15,7 @@
 				ref="from"
 				labelWidth="80"
 			>
-				<template v-if="current == 0">
+				<!-- <template v-if="current == 0">
 					<u-form-item
 						label="已绑定手机"
 						prop="ophone"
@@ -60,8 +60,8 @@
 						</u-input>
 						
 					</u-form-item>
-				</template>
-				<template v-else-if="current == 1">
+				</template> -->
+				<template v-if="current == 0">
 					<u-form-item
 						label="新手机"
 						prop="nphone"
@@ -108,7 +108,7 @@
 			</u--form>
 			
 			<view class="u-p-t-60 u-m-b-40">
-				<template  v-if="current != 2">
+				<template  v-if="current != 1">
 					<u-button type="primary" @click="submit" >提交</u-button>
 				</template>
 				<template  v-else>
@@ -125,7 +125,7 @@
 </template>
 
 <script>
-	import {mapState, mapGetters, mapMutations} from 'vuex'
+	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
 	export default {
 		data() {
 			return {
@@ -135,7 +135,7 @@
 				disabled2: false,
 				current: 0,
 				model: {
-					ophone: '18755558888',
+					ophone: '',
 					ocode: '',
 					nphone: '',
 					ncode: '',
@@ -158,7 +158,21 @@
 				return v.slice(0, 3) + '****' + v.slice(7, 11)
 			}
 		},
+		async onLoad() {
+			// if(this.bd){
+			// 	//修改绑定手机
+			// }else {
+			// 	//绑定手机
+			// 	this.current = 1
+			// }
+			// await this.myCompany()
+			// this.model.ophone = this.myCpy.mobile
+		},
 		computed: {
+			...mapState({
+				myCpy: state => state.user.myCpy,
+				bd: state => state.user.bd,
+			}),
 			btnText() {
 				return this.timer ? `${this.btnSec}s重新获取` :'获取验证码'
 			}
@@ -169,6 +183,9 @@
 		methods: {
 			...mapMutations({
 				handleGoto: 'user/handleGoto'
+			}),
+			...mapActions({
+				myCompany: 'user/myCompany'
 			}),
 			codeChange1(text) {
 				this.tips1 = text;
@@ -182,15 +199,43 @@
 					title: '正在获取验证码'
 				})
 				this.$refs['uCode' + index].start();
-				const res = await this.$api.getPhoneCode()
+				const res = await this.$api.bindMobile({
+					params: {
+						mobile: index == 1 ? this.model.ophone: this.model.nphone,
+						flag: 1,
+					}
+				})
 				if(res.code == 1) {
 					uni.showToast({
 						title: '验证码已发送'
 					})
 				}
 			},
-			submit() {
-				this.current ++;
+			async submit() {
+				uni.showLoading()
+				let params = {
+					mobile: this.model.nphone,
+					flag: 2,
+					captcha: this.model.ncode
+				}
+				// if(this.current == 0) {
+				// 	params.mobile = this.model.ophone
+				// 	params.captcha = this.model.ocode
+				// }else if(this.current == 1) {
+				// 	params.mobile = this.model.nphone
+				// 	params.captcha = this.model.ncode
+				// }
+				const res = await this.$api.bindMobile({
+					params,
+				})
+				if(res.code == 1){
+					uni.showToast({
+						title: res.msg,
+						icon: 'none'
+					})
+					this.current ++;
+				}
+				
 			}
 		}
 	}

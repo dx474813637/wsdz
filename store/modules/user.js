@@ -6,6 +6,7 @@ let state = {
 		menusList: [],
 		login: 0,
 		auth: 0,
+		bd: 1,
 		sh: 1, //接口接收隐藏一些结构用
 		ppiCate: [],
 		myCpy: {},
@@ -13,6 +14,7 @@ let state = {
 		myProduct: [],
 		moreMenus: {},
 		newMsg: 0,
+		tips: {}
 	},
 	getters = {
 	},
@@ -53,10 +55,21 @@ let state = {
 		setNewMsg(state, data) {
 			state.newMsg = data;
 		},
+		setBd(state, data) {
+			state.bd = data;
+			if(data != 1) {
+				uni.redirectTo({
+					url: '/pages/my/account/bind_phone'
+				})
+			}
+		},
+		setTips(state, data) {
+			state.tips = data;
+		},
 	},
 	actions = {
-		async getCompanyProduct({commit, state}) {
-			const res = await this._vm.$api.getCompanyProduct({params: {login: state.login, p: 1}});
+		async getCompanyProduct({commit, state}, data={}) {
+			const res = await this._vm.$api.getCompanyProduct({params: {login: state.login, p: 1, ...data}});
 			if(res.code == 1) {
 				commit('setMyProduct', res.list)
 			}
@@ -78,6 +91,12 @@ let state = {
 			commit('setLogin', res.list.login)
 			commit('setAuth', res.list.auth)
 			commit('setSh', res.list.sh)
+			commit('setBd', res.list.bd)
+			commit('setTips', {
+				tips_info: res.list.tips_info,
+				tips_title: res.list.tips_title,
+				tips_url: res.list.tips_url
+			})
 		},
 		async getAddressArea({commit, state}) {
 			//获取地区toCode 数据 存入vuex

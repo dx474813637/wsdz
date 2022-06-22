@@ -60,6 +60,7 @@
 							@delet="handleDelet"
 							@resubmit="handleResubmit"
 							@detail="handleProdDetail"
+							@front="handleProdFront"
 						></BrokerCard>
 					</view>
 					
@@ -278,6 +279,15 @@
 				}
 				
 				
+			},
+			handleProdFront({id}) {
+				this.handleGoto({
+					url: '/pages/index/pan/panDetail',
+					params: {
+						id,
+						pan: this.pan,
+					}
+				})
 			},
 			handleProdDetail({pid, data}) {
 				this.handleGoto({

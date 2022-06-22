@@ -82,10 +82,14 @@
 							<template v-if="item.type == 'base'">
 								<u-form-item
 									:label="item.label"
+									:prop="item.key"
+									:ref="item.key"
+									:required="item.required"
 								>
 									<u--input
 										v-model="item.value"
 										clearable
+										@change="handleChangeAttr(item)"
 									></u--input>
 								</u-form-item>
 							</template>
@@ -230,7 +234,8 @@
 						label: '规格属性',
 						key: 'attr_common_12',
 						value: '',
-						type: 'base'
+						type: 'base',
+						required: true
 					},
 					{
 						label: '生产商',
@@ -292,6 +297,12 @@
 						message: '请填写单位',
 						trigger: ['blur', 'change']
 					},
+					'attr_common_12': {
+						type: 'string',
+						required: true,
+						message: '请填写规格属性',
+						trigger: ['blur', 'change']
+					},
 				}
 			},
 		},
@@ -307,14 +318,24 @@
 				this.getEditData()
 			}
 			
+			
 		},
 		onReady() {
+			this.attrObj.filter(ele => ele.required).forEach(ele => {
+				this.$set(this.model, ele.key, ele.value)
+			})
 			this.$refs.from.setRules(this.rules)
 		},
 		methods: {
 			...mapMutations({
 				handleGoto: 'user/handleGoto'
 			}),
+			handleChangeAttr(data) {
+				console.log(data)
+				this.model[data.key] = data.value
+				this.$refs.from.validateField(data.key)
+				
+			},
 			// async handleChangeStatus({state, id}) {
 			// 	const res = await this.$api[this.tabs_list[this.tabs_current].pan == 's'? 'ableSell' : 'ableBuy']({params: {id, state}})
 			// 	if(res.code == 1) {

@@ -40,6 +40,16 @@
 				</view> -->
 				<view class="u-p-l-12" v-if="!isAuth">
 					<u-button 
+						type="primary" 
+						size="mini" 
+						shape="circle" 
+						icon="attach"
+						:disabled="doing"
+						@click.stop="handleFront"
+					>预览</u-button>
+				</view>
+				<view class="u-p-l-12" v-if="!isAuth">
+					<u-button 
 						type="error" 
 						size="mini" 
 						shape="circle" 
@@ -155,6 +165,9 @@
 					}
 				});
 				
+			},
+			handleFront() {
+				this.$emit('front', {id: this.pid})
 			},
 			handleDelet() {
 				console.log('删除事件')

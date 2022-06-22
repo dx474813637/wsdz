@@ -53,10 +53,10 @@
 			<view class="set-sub u-flex u-flex-items-center u-m-b-30">
 				<view class="sub-title u-flex u-flex-items-center u-p-l-16 u-p-r-16 bg-primary">
 					<i class="text-white custom-icon-warn custom-icon"></i>
-					<text class="text-white u-font-24 u-p-l-10">发布提示</text>
+					<text class="text-white u-font-24 u-p-l-10">{{tips.tips_title}}</text>
 				</view>
-				<view @click="handleGoto('/pages/my/broker/prod_set')" class="sub-main u-flex u-flex-items-center u-flex-between u-p-l-10 u-p-r-10 u-flex-1">
-					<text class="u-font-24">发布买卖盘时请先设置好交易商品</text>
+				<view @click="handleGoto(tips.tips_url)" class="sub-main u-flex u-flex-items-center u-flex-between u-p-l-10 u-p-r-10 u-flex-1">
+					<text class="u-font-24">{{tips.tips_info}}</text>
 					<i class="custom-icon-roundadd custom-icon"></i>
 				</view>
 			</view>
@@ -245,6 +245,8 @@
 				sh: state => state.user.sh,
 				moreMenus: state => state.user.moreMenus,
 				newMsg: state => state.user.newMsg, 
+				bd: state => state.user.bd, 
+				tips: state => state.user.tips, 
 			}),
 		},
 		async onLoad() {

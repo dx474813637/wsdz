@@ -392,6 +392,7 @@
 				:show="show" 
 				theme="white"
 				:isMyProduct="true"
+				:pan="pan"
 				showMode="list"
 				@close="show = false"
 				@confirm="menusConfirm1"
@@ -446,7 +447,7 @@
 					customer_id: '',
 					customer_name: '',
 					mdu: 'D',
-					post_type: '1',
+					post_type: '0',
 					intro: '',
 					settle_mode: '',
 					remark: '',
@@ -589,7 +590,9 @@
 					}],
 					'express_time': {
 						type: 'string',
-						required: true,
+						validator: (rule, value, callback) => {
+							return Number(value) > 0
+						},
 						message: '请填写有效时间',
 						trigger: ['blur', 'change']
 					},
@@ -646,6 +649,7 @@
 			}
 		},
 		async onLoad(options) {
+			this.model.post_type = String(this.auth)
 			if(options.hasOwnProperty('data')) {
 				await this.getAddressArea()
 			}else {
@@ -722,6 +726,7 @@
 				const res = await this.$api.getCompanyProductDetail({params: {id: this.model.product_id}})
 				if(res.code == 1) {
 					this.product = res.list.name
+					this.model.name = res.list.name
 					this.prodInfo = res.list.list_product_attrs.reduce((pre, cur) => {
 						return pre + `${cur.Attr.name}：${cur.value}\n`
 					}, '')

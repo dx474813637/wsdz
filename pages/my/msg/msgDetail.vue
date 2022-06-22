@@ -81,52 +81,120 @@
 		<tabBar
 			:theme="typeActive"
 			:customStyle="{
-				boxShadow: '0 0 10rpx rgba(0,0,0,.1)',
+				boxShadow: '0 0 10rpx rgba(0,0,0,.1)'
 			}"
 			:mainStyle="{
+				minHeight: '60px',
 				height: 'auto',
-				minHeight: '60px'
 			}"
 			>
-			<view class="msg-tabbar u-flex u-flex-items-end u-flex-between u-p-20 "
+			<view class="msg-tabbar-wrapper"
 				:style="{
 					color: themeConfig.tabText,
 					backgroundColor: themeConfig.tabBg,
 				}"
 			>
-				<view class="content u-flex-1">
-					<u--textarea 
-						v-model="val" 
-						placeholder="请输入内容..."
-						autoHeight
-						fixed
-						:cursorSpacing="20"
-						:customStyle="{
-							background: themeConfig.msg.detail.areaBg,
-							color: themeConfig.msg.detail.areaColor,
-							minHeight: '40px',
-							border: 0,
-							boxSizing: 'border-box'
-						}"
-						@linechange="linechange"
-						maxlength="200"
-						></u--textarea>
+				<view class="msg-tabbar u-flex u-flex-items-end u-flex-between u-p-r-20 u-p-t-20 u-p-b-20 u-p-l-5 ">	
+					<view 
+						@click="moreShow = !moreShow"
+						class="plus-btn u-flex u-flex-items-center u-flex-center">
+						<i class="custom-icon-roundadd custom-icon"></i>
+					</view>
+					<view class="content u-flex-1">
+						<u--textarea 
+							v-model="val" 
+							placeholder="请输入内容..."
+							autoHeight
+							fixed
+							@focus="moreShow = false"
+							:cursorSpacing="20"
+							:customStyle="{
+								background: themeConfig.msg.detail.areaBg,
+								color: themeConfig.msg.detail.areaColor,
+								minHeight: '40px',
+								border: 0,
+								boxSizing: 'border-box'
+							}"
+							@linechange="linechange"
+							maxlength="200"
+							></u--textarea>
+					</view>
+					<view class="btn u-p-l-20">
+						<u-button
+							:customStyle="{
+								background: themeConfig.msg.detail.btnBg,
+								color: themeConfig.msg.detail.btnColor,
+								height: '40px',
+								width: '80px',
+								border: 0
+							}"
+							@click="sendMsg"
+						>发送</u-button>
+					</view>
 				</view>
-				<view class="btn u-p-l-20">
-					<u-button
-						:customStyle="{
-							background: themeConfig.msg.detail.btnBg,
-							color: themeConfig.msg.detail.btnColor,
-							height: '40px',
-							width: '80px',
-							border: 0
-						}"
-						@click="sendMsg"
-					>发送</u-button>
-				</view>
+				<u-transition :show="moreShow" mode="fade-up" duration="200">
+					<view class="more-rows transition u-p-10 u-p-l-30 u-p-r-30" :style="{height: tabMoreRows + 'px'}">
+						<u-scroll-list 
+							:indicator="moreRows.length > 4"
+							:indicatorColor="themeConfig.followCard.indicatorColor" 
+							:indicatorActiveColor="themeConfig.followCard.indicatorActiveColor">
+							<view 
+								@click="handleClickMore(item)"
+								class="more-rows-item u-flex u-flex-column u-flex-items-center u-flex-center"
+								v-for="(item, index) in moreRows" 
+								:key="index">
+								<view class="icon u-p-20 u-flex u-flex-items-center u-flex-items-center u-m-b-10"
+									:style="{
+										background: themeConfig.msg.detail.labelBg
+									}"
+								>
+									<i :class="['custom-icon u-font-40', item.icon]"
+										:style="{
+											color: themeConfig.msg.detail.labelColor
+										}"
+									></i>
+								</view>
+								<view class="label u-line-1 u-font-28">{{item.label}}</view>
+							</view>
+						</u-scroll-list>
+					</view>
+				</u-transition>
+				
 			</view>
 			
+			
 		</tabBar>
+		<u-popup 
+			:show="showInfo" 
+			@close="closeInfo" 
+			:bgColor="themeConfig.navBg"
+			round="8"
+			mode="center"
+		>
+			<view class="info-list">
+				<scroll-view scroll-y height="100%" class=" u-p-t-30">
+					<u-cell-group :border="false">
+						<u-cell :titleStyle="titleStyle" 
+							:name="item.key"
+							:title="item.label" 
+							v-for="item in info"
+							:key="item.key"
+							:border="false"
+							v-if="item.value"
+							:rightIcon="item.rightIcon"
+							@click="handleClickInfoCell"
+						 >
+							<view 
+								slot="value" 
+								class="u-text-right" 
+								:style="[valueStyle]"
+							>{{item.value}}</view>
+						</u-cell>
+					</u-cell-group>
+				</scroll-view>
+			</view>
+			
+		</u-popup>
 	</view>
 </template>
 
@@ -139,6 +207,7 @@
 			return {
 				login: '',
 				loading: true,
+				moreShow: false,
 				indexList: [],
 				sendingList: [],
 				cpy: {},
@@ -149,10 +218,95 @@
 				scrollTop: 0,
 				val: '',
 				tabHeight: 60,
+				tabMoreRows: 80,
 				target: '',
 				timer: null,
 				lunxunLoading: false,
+				showInfo: false,
+				moreRows: [
+					{
+						label: '对方名片',
+						name: 'info',
+						icon: 'custom-icon-my'
+					},
+					{
+						label: '拨打电话',
+						name: 'makecall',
+						icon: 'custom-icon-dianhua'
+					},
+				],
+				info: [
+					{
+						label: '账号类型',
+						key: 'type',
+						value: '',
+					},
+					{
+						label: '名称',
+						key: 'name',
+						value: '',
+					},
+					{
+						label: '联系人',
+						key: 'contact',
+						value: '',
+					},
+					{
+						label: '手机',
+						key: 'mobile',
+						value: '',
+						func: 'makecall',
+						rightIcon: 'phone-fill',
+					},
+					{
+						label: '电话',
+						key: 'tel',
+						value: '',
+						func: 'makecall',
+						rightIcon: 'phone-fill',
+					},
+					{
+						label: '邮箱',
+						key: 'email',
+						value: '',
+					},
+					{
+						label: '传真',
+						key: 'fax',
+						value: '',
+					},
+					{
+						label: '地址',
+						key: 'address',
+						value: '',
+					},
+				]
 			};
+		},
+		watch: {
+			moreShow(n) {
+				if(n) this.tabHeight += this.tabMoreRows
+				else this.tabHeight -= this.tabMoreRows
+			},
+			cpy: {
+				deep: true,
+				handler(n) {
+					this.info.forEach(ele => {
+						if(n[ele.key]) {
+							if(ele.key == 'type') {
+								if(n[ele.key] == 'B') {
+									ele.value = '企业用户'
+								}else {
+									ele.value = '个人用户'
+								}
+							}
+							else {
+								ele.value = n[ele.key]
+							}
+						}
+					})
+				}
+			}
 		},
 		components: {
 			MsgChatCard
@@ -177,6 +331,17 @@
 			},
 			title() {
 				return this.cpy.name || this.login
+			},
+			titleStyle() {
+				return {
+					color: this.themeConfig.msg.detail.infoColor
+				}
+			},
+			valueStyle() {
+				return {
+					color: this.themeConfig.msg.detail.contentColor,
+					flex:' 0 0 70% ',
+				}
 			}
 		},
 		
@@ -281,6 +446,7 @@
 				await this.getData(type)
 			},
 			linechange(e) {
+				this.moreShow = false
 				// console.log(e.detail)
 				if(e.detail.lineCount <= 1) this.tabHeight = 60
 				else this.tabHeight = e.detail.height + 18 + 20
@@ -386,10 +552,35 @@
 					}
 				});
 			},
+			handleClickMore(data) {
+				if(data.name == 'info') {
+					this.showInfo = true
+				}
+				else if(data.name == 'makecall') {
+					uni.makePhoneCall({
+						phoneNumber: this.cpy.mobile ||  this.cpy.tel
+					});
+				}
+			},
+			closeInfo() {
+				this.showInfo = false
+			},
+			handleClickInfoCell(obj) {
+				let item = this.info.filter(ele => ele.key == obj.name)[0]
+				if(!item.hasOwnProperty('func')) return;
+				if(item.func == 'makecall') {
+					uni.makePhoneCall({
+						phoneNumber: item.value
+					})
+				}
+				
+			}
 		},
 	}
 </script>
 <style lang="scss">
+	
+	
 	.dark /deep/ {
 		.u-textarea {
 			&__field {
@@ -398,6 +589,9 @@
 			textarea {
 				transition: all .3s!important;
 			}
+		}
+		.u-cell {
+			border-bottom: 1rpx solid #313351;
 		}
 	}
 	.white /deep/ {
@@ -409,10 +603,26 @@
 				transition: all .3s!important;
 			}
 		}
+		.u-cell {
+			border-bottom: 1rpx solid #ccc;
+		}
 	}
 </style>
 <style lang="scss" scoped>
-	
+	.more-rows {
+		// height: 120px;
+		box-sizing: border-box;
+		.more-rows-item {
+			flex: 0 0 25%;
+			.icon {
+				border-radius: 5px;
+			}
+		}
+	}
+	.info-list {
+		width: 80vw;
+		height: 50vh;
+	}
 	.w {
 		padding-bottom: 60px;
 		height: 100vh;
@@ -421,6 +631,13 @@
 	.msg-tabbar {
 		min-height: 60px;
 		box-sizing: border-box;
+		.plus-btn {
+			height: 40px;
+			width: 40px;
+			.custom-icon {
+				font-size: 26px;
+			}
+		}
 		.item-btn {
 			height: 100%;
 			&.share-btn {

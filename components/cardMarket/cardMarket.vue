@@ -10,14 +10,18 @@
 				backgroundColor: themeConfig.marketCard.boxBgTop,
 				color: themeConfig.baseText
 			}">
+				<view class="u-p-b-20 u-flex u-flex-items-center u-flex-between">
+					<view>{{name}}</view>
+					<view v-if="trade_type == '1'">{{origin.settle_month}}月 {{origin.settle_date | date2szx}}</view>
+				</view>
 				<view class="rows u-flex u-flex-between u-flex-items-center" :style="{
 					boxShadow: themeConfig.boxShadow
-				}">
+					}">
 					<view class="item u-flex u-flex-items-center market-label"
 						:style="{
 							backgroundColor: themeConfig.marketCard.label_bg,
 						}"
-					>
+						>
 						<view v-if="type== 'buy'"
 							class="u-p-4 u-p-l-10 u-p-r-10"
 							:style="{

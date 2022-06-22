@@ -11,8 +11,8 @@
 				@backEvent="handleBackEvent"
 			></navBar>
 		</u-sticky>
-		
-		<u-notice-bar bgColor="#ff6a00" color="#fff" text="已过期" v-if="list.hasOwnProperty('expressed') && list.expressed <= 0"></u-notice-bar>
+		<u-notice-bar bgColor="#ff2a2a" color="#fff" text="已下架" v-if="list.state != '1'"></u-notice-bar>
+		<u-notice-bar bgColor="#ff6a00" color="#fff" text="已过期" v-else-if="list.hasOwnProperty('expressed') && list.expressed <= 0"></u-notice-bar>
 		<view class="pan-header u-p-10" :style="{
 			backgroundColor: themeConfig.pan.headerBg,
 		}">
@@ -189,7 +189,7 @@
 						<view class="item u-flex u-flex-items-baseline u-m-b-20" v-if="cpy.tel">
 							<view class="item-label" :style="{
 								color: themeConfig.pan.pageTextSub
-							}">联系</view>
+							}">电话</view>
 							<view class="item-content u-flex u-flex-items-center" 
 								@click="makePhone(cpy.tel)"
 								:style="{
@@ -292,6 +292,7 @@
 						:express_unit="item.express_unit"
 						:trade_type="item.trade_type"
 						:pubDate="item.post_time"
+						:origin="item"
 						@tims="handleClickTims"
 						@detail="handleRouteTo"
 					></cardA>
@@ -495,7 +496,7 @@
 						content: ``
 					}
 				})
-			}
+			},
 			handleTimesBtn() {
 				// if(this.sh == 1) return
 				this.handleGoto({

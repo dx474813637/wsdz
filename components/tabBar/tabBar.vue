@@ -68,5 +68,6 @@
 	}
 	.c-w {
 		height: 60px;
+		transition: all .3s;
 	}
 </style>

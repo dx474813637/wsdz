@@ -31,7 +31,6 @@
 				label="联系人"
 				prop="contact"
 				ref="addressData_contact"
-				required
 			>
 				<u--input
 					v-model="addressData.contact"
@@ -42,7 +41,6 @@
 				label="手机号"
 				prop="tel"
 				ref="addressData_tel"
-				required
 			>
 				<u--input
 					v-model="addressData.tel"
@@ -68,6 +66,7 @@
 				label="详细地址"
 				prop="address"
 				ref="addressData_address"
+				required
 			>
 				<u--textarea
 					v-model="addressData.address" 
@@ -141,20 +140,12 @@
 					def: 0
 				},
 				rules: {
-					contact: {
-						type: 'string',
-						required: true,
-						message: '请填写联系人',
-						trigger: ['blur', 'change']
-					},
 					tel: [
 						{
-							required: true, 
-							message: '请输入手机号',
-							trigger: ['change','blur'],
-						},
-						{
-							validator: (rule, value, callback) => uni.$u.test.mobile(value),
+							validator: (rule, value, callback) => {
+								if(value == '') return true
+								return uni.$u.test.mobile(value)
+							},
 							message: '手机号码格式不正确',
 							trigger: ['change','blur'],
 						}
@@ -163,6 +154,12 @@
 						type: 'string',
 						required: true,
 						message: '请选择所在地',
+						trigger: ['blur', 'change']
+					},
+					address: {
+						type: 'string',
+						required: true,
+						message: '请填写详细地址',
 						trigger: ['blur', 'change']
 					}
 				}

@@ -66,6 +66,7 @@
 				>
 					<u--input
 						v-model="model.userInfo.name"
+						:disabled="myCpy.state == 1"
 						clearable
 					></u--input>
 				</u-form-item>
@@ -143,6 +144,7 @@
 				>
 					<u--input
 						v-model="model.userInfo.credit_code"
+						:disabled="myCpy.state == 1"
 						clearable
 					></u--input>
 				</u-form-item>
@@ -157,6 +159,7 @@
 					<u--input
 						v-model="model.cpyInfo.name"
 						clearable
+						:disabled="myCpy.state == 1"
 					></u--input>
 				</u-form-item>
 				<u-form-item
@@ -267,10 +270,11 @@
 					<u--input
 						v-model="model.cpyInfo.credit_code"
 						placeholder="统一社会信用代码"
+						:disabled="myCpy.state == 1"
 						clearable
 					></u--input>
 				</u-form-item>
-				<!-- <u-form-item
+				<u-form-item
 					label="营业执照"
 					prop="cpyInfo.img"
 					ref="cpyInfo_img"
@@ -282,7 +286,7 @@
 						name="1"
 						:maxCount="1"
 					></u-upload>
-				</u-form-item> -->
+				</u-form-item>
 			</template>
 			
 			
@@ -322,7 +326,6 @@
 						address: '',
 						credit_code: '',
 						regional: '',
-						// suozaidi: ''
 					},
 					cpyInfo: {
 						type: 'B',
@@ -337,11 +340,12 @@
 						regional: '',
 						address: '',
 						credit_code: '',
-						// suozaidi: '',
-						// img: ''
+						pic1: '',
+						pic1_base64: '',
+						pic1_name: ''
 					}
 				},
-				// fileList1: [],
+				fileList1: [],
 			}
 		},
 		computed: {
@@ -360,8 +364,10 @@
 						},
 						'userInfo.credit_code': {
 							type: 'string',
-							required: true,
-							message: '请填写身份证',
+							validator: (rule, value, callback) => {
+								return uni.$u.test.idCard(value)
+							},
+							message: '请填写正确的身份证',
 							trigger: ['blur', 'change']
 						},
 					}
@@ -382,8 +388,10 @@
 						},
 						'cpyInfo.credit_code': {
 							type: 'string',
-							required: true,
-							message: '请填写统一社会信用代码',
+							validator: (rule, value, callback) => {
+								return uni.$u.test.enOrNum(value)
+							},
+							message: '请填写正确的统一社会信用代码',
 							trigger: ['blur', 'change']
 						},
 					}
@@ -427,6 +435,13 @@
 						this.model.userInfo = uni.$u.deepClone(n)
 					}
 				}
+			},
+			['model.cpyInfo.pic1'](n) {
+				if(n) {
+					this.fileList1 = [{
+						url: n
+					}]
+				}
 			}
 		},
 		methods: {
@@ -466,9 +481,7 @@
 					let type = this.userType
 					const data = this.model[this.userType == '个人用户'? 'userInfo' : 'cpyInfo']
 					const list = await this.$api.editCompany({
-						params: {
-							...data,
-						}
+						...data,
 					})
 					if(list.code == 1) {
 						this.setMyCpy(data)
@@ -490,62 +503,44 @@
 					}
 				})
 			},
-			// // 删除图片
-			// deletePic(event) {
-			// 	this[`fileList${event.name}`].splice(event.index, 1)
-			// },
-			// // 新增图片
-			// async afterRead(event) {
-			// 	// 当设置 mutiple 为 true 时, file 为数组格式，否则为对象格式
-			// 	let lists = [].concat(event.file)
-			// 	let fileListLen = this[`fileList${event.name}`].length
-			// 	lists.map((item) => {
-			// 		this[`fileList${event.name}`].push({
-			// 			...item,
-			// 			status: 'uploading',
-			// 			message: '上传中'
-			// 		})
-			// 	})
-			// 	for (let i = 0; i < lists.length; i++) {
-			// 		const result = await this.uploadFilePromise(lists[i].url)
-			// 		let item = this[`fileList${event.name}`][fileListLen]
-			// 		this[`fileList${event.name}`].splice(fileListLen, 1, Object.assign(item, {
-			// 			status: 'success',
-			// 			message: '',
-			// 			url: result
-			// 		}))
-			// 		fileListLen++
-			// 	}
-			// },
-			// uploadFilePromise(url) {
-			// 	return new Promise((resolve, reject) => {
-			// 		let a = uni.uploadFile({
-			// 			url: 'http://192.168.2.21:7001/upload', // 仅为示例，非真实的接口地址
-			// 			filePath: url,
-			// 			name: 'file',
-			// 			formData: {
-			// 				user: 'test'
-			// 			},
-			// 			success: (res) => {
-			// 				setTimeout(() => {
-			// 					resolve(res.data.data)
-			// 				}, 1000)
-			// 			}
-			// 		});
-			// 	})
-			// },
-			// onnodeclick(e) {
-			// 	console.log(e);
-			// },
-			// onpopupopened(e) {
-			// 	console.log('popupopened');
-			// },
-			// onpopupclosed(e) {
-			// 	console.log('popupclosed');
-			// },
-			// onchange(e) {
-			// 	console.log('onchange:', e);
-			// },
+			// 删除图片
+			deletePic(event) {
+				this[`fileList${event.name}`].splice(event.index, 1)
+			},
+			// 新增图片
+			async afterRead(event) {
+				console.log(event)
+				this.fileList1 = [{
+					url:  event.file.thumb,
+					status: 'uploading',
+					message: '上传中'
+				}]
+				const base64 = await this.getImageBase64_readFile(event.file.thumb)
+				
+				this.fileList1 = [{
+					url: event.file.thumb,
+					status: 'success'
+				}]
+				this.model.cpyInfo.pic1_base64 = base64
+				this.model.cpyInfo.pic1_name = event.file.thumb.split('//tmp/')[1]
+				
+			},
+			
+			async getImageBase64_readFile(tempFilePath) {
+				  return await new Promise(resolve => {
+						//获取全局唯一的文件管理器 
+						uni.getFileSystemManager().readFile({ //读取本地文件内容
+						  filePath: tempFilePath, // 文件路径
+						  encoding: 'base64', // 返回格式
+						  success: ({
+							data
+						  }) => {
+							// return resolve('data:image/png;base64,' + data);
+							return resolve( data);
+						  }
+						});
+				  });
+			},
 			
 		}
 	}

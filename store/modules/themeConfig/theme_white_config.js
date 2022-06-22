@@ -128,6 +128,9 @@ export default {
 			inactiveloading: '#d8dffd',
 			avatarBg: '#eee',
 			avatarColor: '#999',
+			labelBg: '#f9f9f9',
+			labelColor: '#7d7d7d',
+			infoColor: '#999',
 		}
 	}
 	

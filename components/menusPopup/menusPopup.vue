@@ -23,7 +23,7 @@
 							<text class="u-font-34">高级筛选</text>
 						</view>
 						<view class="item u-flex-1 u-text-right">
-							<text class="u-primary" v-if="isMyProduct" @click="handleGoto('/pages/my/broker/list')">商品管理</text>
+							<text class="u-primary" v-if="isMyProduct" @click="handleGoto('/pages/my/broker/prod_set')">商品管理</text>
 							<text class="u-primary" v-else-if="isMyAllCpy" @click="handleGoto('/pages/my/customer/customer')">客户管理</text>
 							<text class="u-primary" @click="refresh" v-else >刷新数据</text>
 						</view>
@@ -224,6 +224,10 @@
 	export default {
 		name:"menusPopup",
 		props: {
+			pan: {
+				type: String,
+				default: 's'
+			},
 			minNum: {
 				type: Number,
 				default: 0
@@ -447,7 +451,7 @@
 			async open() {
 				if(this.isMyProduct) {
 					this.loading = true
-					await this.getCompanyProduct()
+					await this.getCompanyProduct({type: this.pan == 'b'? '1' : '2'})
 					this.loading = false;
 				}
 				else if(this.isMyAllCpy) {
