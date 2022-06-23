@@ -185,7 +185,7 @@
 					// // uni.setStorageSync('mobile', res.data.back.mobile)
 					// // uni.setStorageSync('token', res.data.back.token)
 					this.setLogin(1)
-					this.wode()
+					await this.wode()
 					this.naviBack()
 					 
 				}
