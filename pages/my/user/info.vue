@@ -302,12 +302,13 @@
 	export default {
 		data() {
 			return {
-				userType: '个人用户',
+				userType: '企业用户',
 				showUserType: false,
-				userActions: [{
-						name: '个人用户',
-						type: 'C'
-					},
+				userActions: [
+					// {
+					// 	name: '个人用户',
+					// 	type: 'C'
+					// },
 					{
 						name: '企业用户',
 						type: 'B'
@@ -426,14 +427,12 @@
 				deep: true,
 				handler(n) {
 					console.log(n)
-					if(n.type == 'B') {
-						this.userType = '企业用户'
-						this.model.cpyInfo = uni.$u.deepClone(n)
+					if(n.type == 'C') {
+						// this.userType = '个人用户'
+						// this.model.userInfo = uni.$u.deepClone(n)
 					}
-					else if(n.type == 'C') {
-						this.userType = '个人用户'
-						this.model.userInfo = uni.$u.deepClone(n)
-					}
+					this.userType = '企业用户'
+					this.model.cpyInfo = uni.$u.deepClone(n)
 				}
 			},
 			['model.cpyInfo.pic1'](n) {

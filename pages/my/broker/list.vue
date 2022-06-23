@@ -97,6 +97,9 @@
 		<menusPopup 
 			:show="show" 
 			theme="white"
+			:isMyProduct="true"
+			:pan="pan"
+			showMode="list"
 			@close="show = false"
 			@confirm="menusConfirm"
 		></menusPopup>
@@ -167,6 +170,7 @@
 				})
 			},
 			async menusConfirm(data) {
+				console.log(data)
 				this.product = data.name
 				this.product_id = data.id
 				
@@ -230,12 +234,12 @@
 			async getSearchData() {
 				if(this.loadstatus != 'loadmore') return
 				this.loadstatus = 'loading'
-				const res = await this.$api[this.pan == 's'? 'getSell' : 'getBuy']({
+				const res = await this.$api[this.pan == 's'? 'mySell' : 'myBuy']({
 					params: {
 						login: this.login,
 						p: this.curP,
 						terms: this.keyword,
-						standard: this.product_id
+						product_id: this.product_id
 					}
 				})
 				if(res.code == 1) {

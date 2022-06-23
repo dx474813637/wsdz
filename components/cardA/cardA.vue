@@ -14,6 +14,7 @@
 					<view class="u-p-l-20 ppi_gray u-font-34 u-line-1"
 						:style="{
 							color: themeConfig.baseText,
+							whiteSpace: 'nowrap',
 							width: '90px'
 						}"
 					>

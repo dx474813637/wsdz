@@ -92,7 +92,16 @@
 			}
 
 		}
-	],
+	    ,{
+            "path" : "pages/index/login/xieyi",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
 	"subPackages": [{
 		"root": "pages/baojia",
 		"pages": [{

@@ -49,14 +49,22 @@
 				
 			</view>
 		</view>
-		<view class="buttom safe-area-inset-bottom">
-			<view class="hint">
-				注册/登录代表同意
-				<text class="link">平台用户协议、隐私政策，</text>
-				并授权使用您的平台账号信息（如昵称、头像、收获地址）以便您统一管理
+		<!-- <view class="buttom safe-area-inset-bottom ">
+			<view class="u-flex u-flex-items-center u-p-20 u-p-l-40">
+				<u-checkbox-group 
+					v-model="agree"
+					placement="row"
+					@change="agreeChange"
+					>
+					<u-checkbox name="agree"></u-checkbox>
+				</u-checkbox-group>
+				<view class="hint u-flex-1 u-p-l-5">
+					注册/登录前请先阅读并勾选同意
+					<text @click="handleGoto('/pages/index/login/xieyi')" class="link">《注册服务协议》</text>
+				</view>
 			</view>
 			<u-safe-bottom></u-safe-bottom>
-		</view>
+		</view> -->
 		
 	</view>
 </template>
@@ -72,7 +80,7 @@
 					login: '',
 					passwd: '',
 				},
-				
+				// agree: [],
 			}
 		},
 		onReady() {
@@ -137,6 +145,13 @@
 				this.$refs.uForm.setRules(this.rules)
 			},
 			submit() {
+				// if(this.agree.length == 0) {
+				// 	uni.showToast({
+				// 		title: '请先阅读并勾选底部协议',
+				// 		icon: 'none'
+				// 	})
+				// 	return
+				// }
 				this.$refs.uForm.validate().then(valid => {
 					if (valid) {
 						// console.log('验证通过');
@@ -205,7 +220,10 @@
 				this.$set(this.form, "login", "")
 				this.$refs.uForm.clearValidate()
 				this.handleSetRules()
-			}
+			},
+			// agreeChange(e) {
+			// 	console.log(e)
+			// }
 		}
 	};
 </script>
@@ -295,12 +313,12 @@
 			}
 
 			.hint {
-				padding: 20rpx 34rpx;
-				font-size: 24rpx;
-				color: $uni-color-warning;
+				// padding: 20rpx 40rpx;
+				font-size: 28rpx;
+				color: #333;
 
 				.link {
-					color: $uni-color-warning;
+					color: #007aff;
 				}
 			}
 		}

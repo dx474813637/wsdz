@@ -25,7 +25,7 @@
 			</view>
 		</view>
 		<view class="card-footer u-flex u-flex-end u-p-b-12 u-p-t-12">
-			<view class="item u-p-l-12" v-if="switch_status">
+			<view class="item u-p-l-12" v-if="switch_status && origin.trade_type != 's'">
 				<u-button 
 					type="primary" 
 					size="mini" 
@@ -35,7 +35,7 @@
 					@click.stop="handleBrokerAdd('b')"
 				>买盘</u-button>
 			</view>
-			<view class="item u-p-l-12" v-if="switch_status">
+			<view class="item u-p-l-12" v-if="switch_status && origin.trade_type != 'b'">
 				<u-button 
 					type="primary" 
 					size="mini" 

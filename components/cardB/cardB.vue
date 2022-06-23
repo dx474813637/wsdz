@@ -10,32 +10,37 @@
 			<view class="u-p-10" :style="{
 				backgroundColor: themeConfig.boxBgTop
 			}">
-				<view class="u-flex">
-					<view class="u-flex-1 u-p-20 ppi_gray u-font-34"
+				<view class="u-flex u-flex-items-center u-flex-between">
+					<view class=" u-p-20 ppi_gray u-font-34 u-line-1"
 						:style="{
 							color: themeConfig.baseText,
-							width: '90px'
+							width: '90px',
+							whiteSpace: 'nowrap'
 						}"
 					>
 						{{name}}
 					</view>
-					<view class="u-flex-1 u-text-center u-p-20 text-yellow u-font-38" :style="{
-						color: themeConfig.dataText
+					<view class=" u-text-center u-p-20 text-yellow u-font-38" :style="{
+						color: themeConfig.dataText,
+						whiteSpace: 'nowrap'
 					}">
 						{{price | price2str(dprice)}}<template v-if="price>0">{{unit}}</template>
 					</view>
-					<view class="u-flex-1 u-text-right ppi_gray u-p-20" :class="color">
+					<view class="u-flex u-flex-items-center u-flex-end u-p-20" :class="color"
+					:style="{
+						width: '90px'
+					}">
 						<template v-if="is_zd>0">+</template>{{is_zd}}
 					</view>
 				</view>
-				<view class="u-flex u-p-l-20 u-p-r-20 u-p-b-10">
-					<view class="u-flex-1">
+				<view class="u-flex u-p-l-20 u-p-r-20 u-p-b-10 u-flex-between u-flex-items-center">
+					<view class="">
 						{{cname}}
 					</view>
-					<view class="u-flex-1 u-text-center">
+					<view class=" u-text-center">
 						报价
 					</view>
-					<view class="u-flex-1 u-text-right">
+					<view class=" u-text-right">
 						升贴水
 					</view>
 				</view>

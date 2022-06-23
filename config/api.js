@@ -263,7 +263,7 @@ export const addressArea = (data) => http.get('address_area', data)
 // 需求类型： trade_type b-买盘s-卖盘bs-两者皆可 
 // 图片： pic1 相册中选择 
 // 商品简介： intro
-// 我的商品列表 参数p
+// 我的商品列表 参数p 搜索terms
 export const myProduct = (data) => http.get('my_product', data)
 // 删除商品 参数id
 export const deleteProduct = (data) => http.get('delete_product', data)
@@ -332,6 +332,8 @@ export const timsNewsHistory = (data) => http.get('tims_news_history', data)
 // bangding 绑定手机号/修改绑定手机号 
 // 参数：mobile flag1-获取短信 2-提交验证码 captcha
 export const bindMobile = (data) => http.get('bangding', data)
+// agreement 协议
+export const agreement = (data) => http.get('agreement', data)
 
 
 

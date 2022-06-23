@@ -1,6 +1,6 @@
 <template>
 	<view class="w">
-		<!-- <view class="search-wrapper u-flex u-p-l-20 u-p-r-20">
+		<view class="search-wrapper u-flex u-p-l-20 u-p-r-20">
 			<view class="item u-flex-1 u-p-b-10">
 				<u-search 
 					placeholder="检索名称" 
@@ -12,7 +12,7 @@
 				></u-search>
 			</view>
 			
-		</view> -->
+		</view>
 		<view class="tabs-w">
 			<u-tabs
 				:list="tabs_list"
@@ -148,7 +148,7 @@
 				this.loadstatus = 'loadmore'
 			},
 			handleSearch(v) {
-				console.log(v)
+				this.refreshList()
 			},
 			changeTabsStatus(key, value) {
 				this.tabs_list = this.tabs_list.map(ele => {
@@ -157,6 +157,7 @@
 				})
 			},
 			async handleTabsChange(value) {
+				this.keyword = ''
 				this.tabs_current = value.index
 				this.changeTabsStatus('disabled', true)
 				this.initParamas();
@@ -172,6 +173,7 @@
 				this.loadstatus = 'loading'
 				const res = await this.$api.myProduct({params:{
 					p: this.curP,
+					terms: this.keyword
 					// trade_type: this.tabs_list[this.tabs_current].trade_type
 				}})
 				if(res.code == 1) {
@@ -243,7 +245,7 @@
 		height: 100%;
 	}
 	.list {
-		height: calc(100% - 44px);
+		height: calc(100% - 83px);
 		
 	}
 </style>
