@@ -104,7 +104,7 @@ export default {
 			if(res.code == 1) {
 				// uni.setStorageSync('login', res.data.back.login)
 				this.setLogin(1)
-				this.wode()
+				await this.wode()
 				this.naviBack()
 				
 			}else {

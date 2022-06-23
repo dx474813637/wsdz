@@ -159,6 +159,20 @@
 			}
 		},
 		async onLoad() {
+			const res = await this.$api.wode()
+			if(res.list.bd == 1) {
+				if(uni.getStorageSync('prePage')) {
+					uni.redirectTo({
+						url: uni.getStorageSync('prePage')
+					})
+					uni.removeStorageSync('prePage')
+				}else {
+					uni.reLaunch({
+						url: '/pages/my/user/index'
+					})
+				}
+				return
+			}
 			// if(this.bd){
 			// 	//修改绑定手机
 			// }else {
@@ -185,7 +199,8 @@
 				handleGoto: 'user/handleGoto'
 			}),
 			...mapActions({
-				myCompany: 'user/myCompany'
+				myCompany: 'user/myCompany',
+				wode: 'user/wode',
 			}),
 			codeChange1(text) {
 				this.tips1 = text;
