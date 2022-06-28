@@ -1,6 +1,7 @@
 <template>
-	<view class="u-p-20 u-p-l-40 u-p-r-40">
-		<view class="">
+	<view class="">
+		<u-notice-bar text="请真实发布！若因信息不实而被投诉，将进入黑名单。"></u-notice-bar>
+		<view class="u-p-20 u-p-l-40 u-p-r-40">
 			<u--form
 				labelPosition="left"
 				:model="model"
@@ -17,7 +18,7 @@
 						<view @click="show = true">
 							<u-input
 								:value="product"
-								placeholder="点击选择标准商品" 
+								placeholder="点击选择商品" 
 								readonly
 							>
 								<template slot="suffix">
@@ -167,11 +168,17 @@
 						ref="amount"
 						required
 					>
-						<u--input
-							v-model="model.amount"
-							clearable
-							type="digit"
-						></u--input>
+						<view class="u-flex u-flex-items-center">
+							<view class="u-flex-1">
+								<u--input
+									v-model="model.amount"
+									clearable
+									type="digit"
+								></u--input>
+							</view>
+							<view class="u-p-l-30 u-p-r-30" v-if="prodUnit">{{prodUnit}}</view>
+						</view>
+						
 					</u-form-item>
 					<u-form-item
 						v-if="pan == 'b'"
@@ -338,7 +345,7 @@
 						>
 							<view class="u-flex u-flex-items-center u-font-32">
 								<text>{{myCpy.Broker.contact}} ({{myCpy.Broker.mobile}})</text>
-								<i @click="andleGoto({
+								<i @click="handleGoto({
 										url: '/pages/my/msg/msgDetail',
 										params: {
 											login: myCpy.Broker.login,
@@ -407,7 +414,7 @@
 				@confirm="menusConfirm2"
 			></menusPopup>
 		</view>
-		<view class="u-p-t-20 u-m-b-40">
+		<view class="u-p-t-20 u-p-l-40 u-p-r-40 u-m-b-40">
 			<u-button type="primary" @click="submit">提交</u-button>
 		</view>
 		
@@ -425,6 +432,7 @@
 				cpy: '',
 				product: '',
 				prodInfo: '',
+				prodUnit: '',
 				prodInfoLoading: false,
 				model: {
 					product_id: '',
@@ -727,6 +735,7 @@
 				if(res.code == 1) {
 					this.product = res.list.name
 					this.model.name = res.list.name
+					this.prodUnit = res.list.unit
 					this.prodInfo = res.list.list_product_attrs.reduce((pre, cur) => {
 						return pre + `${cur.Attr.name}：${cur.value}\n`
 					}, '')

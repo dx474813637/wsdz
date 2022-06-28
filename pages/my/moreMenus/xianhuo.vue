@@ -13,14 +13,14 @@
 			<u-parse :content="tabs_list[tabs_current].info"></u-parse>
 		</view>
 		<template  v-if="company && company.hasOwnProperty('Broker')">
-			<u-divider :text="info" :hairline="true" ></u-divider>
+			<u-divider  :hairline="true" ></u-divider>
 			<MoreBrokerCard
 				:origin="company.Broker"
 			></MoreBrokerCard>
 		</template>
-		
-		<u-safe-bottom></u-safe-bottom>
 	</view>
+	
+	
 </template>
 
 <script>
@@ -39,8 +39,6 @@
 					height: '44px',
 					padding: '0 13px'
 				},
-				infoa: '',
-				infob: '',
 				info: '',
 				company: null,
 			};
@@ -54,16 +52,12 @@
 		},
 		methods: {
 			async getData() {
-				const res = await this.$api.scm();
+				const res = await this.$api.xianhuo();
 				if(res.code == 1) {
 					this.tabs_list = res.list.map(ele => {
 						ele.disabled = false
 						return ele
 					})
-					// this.tabs_list[0].name = res.infoa_name
-					// this.tabs_list[1].name = res.infob_name
-					// this.infoa = res.infoa
-					// this.infob = res.infob
 					// this.info = res.info
 					this.company = res.company
 					uni.setNavigationBarTitle({
@@ -71,10 +65,10 @@
 					})
 				}
 			},
-			
 			async handleTabsChange(obj) {
 				this.tabs_current = obj.index
 			},
+			
 		}
 	}
 </script>
@@ -86,7 +80,5 @@
 	}
 </style>
 <style lang="scss" scoped>
-	.card {
-		border-radius: 10px;
-	}
+	
 </style>

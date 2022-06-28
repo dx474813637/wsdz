@@ -183,7 +183,7 @@
 						clearable
 					></u--input>
 				</u-form-item>
-				<u-form-item
+				<!-- <u-form-item
 					label="传真"
 					prop="cpyInfo.fax"
 					ref="cpyInfo_fax"
@@ -202,7 +202,7 @@
 						v-model="model.cpyInfo.zip"
 						clearable
 					></u--input>
-				</u-form-item>
+				</u-form-item> -->
 				<u-form-item
 					label="邮箱"
 					prop="cpyInfo.email"
@@ -224,7 +224,7 @@
 						disabledColor="#f8f8f8"
 					></u--input>
 				</u-form-item>
-				<u-form-item
+				<!-- <u-form-item
 					label="展示手机"
 					
 				>
@@ -236,57 +236,62 @@
 						</view>
 						
 					</u-checkbox-group>
-				</u-form-item>
-				<u-form-item
-					label="所在地"
-					prop="cpyInfo.regional"
-					ref="cpyInfo_regional"
-				>
-					<uni-data-picker 
-						placeholder="所在地" 
-						popup-title="请选择所在地区" 
-						:localdata="addressArea" 
-						v-model="model.cpyInfo.regional"
-						@change="handleValAreaCpy"
-					></uni-data-picker>
-				</u-form-item>
-				<u-form-item
-					label="详细地址"
-					prop="cpyInfo.address"
-					ref="cpyInfo_address"
-				>
-					<u--textarea
-						v-model="model.cpyInfo.address" 
-						placeholder="详细地址" 
-						height="90"
-					></u--textarea>
-				</u-form-item>
-				<u-form-item
-					label="信用代码"
-					prop="cpyInfo.credit_code"
-					ref="cpyInfo_credit_code"
-					required
-				>
-					<u--input
-						v-model="model.cpyInfo.credit_code"
-						placeholder="统一社会信用代码"
-						:disabled="myCpy.state == 1"
-						clearable
-					></u--input>
-				</u-form-item>
-				<u-form-item
-					label="营业执照"
-					prop="cpyInfo.img"
-					ref="cpyInfo_img"
-				>
-					<u-upload
-						:fileList="fileList1"
-						@afterRead="afterRead"
-						@delete="deletePic"
-						name="1"
-						:maxCount="1"
-					></u-upload>
-				</u-form-item>
+				</u-form-item> -->
+				<view class="u-p-t-30 u-p-b-30" v-if="!moreShow">
+					<u-divider text="点击展开更多" :hairline="true" @click="moreShow = true"></u-divider>
+				</view>
+				<u-transition :show="moreShow" mode="fade-up">
+					<u-form-item
+						label="所在地"
+						prop="cpyInfo.regional"
+						ref="cpyInfo_regional"
+					>
+						<uni-data-picker 
+							placeholder="所在地" 
+							popup-title="请选择所在地区" 
+							:localdata="addressArea" 
+							v-model="model.cpyInfo.regional"
+							@change="handleValAreaCpy"
+						></uni-data-picker>
+					</u-form-item>
+					<u-form-item
+						label="详细地址"
+						prop="cpyInfo.address"
+						ref="cpyInfo_address"
+					>
+						<u--textarea
+							v-model="model.cpyInfo.address" 
+							placeholder="详细地址" 
+							height="90"
+						></u--textarea>
+					</u-form-item>
+					<u-form-item
+						label="信用代码"
+						prop="cpyInfo.credit_code"
+						ref="cpyInfo_credit_code"
+					>
+						<u--input
+							v-model="model.cpyInfo.credit_code"
+							placeholder="统一社会信用代码"
+							:disabled="myCpy.state == 1"
+							clearable
+						></u--input>
+					</u-form-item>
+					<u-form-item
+						label="营业执照"
+						prop="cpyInfo.img"
+						ref="cpyInfo_img"
+					>
+						<u-upload
+							:fileList="fileList1"
+							@afterRead="afterRead"
+							@delete="deletePic"
+							name="1"
+							:maxCount="1"
+						></u-upload>
+					</u-form-item>
+				</u-transition>
+				
 			</template>
 			
 			
@@ -347,10 +352,12 @@
 					}
 				},
 				fileList1: [],
+				moreShow: false,
 			}
 		},
 		computed: {
 			...mapState({
+				wode: state => state.user.wode,
 				myCpy: state => state.user.myCpy,
 				addressArea: state => state.user.addressArea
 			}),
@@ -390,6 +397,7 @@
 						'cpyInfo.credit_code': {
 							type: 'string',
 							validator: (rule, value, callback) => {
+								if(!value) return true
 								return uni.$u.test.enOrNum(value)
 							},
 							message: '请填写正确的统一社会信用代码',
@@ -401,6 +409,7 @@
 			}
 		},
 		async onLoad() {
+			this.model.cpyInfo.mobile = this.wode.mobile
 			this.getAddressArea()
 			await this.myCompany()
 		},
@@ -475,7 +484,6 @@
 				this.model.cpyInfo.mobile_show = v[0] ? '1': '0'
 			},
 			async submit() {
-				
 				this.$refs.userform.validate().then(async res => {
 					let type = this.userType
 					const data = this.model[this.userType == '个人用户'? 'userInfo' : 'cpyInfo']

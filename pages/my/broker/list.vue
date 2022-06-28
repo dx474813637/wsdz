@@ -4,7 +4,7 @@
 			<view class="item u-p-b-10" @click="show = true">
 				<u-input
 					:value="product"
-					placeholder="点击选择标准商品" 
+					placeholder="点击选择商品" 
 					readonly
 				>
 					<template slot="suffix">

@@ -157,11 +157,17 @@
 						ref="amount"
 						required
 					>
-						<u--input
-							v-model="model.amount"
-							clearable
-							type="digit"
-						></u--input>
+						<view class="u-flex u-flex-items-center">
+							<view class="u-flex-1">
+								<u--input
+									v-model="model.amount"
+									clearable
+									type="digit"
+								></u--input>
+							</view>
+							<view class="u-p-l-30 u-p-r-30" v-if="prodUnit">{{prodUnit}}</view>
+						</view>
+						
 					</u-form-item>
 					<u-form-item
 						v-if="pan == 'b'"
@@ -293,9 +299,16 @@
 			
 			
 		</view>
-		<view class="u-p-t-20 u-m-b-40">
-			<u-button type="primary" @click="submit">提交</u-button>
+		<view class="u-flex u-flex-items-center u-flex-between u-p-t-40 u-p-b-40">
+			<view class="u-p-r-20 u-flex-1">
+				<u-button type="primary" @click="submit('y')">审核通过</u-button>
+			</view>
+			
+			<view class="u-p-l-20 u-flex-1">	
+				<u-button type="error" @click="submit('n')">审核拒绝</u-button>
+			</view>
 		</view>
+		
 		
 	</view>
 </template>
@@ -310,6 +323,7 @@
 				pan: 'b',
 				product: '',
 				prodInfo: '',
+				prodUnit: '',
 				prodInfoLoading: false,
 				model: {
 					Customer: {name: ''},
@@ -604,6 +618,7 @@
 				const res = await this.$api.getCompanyProductDetail({params: {id: this.model.product_id}})
 				if(res.code == 1) {
 					this.product = res.list.name
+					this.prodUnit = res.list.unit
 					this.prodInfo = res.list.list_product_attrs.reduce((pre, cur) => {
 						return pre + `${cur.Attr.name}：${cur.value}\n`
 					}, '')
@@ -661,7 +676,7 @@
 					title: title
 				})
 			},
-			submit() {
+			submit(flag) {
 				
 				this.$refs.from.validate().then(async res => {
 					uni.showLoading()
@@ -673,10 +688,25 @@
 					}else {
 						func = 'brokerChangeBuy'
 					}
-					let params = {...this.model};
+					let params = {...this.model, audit: flag};
+					
 					if(this.pid) params.id = this.pid
 					const r = await this.$api[func](params)
 					if(r.code == 1) {
+						const p = uni.$u.pages();
+						if(p.length > 1) {
+							p[p.length - 2].$vm.refreshList();
+							uni.navigateBack({
+								success() {
+									uni.showToast({
+										title: r.msg,
+										icon: 'none'
+									})
+								}
+							})
+							return
+						}
+						
 						uni.redirectTo({
 							url: `/pages/my/broker/auth_list?pan=${this.pan}`,
 							success() {
@@ -686,6 +716,7 @@
 								})
 							}
 						})
+						
 					}
 				}).catch(errors => {
 					console.log(errors)

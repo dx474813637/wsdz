@@ -20,11 +20,11 @@
 							:style="{color: themeConfig.themeIconColor}"
 						></i>
 					</view>
-					<navigator url="/pages/index/index" class="btn u-m-l-20">
+					<view @click="handleGoto({url: '/pages/index/index', type: 'reLaunch'})" class="btn u-m-l-20">
 						<i class="custom-icon custom-icon-zhuye2"
 							:style="{color: typeActive == 'white'? '#007aff' :themeConfig.themeIconColor}"
 						></i>
-					</navigator>
+					</view>
 				</view>
 				
 			</template>
@@ -78,7 +78,8 @@
 		methods: {
 			...mapMutations({
 				setTheme: 'theme/setTheme',
-				setNavColor: 'theme/setNavColor'
+				setNavColor: 'theme/setNavColor',
+				handleGoto: 'user/handleGoto'
 			}),
 			handleChangeTheme() {
 				this.setTheme(this.typeActive == 'dark' ? 'white' : 'dark')

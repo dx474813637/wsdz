@@ -190,28 +190,14 @@
 			</view>
 		</view>
 		
-		<view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26" v-if="moreMenus.menusShow == 1">
+		<view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26" v-for="(ele, i) in moreMenusNew" :key="i">
 			<view class="box-header u-border-bottom u-flex u-flex-items-end u-p-b-14 u-p-l-30 u-p-r-30">
-				<view class="u-font-34">{{moreMenus.menusTitle}}</view>
+				<view class="u-font-34">{{ele.name}}</view>
 			</view>
-			<!-- <view class="box-row u-flex u-flex-items-center u-p-30 ts-bg u-p-b-40">
-				<view class="item u-p-16 bg-warning radius-50">
-					<i class="custom-icon-forward custom-icon u-font-40 text-white"></i>
-				</view>
-				<view class="item u-p-l-20 u-flex u-flex-items-center u-flex-1 u-flex-between">
-					<view class=" u-flex-1">
-						<view class="">推牌推送订阅</view>
-						<view class="text-light u-font-26">用于及时获取相关标准品的新增挂牌</view>
-					</view>
-					<view @click="handleGoto('/pages/my/user/subscribe_list')" class="u-m-l-10">
-						<u-button size="mini" type="warning" shape="circle" :customStyle="{backgroundImage: 'linear-gradient(to right, #ffa509, #ff7903 )', height: '25px'}">推送通知</u-button>
-					</view>
-				</view>
-			</view> -->
 			<view class="box-row other-menus u-flex u-flex-wrap u-flex-items-center u-p-t-20 u-p-b-10">
 				<view 
 					class="item u-text-center u-m-b-26" 
-					v-for="(item, index) in moreMenus.menusList" 
+					v-for="(item, index) in ele.list" 
 					:key="index"
 					@click="handleMenusClick(item)"
 					>
@@ -244,6 +230,7 @@
 				auth: state => state.user.auth,
 				sh: state => state.user.sh,
 				moreMenus: state => state.user.moreMenus,
+				moreMenusNew: state => state.user.moreMenusNew, 
 				newMsg: state => state.user.newMsg, 
 				bd: state => state.user.bd, 
 				tips: state => state.user.tips, 
@@ -281,6 +268,7 @@
 				
 			},
 			handleMenusClick(item) {
+				console.log(item)
 				if(item.type == 1 ){
 					uni.reLaunch({
 						url: item.url

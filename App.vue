@@ -37,7 +37,7 @@
 				});
 			}
 			
-			store.dispatch('user/wode')
+			store.dispatch('user/wode', {bd: 1})
 			routingIntercept()
 			
 		},

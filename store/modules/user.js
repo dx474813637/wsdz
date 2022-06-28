@@ -4,6 +4,7 @@
 let state = {
 		addressArea: [],
 		menusList: [],
+		wode: {},
 		login: 0,
 		auth: 0,
 		bd: 1,
@@ -13,6 +14,7 @@ let state = {
 		myAllCpy: [],
 		myProduct: [],
 		moreMenus: {},
+		moreMenusNew: [],
 		newMsg: 0,
 		tips: {}
 	},
@@ -52,6 +54,9 @@ let state = {
 		setMoreMenus(state, data) {
 			state.moreMenus = data;
 		},
+		setMoreMenusNew(state, data) {
+			state.moreMenusNew = data;
+		},
 		setNewMsg(state, data) {
 			state.newMsg = data;
 		},
@@ -66,6 +71,18 @@ let state = {
 		setTips(state, data) {
 			state.tips = data;
 		},
+		setWode(state, data) {
+			state.wode = data;
+		},
+		clearLogout(state, data) {
+			state.bd = 1
+			state.auth = 0
+			state.myCpy = {}
+			state.myAllCpy = []
+			state.login = 0
+			state.myProduct = []
+			state.newMsg = 0
+		}
 	},
 	actions = {
 		async getCompanyProduct({commit, state}, data={}) {
@@ -86,12 +103,14 @@ let state = {
 				commit('setMyCpy', res.list)
 			}
 		},
-		async wode({commit, state}) {
-			const res = await this._vm.$api.wode()
+		async wode({commit, state}, data={}) {
+			const res = await this._vm.$api.wode({params: data})
+			
+			commit('setWode', res.list)
 			commit('setLogin', res.list.login)
 			commit('setAuth', res.list.auth)
 			commit('setSh', res.list.sh)
-			commit('setBd', res.list.bd)
+			if(res.list.login) commit('setBd', res.list.bd)
 			commit('setTips', {
 				tips_info: res.list.tips_info,
 				tips_title: res.list.tips_title,

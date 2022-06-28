@@ -1,5 +1,5 @@
 <template>
-	<view class="text-white w " :style="{
+	<view class="text-white w " :class="[typeActive]" :style="{
 		backgroundColor: themeConfig.pageBg
 	}">
 		<view :style="{
@@ -22,80 +22,89 @@
 		<view class="list" :style="{
 			height: `calc(100% - 138px - ${sys.statusBarHeight}px - ${sys.safeAreaInsets.bottom}px)`
 		}">
-			<u-list
-				height="100%"
-				enableBackToTop
-				@scrolltolower="scrolltolower"
-				:preLoadingScreen="100"
-			>
-				<u-list-item
-					v-for="(item, index) in indexList"
-					:key="item.id"
-				>
-					<view class="u-p-l-20 u-p-r-20 u-p-t-20">
-						<view
-							v-if="index == 0"
-							class="u-m-b-20"
-						>
-							<view class="title-card u-m-t-20">
-								<view class="title-top"
-									:style="{
-										backgroundColor: themeConfig.marketCard.boxBgTop,
-									}"
+			
+			<template v-if="skeletonLoading">
+				<view class="u-p-20 animation" v-for="item in 4" :key="item">
+					<u-skeleton loading   animate rows="3" :title="false" avatarShape="square" avatarSize="48"></u-skeleton>
+				</view>
+			</template>
+			<template v-else>
+				<u-list
+						height="100%"
+						enableBackToTop
+						@scrolltolower="scrolltolower"
+						:preLoadingScreen="100"
+					>
+						<u-list-item
+							v-for="(item, index) in indexList"
+							:key="item.id"
+							>
+							<view class="u-p-l-20 u-p-r-20 u-p-t-20">
+								<view
+									v-if="index == 0"
+									class="u-m-b-20"
 								>
-									<view class="t u-font-36 u-text-center u-p-15"
-										:style="{
-											backgroundColor: themeConfig.marketCard.tBg,
-											color: themeConfig.marketCard.jiaoColor,
-										}"
-									><text :style="{color: themeConfig.tabTextActive}">{{tabs_list[tabs_current].name}}商品市场</text></view>
+									<view class="title-card u-m-t-20">
+										<view class="title-top"
+											:style="{
+												backgroundColor: themeConfig.marketCard.boxBgTop,
+											}"
+										>
+											<view class="t u-font-36 u-text-center u-p-15"
+												:style="{
+													backgroundColor: themeConfig.marketCard.tBg,
+													color: themeConfig.marketCard.jiaoColor,
+												}"
+											><text :style="{color: themeConfig.tabTextActive}">{{tabs_list[tabs_current].name}}商品市场</text></view>
+										</view>
+										<view class="title-bottom u-p-20 u-flex u-flex-between u-flex-items-center"
+											:style="{
+												backgroundColor: themeConfig.marketCard.boxBgBottom,
+												color: themeConfig.marketCard.subText
+											}"
+										>
+											<view class="item">类型</view>
+											<view class="item">价格</view>
+											<view class="item">交货地</view>
+											<view class="item">数量</view>
+										</view>
+									</view>
 								</view>
-								<view class="title-bottom u-p-20 u-flex u-flex-between u-flex-items-center"
-									:style="{
-										backgroundColor: themeConfig.marketCard.boxBgBottom,
-										color: themeConfig.marketCard.subText
-									}"
-								>
-									<view class="item">类型</view>
-									<view class="item">价格</view>
-									<view class="item">交货地</view>
-									<view class="item">数量</view>
-								</view>
+								<cardMarket
+									:cid="item.id"
+									:name="item.name"
+									:price="item.price"
+									:dprice="item.dprice"
+									:trade_type="item.trade_type"
+									:unit="item.unit"
+									:num="item.amount"
+									:delivery_place="item.delivery_place"
+									:spec="item.spec || item.spec1"
+									:pubDate="item.Product_trade.post_time"
+									:type="item.Product_trade.trade_type"
+									@detail="handleRouteTo"
+								></cardMarket>
 							</view>
-						</view>
-						<cardMarket
-							:cid="item.id"
-							:name="item.name"
-							:price="item.price"
-							:dprice="item.dprice"
-							:trade_type="item.trade_type"
-							:unit="item.unit"
-							:num="item.amount"
-							:delivery_place="item.delivery_place"
-							:spec="item.spec || item.spec1"
-							:pubDate="item.Product_trade.post_time"
-							:type="item.Product_trade.trade_type"
-							@detail="handleRouteTo"
-						></cardMarket>
-					</view>
-					
-				</u-list-item>
-				
-				<template name="dataStatus">
-					<template v-if="indexList.length == 0">
-						<u-empty
-							mode="data"
-							:icon="themeConfig.empty"
-						>
-						</u-empty>
-					</template>
-					<template v-else>
-						<u-loadmore
-							:status="loadstatus"
-						/>
-					</template>
-				</template>
-			</u-list>
+							
+						</u-list-item>
+						
+						<template name="dataStatus">
+							<template v-if="indexList.length == 0">
+								<u-empty
+									mode="data"
+									:icon="themeConfig.empty"
+								>
+								</u-empty>
+							</template>
+							<template v-else>
+								<u-loadmore
+									:status="loadstatus"
+								/>
+							</template>
+						</template>
+					</u-list>
+			</template>
+			
 		</view>
 		
 		<menusBar tabbar :activeIndex="3" :theme="typeActive" ></menusBar>
@@ -113,6 +122,7 @@
 					share_title: '商品市场',
 					title: '商品市场'
 				},
+				skeletonLoading: true,
 				show: false,
 				pan: 's',
 				pageConfig: {
@@ -216,6 +226,7 @@
 						this.loadstatus = 'loadmore'
 					}
 				}
+				this.skeletonLoading = false
 			},
 			async getMoreData() {
 				if(this.loadstatus != 'loadmore') return
@@ -232,11 +243,58 @@
 </script>
 
 <style lang="scss">
+	
 	page {
 		height: 100vh;
+		.dark /deep/ {
+			.u-skeleton {
+				&__wrapper {
+					&__avatar {
+						background: #1e1f31!important;
+						&--circle {}
+						&--square {}
+					}
+					&__content {
+						&__rows,
+						&__title {
+							background: #1e1f31!important;
+						}
+					}
+				}
+			}
+		}
+		.white /deep/ {
+			.u-skeleton {
+				&__wrapper {
+					&__avatar {
+						background: #dcdcdc!important;
+						&--circle {}
+						&--square {}
+					}
+					&__content {
+						&__rows,
+						&__title {
+							background: #dcdcdc!important;
+						}
+					}
+				}
+			}
+		}
 	}
 </style>
 <style lang="scss" scoped>
+	
+	.animation {
+		animation: shandong 1.5s ease infinite;
+	}
+	@keyframes shandong {
+		50% {
+			opacity: .5;
+		}
+		100% {
+			opacity: 1;
+		}
+	}
 	.title-card {
 		position: relative;
 		.title-top {

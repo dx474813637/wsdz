@@ -74,6 +74,7 @@
 											v-for="(ele, i) in searchRes"
 											:key="ele.id"
 											:class="{
+												'rows': isMyAllCpy || isMyProduct,
 												'normal_white':  theme == 'white',
 												'normal_dark':  theme == 'dark',
 												'active_white': theme == 'white' && ele.active,
@@ -421,7 +422,7 @@
 					})
 				}else if(this.isMyAllCpy) {
 					this.myAllCpy.forEach(ele => {
-						ele.name = ele.to_name
+						ele.name = ele.to_name + '-' + ele.to_contact
 						let i = ele.name.indexOf(this.keyword)
 						if(i > -1) {
 							ele.pp = [i, this.keyword.length]
@@ -566,6 +567,11 @@
 				border-radius: 8rpx;
 				position: relative;
 				border: 1rpx solid #eee;
+				&.rows {
+					flex: 0 0 100%;
+					margin-right: 0;
+					text-align: left;
+				}
 				&.normal_white {
 					border-color: #eee;
 					color: #666;

@@ -4,6 +4,8 @@
 	}">
 		<navBar fixed :title="onlineControl.title" ></navBar>
 		<u-status-bar></u-status-bar>
+		
+		
 		<view :style="{
 			backgroundColor: themeConfig.navBg,
 			paddingTop: '44px'
@@ -17,6 +19,18 @@
 					:bgColor="themeConfig.pageBg"
 				></u-search>
 			</view>
+			<view class="u-p-b-10">
+				<u-notice-bar
+					v-if="notice.length > 0"
+					:bgColor="themeConfig.navBg" 
+					:color="themeConfig.warn" 
+					:text="notice.map(ele => ele.title)"
+					direction="column"
+					mode="link"
+					@click="handleNoticeIndex"
+				></u-notice-bar>
+			</view>
+			
 		</view>
 		
 		<view class="main u-p-30">
@@ -122,6 +136,7 @@
 			return {
 				keyword: '',
 				indexList: [],
+				notice: [],
 				hqList: [],
 				marketCardList: [],
 				curP: 1,
@@ -160,11 +175,24 @@
 			uni.showLoading()
 			this.getHome()
 			this.getMarketCard()
+			this.getNotice()
 		},
 		methods: {
 			...mapMutations({
 				handleGoto: 'user/handleGoto'
 			}),
+			handleNoticeIndex(index) {
+				this.handleGoto({
+					type: 'reLaunch',
+					url: `/pages/index/notice/noticeDetail?id=${this.notice[index].id}`
+				})
+			},
+			async getNotice() {
+				const res = await this.$api.noticeList({params: {p: 1}})
+				if(res.code == 1) {
+					this.notice = res.list
+				}
+			},
 			handleMarketCardClick(index) {
 				this.handleGoto({
 					url: '/pages/index/market/market',

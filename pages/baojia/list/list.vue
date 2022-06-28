@@ -35,9 +35,9 @@
 							v-for="(item, index) in memu " 
 							:key="index" 
 							:style="{
-								color: item.ec_type == ecType ? themeConfig.tabTextActive : themeConfig.tabTextInactive,
+								color: index == tabs_current ? themeConfig.tabTextActive : themeConfig.tabTextInactive,
 							}"
-							@click="handleClickEcTabs(item)">
+							@click="handleClickEcTabs(item,index)">
 							<view class="img-center">
 								<i :class="[item.icon, 'custom-icon u-font-36']"></i>
 								<!-- <u-image width="40rpx" height="40rpx" :src="item.img"></u-image> -->
@@ -48,62 +48,143 @@
 						</view>
 					</view>
 				</view>
-				
-				<view class="u-p-l-30 u-p-r-30 u-p-t-20 u-p-b-20" v-if="ecType == 1 && list_table && list_table.length > 0">
-					<view class="d-bk radius uni-shadow-lg" :style="{
-							backgroundColor: themeConfig.boxBg,
-							color: themeConfig.pageTextSub,
-							boxShadow: themeConfig.boxShadow
-						}">
-						<view class="u-flex">
-							<view class="u-flex-1 u-text-center u-p-20">
-								日期
-							</view>
-							<view class="u-flex-1 u-text-center u-p-20">
-								价格
-							</view>
-							<view class="u-flex-1 u-text-center u-p-20">
-								涨跌
-							</view>
-						</view>
-						<view class="u-flex u-font-30" v-for="(item, index) in list_table" :key="index">
-							<view class="u-flex-1 u-text-center u-p-20">
-								{{item.pdate}}
-							</view>
-							<view class="u-flex-1 u-text-center u-p-20" :style="{
-								color: themeConfig.pageText
+				<template v-if="tabs_current == 2">
+					<view class="u-p-l-30 u-p-r-30 u-p-t-20 u-p-b-20" v-if="tabs_current == 2">
+						<view class="d-bk u-p-40 radius uni-shadow-lg" :style="{
+								backgroundColor: themeConfig.boxBg,
+								color: themeConfig.pageTextSub,
+								boxShadow: themeConfig.boxShadow
 							}">
-								{{item.pave}}
+							<view class="u-text-center">定价中心</view>
+							<u--form
+								labelPosition="left"
+								:model="setMoneyForm"
+								ref="form"
+								labelWidth="100"
+								:borderBottom="false"
+								:labelStyle="{
+									width: '100px',
+									color: themeConfig.pageTextSub
+								}"
+							>
+								<u-form-item
+									label="拟定价产品"
+								>
+									<view :style="{
+										color: themeConfig.pageText,
+										textAlign: 'right',
+									}">{{indexData.Finfo.pname}}</view>
+								</u-form-item>	
+								<u-form-item
+									label="上次交易日"
+									prop="zdate"
+								>
+									<view :style="{
+											color: themeConfig.pageText,
+											textAlign: 'right',
+										}"
+										@click="handleShowDatePricker('zdate')"
+									>{{setMoneyForm.zdate || '请选择交易日'}}</view>
+								</u-form-item>	
+								
+								<u-form-item
+									label="上次交易价"
+									prop="price"
+								>
+									<u--input
+										v-model="setMoneyForm.price"
+										placeholder="填写上次交易价"
+										border="none"
+										:color="themeConfig.pageText"
+										:placeholderStyle="{
+											color: themeConfig.pageText
+										}"
+										inputAlign='right'
+									></u--input>
+								</u-form-item>	
+								<u-form-item
+									label="定价日"
+									prop="ddate"
+								>
+									<view :style="{
+											color: themeConfig.pageText,
+										}"
+									>
+										<uni-datetime-picker
+											type="date" 
+											:clear-icon="false" 
+											:end="new Date().getTime() - 24*60*60*1000"
+											v-model="setMoneyForm.ddate" 
+										/>
+									</view>
+								</u-form-item>	
+							</u--form>
+							<view class="u-p-10 " >
+								<u-button @click="handleSubmit" :type="typeActive=='white'? 'primary' : 'warning'">参考定价</u-button>
 							</view>
-							<view class="u-flex-1 u-text-center u-p-20 " :class="item.color">
-								{{item.zdf}}
+							
+						</view>
+					</view>
+				</template>
+				<template v-else>
+					<view class="u-p-l-30 u-p-r-30 u-p-t-20 u-p-b-20" v-if="ecType == 1 && list_table && list_table.length > 0">
+						<view class="d-bk radius uni-shadow-lg" :style="{
+								backgroundColor: themeConfig.boxBg,
+								color: themeConfig.pageTextSub,
+								boxShadow: themeConfig.boxShadow
+							}">
+							<view class="u-flex">
+								<view class="u-flex-1 u-text-center u-p-20">
+									日期
+								</view>
+								<view class="u-flex-1 u-text-center u-p-20">
+									价格
+								</view>
+								<view class="u-flex-1 u-text-center u-p-20">
+									涨跌
+								</view>
+							</view>
+							<view class="u-flex u-font-30" v-for="(item, index) in list_table" :key="index">
+								<view class="u-flex-1 u-text-center u-p-20">
+									{{item.pdate}}
+								</view>
+								<view class="u-flex-1 u-text-center u-p-20" :style="{
+									color: themeConfig.pageText
+								}">
+									{{item.pave}}
+								</view>
+								<view class="u-flex-1 u-text-center u-p-20 " :class="item.color">
+									{{item.zdf}}
+								</view>
 							</view>
 						</view>
 					</view>
-				</view>
-				
-				<view class="u-p-l-30 u-p-r-30 u-p-t-10 u-p-b-10" v-for="(item, index) in news" :key="index">
-					<cardB
-						:name="item.name"
-						:cid="item.id"
-						:color="item.color"
-						:price="item.price"
-						:dprice="item.dprice"
-						:unit="item.unit"
-						:is_zd="item.is_zd"
-						:cname="item.cname"
-						:intro="item.intro"
-						:place_company="item.place_company"
-						:reg_name="item.reg_name"
-						:pubDate="item.post_date"
-						:type="item.tiao"
-					></cardB>
-				</view>
+					
+					<view class="u-p-l-30 u-p-r-30 u-p-t-10 u-p-b-10" v-for="(item, index) in news" :key="index">
+						<cardB
+							:name="item.name"
+							:cid="item.id"
+							:color="item.color"
+							:price="item.price"
+							:dprice="item.dprice"
+							:unit="item.unit"
+							:is_zd="item.is_zd"
+							:cname="item.cname"
+							:intro="item.intro"
+							:place_company="item.place_company"
+							:reg_name="item.reg_name"
+							:pubDate="item.post_date"
+							:type="item.tiao"
+						></cardB>
+					</view>
+					
+				</template>
 				
 
 			</view>
-			<u-loadmore :status="status" />
+			<u-loadmore v-if="tabs_current != 2" :status="status" />
 		</view>
+		
 		<u-safe-bottom></u-safe-bottom>
 		<menusPopup
 			:show="!show_canvas" 
@@ -121,10 +202,12 @@
 	import {mapState, mapGetters, mapMutations} from 'vuex'
 	import uniEcCanvas from "@/pages/baojia/components/uni-ec-canvas/uni-ec-canvas";
 	import mixShareInfo from '@/config/mixShareInfo'
+	import uniDatetimePicker from '@/uni_modules/uni-datetime-picker/components/uni-datetime-picker/uni-datetime-picker.vue'
 	export default {
 		mixins: [mixShareInfo],
 		components: {
 			uniEcCanvas,
+			uniDatetimePicker
 		},
 		data() {
 			return {
@@ -147,6 +230,7 @@
 				p: 1,
 				hasMore: true,
 				status: 'loadmore',
+				tabs_current: 0,
 				memu: [
 					{
 						name: '生意社价格',
@@ -162,9 +246,9 @@
 					},
 					{
 						name: '定价中心',
-						isDev: 1,
 						type: 1,
-						icon: 'custom-icon-recharge'
+						icon: 'custom-icon-recharge',
+						ec_type: 1,
 					},
 					{
 						name: '产业链',
@@ -181,30 +265,38 @@
 				ecloading: false,
 				indexData: null,
 				originalData: null,
-				originalData2: null
+				originalData2: null,
+				originalData3: null,
+				setMoneyForm: {
+					zdate: '1577808000000',
+					price: '',
+					ddate: '',
+				},
+				datetimeShow: false,
+				datetimekey: '',
+				datetime: '',
+				rules: {
+					zdate: {
+						type: 'string',
+						required: true,
+						message: '请选择上次交易日',
+						trigger: ['blur', 'change']
+					},
+					ddate: {
+						type: 'string',
+						required: true,
+						message: '请选择拟定价日期',
+						trigger: ['blur', 'change']
+					},
+					price: {
+						type: 'string',
+						required: true,
+						message: '请填写上次交易价',
+						trigger: ['blur', 'change']
+					},
+				}
 			};
 		},
-		// onShareTimeline() {
-		// 	return {
-		// 		title: this.share_title,
-		// 		query: 'login=' + uni.getStorageSync('login') + '&id=' + this.id + '&dir=' + this.dir
-		// 	}
-		// },
-		// onShareAppMessage(res) {
-		// 	this.$http
-		// 		.post('share', {
-		// 			login: uni.getStorageSync('login'),
-		// 			url: '/' + this.$scope.route + '|' + uni.getStorageSync('login')
-		// 		})
-		// 		.then(resa => {
-		// 			resa.data.poster ? uni.setStorageSync('poster', resa.data.poster) : '';
-		// 		});
-		// 	return {
-		// 		title: this.share_title,
-		// 		path: '/' + this.$scope.route + '?login=' + uni.getStorageSync('login') + '&id=' + this.id + '&dir=' + this
-		// 			.dir
-		// 	};
-		// },
 		async onLoad(options) {
 			// options.login ? uni.setStorageSync('login', options.login) : "";
 			options.id ? this.id = options.id : "";
@@ -217,6 +309,7 @@
 		onShow() {},
 		onReachBottom() {
 			// this.newsUrl();
+			if(this.tabs_current == 2) return
 			this.p ++;
 			this.getIndexData()
 		},
@@ -224,10 +317,18 @@
 			typeActive(v) {
 				this.renderEc()
 			},
-			async ecType(v) {
+			// async ecType(v) {
+			// 	//切换柱状图获取 月K柱图数据
+			// 	if((v == 2 && !this.originalData2) || (v == 1 && !this.originalData)) {
+			// 		await this.getEcData()
+			// 	}
+			// 	this.renderEc()
+			// },
+			async tabs_current(v) {
 				//切换柱状图获取 月K柱图数据
-				if((v == 2 && !this.originalData2) || (v == 1 && !this.originalData)) {
+				if((v == 2 && !this.originalData3) || (v == 1 && !this.originalData2) || (v == 0 && !this.originalData)) {
 					await this.getEcData()
+					this.$refs.form.setRules(this.rules)
 				}
 				this.renderEc()
 			}
@@ -256,6 +357,16 @@
 			...mapMutations({
 				setNavColor: 'theme/setNavColor'
 			}),
+			handleShowDatePricker(key) {
+				this.datetimekey = key;
+				this.datetimeShow = true
+				this.datetime = this.setMoneyForm[key]
+			},
+			datetimeConfirm(t) {
+				this.setMoneyForm[this.datetimekey] = new Date(t.value).toLocaleDateString()
+				this.datetimeShow = false
+				this.datetimekey = ''
+			},
 			async getIndexData() {
 				if(this.status == 'loading') return
 				this.status = 'loading'
@@ -291,13 +402,24 @@
 			},
 			async getEcData() {
 				this.ecloading = true
-				const res = await this[ this.ecType == 1 ? 'ave':'getPpiPer']();
+				let func = '';
+				if(this.tabs_current == 0) {
+					func = 'ave'
+				}else if(this.tabs_current == 1) {
+					func = 'getPpiPer'
+				}else if(this.tabs_current == 2) {
+					func = 'pricingCenter'
+				}
+				const res = await this[func]();
 				if(res.code == 1) {
-					if(this.ecType == 1) {
+					if(this.tabs_current == 0) {
 						this.originalData = res.list
 					}
-					else if(this.ecType == 2) {
+					else if(this.tabs_current == 1) {
 						this.originalData2 = res.list
+					}
+					else if(this.tabs_current == 2) {
+						this.originalData3 = res.list
 					}
 					
 					this.ecloading = false
@@ -310,12 +432,24 @@
 					...this.echartsConfig.series[type]
 				})
 				if(this.ecType == 1) {
-					option.title.text = `${this.originalData.name} {a|[切换]}`
+					if(this.tabs_current == 0) { 
+						//生意社价格
+						option.title.text = `${this.originalData.name} {a|[切换]}`
+						option.xAxis.data = this.originalData.data_list
+						option.series[0].data = this.originalData.price_list
+						option.tooltip.formatter = '{b0}\n{a0}: {c0}元'
+					}
+					else if(this.tabs_current == 2) {
+						//定价中心
+						option.title.text = `${this.originalData3.pic_data.name} {a|[切换]}`
+						option.xAxis.data = this.originalData3.pic_data.date_data1
+						option.series[0].data = this.originalData3.pic_data.data_data1
+						option.series[0].name = this.originalData3.pic_data.mode_data
+						option.tooltip.formatter = '{b0}\n{a0}: {c0}'
+					}
 					option.title.subtext = ''
-					option.xAxis.data = this.originalData.data_list
-					option.series[0].data = this.originalData.price_list
-					option.tooltip.formatter = '{b0}\n{a0}: {c0}%'
 				}else if(this.ecType == 2) {
+					//月柱K图
 					option.title.text = `${this.originalData2.name} {a|[切换]}`
 					option.title.subtext = this.originalData2.spec
 					option.xAxis.data = this.originalData2.data_list
@@ -340,11 +474,12 @@
 				this.originalData = null
 				this.originalData2 = null
 				this.initData()
+				this.indexData = {pid: data.pid}
 				this.getIndexData()
 				await this.getEcData()
 				this.renderEc()
 			},
-			handleClickEcTabs(item) {
+			handleClickEcTabs(item, index) {
 				if(item.isDev == 1) {
 					uni.showToast({
 						title: '该功能正在拼命建设中',
@@ -353,6 +488,7 @@
 					return
 				}
 				if(item.hasOwnProperty('ec_type')) {
+					this.tabs_current = index
 					this.ecType = item.ec_type
 				}else {
 					// item.url += '&data=' + JSON.stringify({
@@ -401,42 +537,6 @@
 					});
 				}
 			},
-			// newsUrl() {
-			// 	if (!this.hasMore) {
-			// 		return;
-			// 	}
-			// 	this.status = 'loading';
-			// 	this.$http
-			// 		.get('m_ppi_index', {
-			// 			login: uni.getStorageSync('login'),
-			// 			id: this.id,
-			// 			p: ++this.p,
-			// 			dir: this.dir
-			// 		})
-			// 		.then(res => {
-			// 			this.list = res.data.list;
-			// 			this.news = this.news.concat(res.data.list.pw_rec_list);
-			// 			this.hasMore = this.p < res.data.list.pw_page_total;
-			// 			this.tags = res.data.list.Finfo.name;
-			// 			this.memu_msg = res.data.memu_msg;
-			// 			if (this.p < res.data.list.pw_page_total) {
-			// 				this.status = 'loadmore';
-			// 			} else {
-			// 				this.status = 'nomore';
-			// 			}
-			// 			if (res.data.memu) {
-			// 				this.memu = res.data.memu;
-			// 			}
-			// 			if (res.data.memub) {
-			// 				this.memub = res.data.memub;
-			// 			}
-			// 			this.share_title = res.data.share_title;
-			// 			this.title = res.data.title;
-			// 			this.ppi_title = res.data.ppi_title;
-			// 			this.memu_show = res.data.memu_show;
-			// 			this.tabbar_show = res.data.tabbar_show;
-			// 		});
-			// },
 			async getPpiPer() {
 				return await this.$api.getPpiPer({
 					params: {
@@ -454,6 +554,26 @@
 				})
 				
 			},
+			async pricingCenter() {
+				return await this.$api.pricingCenter({
+					params: {
+						pid: this.id,
+						...this.setMoneyForm
+					}
+				})
+				
+			},
+			handleSubmit() {
+				this.$refs.form.validate().then(async () => {
+					uni.showLoading( )
+					const res = await this.pricingCenter()
+					if(res.code == 1) {
+						
+					}
+				}).catch(errors => {
+					uni.$u.toast('校验失败')
+				})
+			}
 		}
 	};
 </script>

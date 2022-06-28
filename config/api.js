@@ -95,6 +95,14 @@ export const getPpiBasketSell = (data) => http.get('m_ppi_basket_sell', data)
 export const getPpiCateList = (data) => http.get('m_ppi_cate_list', data)
 // 获取 生意社报价详情 参数id
 export const getPpiPriceDetail = (data) => http.get('m_ppi_price_detail', data)
+// pricing_center 定价中心  接口  
+// 参数pid（不是大数据里的ppid，另一个id。螺纹钢 [pid] => 508 [ppid] => 927）必须。
+// zdate上次交易日（格式2022-06-17） 
+// ddate拟定价日期（格式2022-06-17） 
+// price上次交易价
+// 折线图用date_data1 data_data1两个数据，已经处理过的。
+export const pricingCenter = (data) => http.get('pricing_center', data)
+
 // 采购/销售表单
 /**
  * 
@@ -289,6 +297,7 @@ export const scm = (data) => http.get('scm', data)
 // =====客户管理 
 // broker  客户管理列表 
 // 参数state 1-已使用 0-未使用 p页数
+// terms 名称手机联系人
 export const broker = (data) => http.get('broker', data)
 // add_customer 领取客户账号 
 export const addCustomer = (data) => http.get('add_customer', data)
@@ -309,7 +318,8 @@ export const brokerChangeBuy = (data, config={}) => http.post('broker_change_buy
 // broker_able_buy 修改客户委托买盘状态 参数跟修改买盘状态一致
 export const brokerAbleBuy = (data) => http.get('broker_able_buy', data)
 
-// broker_sell 客户委托卖盘 参数 terms商品名称搜索 product_id商品ID搜索 p页数
+// broker_sell 客户委托卖盘 
+// 参数 terms商品名称搜索 product_id商品ID搜索 p页数
 export const brokerSell = (data) => http.get('broker_sell', data)
 // broker_change_sell 修改客户委托卖盘 参数跟修改卖盘一致
 export const brokerChangeSell = (data, config={}) => http.post('broker_change_sell', data, config)
@@ -324,10 +334,21 @@ export const timsSend = (data, config={}) => http.post('tims_send', data, config
 export const timsNews = (data) => http.get('tims_news', data)
 // tims_news_history 历史消息 参数login  历史消息
 export const timsNewsHistory = (data) => http.get('tims_news_history', data)
-
+// tims_login_detail 聊天框首页（历史消息）接口 
+// 参数login（对方账号，必须） 
+// offset1（时间戳，空就是最新聊天记录，默认返回第一页聊天记录，默认10条。）
+export const timsLoginDetail = (data) => http.get('tims_login_detail', data)
 
 // （弃）tims_news_history2 历史消息2 参数login 昨天之前的历史消息
 
+// change_bind 修改绑定手机号 
+// 原手机号： old_mobile 
+// 原手机验证码： old_mobile_code 
+// 新手机号： new_mobile 
+// 新手机验证码： new_mobile_code 
+// flag *1-原手机号获取短信2-提交原手机号验证码3-新手机号获取短信4-提交新手机号验证码 
+// 操作： (这里需要前台控制，顺序是先调用1和2，成功后才允许3和4)
+export const changeMobile = (data) => http.get('change_bind', data)
 
 // bangding 绑定手机号/修改绑定手机号 
 // 参数：mobile flag1-获取短信 2-提交验证码 captcha
@@ -335,80 +356,97 @@ export const bindMobile = (data) => http.get('bangding', data)
 // agreement 协议
 export const agreement = (data) => http.get('agreement', data)
 
+// spot_goods 现货公司接口
+export const xianhuo = (data) => http.get('spot_goods', data)
+
+// notice_list 最新公告列表 参数p
+export const noticeList = (data) => http.get('notice_list', data)
+
+// notice_detail 公告详情 参数id
+export const noticeDetail = (data) => http.get('notice_detail', data)
+
+// my_ewm 二维码
+export const myEwm = (data) => http.get('my_ewm', data)
+
+// 化工网数据库接口 参数terms
+export const chemnet = (data) => http.get('chemical_dictionary', data)
+
+
+
 
 
 
 // =====================>下列测试mock拦截api用
 
-export const getMsgList = (data) => http.get('/api/getMsgList', data)
+// export const getMsgList = (data) => http.get('/api/getMsgList', data)
 
-export const getMsgDetail = (data) => http.get('/api/getMsgDetail', data)
+// export const getMsgDetail = (data) => http.get('/api/getMsgDetail', data)
 
-export const getInitData = (data) => http.get('/api/initData', data)
+// export const getInitData = (data) => http.get('/api/initData', data)
 
-export const getRegionalList = (data) => http.get('/api/regional_list', data)
+// export const getRegionalList = (data) => http.get('/api/regional_list', data)
 
-export const submitAddrData = (params, config = {}) => http.post('/api/address_change', params, config)
+// export const submitAddrData = (params, config = {}) => http.post('/api/address_change', params, config)
 
-export const delAddress = (data) => http.get('/api/delAddress', data)
+// export const delAddress = (data) => http.get('/api/delAddress', data)
 
-export const getBrokerProds = (data) => http.get('/api/getBrokerProds', data)
+// export const getBrokerProds = (data) => http.get('/api/getBrokerProds', data)
 
-export const changeProdStatus = (data) => http.get('/api/changeProdStatus', data)
+// export const changeProdStatus = (data) => http.get('/api/changeProdStatus', data)
 
-export const editProd = (params, config = {}) => http.post('/api/editProd', params, config)
+// export const editProd = (params, config = {}) => http.post('/api/editProd', params, config)
 
-export const getSubscribeMsgList = (data) => http.get('/api/getSubscribeMsgList', data)
+// export const getSubscribeMsgList = (data) => http.get('/api/getSubscribeMsgList', data)
 
-export const getCustomerList = (data) => http.get('/api/getCustomerList', data)
+// export const getCustomerList = (data) => http.get('/api/getCustomerList', data)
 
-export const editCostomDetail = (params, config = {}) => http.post('/api/editCostomDetail', params, config)
+// export const editCostomDetail = (params, config = {}) => http.post('/api/editCostomDetail', params, config)
 
-export const changeLoginPwd = (data) => http.get('/api/changeLoginPwd', data)
+// export const changeLoginPwd = (data) => http.get('/api/changeLoginPwd', data)
 
-export const changeSinoLoginPwd = (data) => http.get('/api/changeSinoLoginPwd', data)
+// export const changeSinoLoginPwd = (data) => http.get('/api/changeSinoLoginPwd', data)
 
-export const updatePayPwd = (data) => http.get('/api/updatePayPwd', data)
+// export const updatePayPwd = (data) => http.get('/api/updatePayPwd', data)
 
-export const forgetPayPwd = (data) => http.get('/api/forgetPayPwd', data)
+// export const forgetPayPwd = (data) => http.get('/api/forgetPayPwd', data)
 
-export const getPhoneCode = (data) => http.get('/api/getPhoneCode', data)
+// export const getPhoneCode = (data) => http.get('/api/getPhoneCode', data)
 
-export const valPhoneCode = (data) => http.get('/api/valPhoneCode', data)
+// export const valPhoneCode = (data) => http.get('/api/valPhoneCode', data)
 
-export const getLogList = (data) => http.get('/api/getLogList', data)
+// export const getLogList = (data) => http.get('/api/getLogList', data)
 
-export const getOrderList = (data) => http.get('/api/getOrderList', data)
+// export const getOrderList = (data) => http.get('/api/getOrderList', data)
 
-export const getCzList = (data) => http.get('/api/getCzList', data)
+// export const getCzList = (data) => http.get('/api/getCzList', data)
 
-export const getBillList = (data) => http.get('/api/getBillList', data)
+// export const getBillList = (data) => http.get('/api/getBillList', data)
 
-export const getBankcardList = (data) => http.get('/api/getBankcardList', data)
+// export const getBankcardList = (data) => http.get('/api/getBankcardList', data)
 
-export const bindBankCard = (params, config = {}) => http.post('/api/bindBankCard', params, config)
+// export const bindBankCard = (params, config = {}) => http.post('/api/bindBankCard', params, config)
 
-export const czApply = (params, config = {}) => http.post('/api/czApply', params, config)
+// export const czApply = (params, config = {}) => http.post('/api/czApply', params, config)
 
-export const searchBank = (params) => http.get('/api/searchBank', params)
+// export const searchBank = (params) => http.get('/api/searchBank', params)
 
-export const getBrokerList = (params) => http.get('/api/getBrokerList', params)
+// export const getBrokerList = (params) => http.get('/api/getBrokerList', params)
 
-export const getPanList = (params) => http.get('/api/getPanList', params)
+// export const getPanList = (params) => http.get('/api/getPanList', params)
 
-export const getFollowPanList = (params) => http.get('/api/getFollowPanList', params)
+// export const getFollowPanList = (params) => http.get('/api/getFollowPanList', params)
 
-export const getEcData = (params) => http.get('/api/getEcData', params)
+// export const getEcData = (params) => http.get('/api/getEcData', params)
 
-export const getHqData = (params) => http.get('/api/getHqData', params)
+// export const getHqData = (params) => http.get('/api/getHqData', params)
 
-export const getAttentionList = (params) => http.get('/api/getAttentionList', params)
+// export const getAttentionList = (params) => http.get('/api/getAttentionList', params)
 
-export const getMenusList = (params) => http.get('/api/getMenusList', params)
+// export const getMenusList = (params) => http.get('/api/getMenusList', params)
 
-export const setNewFollow = (params) => http.get('/api/setNewFollow', params)
+// export const setNewFollow = (params) => http.get('/api/setNewFollow', params)
 
-export const removeFollow = (params) => http.get('/api/removeFollow', params)
+// export const removeFollow = (params) => http.get('/api/removeFollow', params)
 
-export const getMarketList = (params) => http.get('/api/getMarketList', params)
+// export const getMarketList = (params) => http.get('/api/getMarketList', params)
 

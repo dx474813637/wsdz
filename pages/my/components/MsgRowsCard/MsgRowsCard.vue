@@ -24,14 +24,14 @@
 					:style="{
 						color: themeConfig.msg.rows.titleColor
 					}"
-				>{{msg.name}}</view>
-				<!-- <view class="u-font-24 u-p-l-20"
+				>{{msg.name || msg.clogin}}</view>
+				<view class="u-font-24 u-p-l-20"
 					:style="{
 						color: themeConfig.msg.rows.subColor
 					}"
-				>{{msg.time | date2timestamp | timeFrom}}</view> -->
+				>{{msg.uptime | date2timestamp | chatTimeFilter(true)}}</view>
 			</view>
-			<view class="item-two u-flex u-flex-items-center u-flex-between"
+			<view class="item-two u-flex u-flex-items-center "
 				:style="{
 					color: themeConfig.msg.rows.contentColor
 				}"
@@ -40,13 +40,14 @@
 					:style="{
 						color:  themeConfig.msg.rows.newlabel
 					}"
-					><template v-if="msg.read == '1'">[新消息]</template></view>
-				<view class="u-font-24 u-p-l-20"
+					v-if="msg.read == '1'"
+					>[新消息]</view>
+				<!-- <view class="u-font-24 u-p-l-20"
 					:style="{
 						color: themeConfig.msg.rows.subColor
 					}"
-					>{{msg.uptime | date2timestamp | chatTimeFilter(true)}}</view>
-				<!-- <view class="u-line-1 u-font-28">{{msg.content}}</view> -->
+					>{{msg.uptime | date2timestamp | chatTimeFilter(true)}}</view> -->
+				<view class="u-line-1 u-font-28">{{msg.content}}</view>
 			</view>
 		</view>
 	</view>

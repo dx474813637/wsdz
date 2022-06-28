@@ -1,5 +1,18 @@
 <template>
 	<view class="w">
+		<view class="search-wrapper u-flex u-p-l-20 u-p-r-20">
+			<view class="item u-flex-1 u-p-b-10">
+				<u-search 
+					placeholder="检索商品名称" 
+					v-model="keyword"
+					clearabled
+					:showAction="false"
+					bgColor="#e8e8e8"
+					@search="handleSearch"
+				></u-search>
+			</view>
+			
+		</view>
 		<view class="list u-p-l-20 u-p-r-20">
 			<u-list
 				height="100%"
@@ -105,12 +118,16 @@
 			scrolltolower() {
 				this.getMoreData()
 			},
+			handleSearch(v) {
+				this.refreshList()
+			},
 			async getData() {
 				if(this.loadstatus != 'loadmore') return
 				this.loadstatus = 'loading'
 				const res = await this.$api[this.pan == 's'? 'brokerSell': 'brokerBuy']({
 					params: {
 						p: this.curP,
+						terms: this.keyword
 					}
 				})
 				if(res.code == 1) {
@@ -175,7 +192,7 @@
 		height: 100vh;
 	}
 	.list {
-		height: calc(100% - env(safe-area-inset-bottom));
+		height: calc(100% - 39px - env(safe-area-inset-bottom));
 		
 	}
 </style>

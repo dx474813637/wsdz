@@ -1,6 +1,6 @@
 <template>
 	<view class="w">
-		<!-- <view class="search-wrapper u-flex u-p-l-20 u-p-r-20">
+		<view class="search-wrapper u-flex u-p-l-20 u-p-r-20">
 			<view class="item u-flex-1 u-p-b-10">
 				<u-search 
 					placeholder="检索账号/名称/联系人/手机" 
@@ -12,7 +12,7 @@
 				></u-search>
 			</view>
 			
-		</view> -->
+		</view>
 		<view class="tabs-w">
 			<u-tabs
 				:list="tabs_list"
@@ -52,6 +52,7 @@
 						<CustomCard
 							:originalData="item"
 							@detail="handleCustomDetail"
+							@copy="handleCopy"
 						></CustomCard>
 					</view>
 					
@@ -130,6 +131,9 @@
 				if(this.tabs_current == 2) {
 					base.state = 0
 				}
+				if(this.tabs_current == -1) {
+					base.terms = this.keyword
+				}
 				console.log(base)
 				return base
 			}
@@ -156,7 +160,8 @@
 				this.loadstatus = 'loadmore'
 			},
 			handleSearch(v) {
-				console.log(v)
+				this.tabs_current = -1
+				this.refreshList()
 			},
 			changeTabsStatus(key, value) {
 				this.tabs_list = this.tabs_list.map(ele => {
@@ -166,6 +171,7 @@
 			},
 			async handleTabsChange(value) {
 				this.tabs_current = value.index
+				this.keyword = ""
 				this.changeTabsStatus('disabled', true)
 				this.initParamas();
 				uni.showLoading();
@@ -195,6 +201,21 @@
 				this.curP ++
 				await this.getData()
 			},
+			handleCopy(data) {
+				let str;
+				if(data.to_state == 1) {
+					str = `账号：${data.login}`
+				}else {
+					str = `账号：${data.login}，初始密码：${data.to_passwd}`
+				}
+				
+				uni.setClipboardData({
+					data: str,
+					success: function () {
+						console.log('success');
+					}
+				});
+			},
 			handleCustomDetail({id, originalData}) {
 				
 				uni.navigateTo({
@@ -215,7 +236,7 @@
 		height: 100%;
 	}
 	.list {
-		height: calc(100% - 44px);
+		height: calc(100% - 83px);
 		
 	}
 </style>

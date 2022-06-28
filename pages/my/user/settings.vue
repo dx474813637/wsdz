@@ -96,27 +96,23 @@
 					// 	type: 'cell',
 					// 	url: '/pages/my/account/bind_account'
 					// },
-					// {
-					// 	title: '绑定手机',
-					// 	icon: 'phone',
-					// 	type: 'cell',
-					// 	url: '/pages/my/account/bind_phone'
-					// },
+					{
+						title: '修改绑定手机',
+						icon: 'phone',
+						type: 'cell',
+						url: '/pages/my/account/change_phone'
+					},
 				]
 			};
 		},
 		methods: {
 			...mapMutations({
-				setLogin: 'user/setLogin',
-				setMyCpy: 'user/setMyCpy',
-				setMyProduct: 'user/setMyProduct',
+				clearLogout: 'user/clearLogout',
 			}),
 			async handleLogout() {
 				const res = await this.$api.logout();
 				if(res.code == 1) {
-					this.setLogin(0)
-					this.setMyCpy({})
-					this.setMyProduct([])
+					this.clearLogout()
 					uni.reLaunch({
 						url: '/pages/index/login/login',
 						success() {

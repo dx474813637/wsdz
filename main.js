@@ -1,5 +1,5 @@
 import App from './App'
-import './config/mockData.js'
+// import './config/mockData.js'
 import filters from '@/config/filters.js'
 
 const prePage = ()=>{

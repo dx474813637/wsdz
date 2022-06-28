@@ -1,5 +1,5 @@
 <template>
-	<view class="text-white w " :style="{
+	<view class="text-white w " :class="[typeActive]" :style="{
 		backgroundColor: themeConfig.pageBg
 	}">
 		<view :style="{
@@ -42,55 +42,63 @@
 		<view class="list" :style="{
 			height: `calc(100% - 182px - ${sys.statusBarHeight}px - ${sys.safeAreaInsets.bottom}px)`
 		}">
-			<u-list
-				height="100%"
-				enableBackToTop
-				@scrolltolower="scrolltolower"
-				:preLoadingScreen="100"
-			>
-				<u-list-item
-					v-for="(item, index) in indexList"
-					:key="item.id"
+			<template v-if="skeletonLoading">
+				<view class="u-p-20 animation" v-for="item in 4" :key="item">
+					<u-skeleton loading   animate rows="3" :title="false" avatarShape="square" avatarSize="48"></u-skeleton>
+				</view>
+			</template>
+			<template v-else>
+				<u-list
+					height="100%"
+					enableBackToTop
+					@scrolltolower="scrolltolower"
+					:preLoadingScreen="100"
 				>
-					<view class="u-p-l-20 u-p-r-20 u-p-t-20">
-						<cardA
-							:name="item.name"
-							:pid="item.id"
-							:amount="item.amount"
-							:color="item.color"
-							:price="item.price"
-							:dprice="item.dprice"
-							:unit="item.unit"
-							:spec="pan == 'b' ? item.spec : item.spec1"
-							:delivery_place="item.delivery_place"
-							:express_time="item.express_time"
-							:express_unit="item.express_unit"
-							:trade_type="item.trade_type"
-							:pubDate="item.post_time"
-							:tims="item.Tims"
-							:origin="item"
-							@tims="handleClickTims"
-							@detail="handleRouteTo"
-						></cardA>
-					</view>
+					<u-list-item
+						v-for="(item, index) in indexList"
+						:key="item.id"
+					>
+						<view class="u-p-l-20 u-p-r-20 u-p-t-20">
+							<cardA
+								:name="item.name"
+								:pid="item.id"
+								:amount="item.amount"
+								:color="item.color"
+								:price="item.price"
+								:dprice="item.dprice"
+								:unit="item.unit"
+								:spec="pan == 'b' ? item.spec : item.spec1"
+								:delivery_place="item.delivery_place"
+								:express_time="item.express_time"
+								:express_unit="item.express_unit"
+								:trade_type="item.trade_type"
+								:pubDate="item.post_time"
+								:tims="item.Tims"
+								:origin="item"
+								@tims="handleClickTims"
+								@detail="handleRouteTo"
+							></cardA>
+						</view>
+						
+					</u-list-item>
 					
-				</u-list-item>
-				
-				<template name="dataStatus">
-					<template v-if="indexList.length == 0">
-						<u-empty
-							mode="data"
-							:icon="themeConfig.empty"
-						>
-						</u-empty>
+					<template name="dataStatus">
+						<template v-if="indexList.length == 0">
+							<u-empty
+								mode="data"
+								:icon="themeConfig.empty"
+							>
+							</u-empty>
+						</template>
+						<template v-else>
+							<u-loadmore
+								:status="loadstatus"
+							/>
+						</template>
 					</template>
-					<template v-else>
-						<u-loadmore
-							:status="loadstatus"
-						/>
-					</template>
-				</template>
-			</u-list>
+				</u-list>
+			</template>
+			
 		</view>
 		
 		<menusPopup 
@@ -112,6 +120,7 @@
 			return {
 				show: false,
 				pan: 's',
+				skeletonLoading: true,
 				pageConfig: {
 					's': {
 						navtitle: '卖盘中心',
@@ -251,6 +260,7 @@
 						this.loadstatus = 'loadmore'
 					}
 				}
+				this.skeletonLoading = false
 			},
 			async getMoreData() {
 				if(this.loadstatus != 'loadmore') return
@@ -289,6 +299,40 @@
 <style lang="scss">
 	page {
 		height: 100vh;
+		.dark /deep/ {
+			.u-skeleton {
+				&__wrapper {
+					&__avatar {
+						background: #1e1f31!important;
+						&--circle {}
+						&--square {}
+					}
+					&__content {
+						&__rows,
+						&__title {
+							background: #1e1f31!important;
+						}
+					}
+				}
+			}
+		}
+		.white /deep/ {
+			.u-skeleton {
+				&__wrapper {
+					&__avatar {
+						background: #dcdcdc!important;
+						&--circle {}
+						&--square {}
+					}
+					&__content {
+						&__rows,
+						&__title {
+							background: #dcdcdc!important;
+						}
+					}
+				}
+			}
+		}
 	}
 </style>
 <style lang="scss" scoped>
@@ -298,5 +342,17 @@
 	.list {
 		height: calc(100% - 182px - env(safe-area-inset-bottom));
 		
+	}
+	
+	.animation {
+		animation: shandong 1.5s ease infinite;
+	}
+	@keyframes shandong {
+		50% {
+			opacity: .5;
+		}
+		100% {
+			opacity: 1;
+		}
 	}
 </style>

@@ -60,7 +60,7 @@
 						<view
 							v-for="(item, index) in list"
 							:key="item.id"
-							:id="item.id"
+							:id="`msg${item.id}`"
 							class="u-p-b-20"
 						>
 							<u-transition show >
@@ -107,7 +107,8 @@
 							autoHeight
 							fixed
 							@focus="moreShow = false"
-							:cursorSpacing="20"
+							:cursorSpacing="50"
+							:showConfirmBar="false"
 							:customStyle="{
 								background: themeConfig.msg.detail.areaBg,
 								color: themeConfig.msg.detail.areaColor,
@@ -181,6 +182,7 @@
 							:key="item.key"
 							:border="false"
 							v-if="item.value"
+							:isLink="item.rightIcon != '' ? true : false"
 							:rightIcon="item.rightIcon"
 							@click="handleClickInfoCell"
 						 >
@@ -360,10 +362,12 @@
 				})
 				return
 			}
+			
 			this.getInfo()
 			await this.refreshList()
 			this.scrollToBottom()  
 			this.lunxun()
+			this.$api.timsNews({params: {login: this.login}})
 		},
 		onUnload() {
 			console.log('onUnload')
@@ -413,23 +417,28 @@
 				uni.navigateBack()
 			},
 			async scrolltoupper() {
+				const target = 'msg' + this.list[0]?.id
 				this.refresher = true
-				const target = this.indexList[0]?.id
 				await this.getData('history')
-				if(this.target) this.target = target
-				else this.scrollToBottom()
+				this.target = target
 				this.refresher = false
 			},
 			async getData(type = 'new') {
 				if(this.loadstatus != 'loadmore' && type != 'new') return
 				this.loadstatus = 'loading'
-				let func = type == 'new' ? 'timsNews' : 'timsNewsHistory'
-				const res = await this.$api[func]({params: this.paramsObj})
+				let func = 'timsLoginDetail'
+				let paramsObj = {
+					...this.paramsObj,
+				}
+				if (type != 'new') {
+					paramsObj.offset1 = this.list[0]?.sendtime
+				}
+				const res = await this.$api[func]({params: paramsObj})
 				
 				if(res.code == 1) {
-					this.loading = false
-					if(type == 'new') this.indexList = [...this.indexList, ...res.list.reverse()] //新消息 拼接
-					else this.indexList = res.list.reverse() //历史消息 覆盖数据
+					
+					if(type == 'new') this.indexList = this.filterIndexList(res.list.reverse(), this.indexList, 'new') //[...this.indexList, ...res.list.reverse()] //新消息 拼接 去重
+					else this.indexList = this.filterIndexList(res.list.reverse(), this.indexList, 'history') //历史消息 
 					
 					// this.cpy = res.cpy
 					// console.log(this.indexList)
@@ -439,6 +448,28 @@
 						this.loadstatus = 'loadmore'
 					// }
 				}
+				this.loading = false
+			},
+			filterIndexList(newData, oldData, type) {
+				if(type == 'new') {
+					
+					return [
+								...oldData, 
+								...newData.filter(ele => {
+									return oldData.findIndex(item => item.id == ele.id) == -1
+								})
+							]
+							
+				}else {
+					
+					return [
+								...newData.filter(ele => {
+									return oldData.findIndex(item => item.id == ele.id)
+								}),
+								...oldData, 
+							]
+				}
+				
 			},
 			async getMoreData(type) {
 				if(this.loadstatus != 'loadmore') return
@@ -484,9 +515,10 @@
 			},
 			async sendMsg() {
 				console.log(this.val)
-				if(!this.val) {
+				if(!this.val.trim()) {
 					uni.showToast({
-						title: '不能发送空的内容'
+						title: '不能发送空的内容',
+						icon: 'none'
 					})
 					return
 				}
@@ -495,17 +527,19 @@
 				this.$nextTick(() => {
 					this.scrollToBottom()
 				})
+				// await uni.$u.sleep(2000)
+				// const res = {code : 0}
 				const res = await this.$api.timsSend({login: this.login, body: obj.body});
 				let i = this.sendingList.findIndex(ele => ele.id == obj.id)
 				
 				if(res.code == 1) {
-					const flag = await this.getData('new')
+					await this.getData('new')
 					this.sendingList.splice(i, 1)
 					
-					this.indexList.push(obj)
-					this.indexList[this.indexList.length - 1].state = 'success'
+					// this.indexList.push(obj)
+					// this.indexList[this.indexList.length - 1].state = 'success'
 					this.$nextTick(() => {
-						if(flag) this.scrollToBottom()
+						this.scrollToBottom()
 					})
 				}else {
 					
@@ -540,9 +574,9 @@
 							let i = this.sendingList.findIndex(ele => ele.id == obj.id)
 							if(res.code == 1) {
 								await this.getData('new')
-								obj.state = 'success'
+								// obj.state = 'success'
 								this.sendingList.splice(i, 1)
-								this.indexList.push(obj)
+								// this.indexList.push(obj)
 							}else {
 								this.sendingList[i].state = 'error'
 							}
@@ -582,6 +616,21 @@
 	
 	
 	.dark /deep/ {
+		.u-skeleton {
+			&__wrapper {
+				&__avatar {
+					background: #1e1f31!important;
+					&--circle {}
+					&--square {}
+				}
+				&__content {
+					&__rows,
+					&__title {
+						background: #1e1f31!important;
+					}
+				}
+			}
+		}
 		.u-textarea {
 			&__field {
 				color: #c8dbf0!important;
@@ -595,6 +644,21 @@
 		}
 	}
 	.white /deep/ {
+		.u-skeleton {
+			&__wrapper {
+				&__avatar {
+					background: #eee!important;
+					&--circle {}
+					&--square {}
+				}
+				&__content {
+					&__rows,
+					&__title {
+						background: #eee!important;
+					}
+				}
+			}
+		}
 		.u-textarea {
 			&__field {
 				color: #333!important;

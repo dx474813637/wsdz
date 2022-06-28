@@ -13,6 +13,20 @@
 		}
 
 		, {
+			"path": "pages/index/notice/notice",
+			"style": {
+				"navigationBarTitleText": "最新公告",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/index/notice/noticeDetail",
+			"style": {
+				"navigationBarTitleText": "详情",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
 			"path": "pages/index/login/login",
 			"style": {
 				"navigationBarBackgroundColor": "#FFFFFF",
@@ -91,17 +105,15 @@
 				"enablePullDownRefresh": false
 			}
 
+		}, {
+			"path": "pages/index/login/xieyi",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
 		}
-	    ,{
-            "path" : "pages/index/login/xieyi",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+	],
 	"subPackages": [{
 		"root": "pages/baojia",
 		"pages": [{
@@ -111,13 +123,13 @@
 				"navigationStyle": "custom",
 				"navigationBarTextStyle": "white"
 			}
-		},{
+		}, {
 			"path": "ichain/ichain",
 			"style": {
 				"navigationStyle": "custom",
 				"navigationBarTextStyle": "white"
 			}
-		},{
+		}, {
 			"path": "ichain/detail",
 			"style": {
 				"navigationStyle": "custom",
@@ -486,6 +498,34 @@
 			"path": "broker/auth_list_edit",
 			"style": {
 				"navigationBarTitleText": "客户委托详情",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "moreMenus/xianhuo",
+			"style": {
+				"navigationBarTitleText": "现货公司",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "account/change_phone",
+			"style": {
+				"navigationBarTitleText": "修改绑定手机",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "myEwm/myEwm",
+			"style": {
+				"navigationBarTitleText": "二维码",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "chemnet/chemnet",
+			"style": {
+				"navigationBarTitleText": "化工字典",
 				"enablePullDownRefresh": false
 			}
 

@@ -11,7 +11,7 @@
 		</view>
 		<view v-show="requesting"><requestLoading></requestLoading></view>
 		<view v-show="!requesting" class="">
-			<view class="u-p-20 u-m-20 radius text-dark">
+			<view class="u-p-10 u-m-10 radius text-dark">
 				<view class="u-p-10 u-font-36 bg-white u-p-l-20" style="font-weight：bold;border-radius: 10px;">
 					{{list.detail.pname}} <text class="u-p-l-30" style="color:#0077b5;">产业链</text>
 				</view>
@@ -77,30 +77,57 @@
 					<view class="u-p-10"></view>
 				</view>
 				<view class="u-p-15"></view>
-				<!-- <view class="u-p-10 bg-white" style="border-radius: 10px;">
+				<view class=" bg-white" style="border-radius: 10px;">
 					<view class="u-p-10 u-font-36 u-p-l-20">
 						{{list.detail.pname}} <text class="u-p-l-30" style="color:#0077b5;">供应商</text>
 					</view>
-					<view class="u-p-20">
+					<view class="u-p-10">
 						<u-line color="#e2e2e2"></u-line>
 					</view>
 					<view v-for="(item, index) in list.qy_list" :key="index">
-						<view class="u-flex u-p-10 bg-white u-m-20 radius border_blue" @click="navTo(item.url)">
-							<view class="u-flex-2">
+						<view class="u-flex u-p-10 bg-white u-m-20 radius border_blue" >
+							<!-- <view class="u-flex-2">
 								<image class="qiye-img" :lazy-load="true" :src="item.pic1" :mode="widthFix" shape="square"></image>
-							</view>
-							<view class="u-flex-10 u-line-1">
+							</view> -->
+							<view class="u-flex-10 ">
 								<view class="u-p-10 u-font-32 u-p-l-20">
 									{{item.company}}
 								</view>
-								<view class="u-p-10 u-font-24 text-gray u-p-l-20">
-									产品名称：{{item.product}}
+								<view class="u-p-10 u-font-24 text-gray u-p-l-20 u-flex u-flex-items-center">
+									<view class="label">产品名</view>
+									<view class="u-flex-1 value u-flex u-flex-items-center">
+										<text class=" u-line-1 u-p-r-20">{{item.product}} </text>
+									</view>
 								</view>
+								<template v-if="item.company_all">
+									<view class="u-p-10 u-font-24 text-gray u-p-l-20 u-flex u-flex-items-center" v-if="item.company_all.contact">
+										<view class="label">联系人</view>
+										<view class="u-flex-1 value u-flex u-flex-items-center" @click="copy(item.company_all.contact)">
+											<text class=" u-line-1 u-p-r-20">{{item.company_all.contact}}</text>
+											<i class="custom-icon-fuzhi custom-icon"></i>
+										</view>
+									</view>
+									<view class="u-p-10 u-font-24 text-gray u-p-l-20 u-flex u-flex-items-center" v-if="item.company_all.mobile || item.company_all.tel">
+										<view class="label">手机</view>
+										<view @click="makecall(item.company_all.mobile || item.company_all.tel)" class="u-flex-1  value u-flex u-flex-items-center">
+											<text class=" u-line-1 u-p-r-20">{{item.company_all.mobile || item.company_all.tel}}</text> 
+											<i class="custom-icon-dianhua custom-icon"></i> 
+										</view>
+									</view>
+									<view class="u-p-10 u-font-24 text-gray u-p-l-20 u-flex u-flex-items-center" v-if="item.company_all.address">
+										<view class="label">地址</view>
+										<view class="u-flex-1 value u-flex u-flex-items-center" @click="copy(item.company_all.address)">
+											<text class=" u-line-1 u-p-r-20">{{item.company_all.address}}</text>
+											<i class="custom-icon-fuzhi custom-icon"></i>
+										</view>
+									</view>
+								</template>
+								
 							</view>
 						</view>
 						
 					</view>
-				</view> -->
+				</view>
 			</view>
 		</view>
 		<u-safe-bottom></u-safe-bottom>
@@ -192,12 +219,34 @@
 							this.share = res.share;
 						}
 					});
+			},
+			copy(data) {
+				uni.setClipboardData({
+					data,
+					success: function () {
+						uni.showToast({
+							title: '复制成功'
+						})
+					}
+				});
+			},
+			makecall(data) {
+				uni.makePhoneCall({
+					phoneNumber: data
+				});
 			}
 		}
 	}
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+	.label {
+		white-space: nowrap;
+		flex: 0 0 50px;
+		text-align: justify;
+		margin-right: 20px;
+		text-align-last: justify;
+	}
 	page {
 		background-color: #f5f5f5;
 	}
