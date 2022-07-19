@@ -130,6 +130,7 @@
 		left: 0;
 		bottom: 0;
 		width: 100%;
+		z-index: 50;
 	}
 	.u-page__item__slot-icon {
 	    width: 17px;

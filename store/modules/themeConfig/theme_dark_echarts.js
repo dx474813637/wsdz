@@ -106,11 +106,11 @@ export const darkBaseOptions = {
 			color: '#374059'
 		},
 	},
-	color: ['#00FFFF', '#FF0000', '#FFFF00'],
+	color: ['#00FFFF', '#ce5151', '#c6910a'],
 	legend: {
 		type: 'scroll',
 		right: "0",
-		top: "4",
+		top: "25",
 		data: ['生意社价格'],
 		textStyle: {
 			color: '#5d6376'
@@ -123,7 +123,8 @@ export const darkBaseOptions = {
 			type: 'slider',
 			xAxisIndex: 0,
 			borderColor: '#2a3351',
-			start: 50,
+			// start: 50,
+			// startValue : '2021-07-01',
 			end: 100,
 			textStyle: {
 				color:'#5d6376'

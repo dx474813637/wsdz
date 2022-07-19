@@ -3,7 +3,7 @@
 		<view class="search-wrapper u-flex u-p-l-20 u-p-r-20">
 			<view class="item u-flex-1 u-p-b-10">
 				<u-search 
-					placeholder="检索账号/名称/联系人/手机" 
+					placeholder="账号/公司/联系人/注册手机/客户手机" 
 					v-model="keyword"
 					clearabled
 					:showAction="false"
@@ -37,7 +37,7 @@
 			</u-tabs>
 		</view>
 		
-		<view class="list">
+		<view class="list u-p-l-15 u-p-r-15">
 			<u-list
 				height="100%"
 				enableBackToTop
@@ -123,7 +123,8 @@
 			}),
 			paramsObj() {
 				let base = {
-					p: this.curP
+					p: this.curP,
+					zt: 1
 				}
 				if(this.tabs_current == 1) {
 					base.state = 1

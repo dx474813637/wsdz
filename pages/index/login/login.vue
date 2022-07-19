@@ -20,14 +20,22 @@
 
 				<template v-if="logintype == 2">
 					<u-form-item prop="passwd" >
-						<u--input 
-							type="password" 
+						<u-input 
+							:password="passwordType"
 							prefixIcon="lock-fill"
 							clearable
 							prefixIconStyle="color: #999"
 							v-model="form.passwd" 
 							placeholder="请输入密码"
-						 />
+						>
+							<template slot="suffix">
+								<u-icon 
+									@click="passwordType = !passwordType"
+									:name=" passwordType ? 'eye-off' : 'eye-fill'"
+									:color=" passwordType ? '#ccc' : '#007aff'"
+									></u-icon>	
+							</template>
+						</u-input>
 					</u-form-item>
 				</template>
 			</u--form>
@@ -80,6 +88,7 @@
 					login: '',
 					passwd: '',
 				},
+				passwordType: true
 				// agree: [],
 			}
 		},

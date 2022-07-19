@@ -67,6 +67,7 @@
 								<MsgChatCard
 									:msg="item"
 									@reset="handleResetMsg"
+									@ready="handleRenderStatus"
 								></MsgChatCard>
 							</u-transition>
 							
@@ -106,6 +107,7 @@
 							placeholder="请输入内容..."
 							autoHeight
 							fixed
+							disableDefaultPadding
 							@focus="moreShow = false"
 							:cursorSpacing="50"
 							:showConfirmBar="false"
@@ -362,10 +364,17 @@
 				})
 				return
 			}
+			if(options.hasOwnProperty('content')) {
+				this.val = options.content
+			}
+			
 			
 			this.getInfo()
 			await this.refreshList()
-			this.scrollToBottom()  
+			this.$nextTick(() => {
+				this.scrollToBottom()  
+			})
+			
 			this.lunxun()
 			this.$api.timsNews({params: {login: this.login}})
 		},
@@ -386,6 +395,9 @@
 			...mapMutations({
 				handleGoto: 'user/handleGoto'
 			}),
+			handleRenderStatus() {
+				this.scrollToBottom()
+			},
 			scrollToBottom() {  
 				let that = this  
 				
@@ -394,7 +406,6 @@
 					if(!res[0] || !res[1]) return
 					if(res[1].height > res[0].height){  
 						that.scrollTop = res[1].height - res[0].height  
-						// console.log(res)  
 					}  
 				})  
 			},  
@@ -464,7 +475,8 @@
 					
 					return [
 								...newData.filter(ele => {
-									return oldData.findIndex(item => item.id == ele.id)
+									ele.msgType = '1'
+									return oldData.findIndex(item => item.id == ele.id) == -1
 								}),
 								...oldData, 
 							]

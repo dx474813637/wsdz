@@ -6,9 +6,9 @@
 					placeholder="检索名称" 
 					v-model="keyword"
 					clearabled
-					:showAction="false"
 					bgColor="#e8e8e8"
 					@search="handleSearch"
+					@custom="handleSearch"
 				></u-search>
 			</view>
 			
@@ -36,10 +36,10 @@
 					class="list-scroll"
 					scroll-with-animation
 					enable-back-to-top	
-					:scroll-into-view="target"
+					@scrolltolower="scrolltolower"
 					>
-					<view class="main u-p-20">
-						<view id="list" class="u-m-b-40 card ">
+					<view class="main u-p-20" style="min-height: 100%;">
+						<view class="u-m-b-40 card " v-if="tabs_current == 0">
 							<u-cell-group :border='false'>
 								<u-cell title="中文名称" v-if="list.cnname" :value="list.cnname"></u-cell>
 								<u-cell title="中文别名" v-if="list.cnsynonyms" :value="list.cnsynonyms"></u-cell>
@@ -64,10 +64,18 @@
 								</u-cell>
 								<u-cell title="CAS号" v-if="list.registry_number" :value="list.registry_number"></u-cell>
 								<u-cell title="EINECS号" v-if="list.einecs" :value="list.einecs"></u-cell>
-								<u-cell title="分子式" v-if="list.molecular_formula" :value="list.molecular_formula"></u-cell>
+								<u-cell title="分子式" v-if="list.molecular_formula" :value="list.molecular_formula">
+									<view slot="value" class="u-flex u-flex-end" style="width: 100%;">
+										<rich-text :nodes="list.molecular_formula"></rich-text>
+									</view>
+								</u-cell>
 								<u-cell title="分子量" v-if="list.formula_weight" :value="list.formula_weight"></u-cell>
 								<u-cell title="InChI" v-if="list.inchi" :value="list.inchi"></u-cell>
-								<u-cell title="分子结构" v-if="list.pic_name1" :value="list.pic_name1"></u-cell>
+								<u-cell title="分子结构" v-if="list.pic_name1" >
+									<view slot="value" class="u-flex u-flex-end" style="width: 100%;">
+										<u-image width="100" height="100" :src="list.pic_name1"></u-image>
+									</view>
+								</u-cell>
 								<u-cell title="熔点" v-if="list.Melting_Point" :value="list.Melting_Point"></u-cell>
 								<u-cell title="沸点" v-if="list.Boiling_Point" :value="list.Boiling_Point"></u-cell>
 								<u-cell title="闪点" v-if="list.Flash_Point" :value="list.Flash_Point"></u-cell>
@@ -154,19 +162,50 @@
 								</view>
 							</view>
 						</view>
-						<view id="list2" class="" v-if="list_company.length > 0">
-							<view class="u-m-b-10">
-								<u-tag text="供应商"></u-tag>
+						<view class="" v-if="tabs_current == 1">
+							<!-- <view class="u-m-b-10">
+								<u-tag text="优选供应商"></u-tag>
+							</view> -->
+							<view class="cpy-item u-m-b-20 card"
+									v-for="(item, index) in tj_company"
+									:key="item.id"
+								>
+								<chemnetCard
+									:origin="item"
+								></chemnetCard>
 							</view>
+							<template v-if="tj_company.length == 0">
+								<u-image :src="no_img" width="100%" height="auto" mode="widthFix"></u-image>
+							</template>
+							
+						</view>
+						<view  class=""  v-if="tabs_current == 2">
+							<!-- <view class="u-m-b-10">
+								<u-tag text="其他供应商"></u-tag>
+							</view> -->
 							<view class="cpy-item u-m-b-20 card"
 								v-for="(item, index) in list_company"
-								:key="index"
+								:key="item.id"
 							>
 								<chemnetCard
 									:origin="item"
 								></chemnetCard>
 							</view>
+							<template v-if="list_company.length == 0">
+								<u-empty
+									mode="data"
+									:icon="typeConfig.white.empty"
+								>
+								</u-empty>
+							</template>
+							<template v-else>
+								<u-loadmore
+									:status="loadstatus"
+								/>
+							</template>
 						</view>
+						
+						<u-safe-bottom></u-safe-bottom>
 					</view>
 				</scroll-view>
 			</view>
@@ -209,13 +248,10 @@
 							1、化工字典现有词汇量1,800,000条。
 						</view>
 						<view class="item">
-							2、可输入化学品的中文名、英文名、别名或CAS登记号(美国化学文摘登记号)进行检索。例如，以下的关键词，都可搜到酒石酸：
+							2、可输入化学品的中文名、别名或CAS登记号(美国化学文摘登记号)进行检索。例如，以下的关键词，都可搜到酒石酸：
 						</view>
 						<view class="item u-p-l-10">
 							输入中文名或中文别名进行搜索，如 DL-酒石酸 酒石酸 2,3-二羟基丁二酸
-						</view>
-						<view class="item u-p-l-10">
-							输入英文名或英文别名进行搜索，如 DL-Tartaric Acid Tartaric Acid
 						</view>
 						<view class="item u-p-l-10">
 							输入CAS登记号进行搜索，如 133-37-9
@@ -227,14 +263,17 @@
 		</template>
 		
 			
-		
+		<!-- <u-safe-bottom></u-safe-bottom> -->
+		<menusBar  theme="white" ></menusBar>
 	</view>
 </template>
 
 <script>
 	import {mapState, mapGetters, mapMutations} from 'vuex'
-	import chemnetCard from '@/pages/my/components/chemnetCard/chemnetCard.vue'
+	// import chemnetCard from '@/pages/my/components/chemnetCard/chemnetCard.vue'
+	import mixShareInfo from '@/config/mixShareInfo'
 	export default {
+		mixins: [mixShareInfo],
 		data() {
 			return {
 				keyword: '',
@@ -254,22 +293,28 @@
 					{
 						name: '化学品信息',
 						disabled: false,
-						scrollto: 'list',
+					},
+					{
+						name: '优选供应商',
+						disabled: false,
 					},
 					{
 						name: '供应商',
 						disabled: false,
-						scrollto: 'list2',
 					},
 				],
 				list: {},
 				searchRes: '1',
 				list_company: [],
-				searching: false
+				tj_company: [],
+				searching: false,
+				curP: 1,
+				loadstatus: 'loadmore',
+				no_img: ''
 			};
 		},
 		components: {
-			chemnetCard
+			// chemnetCard
 		},
 		computed: {
 			...mapState({
@@ -278,29 +323,64 @@
 		},
 		watch: {
 			tabs_current(n) {
-				this.target = this.tabs_list[n].scrollto
-				console.log(this.target)
+				// this.target = this.tabs_list[n].scrollto
+				// console.log(this.target)
 			},
 			keyword(n) {
+				
 				if(!n) {
 					this.searchRes = '1'
 					this.list = {}
 					this.list_company = []
+					this.tabs_current = 0
+					this.customShareParams.keyword = n
 				}
 			},
 			chemnetList(n) {
 				uni.setStorageSync('chemnetList', n)
 			}
 		},
-		onLoad() {
+		async onLoad(options) {
+			this.$http.get('chemical_index')
+				.then(res => {
+					if(res.code == 1) {
+						this.setOnlineControl(res)
+					}
+				})
+			if(options.hasOwnProperty('keyword')) {
+				this.keyword = options.keyword
+				this.handleSearch(this.keyword)
+			}
 			
 		},
 		methods: {
+			scrolltolower() {
+				if(this.tabs_current != 2) return
+				this.getMoreData()
+			},
+			async getMoreData() {
+				if(this.loadstatus != 'loadmore') return
+				this.curP ++
+				await this.getData()
+				
+			},
 			async getData() {
-				const res = await this.$api.chemnet({params: {terms: this.keyword}})
+				if(this.loadstatus != 'loadmore') return
+				this.loadstatus = 'loading'
+				const res = await this.$api.chemnet({params: {terms: this.keyword, p: this.curP}})
 				if(res.code == 1) {
-					this.list_company = res.list_company
-					this.list = res.list
+					this.setOnlineControl(res)
+					if(this.curP == 1) {
+						this.tj_company = res.tj_company
+						this.list = res.list
+					}
+					this.no_img = res.no_img
+					this.list_company = [...this.list_company, ...res.list_company]
+					if(this.list_company.length >= res.total) {
+						this.loadstatus = 'nomore'
+					}else {
+						this.loadstatus = 'loadmore'
+					}
 				}else {
 					this.searchRes = 'no'
 				}
@@ -312,6 +392,7 @@
 				v = v.trim()
 				this.keyword = v
 				if(!v ) return
+				this.customShareParams.keyword = this.keyword
 				if(this.searching) {
 					uni.showToast({
 						title: '请等待搜索反馈',
@@ -322,6 +403,7 @@
 				this.updateChemnet(v)
 				this.searchRes = '1'
 				this.searching = true
+				this.curP = 1
 				await this.getData()
 				this.searching = false
 			},
@@ -398,7 +480,7 @@
 			left: 0;
 			width: 100%;
 			height: 30px;
-			background: linear-gradient(to top, #fff 60%, transparent);
+			background: rgba(255,255,255,.8);
 		}
 	}
 	.footer {
@@ -441,7 +523,7 @@
 		height: 50vh;
 	}
 	.list {
-		height: calc(100% - 83px);
+		height: calc(100% - 133px);
 		.list-scroll {
 			height: 100%;
 		}

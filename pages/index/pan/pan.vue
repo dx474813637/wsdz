@@ -272,12 +272,12 @@
 					url: `/pages/index/pan/panDetail?id=${id}&pan=${this.pan}`
 				})
 			},
-			handleClickTims({tims, id}) {
+			handleClickTims({tims, id, origin}) {
 				this.handleGoto({
 					url: '/pages/my/msg/msgDetail',
 					params: {
 						login: `${tims.login}`,
-						content: ``
+						content: `咨询${this.pan=='s'? '卖盘': '买盘'}：${origin.name}，https://www.rawmex.cn/${this.pan=='s'? 'sell': 'buy'}-${id}.html`
 					}
 				})
 				// this.handleGoto({

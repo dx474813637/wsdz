@@ -46,11 +46,11 @@ const date2szx = v => {
 	else if(v == 'ltd') return '下旬'
 	else return v
 }
-//B:买家自提 S:卖家送货 BS:两者皆可
+//B:买家自提 S:卖家送货 BS:买家自提/卖家送货
 const settleMode = v => {
 	if(v == 'B') return '买家自提'
 	else if(v == 'S') return '卖家送货'
-	else if(v == 'BS') return '两者皆可'
+	else if(v == 'BS') return '买家自提/卖家送货'
 	else return v
 }
 

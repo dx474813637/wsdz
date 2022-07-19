@@ -28,7 +28,7 @@
 		<view class="card-footer u-flex u-flex-between u-flex-items-center u-p-12">
 			<view class="item text-light u-font-28">更新于{{date | date2timestamp | timeFrom}}</view>
 			<view class="item u-flex u-flex-items-center">
-				<!-- <view class="u-p-l-12">
+				<view class="u-p-l-12" v-if="!isAuth">
 					<u-button 
 						type="primary" 
 						size="mini" 
@@ -37,8 +37,8 @@
 						:disabled="doing"
 						@click.stop="handleResubmit"
 					>重发</u-button>
-				</view> -->
-				<view class="u-p-l-12" v-if="!isAuth">
+				</view>
+				<view class="u-p-l-12">
 					<u-button 
 						type="primary" 
 						size="mini" 
@@ -185,7 +185,19 @@
 				
 			},
 			handleResubmit() {
-				this.$emit('resubmit', {id: this.pid})
+				
+				uni.showModal({
+					title: '提示',
+					content: `是否重发${this.name}`,
+					success: (res) => {
+						if (res.confirm) {
+							this.$emit('resubmit', {data: this.origin})
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				});
+				
 			},
 			handleGotoDetail() {
 				this.$emit('detail', {pid: this.pid, data: this.origin})

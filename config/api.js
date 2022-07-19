@@ -103,6 +103,9 @@ export const getPpiPriceDetail = (data) => http.get('m_ppi_price_detail', data)
 // 折线图用date_data1 data_data1两个数据，已经处理过的。
 export const pricingCenter = (data) => http.get('pricing_center', data)
 
+export const ppiNews = (data) => http.get('ppi_news', data)
+export const ppiNewsDetail = (data) => http.get('ppi_news_detail', data)
+
 // 采购/销售表单
 /**
  * 
@@ -238,6 +241,7 @@ export const myCompany = (data) => http.get('my_company', data)
 // 创建/修改客户信息
 export const editCompany = (data, config={}) => http.post('edit_company', data, config)
 
+
 // =====地址信息
 // 收/发地址： type *R-收S-发RS-收发 
 // 地区： regional  地区编码：110102-西城区 
@@ -301,6 +305,36 @@ export const scm = (data) => http.get('scm', data)
 export const broker = (data) => http.get('broker', data)
 // add_customer 领取客户账号 
 export const addCustomer = (data) => http.get('add_customer', data)
+// login_uid_log 访问记录 参数login
+export const loginUidLog = (data) => http.get('login_uid_log', data)
+
+// shenhe_customer 审核我的客户信息
+// 客户信息D: id  
+// 客户名称： name 
+// 联系人： contact 
+// 电话： tel 
+// 邮箱： email 
+// 联系手机： mobile 
+// 所在地： regional 如11 
+// 详细地址： address 
+// 统一社会信用代码： credit_code 
+// 营业执照： pic1_upload 
+// 审核： audit 0-灭活1-激活
+export const shenheCustomer = (data, config={}) => http.post('shenhe_customer', data, config)
+// dj_customer 登记（添加）我的客户信息 
+// 字段跟审核一样，少一个审核字段。
+// 营业执照的字段两个接口都改成pic1。
+// 这个字段先不用管，到时候可能也变成pic1_base64  
+// pic1_name两个字段。
+export const djCustomer = (data, config={}) => http.post('dj_customer', data, config)
+
+//search_company_code 参数name  查询客户名称的社会信用统一代码
+export const searchCompanyCode = (data) => http.get('search_company_code', data)
+
+// customer_sell 客户卖盘列表 参数login p
+export const customerSell = (data) => http.get('customer_sell', data)
+// customer_buy 客户买盘列表 参数login p
+export const customerBuy = (data) => http.get('customer_buy', data)
 
 
 // 参数：
@@ -326,6 +360,8 @@ export const brokerChangeSell = (data, config={}) => http.post('broker_change_se
 // broker_able_sell 修改客户委托卖盘状态 参数跟修改卖盘状态一致
 export const brokerAbleSell = (data) => http.get('broker_able_sell', data)
 
+
+
 // tims_news_list 未读消息列表
 export const timsNewsList = (data) => http.get('tims_news_list', data)
 // tims_send 发送消息 参数login body
@@ -350,6 +386,11 @@ export const timsLoginDetail = (data) => http.get('tims_login_detail', data)
 // 操作： (这里需要前台控制，顺序是先调用1和2，成功后才允许3和4)
 export const changeMobile = (data) => http.get('change_bind', data)
 
+// jiebang_mob 解绑手机接口  
+// 参数mobile_code（flag=2时必填） 验证码  
+// flag 1-手机号获取短信 2-提交手机号验证码并解绑
+export const jiebangMob = (data) => http.get('jiebang_mob', data)
+
 // bangding 绑定手机号/修改绑定手机号 
 // 参数：mobile flag1-获取短信 2-提交验证码 captcha
 export const bindMobile = (data) => http.get('bangding', data)
@@ -371,8 +412,29 @@ export const myEwm = (data) => http.get('my_ewm', data)
 // 化工网数据库接口 参数terms
 export const chemnet = (data) => http.get('chemical_dictionary', data)
 
+// 访问我的记录   login_view_log 参数p
+export const loginViewLog = (data) => http.get('login_view_log', data)
+// broker_company_product 参数login必须 p  broker客户商品列表
+export const brokerCompanyProduct = (data) => http.get('broker_company_product', data)
+// guanzhu
+export const guanzhu = (data) => http.get('guanzhu', data)
 
+// texnet_index 纺织搜索首页
+export const texnetIndex = (data) => http.get('texnet_index', data)
+// texnet_search 搜索结果 列表
+// domain必须 
+// p、search_attr 刷选条件json字符串  
+// 比如：{"chengfen":"C100","kezhong":"44"} 
+// 一个条件多个值 {"chengfen":"C100,T100","kezhong":"44"}  
+// 条件名和值在首页接口里。关键字+条件搜索{"chengfen":"C100,T100","kezhong":"44","terms":"搜索词"} 
+export const texnetSearch = (data, config={}) => http.post('texnet_search', data, config)
+// texnet_detail 详情接口  参数pid 列表里的pid值
+export const texnetDetail = (data) => http.get('texnet_detail', data)
 
+// xueyuan 参数p terms标题搜索 cate分类id shipin=1 视频 shipin=2 图文 0或不传 全部
+export const xueyuan = (data) => http.get('xueyuan', data)
+// xueyuan_detail 参数id 
+export const xueyuanDetail = (data) => http.get('xueyuan_detail', data)
 
 
 
@@ -414,7 +476,7 @@ export const chemnet = (data) => http.get('chemical_dictionary', data)
 
 // export const valPhoneCode = (data) => http.get('/api/valPhoneCode', data)
 
-// export const getLogList = (data) => http.get('/api/getLogList', data)
+export const getLogList = (data) => http.get('/api/getLogList', data)
 
 // export const getOrderList = (data) => http.get('/api/getOrderList', data)
 

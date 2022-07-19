@@ -38,7 +38,7 @@
 							:origin="item"
 							isAuth
 							@changeStatus="handleChangeStatus"
-							@resubmit="handleResubmit"
+							@front="handleProdFront"
 							@detail="handleProdDetail"
 						></BrokerCard>
 					</view>
@@ -152,21 +152,15 @@
 					this.indexList[index].state = state
 					
 				}
-			},
-			handleResubmit({id}) {
-				
-			},
-			async handleDelet({id}) {
-				const res = await this.$api[this.pan == 's'? 'deleteSell' : 'deleteBuy']({params: {id}})
-				if(res.code == 1) {
-					uni.showToast({
-						title: '删除成功'
-					})
-					const index = this.indexList.findIndex(ele => ele.id == id)
-					this.indexList.splice(index, 1)
-				}
-				
-				
+			}, 
+			handleProdFront({id}) {
+				this.handleGoto({
+					url: '/pages/index/pan/panDetail',
+					params: {
+						id,
+						pan: this.pan,
+					}
+				})
 			},
 			handleProdDetail({pid, data}) {
 				this.handleGoto({

@@ -4,7 +4,8 @@
 			:style="{
 				backgroundColor: themeConfig.boxBg,
 				color: themeConfig.pageTextSub,
-				boxShadow: themeConfig.boxShadow
+				boxShadow: themeConfig.boxShadow,
+				border: themeConfig.pan.border
 			}"
 		>	
 			<view class="u-p-10" :style="{
@@ -174,16 +175,21 @@
 				type: Object,
 				default: () => ({})
 			},
+			theme: {
+				type: String,
+				default: ''
+			}
 			
 		},
 		computed: {
 			...mapState({
 				typeActive: state => state.theme.typeActive,
+				typeConfig: state => state.theme.typeConfig,
 				sh: state => state.user.sh
 			}),
-			...mapGetters({
-				themeConfig: 'theme/themeConfig',
-			})
+			themeConfig() {
+				return this.typeConfig[this.theme || this.typeActive]
+			},
 		},
 		data() {
 			return {
@@ -199,7 +205,7 @@
 				
 			},
 			handleTimesBtn() {
-				this.$emit('tims', {tims: this.tims, id: this.pid})
+				this.$emit('tims', {tims: this.tims, id: this.pid, origin: this.origin})
 			}
 		}
 	}

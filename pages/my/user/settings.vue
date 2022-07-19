@@ -52,6 +52,12 @@
 						type: 'cell',
 						url: '/pages/my/address/address'
 					},
+					{
+						title: '我的分享码',
+						icon: 'share-square',
+						type: 'cell',
+						url: '/pages/my/myEwm/myEwm'
+					},
 					// {
 					// 	title: '订阅管理',
 					// 	type: 'label'
@@ -101,6 +107,12 @@
 						icon: 'phone',
 						type: 'cell',
 						url: '/pages/my/account/change_phone'
+					},
+					{
+						title: '手机解绑',
+						icon: 'minus-circle',
+						type: 'cell',
+						url: '/pages/my/account/remove_phone'
 					},
 				]
 			};

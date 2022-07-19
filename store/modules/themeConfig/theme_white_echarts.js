@@ -107,11 +107,11 @@ export const whiteBaseOptions = {
 			color: '#ccc'
 		},
 	},
-	color: ['#007aff', '#FF0000', '#FFFF00'],
+	color: ['#007aff', '#c81414', '#deb614'],
 	legend: {
 		type: 'scroll',
 		right: "0",
-		top: "4",
+		top: "25",
 		data: ['生意社价格'],
 		textStyle: {
 			color: '#999'
@@ -124,7 +124,7 @@ export const whiteBaseOptions = {
 			type: 'slider',
 			xAxisIndex: 0,
 			borderColor: '#e7e9ec',
-			start: 50,
+			// start: 50,
 			end: 100,
 			textStyle: {
 				color:'#5d6376'

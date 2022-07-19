@@ -12,16 +12,24 @@
 					:key="item.id"
 				>
 					<view class="u-p-20 bg-white item-card u-m-t-20" @click="handleGoto({url: '/pages/index/notice/noticeDetail', params: {id: item.id}})">
-						<view class="u-flex u-flex-items-center u-flex-between u-p-b-10">
+						<view class="u-flex u-flex-items-start u-flex-between u-p-b-10">
 							<view class="text-primary">{{item.title}}</view>
-							<view class="u-font-28 text-base">{{item.uptime | date2timestamp | timeFrom}}</view>
+							<view class="u-font-28 text-base u-text-right u-p-t-5" style="flex: 0 0 70px">{{item.uptime | date2timestamp | timeFrom}}</view>
 						</view>
 						<view class="u-m-t-10 u-m-b-10">
 							<u-line color="#ccc"></u-line>
 						</view>
-						<view class="u-content">
-							<u-parse :content="item.info"></u-parse>
+						<view class="u-flex u-p-t-10">
+							<view class="u-content u-m-r-20" v-if="item.pic1">
+								<u-image :src="item.pic1" width="60" height="60" mode="scaleToFill" radius="6"></u-image>
+							</view>
+							<view class="u-content u-line-3 u-flex-1">
+								<rich-text :nodes="item.info"></rich-text>
+								<!-- <u-parse :content="item.info"></u-parse> -->
+							</view>
 						</view>
+						
+						
 						<view class="u-p-10"></view>
 					</view>
 					
@@ -117,7 +125,7 @@
 </style>
 <style lang="scss" scoped>
 	.u-content {
-		max-height: 60px;
+		// max-height: 60px;
 		overflow: hidden;
 		color: #333;
 	}

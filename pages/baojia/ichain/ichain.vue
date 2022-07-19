@@ -233,7 +233,7 @@ page {
 	border-radius: 10px;
 }
 .an-bg{
-	background: url(https://quan001.y.netsun.com/Public/banner-2.jpg);
+	background: url('https://quan001.y.netsun.com/Public/banner-2.jpg');
 	background-position: center center;
 	background-size: cover;
 	height: 280rpx;

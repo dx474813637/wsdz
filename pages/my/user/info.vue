@@ -217,12 +217,24 @@
 					label="联系手机"
 					prop="cpyInfo.mobile"
 					ref="cpyInfo_mobile"
+					required
 				>
 					<u--input
 						v-model="model.cpyInfo.mobile"
-						disabled
+						type="number"
 						disabledColor="#f8f8f8"
 					></u--input>
+				</u-form-item>
+				<u-form-item
+					label="业务范围"
+					prop="cpyInfo.intro"
+					ref="cpyInfo_intro"
+				>
+					<u--textarea
+						v-model="model.cpyInfo.intro" 
+						placeholder="业务范围" 
+						height="90"
+					></u--textarea>
 				</u-form-item>
 				<!-- <u-form-item
 					label="展示手机"
@@ -265,31 +277,36 @@
 							height="90"
 						></u--textarea>
 					</u-form-item>
-					<u-form-item
-						label="信用代码"
-						prop="cpyInfo.credit_code"
-						ref="cpyInfo_credit_code"
-					>
-						<u--input
-							v-model="model.cpyInfo.credit_code"
-							placeholder="统一社会信用代码"
-							:disabled="myCpy.state == 1"
-							clearable
-						></u--input>
-					</u-form-item>
-					<u-form-item
-						label="营业执照"
-						prop="cpyInfo.img"
-						ref="cpyInfo_img"
-					>
-						<u-upload
-							:fileList="fileList1"
-							@afterRead="afterRead"
-							@delete="deletePic"
-							name="1"
-							:maxCount="1"
-						></u-upload>
-					</u-form-item>
+					<template v-if="myCpy.state == 1">
+						<u-form-item
+							label="信用代码"
+							prop="cpyInfo.credit_code"
+							ref="cpyInfo_credit_code"
+						>
+							<u--input
+								v-model="model.cpyInfo.credit_code"
+								placeholder="统一社会信用代码"
+								disabled
+								clearable
+							></u--input>
+						</u-form-item>
+						<u-form-item
+							label="营业执照"
+							prop="cpyInfo.img"
+							ref="cpyInfo_img"
+							v-if="myCpy.pic1"
+						>
+							<u-image width="150px" height="150px" :src="myCpy.pic1" radius="8"></u-image>
+							<!-- <u-upload
+								:fileList="fileList1"
+								@afterRead="afterRead"
+								@delete="deletePic"
+								name="1"
+								:maxCount="1"
+							></u-upload> -->
+						</u-form-item>
+					</template>
+					
 				</u-transition>
 				
 			</template>
@@ -348,7 +365,8 @@
 						credit_code: '',
 						pic1: '',
 						pic1_base64: '',
-						pic1_name: ''
+						pic1_name: '',
+						intro: ''
 					}
 				},
 				fileList1: [],
@@ -401,6 +419,14 @@
 								return uni.$u.test.enOrNum(value)
 							},
 							message: '请填写正确的统一社会信用代码',
+							trigger: ['blur', 'change']
+						},
+						'cpyInfo.mobile': {
+							type: 'number',
+							validator: (rule, value, callback) => {
+								return uni.$u.test.mobile(value)
+							},
+							message: '请填写正确的手机号',
 							trigger: ['blur', 'change']
 						},
 					}
@@ -459,7 +485,8 @@
 			}),
 			...mapActions({
 				myCompany: 'user/myCompany',
-				getAddressArea: 'user/getAddressArea'
+				getAddressArea: 'user/getAddressArea',
+				getImageBase64_readFile: 'user/getImageBase64_readFile'
 			}),
 			handleValAreaUser() {
 				// this.$refs.userform.validateField('userInfo.regional')
@@ -513,6 +540,10 @@
 			// 删除图片
 			deletePic(event) {
 				this[`fileList${event.name}`].splice(event.index, 1)
+				this.model.cpyInfo.pic1 = ''
+				this.model.cpyInfo.pic1_base64 = ''
+				this.model.cpyInfo.pic1_name = ''
+				
 			},
 			// 新增图片
 			async afterRead(event) {
@@ -533,21 +564,6 @@
 				
 			},
 			
-			async getImageBase64_readFile(tempFilePath) {
-				  return await new Promise(resolve => {
-						//获取全局唯一的文件管理器 
-						uni.getFileSystemManager().readFile({ //读取本地文件内容
-						  filePath: tempFilePath, // 文件路径
-						  encoding: 'base64', // 返回格式
-						  success: ({
-							data
-						  }) => {
-							// return resolve('data:image/png;base64,' + data);
-							return resolve( data);
-						  }
-						});
-				  });
-			},
 			
 		}
 	}

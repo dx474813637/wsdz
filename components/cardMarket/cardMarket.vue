@@ -69,6 +69,12 @@
 	export default {
 		name:"cardMarket",
 		props: {
+			origin: {
+				type: Object,
+				default: () => {
+					return {}
+				}
+			},
 			cid: {
 				type: String,
 				default: ''

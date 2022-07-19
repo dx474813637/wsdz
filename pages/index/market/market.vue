@@ -73,6 +73,7 @@
 								<cardMarket
 									:cid="item.id"
 									:name="item.name"
+									:origin="item"
 									:price="item.price"
 									:dprice="item.dprice"
 									:trade_type="item.trade_type"

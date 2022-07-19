@@ -166,12 +166,13 @@
 		},
 		async onLoad() {
 			await this.myCompany()
-			this.model.ophone = this.myCpy.mobile
+			this.model.ophone = this.wodeInfo.mobile
 		},
 		computed: {
 			...mapState({
 				myCpy: state => state.user.myCpy,
 				bd: state => state.user.bd,
+				wodeInfo: state => state.user.wode,
 			}),
 			btnText() {
 				return this.timer ? `${this.btnSec}s重新获取` :'获取验证码'
@@ -276,7 +277,7 @@
 						icon: 'none'
 					})
 					this.current ++;
-					this.reLogin()
+					this.current == 2 && this.reLogin()
 				}
 				
 			}

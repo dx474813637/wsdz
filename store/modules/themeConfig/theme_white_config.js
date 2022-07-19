@@ -1,5 +1,5 @@
 export default {
-	empty: 'https://wx.sunsirs.cn/Public/memu/data1.png',
+	empty: 'https://wx.rawmex.cn/Public/memu/data1.png',
 	pageBg: '#f8f8f8',
 	boxBg: '#fff',
 	boxBgTop: '#fff',
@@ -41,7 +41,9 @@ export default {
 		baseText: '#000',
 		subText: '#999',
 		indicatorColor: '#efefef',
-		indicatorActiveColor: '#9cb6ef'
+		indicatorActiveColor: '#9cb6ef',
+		labelColor: '#96aae4',
+		labelBg: 'linear-gradient(to right, rgb(233 231 255 / 30%), #e9e7ff 50%)',
 	},
 	hqCard: {
 		hqBg: '#fff',
@@ -89,7 +91,8 @@ export default {
 		tabTextInactive: '#8790ab',
 		headerBg: '#007aff',
 		headerText: '#fff',
-		headerSubText: '#d3e6ff'
+		headerSubText: '#d3e6ff',
+		border: '1rpx solid #eee',
 	},
 	search: {
 		tagBg: '#e8e8e8',

@@ -6,16 +6,16 @@
 			:fixed="false"
 		>
 			<view class="u-flex u-flex-items-center" slot="left">
-				<view @click="handleGoto('/pages/my/user/settings')" class="item u-p-10">
+				<view @click="handleGoto('/pages/my/user/settings')" class="step1 item u-p-10">
 					<i class="custom-icon-shezhi1 custom-icon u-font-38"></i>
 				</view>
-				<view @click="handleGoto('/pages/my/msg/msg')" class="item u-p-10" style="position: relative;">
+				<view @click="handleGoto('/pages/my/msg/msg')" class="step2 item u-p-10" style="position: relative;">
 					<i class="custom-icon-comment custom-icon u-font-40"></i>
 					<u-badge absolute :offset="[5,3]" isDot :show="newMsg == '1'" bgColor="#ff2225"></u-badge>
 				</view>
 			</view>
 		</u-navbar>
-		<view @click="handleGoto('/pages/my/user/info')" class="user u-flex u-flex-items-center u-p-20 u-p-t-50 u-m-b-26">
+		<view @click="handleGoto('/pages/my/user/info')" class="step3 user u-flex u-flex-items-center u-p-20 u-p-t-50 u-m-b-26">
 			
 			<view class="user-img u-flex u-flex-items-center u-flex-center">
 				<i class="custom-icon-myfill custom-icon"></i>
@@ -26,8 +26,8 @@
 				</template>
 				<template v-else>
 					<view class="item u-flex u-flex-items-center">
-						<view class="name u-line-1 u-font-38">{{login || myCpy.mobile}}</view>
-						<view v-if="myCpy.type" class="sub text-white u-font-24 u-flex u-flex-items-center u-p-4 u-p-l-10 u-p-r-16 u-m-l-20">
+						<view class="name u-line-1 u-font-38 step7">{{login || myCpy.mobile}}</view>
+						<view v-if="myCpy.type" class="step8 sub text-white u-font-24 u-flex u-flex-items-center u-p-4 u-p-l-10 u-p-r-16 u-m-l-20">
 							<text >{{myCpy.type | type2str}}</text>
 						</view>
 						<view 
@@ -37,7 +37,7 @@
 						</view>
 					</view>
 					<view class="item">
-						<view class="sub2 u-font-28 text-light u-flex u-flex-items-center">
+						<view class="sub2 u-font-28 step9 text-light u-flex u-flex-items-center">
 							<text v-if="myCpy.name">{{myCpy.name}}</text>
 							<text v-else>点击完善用户信息，解锁更多功能</text>
 							<i class="custom-icon-edit custom-icon u-font-28 text-light u-m-l-10"></i>
@@ -49,8 +49,8 @@
 			
 		</view>
 		
-		<view class="user-item-box u-p-28 u-p-b-38 bg-white u-m-b-26">
-			<view class="set-sub u-flex u-flex-items-center u-m-b-30">
+		<view class="user-item-box u-p-28 u-p-b-38 bg-white u-m-b-26 step4">
+			<view class="set-sub u-flex u-flex-items-center u-m-b-30 step10">
 				<view class="sub-title u-flex u-flex-items-center u-p-l-16 u-p-r-16 bg-primary">
 					<i class="text-white custom-icon-warn custom-icon"></i>
 					<text class="text-white u-font-24 u-p-l-10">{{tips.tips_title}}</text>
@@ -61,7 +61,7 @@
 				</view>
 			</view>
 			<view class="set-main u-flex u-flex-between u-flex-items-center u-p-l-10 u-p-r-10">
-				<view @click="handleGoto({url: '/pages/my/broker/edit', params: {pan: 'b'}})" class="item u-flex u-flex-between u-flex-items-center u-flex-1 u-p-r-40">
+				<view @click="handleGoto({url: '/pages/my/broker/edit', params: {pan: 'b'}})" class=" step11 item u-flex u-flex-between u-flex-items-center u-flex-1 u-p-r-40">
 					<view class="item">
 						<view class="u-font-34 u-p-b-4">发布买盘</view>
 						<view class="u-font-26 text-light">挂牌采购商品</view>
@@ -70,7 +70,7 @@
 						<image class="mm-img" src="http://dingxiang.netsun.testwebsite.cn/public/img/icon2.png" mode=""></image>
 					</view>
 				</view>
-				<view @click="handleGoto({url: '/pages/my/broker/edit', params: {pan: 's'}})" class="item u-flex u-flex-between u-flex-items-center u-flex-1 u-p-l-40 u-border-left" style="border-color: #f8f8f8!important;">
+				<view @click="handleGoto({url: '/pages/my/broker/edit', params: {pan: 's'}})" class=" step12 item u-flex u-flex-between u-flex-items-center u-flex-1 u-p-l-40 u-border-left" style="border-color: #f8f8f8!important;">
 					<view class="item">
 						<view class="u-font-34 u-p-b-4">发布卖盘</view>
 						<view class="u-font-26 text-light">挂牌供应商品</view>
@@ -82,7 +82,7 @@
 			</view>
 		</view>
 		
-		<view class="user-item-box u-p-24 bg-white u-m-b-26" v-if=" auth == 1">
+		<view class="user-item-box u-p-24 bg-white u-m-b-26 step5" v-if=" auth == 1">
 			<view @click="handleGoto('/pages/my/customer/customer')" class="u-flex u-flex-items-center u-p-t-6 u-p-b-30  u-border-bottom" style="border-color: #f8f8f8!important;">
 				<view class="radius-50 bg-primary text-white u-flex u-flex-items-center u-flex-center u-p-16">
 					<i class=" custom-icon-friend custom-icon u-font-40"></i>
@@ -93,46 +93,46 @@
 				</view>
 			</view>
 			<view class="u-flex u-flex-items-center u-flex-between u-p-b-10 u-p-t-24">
-				<view @click="handleGoto('/pages/my/customer/customer')" class="u-p-l-30 item u-flex u-flex-items-center u-flex-1">
+				<view @click="handleGoto('/pages/my/customer/customer')" class=" step13 u-p-l-30 item u-flex u-flex-items-center u-flex-1">
 					<i class="custom-icon-sort custom-icon u-font-38"></i>
 					<text class="u-p-l-20 u-font-28">客户列表</text>
 				</view>
-				<view @click="handleTakeAccount" class="u-p-l-30 item u-flex u-flex-items-center u-flex-1 u-border-left" style="border-color: #f8f8f8!important;">
+				<view @click="handleTakeAccount" class=" step14 u-p-l-30 item u-flex u-flex-items-center u-flex-1 u-border-left" style="border-color: #f8f8f8!important;">
 					<i class="custom-icon-friendadd custom-icon u-font-38"></i>
 					<text class="u-p-l-20 u-font-28">领取客户账号</text>
 				</view>
 			</view>
 			<view class="u-flex u-flex-items-center u-flex-between u-p-b-10 u-p-t-24">
-				<view @click="handleGoto({url:'/pages/my/broker/auth_list', params:{pan: 's'}})" class="u-p-l-30 item u-flex u-flex-items-center u-flex-1">
+				<view @click="handleGoto({url:'/pages/my/broker/auth_list', params:{pan: 's'}})" class=" step15 u-p-l-30 item u-flex u-flex-items-center u-flex-1">
 					<i class="custom-icon-weituobiangeng custom-icon u-font-38"></i>
 					<text class="u-p-l-20 u-font-28">客户委托卖盘</text>
 				</view>
-				<view @click="handleGoto({url:'/pages/my/broker/auth_list', params:{pan: 'b'}})" class="u-p-l-30 item u-flex u-flex-items-center u-flex-1 u-border-left" style="border-color: #f8f8f8!important;">
+				<view @click="handleGoto({url:'/pages/my/broker/auth_list', params:{pan: 'b'}})" class="step16 u-p-l-30 item u-flex u-flex-items-center u-flex-1 u-border-left" style="border-color: #f8f8f8!important;">
 					<i class="custom-icon-weituobiangeng custom-icon u-font-38"></i>
 					<text class="u-p-l-20 u-font-28">客户委托买盘</text>
 				</view>
 			</view>
 		</view>
 		
-		<view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26">
+		<view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26 step6">
 			<view class="box-header u-flex u-flex-items-end u-border-bottom u-p-b-14 u-p-l-30 u-p-r-30">
 				<view class="u-font-34">买盘卖盘</view>
 				<view class="text-light u-font-26 u-p-l-10">发布前设置交易商品</view>
 			</view>
 			<view class="box-row u-flex u-flex-between u-flex-items-center u-p-t-20 u-p-b-10">
-				<view @click="handleGoto('/pages/my/broker/prod_edit')" class="item u-text-center u-flex-1">
+				<view @click="handleGoto('/pages/my/broker/prod_edit')" class="step17 item u-text-center u-flex-1">
 					<i class="custom-icon-roundadd custom-icon u-font-40"></i>
 					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">添加交易商品</text>
 				</view>
-				<view @click="handleGoto('/pages/my/broker/prod_set')" class="item u-text-center u-flex-1">
+				<view @click="handleGoto('/pages/my/broker/prod_set')" class="step18 item u-text-center u-flex-1">
 					<i class="custom-icon-goods custom-icon u-font-40"></i>
 					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">商品列表</text>
 				</view>
-				<view @click="handleGoto({url: '/pages/my/broker/list', params: {pan: 'b'}})" class="item u-text-center u-flex-1">
+				<view @click="handleGoto({url: '/pages/my/broker/list', params: {pan: 'b'}})" class="step19 item u-text-center u-flex-1">
 					<i class="custom-icon-jinhuoqu custom-icon u-font-40"></i>
 					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">我的买盘</text>
 				</view>
-				<view @click="handleGoto({url: '/pages/my/broker/list', params: {pan: 's'}})" class="item u-text-center u-flex-1">
+				<view @click="handleGoto({url: '/pages/my/broker/list', params: {pan: 's'}})" class="step20 item u-text-center u-flex-1">
 					<i class="custom-icon-zu555 custom-icon u-font-40"></i>
 					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">我的卖盘</text>
 				</view>
@@ -207,7 +207,7 @@
 			</view>
 		</view>
 		
-		
+		<xky-guideStep :step="step" :otherHeight="$u.sys().safeAreaInsets.top"></xky-guideStep>
 		<u-safe-bottom></u-safe-bottom>
 		<menusBar tabbar theme="white" :activeIndex="5" border></menusBar>
 	</view>
@@ -221,6 +221,10 @@
 		data() {
 			return {
 				loading: false,
+				step:{
+				    name:'wode_guide',
+				    guideList: []
+				},
 			};
 		},
 		computed: {
@@ -234,10 +238,12 @@
 				newMsg: state => state.user.newMsg, 
 				bd: state => state.user.bd, 
 				tips: state => state.user.tips, 
+				wode_guide: state => state.user.wode_guide
 			}),
 		},
 		async onLoad() {
 			await this.wode()
+			this.step.guideList = this.wode_guide.list
 			if(!this.myCpy.id) {
 				this.loading = true
 				uni.showLoading({

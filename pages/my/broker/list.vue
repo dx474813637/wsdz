@@ -48,7 +48,7 @@
 						<BrokerCard
 							:pid="item.id"
 							:name="item.name"
-							:sub="item.remark || item.spec"
+							:sub="item.spec"
 							:status="item.state"
 							:type="item.trade_type"
 							:date="item.post_time"
@@ -161,11 +161,11 @@
 					url: '/pages/index/pan/panShare',
 					params: {
 						pan: this.pan,
-						auth: this.auth,
-						contact: this.myCpy.contact,
-						name: this.myCpy.name,
-						mobile: this.myCpy.mobile,
 						id: this.myCpy.id,
+						// auth: this.auth,
+						// contact: this.myCpy.contact,
+						// name: this.myCpy.name,
+						// mobile: this.myCpy.mobile,
 					}
 				})
 			},
@@ -269,8 +269,21 @@
 					
 				}
 			},
-			handleResubmit({id}) {
+			async handleResubmit({data}) {
+				uni.showLoading()
 				
+				let func = ''
+				if(this.pan == 's') {
+					func = 'createSell'
+				}else {
+					func = 'createBuy'
+				}
+				let params = {...data};
+				const r = await this.$api[func](params)
+				if(r.code == 1) {
+					uni.showLoading()
+					this.refreshList()
+				}
 			},
 			async handleDelet({id}) {
 				const res = await this.$api[this.pan == 's'? 'deleteSell' : 'deleteBuy']({params: {id}})

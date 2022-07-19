@@ -87,6 +87,7 @@
 											<text>{{ele.name.slice(0, ele.pp[0])}}</text>
 											<text class="u-error">{{ele.name.slice(ele.pp[0], ele.pp[0]+ele.pp[1])}}</text>
 											<text>{{ele.name.slice(ele.pp[0]+ele.pp[1])}}</text>
+											<text class="u-p-l-20 text-base" v-if="isMyProduct">{{ele.attributes | filterAttributes}}</text>
 										</view>
 									</view>
 								</template>
@@ -128,7 +129,7 @@
 							<template v-else-if="isMyProduct">
 								<u-list-item
 									v-for="(item, index) in myProduct"
-									:key="item.name">
+									:key="item.id">
 									<view class="u-p-10">
 										<view class="u-p-20 u-flex u-flex-items-center"
 											:style="{
@@ -154,7 +155,7 @@
 							<template v-else>
 								<u-list-item
 								v-for="(item, index) in menusList2"
-								:key="item.name">
+								:key="item.id">
 									<view class="item-card u-p-10 u-p-l-20 u-p-r-20">
 										<view class="card-title u-flex u-flex-items-center u-p-10 u-font-30"
 											@click="handleChangeShow(item)"
@@ -469,6 +470,7 @@
 				this.multiple && this.resetSelect()
 			},
 			selectLabel(menu) {
+				console.log(menu)
 				if(!this.multiple) {
 					this.$emit('confirm', {...menu})
 					return

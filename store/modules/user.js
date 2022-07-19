@@ -2,6 +2,12 @@
 // import * as apis from '@/config/api'
 
 let state = {
+		configBaseURL: 'https://wx.rawmex.cn/Api/',
+		configHeader: {
+			'content-type': 'application/x-www-form-urlencoded',
+			'appid': 10000,
+			'appsecret': '5406NzMVC6CCMYaDwHzN9pg/fhFF6uaeKwVTbMmNFqHA29dLE78VFJU',
+		},
 		addressArea: [],
 		menusList: [],
 		wode: {},
@@ -16,11 +22,16 @@ let state = {
 		moreMenus: {},
 		moreMenusNew: [],
 		newMsg: 0,
-		tips: {}
+		tips: {},
+		wode_guide: {},
+		maxSize: 1000000
 	},
 	getters = {
 	},
 	mutations = {
+		setGuide(state, data) {
+			state.wode_guide = data;
+		},
 		setAddressArea(state, data) {
 			state.addressArea = data
 		},
@@ -107,6 +118,11 @@ let state = {
 			const res = await this._vm.$api.wode({params: data})
 			
 			commit('setWode', res.list)
+			commit('setGuide', {
+					list: res.guideList,
+					yd: res.yd
+				})
+			if(res.yd == 1) uni.removeStorageSync('wode_guide')
 			commit('setLogin', res.list.login)
 			commit('setAuth', res.list.auth)
 			commit('setSh', res.list.sh)
@@ -156,42 +172,22 @@ let state = {
 				})
 				commit('setPPiCate', res.list)
 			}
-			// const arr = []
-			// res.list.forEach(ele => {
-			// 	if(ele.children instanceof Array) {
-			// 		if(ele.text == '期货') {
-			// 			const obj = {name: '期货', id: 'qihuo'};
-			// 			obj.list = ele.children.map(item => {
-			// 				return {
-			// 					name: item.text,
-			// 					value: item.value,
-			// 					id: item.value,
-			// 					ppid: item.value.split('-')[0],
-			// 					dir: item.value.split('-')[1]
-			// 				}
-			// 			})
-			// 			arr.push(obj)
-						
-			// 		}else {
-			// 			ele.children.forEach(item => {
-			// 				const obj = {};
-			// 				let {text, value, dir, children} = item
-			// 				children = children.map(ee => {
-			// 					ee.dir = dir
-			// 					return ee
-			// 				})
-			// 				obj.name = text
-			// 				obj.list = children
-			// 				obj.id = value
-			// 				arr.push(obj)
-			// 			})
-			// 		}
-					
-			// 	}
-			// })
-			// console.log(arr)
-			
-		
+		},
+		async getImageBase64_readFile({commit, state}, tempFilePath) {
+			console.log(tempFilePath)
+			  return await new Promise(resolve => {
+					//获取全局唯一的文件管理器 
+					uni.getFileSystemManager().readFile({ //读取本地文件内容
+					  filePath: tempFilePath, // 文件路径
+					  encoding: 'base64', // 返回格式
+					  success: ({
+						data
+					  }) => {
+						// return resolve('data:image/png;base64,' + data);
+						return resolve( data);
+					  }
+					});
+			  });
 		},
 	}
 export default {

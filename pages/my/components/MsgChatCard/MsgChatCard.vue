@@ -38,10 +38,12 @@
 					}">
 					<view class="u-content"
 						:style="{
-							color: themeConfig.msg.detail.contentColor
+							color: themeConfig.msg.detail.contentColor,
+							wordBreak: 'break-all'
 						}"
 					>
-						<u-parse :content="msg.body"></u-parse>
+						<u-parse :content="msg.body" @ready="handleRenderReady"></u-parse>
+						<!-- <rich-text :nodes="msg.body"></rich-text> -->
 					</view>
 				
 			</view>
@@ -94,7 +96,10 @@
 			}),
 		},
 		methods: {
-			
+			handleRenderReady() {
+				if(this.msg.msgType == 1) return
+				this.$emit('ready')
+			}
 		}
 	}
 </script>
@@ -102,6 +107,7 @@
 <style lang="scss" scoped>
 	.u-content {
 		font-size: 14px;
+		// overflow: hidden;
 	}
 	.pos {
 		position: relative;

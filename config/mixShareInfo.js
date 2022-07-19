@@ -20,15 +20,20 @@ export default {
 		return{
 			title: this.onlineControl.share_title,
 			query: this.getQuery(),
-			imageUrl: this.onlineControl.share_img
+			// imageUrl: this.onlineControl.share_img
 		}
 	},
 	onShareAppMessage(res) {
-		return {
-			title: this.onlineControl.share_title,
-			path: this.getPath(),
-			imageUrl: this.onlineControl.share_img
-		};
+		if(res.target && res.target.id && res.target.id.includes('diy_')) {
+			
+		}else {
+			return {
+				title: this.onlineControl.share_title,
+				path: this.getPath(),
+				imageUrl: this.onlineControl.share_img
+			};
+		}
+		
 	},
 	methods: {
 		setOnlineControl(res) {

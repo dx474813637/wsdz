@@ -77,14 +77,19 @@
 					<view class="u-p-10"></view>
 				</view>
 				<view class="u-p-15"></view>
+				<!-- 优选供应商 -->
 				<view class=" bg-white" style="border-radius: 10px;">
 					<view class="u-p-10 u-font-36 u-p-l-20">
-						{{list.detail.pname}} <text class="u-p-l-30" style="color:#0077b5;">供应商</text>
+						{{list.detail.pname}} <text class="u-p-l-30" style="color:#0077b5;">优选供应商</text>
 					</view>
 					<view class="u-p-10">
 						<u-line color="#e2e2e2"></u-line>
 					</view>
-					<view v-for="(item, index) in list.qy_list" :key="index">
+					<template v-if="list.tj_list.length == 0">
+						<view class="u-p-10"><u-image :src="no_img" width="100%" height="auto" mode="widthFix"></u-image></view>
+						
+					</template>
+					<view v-for="(item, index) in list.tj_list" :key="index">
 						<view class="u-flex u-p-10 bg-white u-m-20 radius border_blue" >
 							<!-- <view class="u-flex-2">
 								<image class="qiye-img" :lazy-load="true" :src="item.pic1" :mode="widthFix" shape="square"></image>
@@ -127,7 +132,75 @@
 						</view>
 						
 					</view>
+
 				</view>
+				
+				<view class="u-p-15"></view>
+				<!-- 供应商 -->
+				<view class=" bg-white" style="border-radius: 10px;" v-if="qy_list">
+					<view class="u-p-10 u-font-36 u-p-l-20">
+						{{list.detail.pname}} <text class="u-p-l-30" style="color:#0077b5;">供应商</text>
+					</view>
+					<view class="u-p-10">
+						<u-line color="#e2e2e2"></u-line>
+					</view>
+					<view v-for="(item, index) in qy_list" :key="index">
+						<view class="u-flex u-p-10 bg-white u-m-20 radius border_blue" >
+							<!-- <view class="u-flex-2">
+								<image class="qiye-img" :lazy-load="true" :src="item.pic1" :mode="widthFix" shape="square"></image>
+							</view> -->
+							<view class="u-flex-10 ">
+								<view class="u-p-10 u-font-32 u-p-l-20">
+									{{item.company}}
+								</view>
+								<view class="u-p-10 u-font-24 text-gray u-p-l-20 u-flex u-flex-items-center">
+									<view class="label">产品名</view>
+									<view class="u-flex-1 value u-flex u-flex-items-center">
+										<text class=" u-line-1 u-p-r-20">{{item.product}} </text>
+									</view>
+								</view>
+								<template v-if="item.company_all">
+									<view class="u-p-10 u-font-24 text-gray u-p-l-20 u-flex u-flex-items-center" v-if="item.company_all.contact">
+										<view class="label">联系人</view>
+										<view class="u-flex-1 value u-flex u-flex-items-center" @click="copy(item.company_all.contact)">
+											<text class=" u-line-1 u-p-r-20">{{item.company_all.contact}}</text>
+											<i class="custom-icon-fuzhi custom-icon"></i>
+										</view>
+									</view>
+									<view class="u-p-10 u-font-24 text-gray u-p-l-20 u-flex u-flex-items-center" v-if="item.company_all.mobile || item.company_all.tel">
+										<view class="label">手机</view>
+										<view @click="makecall(item.company_all.mobile || item.company_all.tel)" class="u-flex-1  value u-flex u-flex-items-center">
+											<text class=" u-line-1 u-p-r-20">{{item.company_all.mobile || item.company_all.tel}}</text> 
+											<i class="custom-icon-dianhua custom-icon"></i> 
+										</view>
+									</view>
+									<view class="u-p-10 u-font-24 text-gray u-p-l-20 u-flex u-flex-items-center" v-if="item.company_all.address">
+										<view class="label">地址</view>
+										<view class="u-flex-1 value u-flex u-flex-items-center" @click="copy(item.company_all.address)">
+											<text class=" u-line-1 u-p-r-20">{{item.company_all.address}}</text>
+											<i class="custom-icon-fuzhi custom-icon"></i>
+										</view>
+									</view>
+								</template>
+								
+							</view>
+						</view>
+						
+					</view>
+					<template v-if="qy_list.length == 0">
+						<u-empty
+							mode="data"
+							:icon="typeConfig.white.empty"
+						>
+						</u-empty>
+					</template>
+					<template v-else>
+						<u-loadmore
+							:status="loadstatus"
+						/>
+					</template>
+				</view>
+				
 			</view>
 		</view>
 		<u-safe-bottom></u-safe-bottom>
@@ -161,7 +234,11 @@
 				requesting:false,
 				shows_ico:'+',
 				showx_ico:'+',
-				share:{}
+				share:{},
+				qy_list: [],
+				curP: 1,
+				loadstatus: 'loadmore',
+				no_img: ''
 			}
 		},
 		onLoad(options) {
@@ -172,6 +249,11 @@
 		},
 		onShow(options){
 			
+		},
+		async onReachBottom() {
+			if(this.loadstatus != 'loadmore') return
+			this.curP ++
+			await this.ichain_detail()
 		},
 		methods: {
 			
@@ -206,17 +288,29 @@
 				});
 			},
 			async ichain_detail() {
+				if(this.loadstatus != 'loadmore') return
+				this.loadstatus = 'loading'
 				await this.$http
 					.post('ichain_detail', {
-						id: this.id
+						id: this.id,
+						p: this.curP
 					})
 					.then(res => {
 						this.requesting = false;
 						if (res.code == 1) {
 							this.setOnlineControl(res)
-							this.list = res.list;
-							this.name = res.list.detail.pname;
-							this.share = res.share;
+							if(this.curP == 1) {
+								this.list = res.list;
+								this.name = res.list.detail.pname;
+								this.share = res.share;
+							}
+							this.no_img = res.no_img
+							this.qy_list = [...this.qy_list, ...res.list.qy_list]
+							if(this.qy_list.length >= res.total) {
+								this.loadstatus = 'nomore'
+							}else {
+								this.loadstatus = 'loadmore'
+							}
 						}
 					});
 			},

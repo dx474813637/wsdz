@@ -55,12 +55,10 @@ export default function(vm) {
 	// 初始化请求配置
 	http.setConfig((config) => {
 		/* config 为默认全局配置*/
-		config.baseURL = 'https://wx.sunsirs.cn/Api/'; /* 根域名 */
+		config.baseURL = vm.$store.state.user.configBaseURL; /* 根域名 */
 		config.header = {
 			...config.header,
-			'content-type': 'application/x-www-form-urlencoded',
-			'appid': 10000,
-			'appsecret': '5406NzMVC6CCMYaDwHzN9pg/fhFF6uaeKwVTbMmNFqHA29dLE78VFJU',
+			...vm.$store.state.user.configHeader
 		}
 		return config
 	})
@@ -141,7 +139,7 @@ export default function(vm) {
 						title: response.data.msg,
 						icon: 'none',
 						mask: true,
-						duration: 1000
+						duration: 2000
 					})
 				}
 			}

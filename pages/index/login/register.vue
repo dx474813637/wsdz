@@ -8,7 +8,7 @@
 				:model="form" 
 				ref="uForm" 
 			>
-				<u-form-item prop="login" >
+				<!-- <u-form-item prop="login" >
 					<u--input 
 						v-model="form.login" 
 						prefixIcon="account-fill"
@@ -16,7 +16,7 @@
 						prefixIconStyle="color: #999"
 						placeholder="请输入账号" 
 					/>
-				</u-form-item>
+				</u-form-item> -->
 				<u-form-item prop="mobile" >
 					<u-input 
 						v-model="form.mobile" 
@@ -33,7 +33,7 @@
 					</u-input>
 				</u-form-item>
 
-				<u-form-item prop="passwd" >
+				<!-- <u-form-item prop="passwd" >
 					<u--input 
 						type="password" 
 						prefixIcon="lock-fill"
@@ -52,7 +52,7 @@
 						v-model="form.passwd2" 
 						placeholder="确认密码"
 					 />
-				</u-form-item>
+				</u-form-item> -->
 				<u-form-item prop="captcha" >
 					<u-input 
 						v-model="form.captcha" 
@@ -111,10 +111,10 @@
 		data() {
 			return {
 				form: {
-					login: '',
+					// login: '',
 					mobile: '',
-					passwd: '',
-					passwd2: '',
+					// passwd: '',
+					// passwd2: '',
 					captcha: '',
 				},
 				tips: '获取验证码',
@@ -138,33 +138,21 @@
 			},
 			rules() {
 				return {
-					login: [{
-							required: true,
-							message: '请填写账号',
-							trigger: ['blur', 'change']
-						},
-						{
-							validator: (rule, value, callback) => {
-								const RegExpObject = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{5,}$/
-								return RegExpObject.test(value)
-							},
-							message: '以字母开头的任何英文字母以及阿拉伯数字组合，不得少于5个字符',
-							trigger: ['blur', 'change']
-						},
-					],
+					// login: [{
+					// 		required: true,
+					// 		message: '请填写账号',
+					// 		trigger: ['blur', 'change']
+					// 	},
+					// 	{
+					// 		validator: (rule, value, callback) => {
+					// 			const RegExpObject = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{5,}$/
+					// 			return RegExpObject.test(value)
+					// 		},
+					// 		message: '以字母开头的任何英文字母以及阿拉伯数字组合，不得少于5个字符',
+					// 		trigger: ['blur', 'change']
+					// 	},
+					// ],
 					mobile: [
-						// {
-						// 	required: true,
-						// 	message: '请输入手机号',
-						// 	trigger: ['blur', 'change']
-						// },
-						// {
-						// 	validator: (rule, value, callback) => {
-						// 		return uni.$u.test.mobile(value)
-						// 	},
-						// 	message: '请输入正确的11位手机号',
-						// 	trigger: ['blur', 'change']
-						// },
 						{
 							asyncValidator:  (rule, value, callback) => {
 								// this.searchRes = '0'
@@ -206,33 +194,33 @@
 							}
 						}
 					],
-					passwd: [{
-							required: true,
-							message: '请输入密码',
-							trigger: ['blur', 'change']
-						},
-						{
-							validator: (rule, value, callback) => {
-								const RegExpObject = /^[0-9A-Za-z]{5,}$/
-								return RegExpObject.test(value)
-							},
-							message: '密码可使用任何英文字母以及阿拉伯数字组合，不得少于5个字符并区分英文大小写',
-							trigger: ['blur', 'change']
-						}
-					],
-					passwd2: [{
-							required: true,
-							message: '请确认密码',
-							trigger: ['blur', 'change']
-						},
-						{
-							validator: (rule, value, callback) => {
-								return this.form.passwd == value
-							},
-							message: '密码不一致',
-							trigger: ['blur', 'change']
-						},
-					],
+					// passwd: [{
+					// 		required: true,
+					// 		message: '请输入密码',
+					// 		trigger: ['blur', 'change']
+					// 	},
+					// 	{
+					// 		validator: (rule, value, callback) => {
+					// 			const RegExpObject = /^[0-9A-Za-z]{5,}$/
+					// 			return RegExpObject.test(value)
+					// 		},
+					// 		message: '密码可使用任何英文字母以及阿拉伯数字组合，不得少于5个字符并区分英文大小写',
+					// 		trigger: ['blur', 'change']
+					// 	}
+					// ],
+					// passwd2: [{
+					// 		required: true,
+					// 		message: '请确认密码',
+					// 		trigger: ['blur', 'change']
+					// 	},
+					// 	{
+					// 		validator: (rule, value, callback) => {
+					// 			return this.form.passwd == value
+					// 		},
+					// 		message: '密码不一致',
+					// 		trigger: ['blur', 'change']
+					// 	},
+					// ],
 					captcha: {
 						required: true,
 						message: '请输入验证码',

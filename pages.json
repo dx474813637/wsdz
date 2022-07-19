@@ -99,6 +99,49 @@
 			}
 
 		}, {
+			"path": "pages/index/pan/cardList",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white"
+			}
+
+		}, {
+			"path": "pages/index/moreMenus/blacklist",
+			"style": {
+				"navigationBarTitleText": "发布黑名单",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/index/moreMenus/sc",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/index/chemnet/chemnet",
+			"style": {
+				"navigationBarTitleText": "化工网数据库",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/index/moreMenus/xianhuo",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/index/moreMenus/sinoaaa",
+			"style": {
+				"navigationBarTitleText": "风险评级",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#fff"
+			}
+
+		}, {
 			"path": "pages/index/webview/webview",
 			"style": {
 				"navigationBarTitleText": "",
@@ -107,6 +150,28 @@
 
 		}, {
 			"path": "pages/index/login/xieyi",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/index/fangzhi/fangzhi",
+			"style": {
+				"navigationBarTitleText": "纺织搜索",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/index/fangzhi/fangzhi_detail",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+
+		}, {
+			"path": "pages/index/help/help",
 			"style": {
 				"navigationBarTitleText": "",
 				"enablePullDownRefresh": false
@@ -133,402 +198,442 @@
 			"path": "ichain/detail",
 			"style": {
 				"navigationStyle": "custom",
+				"onReachBottomDistance": 50,
 				"navigationBarTextStyle": "white"
 			}
-		}]
-	}, {
-		"root": "pages/my",
-		"pages": [{
-			"path": "user/info",
-			"style": {
-				"navigationBarTitleText": "用户信息"
-			}
 		}, {
-			"path": "address/address",
+			"path": "customer_log/customer_log",
 			"style": {
-				"navigationBarTitleText": "地址列表",
+				"navigationBarTitleText": "访问记录",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
-			"path": "address/addr_edit",
+			"path": "list/news",
 			"style": {
-				"navigationBarTitleText": "地址详情",
+				"navigationBarTitleText": "列表",
 				"enablePullDownRefresh": false
 			}
 
 		}, {
-			"path": "broker/list",
-			"style": {
-				"navigationBarTitleText": "我的盘",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "broker/edit",
-			"style": {
-				"navigationBarTitleText": "编辑盘",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "order/order",
-			"style": {
-				"navigationBarTitleText": "我的订单",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "order/order_detail",
-			"style": {
-				"navigationBarTitleText": "订单详情",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "customer/customer",
-			"style": {
-				"navigationBarTitleText": "客户列表",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "customer/customer_detail",
-			"style": {
-				"navigationBarTitleText": "客户详情",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "broker/prod_set",
-			"style": {
-				"navigationBarTitleText": "交易商品名列表",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "user/subscribe_list",
-			"style": {
-				"navigationBarTitleText": "订阅通知",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "user/subscribe_set",
-			"style": {
-				"navigationBarTitleText": "订阅设置",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "user/subscribe_detail",
-			"style": {
-				"navigationBarTitleText": "通知详情",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "broker/prod_edit",
-			"style": {
-				"navigationBarTitleText": "交易商品名编辑",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "album/album",
-			"style": {
-				"navigationBarTitleText": "我的相册列表",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "album/album_edit",
-			"style": {
-				"navigationBarTitleText": "相册信息",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "album/album_imgs",
-			"style": {
-				"navigationBarTitleText": "相册图片列表",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "album/album_imgs_edit",
-			"style": {
-				"navigationBarTitleText": "图片信息",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "account/log",
-			"style": {
-				"navigationBarTitleText": "登录历史明细",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "account/login_psw_update",
-			"style": {
-				"navigationBarTitleText": "账号登录密码修改",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "account/bind_phone",
-			"style": {
-				"navigationBarTitleText": "绑定手机",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "account/bind_account",
-			"style": {
-				"navigationBarTitleText": "绑定账号",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "money/index",
-			"style": {
-				"navigationStyle": "custom",
-				"navigationBarTextStyle": "white",
-				"navigationBarTitleText": "资金中心",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "money/sino_info",
-			"style": {
-				"navigationStyle": "custom",
-				"navigationBarTextStyle": "white",
-				"navigationBarTitleText": "资金账号信息",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "money/sino_zh1",
-			"style": {
-				"navigationStyle": "custom",
-				"navigationBarTextStyle": "white",
-				"navigationBarTitleText": "付款账户",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "money/sino_zh2",
-			"style": {
-				"navigationStyle": "custom",
-				"navigationBarTextStyle": "white",
-				"navigationBarTitleText": "收款账户",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "money/sino_cz",
-			"style": {
-				"navigationStyle": "custom",
-				"navigationBarTextStyle": "white",
-				"navigationBarTitleText": "我要充值",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "money/sino_cz_list",
-			"style": {
-				"navigationBarTitleText": "充提列表",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "money/bill",
-			"style": {
-				"navigationBarTitleText": "资金账单列表",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "money/bill_detail",
-			"style": {
-				"navigationBarTitleText": "资金账单详情",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "money/safe_list",
-			"style": {
-				"navigationBarTitleText": "安全设置",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "money/sino_loginpw_update",
-			"style": {
-				"navigationBarTitleText": "修改资金账号登录密码",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "money/sino_paypw_set",
-			"style": {
-				"navigationBarTitleText": "设置资金账号支付密码",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "money/sino_paypw_forget",
-			"style": {
-				"navigationBarTitleText": "忘记资金账号支付密码",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "money/sino_reg",
-			"style": {
-				"navigationStyle": "custom",
-				"navigationBarTextStyle": "white"
-				// ,
-				// "navigationBarTitleText": "注册资金账户",
-				// "enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "money/sino_bind",
-			"style": {
-				"navigationStyle": "custom",
-				"navigationBarTextStyle": "white"
-			}
-
-		}, {
-			"path": "money/card_add",
-			"style": {
-				"navigationBarTitleText": "银行卡绑定",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "user/index",
-			"style": {
-				"navigationStyle": "custom"
-				// "navigationBarTitleText": "我的",
-				// "enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "money/bank_card",
-			"style": {
-				"navigationBarTitleText": "银行账户列表",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "money/sino_cz_detail",
+			"path": "list/news_detail",
 			"style": {
 				"navigationBarTitleText": "详情",
 				"enablePullDownRefresh": false
 			}
 
-		}, {
-			"path": "money/bank_card_detail",
+		}]
+	}, {
+		"root": "pages/my",
+		"pages": [{
+				"path": "user/info",
+				"style": {
+					"navigationBarTitleText": "用户信息"
+				}
+			}, {
+				"path": "address/address",
+				"style": {
+					"navigationBarTitleText": "地址列表",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "address/addr_edit",
+				"style": {
+					"navigationBarTitleText": "地址详情",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "broker/list",
+				"style": {
+					"navigationBarTitleText": "我的盘",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "broker/edit",
+				"style": {
+					"navigationBarTitleText": "编辑盘",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "order/order",
+				"style": {
+					"navigationBarTitleText": "我的订单",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "order/order_detail",
+				"style": {
+					"navigationBarTitleText": "订单详情",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "customer/customer",
+				"style": {
+					"navigationBarTitleText": "客户列表",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "customer/customer_detail",
+				"style": {
+					"navigationBarTitleText": "客户详情",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "broker/prod_set",
+				"style": {
+					"navigationBarTitleText": "交易商品名列表",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "user/subscribe_list",
+				"style": {
+					"navigationBarTitleText": "订阅通知",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "user/subscribe_set",
+				"style": {
+					"navigationBarTitleText": "订阅设置",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "user/subscribe_detail",
+				"style": {
+					"navigationBarTitleText": "通知详情",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "broker/prod_edit",
+				"style": {
+					"navigationBarTitleText": "交易商品名编辑",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "album/album",
+				"style": {
+					"navigationBarTitleText": "我的相册列表",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "album/album_edit",
+				"style": {
+					"navigationBarTitleText": "相册信息",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "album/album_imgs",
+				"style": {
+					"navigationBarTitleText": "相册图片列表",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "album/album_imgs_edit",
+				"style": {
+					"navigationBarTitleText": "图片信息",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "account/log",
+				"style": {
+					"navigationBarTitleText": "登录历史明细",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "account/login_psw_update",
+				"style": {
+					"navigationBarTitleText": "账号登录密码修改",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "account/bind_phone",
+				"style": {
+					"navigationBarTitleText": "绑定手机",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "account/remove_phone",
+				"style": {
+					"navigationBarTitleText": "手机解绑",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "account/bind_account",
+				"style": {
+					"navigationBarTitleText": "绑定账号",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "money/index",
+				"style": {
+					"navigationStyle": "custom",
+					"navigationBarTextStyle": "white",
+					"navigationBarTitleText": "资金中心",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "money/sino_info",
+				"style": {
+					"navigationStyle": "custom",
+					"navigationBarTextStyle": "white",
+					"navigationBarTitleText": "资金账号信息",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "money/sino_zh1",
+				"style": {
+					"navigationStyle": "custom",
+					"navigationBarTextStyle": "white",
+					"navigationBarTitleText": "付款账户",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "money/sino_zh2",
+				"style": {
+					"navigationStyle": "custom",
+					"navigationBarTextStyle": "white",
+					"navigationBarTitleText": "收款账户",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "money/sino_cz",
+				"style": {
+					"navigationStyle": "custom",
+					"navigationBarTextStyle": "white",
+					"navigationBarTitleText": "我要充值",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "money/sino_cz_list",
+				"style": {
+					"navigationBarTitleText": "充提列表",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "money/bill",
+				"style": {
+					"navigationBarTitleText": "资金账单列表",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "money/bill_detail",
+				"style": {
+					"navigationBarTitleText": "资金账单详情",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "money/safe_list",
+				"style": {
+					"navigationBarTitleText": "安全设置",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "money/sino_loginpw_update",
+				"style": {
+					"navigationBarTitleText": "修改资金账号登录密码",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "money/sino_paypw_set",
+				"style": {
+					"navigationBarTitleText": "设置资金账号支付密码",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "money/sino_paypw_forget",
+				"style": {
+					"navigationBarTitleText": "忘记资金账号支付密码",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "money/sino_reg",
+				"style": {
+					"navigationStyle": "custom",
+					"navigationBarTextStyle": "white"
+					// ,
+					// "navigationBarTitleText": "注册资金账户",
+					// "enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "money/sino_bind",
+				"style": {
+					"navigationStyle": "custom",
+					"navigationBarTextStyle": "white"
+				}
+
+			}, {
+				"path": "money/card_add",
+				"style": {
+					"navigationBarTitleText": "银行卡绑定",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "user/index",
+				"style": {
+					"navigationStyle": "custom"
+					// "navigationBarTitleText": "我的",
+					// "enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "money/bank_card",
+				"style": {
+					"navigationBarTitleText": "银行账户列表",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "money/sino_cz_detail",
+				"style": {
+					"navigationBarTitleText": "详情",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "money/bank_card_detail",
+				"style": {
+					"navigationBarTitleText": "银行卡详情",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "user/settings",
+				"style": {
+					"navigationBarTitleText": "通用设置",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "account/login_psw_reset",
+				"style": {
+					"navigationBarTitleText": "短信重设密码",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "msg/msg",
+				"style": {
+					"navigationStyle": "custom",
+					"navigationBarTextStyle": "white"
+				}
+
+			}, {
+				"path": "msg/msgDetail",
+				"style": {
+					"navigationStyle": "custom",
+					"navigationBarTextStyle": "white"
+				}
+
+			}, {
+				"path": "broker/auth_list",
+				"style": {
+					"navigationBarTitleText": "客户委托列表",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "broker/auth_list_edit",
+				"style": {
+					"navigationBarTitleText": "客户委托详情",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "account/change_phone",
+				"style": {
+					"navigationBarTitleText": "修改绑定手机",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "myEwm/myEwm",
+				"style": {
+					"navigationBarTitleText": "二维码",
+					"enablePullDownRefresh": false
+				}
+
+			},
+			// {
+			// 	"path": "customer/customer_log",
+			// 	"style": {
+			// 		"navigationBarTitleText": "访问记录",
+			// 		"enablePullDownRefresh": false
+			// 	}
+
+			// },
+			{
+				"path": "customer/customer_pan",
+				"style": {
+					"navigationBarTitleText": "客户盘",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "customer/customer_prod",
+				"style": {
+					"navigationBarTitleText": "客户商品列表",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "user/login_view_log",
+				"style": {
+					"navigationBarTitleText": "访问我的记录",
+					"enablePullDownRefresh": false
+				}
+
+			}
+		]
+	}, {
+		"root": "pages/more",
+		"pages": [{
+			"path": "xueyuan/xueyuan",
 			"style": {
-				"navigationBarTitleText": "银行卡详情",
+				"navigationBarTitleText": "列表",
+				"navigationBarBackgroundColor": "#ffffff",
 				"enablePullDownRefresh": false
 			}
-
 		}, {
-			"path": "user/settings",
+			"path": "xueyuan/xueyuan_detail",
 			"style": {
-				"navigationBarTitleText": "通用设置",
+				"navigationBarTitleText": "详情",
 				"enablePullDownRefresh": false
 			}
-
-		}, {
-			"path": "account/login_psw_reset",
-			"style": {
-				"navigationBarTitleText": "短信重设密码",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "moreMenus/blacklist",
-			"style": {
-				"navigationBarTitleText": "发布黑名单",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "moreMenus/sc",
-			"style": {
-				"navigationBarTitleText": "供应链服务",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "moreMenus/sinoaaa",
-			"style": {
-				"navigationBarTitleText": "风险评级",
-				"enablePullDownRefresh": false,
-				"navigationBarBackgroundColor": "#fff"
-			}
-
-		}, {
-			"path": "msg/msg",
-			"style": {
-				"navigationStyle": "custom",
-				"navigationBarTextStyle": "white"
-			}
-
-		}, {
-			"path": "msg/msgDetail",
-			"style": {
-				"navigationStyle": "custom",
-				"navigationBarTextStyle": "white"
-			}
-
-		}, {
-			"path": "broker/auth_list",
-			"style": {
-				"navigationBarTitleText": "客户委托列表",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "broker/auth_list_edit",
-			"style": {
-				"navigationBarTitleText": "客户委托详情",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "moreMenus/xianhuo",
-			"style": {
-				"navigationBarTitleText": "现货公司",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "account/change_phone",
-			"style": {
-				"navigationBarTitleText": "修改绑定手机",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "myEwm/myEwm",
-			"style": {
-				"navigationBarTitleText": "二维码",
-				"enablePullDownRefresh": false
-			}
-
-		}, {
-			"path": "chemnet/chemnet",
-			"style": {
-				"navigationBarTitleText": "化工字典",
-				"enablePullDownRefresh": false
-			}
-
 		}]
 	}],
 	"globalStyle": {

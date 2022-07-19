@@ -143,19 +143,24 @@
 								</u-radio>
 							  </u-radio-group>
 						</u-form-item>
-						<!-- <u-form-item
+						<u-form-item
 							label="图片"
 							prop="pic1"
 							ref="pic1"
 						>
-							<u-upload
-								:fileList="fileList1"
-								@afterRead="afterRead"
-								@delete="deletePic"
-								name="1"
-								:maxCount="1"
-							></u-upload>
-						</u-form-item> -->
+							<view>
+								<u-upload
+									:fileList="fileList1"
+									@afterRead="afterRead"
+									@delete="deletePic"
+									name="1"
+									:maxCount="1"
+									:maxSize="2048000"
+									@oversize="handleoversize"
+								></u-upload>
+								<view class="u-info u-font-28">建议上传2M以内的图片</view>
+							</view>
+						</u-form-item>
 						
 						<u-form-item
 							label="商品简介"
@@ -179,7 +184,7 @@
 </template>
 
 <script>
-	import {mapState, mapGetters, mapMutations} from 'vuex'
+	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
 	import BrokerCard from '@/pages/my/components/BrokerCard/BrokerCard.vue'
 	export default {
 		data() {
@@ -221,7 +226,9 @@
 					unit: '',
 					intro: '',
 					trade_type: 'bs',
-					pic1: ''
+					pic1: '',
+					pic1_base64: '',
+					pic1_name: ''
 				},
 				attrObj: [
 					{
@@ -273,9 +280,21 @@
 		components: {
 			BrokerCard
 		},
+		watch: {
+			['model.pic1'](n) {
+				if(n) {
+					this.fileList1 = [{
+						url: n
+					}]
+				}
+			}
+		},
 		computed: {
 			...mapState({
-				login: state => state.user.login
+				login: state => state.user.login,
+				configHeader: state => state.user.configHeader,
+				configBaseURL: state => state.user.configBaseURL,
+				maxSize: state => state.user.maxSize,
 			}),
 			rules() {
 				return {
@@ -330,91 +349,91 @@
 			...mapMutations({
 				handleGoto: 'user/handleGoto'
 			}),
+			...mapActions({
+				getImageBase64_readFile: 'user/getImageBase64_readFile'
+			}),
 			handleChangeAttr(data) {
-				console.log(data)
-				this.model[data.key] = data.value
+				if(this.model.hasOwnProperty(data.key)) {
+					this.model[data.key] = data.value
+				}else {
+					this.$set(this.model, data.key, data.value)
+				}
 				this.$refs.from.validateField(data.key)
 				
 			},
-			// async handleChangeStatus({state, id}) {
-			// 	const res = await this.$api[this.tabs_list[this.tabs_current].pan == 's'? 'ableSell' : 'ableBuy']({params: {id, state}})
-			// 	if(res.code == 1) {
-			// 		const index = this.indexList.findIndex(ele => ele.id == id)
-			// 		this.indexList[index].state = state
-					
-			// 	}
-			// },
-			// handleProdDetail({pid, data}) {
-			// 	this.handleGoto({
-			// 		url: '/pages/my/broker/edit',
-			// 		params: {
-			// 			pid: pid,
-			// 			pan: this.tabs_list[this.tabs_current].pan,
-			// 			data: encodeURIComponent(JSON.stringify(data)),
-			// 		}
-			// 	})
-			// },
-			// async handleDelet({id}) {
-			// 	const res = await this.$api[this.tabs_list[this.tabs_current].pan == 's'? 'deleteSell' : 'deleteBuy']({params: {id}})
-			// 	if(res.code == 1) {
-			// 		uni.showToast({
-			// 			title: '删除成功'
-			// 		})
-			// 		const index = this.indexList.findIndex(ele => ele.id == id)
-			// 		this.indexList.splice(index, 1)
-			// 	}
+			
+			// 删除图片
+			deletePic(event) {
+				this[`fileList${event.name}`].splice(event.index, 1)
+				
+				this.model.pic1 = ''
+				this.model.pic1_base64 = ''
+				this.model.pic1_name = ''
+			},
+			async afterRead(event) {
+				console.log(event)
+				this.fileList1 = [{
+					url:  event.file.thumb,
+					status: 'uploading',
+					message: '上传中'
+				}]
+				const base64 = await this.getImageBase64_readFile(event.file.thumb)
+				this.fileList1 = [{
+					url: event.file.thumb,
+					status: 'success'
+				}]
+				//this.model.pic1 = res.list
+				this.model.pic1_base64 = base64
+				this.model.pic1_name = event.file.thumb.split('//tmp/')[1]
+				// const res = await this.uploadFilePromise(event.file.thumb)
+				// console.log(res)
+				// if(res.statusCode == 200) {
+				// 	let resList = JSON.parse(res.data)
+				// 	this.fileList1 = [{
+				// 		url: resList.list,
+				// 		status: 'success'
+				// 	}]
+				// 	// this.model.pic1 = resList.list
+				// 	this.model.pic1_base64 = resList.list
+				// 	this.model.pic1_name = event.file.thumb.split('//tmp/')[1]
+				// }else {
+				// 	uni.showToast({
+				// 		title: res.statusCode + '',
+				// 		icon: 'none'
+				// 	})
+				// 	this.fileList1 = [{
+				// 		url: event.file.thumb,
+				// 		status: 'error'
+				// 	}]
+				// }
 				
 				
-			// },
-			// changeTabsStatus(key, value) {
-			// 	this.tabs_list = this.tabs_list.map(ele => {
-			// 		ele[key] = value;
-			// 		return ele
-			// 	})
-			// },
-			// initParamas() {
-			// 	this.curP = 1;
-			// 	this.indexList = [];
-			// 	this.loadstatus = 'loadmore'
-			// },
-			// async handleTabsChange(value) {
-			// 	this.tabs_current = value.index
-			// 	this.changeTabsStatus('disabled', true)
-			// 	this.initParamas();
-			// 	if(value.index != 0) {
-			// 		uni.showLoading();
-			// 		await this.getMyPanData()
-			// 	}
-				
-			// 	this.changeTabsStatus('disabled', false)
-			// },
-			// scrolltolower() {
-			// 	this.getMoreData()
-			// },
-			// async getMoreData() {
-			// 	if(this.loadstatus != 'loadmore') return
-			// 	this.curP ++
-			// 	await this.getMyPanData()
-			// },
-			// async getMyPanData() {
-			// 	if(this.loadstatus != 'loadmore') return
-			// 	this.loadstatus = 'loading'
-			// 	const res = await this.$api[this.tabs_list[this.tabs_current].pan == 's'? 'mySell': 'myBuy']({
-			// 		params: {
-			// 			// login: this.login,
-			// 			p: this.curP,
-			// 			// standard: this.pid
-			// 		}
-			// 	})
-			// 	if(res.code == 1) {
-			// 		this.indexList = [...this.indexList, ...res.list]
-			// 		if(this.indexList.length >= res.total) {
-			// 			this.loadstatus = 'nomore'
-			// 		}else {
-			// 			this.loadstatus = 'loadmore'
-			// 		}
-			// 	}
-			// },
+			},
+			uploadFilePromise(url) {
+				return new Promise((resolve, reject) => {
+					let a = uni.uploadFile({
+						url: `${this.configBaseURL}upimg`, 
+						filePath: url,
+						name: 'file',
+						header: {
+							...this.configHeader,
+							userid: uni.getStorageSync('userid'),
+						},
+						// formData: {
+						// 	user: 'test'
+						// },
+						success: (res) => {
+							resolve(res)
+							// if(res.statusCode == 200) {
+								
+							// }else {
+							// 	reject(res)
+							// }
+							
+						}
+					});
+				})
+			},
 			removeCustomAttr(key) {
 				let i = this.attrObj.map(ele => ele.key).indexOf(key);
 				
@@ -428,6 +447,12 @@
 					key: 'custom'+ new Date().getTime()
 				})
 			},
+			handleoversize() {
+				uni.showToast({
+					title: '建议上传2M以内的图片',
+					icon: 'none'
+				})
+			},
 			async getEditData() {
 				uni.showLoading()
 				const res = await this.$api.getCompanyProductDetail({params: {id: this.pid}})
@@ -438,6 +463,8 @@
 					this.model.intro = res.list.intro
 					this.model.trade_type = res.list.trade_type
 					this.model.pic1 = res.list.pic1
+					// this.model.pic1_base64 = res.list.pic1_base64
+					// this.model.pic1_name = res.list.pic1_name
 					this.bianliAttr(res.list.list_product_attrs)
 				}
 			},
@@ -448,6 +475,7 @@
 					if(i != -1) {
 						this.attrObj[i].value = ele.value
 						this.attrObj[i].label = ele.Attr.name
+						this.attrObj[i].required && this.handleChangeAttr(this.attrObj[i])
 					} else {
 						this.$set(this.attrObj, this.attrObj.length, {
 							label: ele.Attr.name,
@@ -461,7 +489,8 @@
 			async menusConfirm(data) {
 				this.product = data.name
 				this.model.standard = data.id
-				if(!this.model.name) this.model.name = data.name
+				// if(!this.model.name) 
+				this.model.name = data.name
 				this.$refs.from.validateField('standard')
 				this.$refs.from.validateField('name')
 				this.show = false;

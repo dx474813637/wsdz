@@ -5,12 +5,17 @@
 		<navBar fixed :title="onlineControl.title" ></navBar>
 		<u-status-bar></u-status-bar>
 		
-		
+		<custom-official-account 
+			class="cont" 
+			:msg="gz_msg" 
+			:isFollow="false" 
+			:max="-1"
+		></custom-official-account>
 		<view :style="{
 			backgroundColor: themeConfig.navBg,
 			paddingTop: '44px'
 		}">
-			<view @click="handleGoto({url:'/pages/index/search/search'})" class="search-w u-p-l-20 u-p-r-20 u-p-b-20 u-p-t-10">
+			<view @click="handleGoto({url:'/pages/index/search/search'})" class="step1 search-w u-p-l-20 u-p-r-20 u-p-b-20 u-p-t-10">
 				<u-search
 					placeholder="搜索商品" 
 					:value="keyword"
@@ -19,7 +24,7 @@
 					:bgColor="themeConfig.pageBg"
 				></u-search>
 			</view>
-			<view class="u-p-b-10">
+			<view class="u-p-b-10 step2">
 				<u-notice-bar
 					v-if="notice.length > 0"
 					:bgColor="themeConfig.navBg" 
@@ -34,7 +39,7 @@
 		</view>
 		
 		<view class="main u-p-30">
-			<image class="banner-img u-m-b-30" src="http://dingxiang.netsun.testwebsite.cn/public/img/xxx.png" mode="widthFix"></image>
+			<image class="step3 banner-img u-m-b-30" src="https://wx.rawmex.cn/Public/memu/xxx.png" mode="widthFix"></image>
 		
 			<view class="card-list">
 				<view class="card-item u-m-b-20"
@@ -93,11 +98,11 @@
 				<view class="hq-main u-flex u-flex-wrap">
 					<view class="hq-item u-m-b-20"
 						v-for="(item, index) in hqList"
-						:key="item.id"
+						:key="item.ppid"
 						:style="{
 							color: item.amp > 0 ? themeConfig.redText : (item.amp < 0?themeConfig.greenText : themeConfig.pageText )
 						}"
-						
+						@click="handleGoto({url: '/pages/baojia/list/list', params: {id: item.ppid, dir: 'jysp' }})"
 					>
 						<view class="u-flex u-flex-between u-flex-items-center u-p-t-20 u-p-b-10 u-p-l-20 u-p-r-20"
 							:style="{
@@ -121,7 +126,7 @@
 			
 			
 		</view>
-		
+		<!-- <xky-guideStep :step="step" :otherHeight="$u.sys().safeAreaInsets.top + 44"></xky-guideStep> -->
 		<u-safe-bottom></u-safe-bottom>
 		<menusBar activeIndex="0" :theme="typeActive" ></menusBar>
 	</view>
@@ -141,6 +146,7 @@
 				marketCardList: [],
 				curP: 1,
 				loadstatus: 'loadmore',
+				gz_msg: '关注微信公众号',
 				panList: [
 					{
 						pan: 's',
@@ -172,6 +178,7 @@
 			})
 		},
 		onLoad() {
+			console.log(uni.$u.sys())
 			uni.showLoading()
 			this.getHome()
 			this.getMarketCard()
@@ -231,6 +238,7 @@
 					this.panList[0].list = this.str2list(res.config.plate1)
 					this.panList[1].list = this.str2list(res.config.plate2)
 					this.hqList = res.list.quotation
+					this.gz_msg = res.gz_msg
 					this.attentionJSON = JSON.stringify(res.config)
 					 
 				}
@@ -292,5 +300,16 @@
 				}
 			}
 		}
+	}
+	
+	.cont {
+		position: fixed;
+		bottom: 70px;  
+		bottom: calc(70px + constant(safe-area-inset-bottom));  
+		bottom: calc(70px + env(safe-area-inset-bottom));  
+		left: 50%;
+		transform: translateX(-50%);
+		width: 700rpx;
+		z-index: 50;
 	}
 </style>

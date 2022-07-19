@@ -16,26 +16,39 @@
 		<view class="pan-header u-p-10" :style="{
 			backgroundColor: themeConfig.pan.headerBg,
 		}">
-			
-			<view class="u-p-10 u-p-l-30 u-p-r-30  u-flex u-flex-items-center u-flex-wrap">
-				<text class="u-font-36 u-p-r-20" :style="{
-					color: themeConfig.pan.headerText
-				}">{{list.name}}</text>
-				<text class="tag u-font-24" :style="{
-					borderColor: themeConfig.pan.tagcolor,
-					color: themeConfig.pan.lightcolor,
-				}">{{pan == 's'?'供 应': '求购'}}</text>
-				<view class="u-m-l-20">
-					<u-icon
-						name="photo" 
-						v-if="list.list_pics.length > 0" 
-						@click="imgWrapShow = true"
-						:color="themeConfig.pan.imgBtn"
-						size="20"
-					></u-icon>
-				</view>	
-				
+			<view class="u-p-10 u-p-l-30 u-p-r-30 u-flex u-flex-items-start u-flex-between">
+				<view class="u-flex u-flex-items-center u-flex-wrap u-flex-1">
+					<text class="u-font-36 u-p-r-20" :style="{
+						color: themeConfig.pan.headerText
+					}">{{list.name}}</text>
+					<text class="tag u-font-24" :style="{
+						borderColor: themeConfig.pan.tagcolor,
+						color: themeConfig.pan.lightcolor,
+					}">{{pan == 's'?'供 应': '求购'}}</text>
+					<view class="u-m-l-20">
+						<u-icon
+							name="photo" 
+							v-if="list.list_pics.length > 0" 
+							@click="imgWrapShow = true"
+							:color="themeConfig.pan.imgBtn"
+							size="20"
+						></u-icon>
+					</view>	
+					
+				</view>
+				<view class="u-p-l-20 u-flex u-flex-items-center u-font-28 u-p-t-6" :style="{
+						color: themeConfig.warn
+					}"
+					@click="handleTimesBtn('broker43', `投诉${pan=='s'? '卖盘': '买盘'}：${list.name}，https://www.rawmex.cn/${pan=='s'? 'sell': 'buy'}-${id}.html`)"
+				>
+					<u-icon 
+						:name="typeActive == 'dark'? 'bell' : 'bell-fill' "
+						:color="themeConfig.warn"
+						></u-icon>
+					<text class="u-p-l-5">举报</text>
+				</view>
 			</view>
+			
 			<view class="u-p-10 u-p-l-30 u-p-r-30 u-flex u-flex-items-center u-flex-between u-flex-wrap">
 				<view class="price u-flex u-flex-items-center">
 					<text class="u-font-40"
@@ -102,6 +115,14 @@
 						color: themeConfig.pan.baseText
 					}">{{list.settle_month}}月{{list.settle_date | date2szx}}</view>
 				</view>
+				<view class="item u-flex u-flex-items-baseline u-m-b-20" v-if="list.dprice">
+					<view class="item-label" :style="{
+						color: themeConfig.pan.pageTextSub
+					}">点价规则</view>
+					<view class="item-content" :style="{
+						color: themeConfig.pan.baseText
+					}">{{list.dprice}}</view>
+				</view>
 				<view class="item u-flex u-flex-items-baseline u-m-b-20">
 					<view class="item-label" :style="{
 						color: themeConfig.pan.pageTextSub
@@ -140,13 +161,13 @@
 						<i class="custom-icon-friend custom-icon u-m-r-10" :style="{color: themeConfig.pan.lightcolor}"></i>
 						<text :style="{color: themeConfig.pan.baseText}">{{cpy.name}}</text>
 					</view>
-					<view class="u-flex u-flex-items-center" @click="cpyInfo = !cpyInfo">
-						<i class="custom-icon-more custom-icon" :style="{color: themeConfig.pan.lightcolor}"></i>
+					<view class="u-flex u-flex-items-center" @click="handleGoto({url: '/pages/index/pan/cardList', params: {pan: 's', id:cpy.id}})">
+						<i class="custom-icon-card_fill custom-icon" :style="{color: themeConfig.pan.lightcolor}"></i>
 					</view>
 				</view>
 				<view  :class="{
 					'u-p-15': typeActive == 'white'
-				}" v-if="cpyInfo">
+				}" >
 					<view class="main-box-content "
 						:class="{
 							'u-p-15': typeActive == 'white',
@@ -341,7 +362,7 @@
 					<text>首页</text>
 				</view>
 				<u-line direction="col" :color="themeConfig.pageTextSub" length="30%"></u-line>
-				<view @click="handleTimesBtn" class="item-btn  u-flex u-flex-items-center u-flex-center">
+				<view @click="handleTimesBtn('', `咨询${pan=='s'? '卖盘': '买盘'}：${list.name}，https://www.rawmex.cn/${pan=='s'? 'sell': 'buy'}-${id}.html`)" class="item-btn  u-flex u-flex-items-center u-flex-center">
 					<i class="custom-icon-tims custom-icon"></i>
 					<text>在线联系</text>
 				</view>
@@ -421,7 +442,7 @@
 			}
 			await this.getData()
 			this.pageLoading = false
-			await this.getCpyData()
+			// await this.getCpyData()
 			await this.getDataList()
 		},
 		computed: {
@@ -451,8 +472,10 @@
 				// console.log(res)
 				if(res.code == 1) {
 					this.list = res.list
+					this.cpy = res.company
 					this.tabs_desc[0].content = this.list.intro
 					this.tabs_desc[1].content = this.list.remark
+					
 					this.setOnlineControl(res)
 				}
 			},
@@ -497,13 +520,14 @@
 					}
 				})
 			},
-			handleTimesBtn() {
+			handleTimesBtn(login, content="") {
+				if(!login) login = this.list.Tims.login
 				// if(this.sh == 1) return
 				this.handleGoto({
 					url: '/pages/my/msg/msgDetail',
 					params: {
-						login: `${this.list.Tims.login}`,
-						content: ``
+						login,
+						content,
 					}
 				})
 				// this.handleGoto({

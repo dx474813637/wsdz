@@ -1,6 +1,7 @@
 <template>
-	<view class="text-white u-p-b-80" :style="{'min-height': '100vh',
-		backgroundColor: themeConfig.pageBg
+	<view class="text-white u-p-b-80" :class="[typeActive]" :style="{
+		'min-height': '100vh',
+		'backgroundColor': themeConfig.pageBg
 	}">
 		<navBar :title="onlineControl.title" ></navBar>
 		
@@ -22,6 +23,19 @@
 								@titleClick="handleTitleClick"
 								@initSuccess="handleInitSuccess"
 							></uni-ec-canvas>
+						</view>
+						<view class="time-btns u-flex u-flex-items-center u-flex-between" v-if="tabs_current == 0 || tabs_current == 2">
+							<view class="item"
+								 v-for="(item, index) in ec_btns_filters"
+								 :key="index"
+								 :style="{
+									 color: item.active? themeConfig.tabTextActive: themeConfig.tabTextInactive,
+									 background: themeConfig.tabBg
+								 }"
+								 @click="timeBtnsClick(item, index)"
+							>
+								{{item.name}}
+							</view>
 						</view>
 					</view>
 				</view>
@@ -55,7 +69,7 @@
 								color: themeConfig.pageTextSub,
 								boxShadow: themeConfig.boxShadow
 							}">
-							<view class="u-text-center">定价中心</view>
+							<view class="u-text-center u-m-b-30">定价中心</view>
 							<u--form
 								labelPosition="left"
 								:model="setMoneyForm"
@@ -70,9 +84,8 @@
 								<u-form-item
 									label="拟定价产品"
 								>
-									<view :style="{
+									<view class="u-font-32" :style="{
 										color: themeConfig.pageText,
-										textAlign: 'right',
 									}">{{indexData.Finfo.pname}}</view>
 								</u-form-item>	
 								<u-form-item
@@ -81,10 +94,14 @@
 								>
 									<view :style="{
 											color: themeConfig.pageText,
-											textAlign: 'right',
 										}"
-										@click="handleShowDatePricker('zdate')"
-									>{{setMoneyForm.zdate || '请选择交易日'}}</view>
+									>
+										<uni-datetime-picker
+											type="date" 
+											:end="end"
+											v-model="setMoneyForm.zdate" 
+										/>
+									</view>
 								</u-form-item>	
 								
 								<u-form-item
@@ -97,13 +114,17 @@
 										border="none"
 										:color="themeConfig.pageText"
 										:placeholderStyle="{
-											color: themeConfig.pageText
+											color: themeConfig.pageTextSub
 										}"
-										inputAlign='right'
+										:customStyle="{
+											background: themeConfig.pageBg,
+											padding: '8px',
+											borderRadius: '5px',
+										}"
 									></u--input>
 								</u-form-item>	
 								<u-form-item
-									label="定价日"
+									label="拟定价日期"
 									prop="ddate"
 								>
 									<view :style="{
@@ -112,17 +133,48 @@
 									>
 										<uni-datetime-picker
 											type="date" 
-											:clear-icon="false" 
-											:end="new Date().getTime() - 24*60*60*1000"
+											:end="end"
 											v-model="setMoneyForm.ddate" 
 										/>
 									</view>
 								</u-form-item>	
+								
+								<view class=" u-m-t-20 u-m-b-20" >
+									<u-button @click="handleSubmit" :type="typeActive=='white'? 'primary' : 'warning'">参考定价</u-button>
+								</view>
+								
+								<u-form-item
+									label="参考定价可为"
+								>
+									<u--input
+										:value="ck_price"
+										placeholder="点击参考定价按钮生成"
+										readonly
+										border="none"
+										:color="themeConfig.pageText"
+										:placeholderStyle="{
+											color: themeConfig.pageText
+										}"
+										:customStyle="{
+											background: themeConfig.pageBg,
+											padding: '8px',
+											borderRadius: '5px',
+										}"
+									></u--input>
+								</u-form-item>	
 							</u--form>
-							<view class="u-p-10 " >
-								<u-button @click="handleSubmit" :type="typeActive=='white'? 'primary' : 'warning'">参考定价</u-button>
-							</view>
 							
+							
+						</view>
+					</view>
+					<view class="u-p-l-30 u-p-r-30 u-p-t-20 u-p-b-20" v-if="tabs_current == 2">
+						<view class="d-bk u-p-40 radius uni-shadow-lg" :style="{
+								backgroundColor: themeConfig.boxBg,
+								color: themeConfig.pageTextSub,
+								boxShadow: themeConfig.boxShadow
+							}">
+							<view class="u-text-center u-m-b-30">定价原理</view>
+							<u-parse :content="pc_content3"></u-parse>
 						</view>
 					</view>
 				</template>
@@ -160,7 +212,7 @@
 						</view>
 					</view>
 					
-					<view class="u-p-l-30 u-p-r-30 u-p-t-10 u-p-b-10" v-for="(item, index) in news" :key="index">
+					<!-- <view class="u-p-l-30 u-p-r-30 u-p-t-10 u-p-b-10" v-for="(item, index) in news" :key="index">
 						<cardB
 							:name="item.name"
 							:cid="item.id"
@@ -176,13 +228,24 @@
 							:pubDate="item.post_date"
 							:type="item.tiao"
 						></cardB>
-					</view>
+					</view> -->
 					
+					<view class="u-p-l-30 u-p-r-30 u-p-t-20 u-p-b-20">
+						<view class="d-bk u-p-40 radius uni-shadow-lg" :style="{
+								backgroundColor: themeConfig.boxBg,
+								color: themeConfig.pageTextSub,
+								boxShadow: themeConfig.boxShadow
+							}">
+							<!-- <view class="u-text-center u-m-b-30">定价原理</view> -->
+							<u-parse :content="pc_content1" v-if="tabs_current == 0"></u-parse>
+							<u-parse :content="pc_content2" v-if="tabs_current == 1"></u-parse>
+						</view>
+					</view>
 				</template>
 				
 
 			</view>
-			<u-loadmore v-if="tabs_current != 2" :status="status" />
+			<!-- <u-loadmore v-if="tabs_current != 2" :status="status" /> -->
 		</view>
 		
 		<u-safe-bottom></u-safe-bottom>
@@ -219,18 +282,13 @@
 				},
 				memu_show: 0,
 				tabbar_show: 0,
-				// title: '原料价格',
-				// ppi_title: '生意社期现实时报价系统',
-				// share_title: '',
 				show_canvas: true,
-				// classes: '927-futures',
 				news: [],
 				list_table: [],
-				memu_msg: '',
 				p: 1,
-				hasMore: true,
 				status: 'loadmore',
 				tabs_current: 0,
+				tabs_current_options: 0,
 				memu: [
 					{
 						name: '生意社价格',
@@ -239,7 +297,7 @@
 						icon: 'custom-icon-xiaoqu'
 					},
 					{
-						name: '月柱K图',
+						name: '月K柱图',
 						ec_type: 2,
 						type: 1,
 						icon: 'custom-icon-zhuzhuangtu'
@@ -251,8 +309,8 @@
 						ec_type: 1,
 					},
 					{
-						name: '产业链',
-						url: '/pages/baojia/ichain/ichain',
+						name: '商品动态',
+						url: '/pages/baojia/list/news',
 						type: 1,
 						icon: 'custom-icon-lianjie'
 					},
@@ -263,18 +321,50 @@
 				},
 				ecType: 1,
 				ecloading: false,
+				ec_btns: [
+					{
+						name: '近1月',
+						show: true,
+						value: 30,
+						startValue: '',
+						active: false,
+					},
+					{
+						name: '近3月',
+						show: true,
+						value: 90,
+						startValue: '',
+						active: true,
+					},
+					{
+						name: '近6月',
+						show: true,
+						value: 180,
+						startValue: '',
+						active: false,
+					},
+					{
+						name: '近1年',
+						show: true,
+						value: 365,
+						startValue: '',
+						active: false,
+					},
+				],
 				indexData: null,
 				originalData: null,
 				originalData2: null,
 				originalData3: null,
+				end: new Date(new Date().getTime() - 24*60*60*1000).toLocaleDateString(),
 				setMoneyForm: {
-					zdate: '1577808000000',
+					zdate: uni.$u.timeFormat(new Date().getTime() - 24*60*60*1000, 'yyyy-mm-dd'),
 					price: '',
-					ddate: '',
+					ddate: uni.$u.timeFormat(new Date().getTime() - 24*60*60*1000, 'yyyy-mm-dd'),
 				},
-				datetimeShow: false,
-				datetimekey: '',
-				datetime: '',
+				ck_price: '',
+				pc_content1: '',
+				pc_content2: '',
+				pc_content3: '',
 				rules: {
 					zdate: {
 						type: 'string',
@@ -301,7 +391,9 @@
 			// options.login ? uni.setStorageSync('login', options.login) : "";
 			options.id ? this.id = options.id : "";
 			options.dir ? this.dir = options.dir : "";
+			options.current ? this.tabs_current_options = options.current : 0;
 			
+			this.time2value()
 			await this.getIndexData()
 		},
 		mounted() {
@@ -309,9 +401,9 @@
 		onShow() {},
 		onReachBottom() {
 			// this.newsUrl();
-			if(this.tabs_current == 2) return
-			this.p ++;
-			this.getIndexData()
+			// if(this.tabs_current == 2) return
+			// this.p ++;
+			// this.getIndexData()
 		},
 		watch: {
 			typeActive(v) {
@@ -328,15 +420,21 @@
 				//切换柱状图获取 月K柱图数据
 				if((v == 2 && !this.originalData3) || (v == 1 && !this.originalData2) || (v == 0 && !this.originalData)) {
 					await this.getEcData()
-					this.$refs.form.setRules(this.rules)
+					if(v == 2) this.$refs.form.setRules(this.rules)
 				}
 				this.renderEc()
 			}
 		},
 		async onReady() {
 			uni.showLoading()
-			await this.getEcData()
-			this.renderEc()
+			if(this.tabs_current_options > 0) {
+				this.tabs_current = this.tabs_current_options
+			}else {
+				this.tabs_current = 0
+				await this.getEcData()
+				this.renderEc()
+			}
+			
 			this.setNavColor()
 		},
 		computed: {
@@ -351,22 +449,15 @@
 				return this.memu.filter(ele => {
 					return !ele.hasOwnProperty('ec_type') || ele.ec_type != this.ecType
 				})
+			},
+			ec_btns_filters() {
+				return this.ec_btns.filter(ele => ele.show)
 			}
 		},
 		methods: {
 			...mapMutations({
 				setNavColor: 'theme/setNavColor'
 			}),
-			handleShowDatePricker(key) {
-				this.datetimekey = key;
-				this.datetimeShow = true
-				this.datetime = this.setMoneyForm[key]
-			},
-			datetimeConfirm(t) {
-				this.setMoneyForm[this.datetimekey] = new Date(t.value).toLocaleDateString()
-				this.datetimeShow = false
-				this.datetimekey = ''
-			},
 			async getIndexData() {
 				if(this.status == 'loading') return
 				this.status = 'loading'
@@ -381,13 +472,30 @@
 				if(res.code == 1 && res.list) {
 					this.indexData = res.list
 					this.list_table = res.list.list_table
-					this.news = [...this.news, ...res.list.pw_rec_list]
-					if(this.p >= res.list.pw_page_total) {
-						this.status = 'nomore'
-					}else {
-						this.status = 'loadmore'
-					}
+					// this.news = [...this.news, ...res.list.pw_rec_list]
+					// if(this.p >= res.list.pw_page_total) {
+					// 	this.status = 'nomore'
+					// }else {
+					// 	this.status = 'loadmore'
+					// }
 				}
+			},
+			timeBtnsClick(data) {
+				let index = this.ec_btns.findIndex(ele => ele.name == data.name)
+				if(!this.ec_btns[index].active) {
+					this.ec_btns.forEach((ele, i) => {
+						ele.active = i == index ? true : false
+					})
+					this.renderEc()
+					
+				}
+			},
+			time2value() {
+				this.ec_btns.forEach((ele, index) => {
+					const date = new Date()
+					ele.startValue = uni.$u.timeFormat(date.getTime() - ele.value*24*60*60*1000, 'yyyy-mm-dd')
+					
+				})
 			},
 			async handleInitSuccess() {
 				await this.getEcData()
@@ -402,24 +510,29 @@
 			},
 			async getEcData() {
 				this.ecloading = true
+				let current = this.tabs_current
 				let func = '';
-				if(this.tabs_current == 0) {
+				if(current == 0) {
 					func = 'ave'
-				}else if(this.tabs_current == 1) {
+				}else if(current == 1) {
 					func = 'getPpiPer'
-				}else if(this.tabs_current == 2) {
+				}else if(current == 2) {
 					func = 'pricingCenter'
 				}
 				const res = await this[func]();
 				if(res.code == 1) {
-					if(this.tabs_current == 0) {
+					if(current == 0) {
 						this.originalData = res.list
+						this.pc_content1 = res.info
 					}
-					else if(this.tabs_current == 1) {
+					else if(current == 1) {
 						this.originalData2 = res.list
+						this.pc_content2 = res.info
 					}
-					else if(this.tabs_current == 2) {
+					else if(current == 2) {
 						this.originalData3 = res.list
+						// this.setOnlineControl(res)
+						this.pc_content3 = res.yuanli
 					}
 					
 					this.ecloading = false
@@ -436,8 +549,39 @@
 						//生意社价格
 						option.title.text = `${this.originalData.name} {a|[切换]}`
 						option.xAxis.data = this.originalData.data_list
-						option.series[0].data = this.originalData.price_list
 						option.tooltip.formatter = '{b0}\n{a0}: {c0}元'
+						// option.series[0].data = this.originalData.price_list
+						let series = []
+						let name = this.originalData.mode_data.replace(/\'/g, '').split(',')
+						option.legend.data = name
+						this.originalData.all_list.forEach((ele, index) => {
+							// if(index == 0) {
+							// 	series.unshift({
+							// 		...uni.$u.deepClone(option.series[0]),
+							// 		name: name[index],
+							// 		data: ele
+							// 	}) 
+							// }else {
+							// 	series.unshift({
+							// 		...uni.$u.deepClone(option.series[0]),
+							// 		name: name[index],
+							// 		lineStyle: {width: 1},
+							// 		data: ele
+							// 	}) 
+							// 	option.tooltip.formatter += `\n{a${index}}: {c${index}}元`
+							// }
+							series[index] = {
+								...uni.$u.deepClone(option.series[0]),
+								name: name[index],
+								data: ele
+							}
+							if(index>0) {
+								series[index].lineStyle = {width: 1}
+								option.tooltip.formatter += `\n{a${index}}: {c${index}}元`
+							}
+						})
+						option.series = series
+						
 					}
 					else if(this.tabs_current == 2) {
 						//定价中心
@@ -448,8 +592,11 @@
 						option.tooltip.formatter = '{b0}\n{a0}: {c0}'
 					}
 					option.title.subtext = ''
+					let startValue = this.ec_btns_filters.filter(ele => ele.active)[0].startValue;
+					option.dataZoom[0].startValue = startValue
 				}else if(this.ecType == 2) {
 					//月柱K图
+					option.dataZoom[0].start = 50
 					option.title.text = `${this.originalData2.name} {a|[切换]}`
 					option.title.subtext = this.originalData2.spec
 					option.xAxis.data = this.originalData2.data_list
@@ -459,6 +606,8 @@
 					option.series[1].data = this.originalData2.price_listb
 				}
 				
+				
+				
 				this.ec.option = option
 			},
 			handleTitleClick() {
@@ -467,6 +616,8 @@
 			},
 			async menusConfirm(data) {
 				console.log(data)
+				this.customShareParams.id = data.ppid
+				this.customShareParams.dir = data.dir
 				this.ec.option.title.text = `${data.name} {a|[切换]}`
 				this.show_canvas = true;
 				this.id = data.ppid
@@ -490,13 +641,16 @@
 				if(item.hasOwnProperty('ec_type')) {
 					this.tabs_current = index
 					this.ecType = item.ec_type
-				}else {
+					
+					this.customShareParams.current = this.tabs_current
+				}
+				else {
 					// item.url += '&data=' + JSON.stringify({
 					// 	name: this.indexData?.Finfo?.name,
 					// 	id: this.indexData?.pid,
 					// 	keyword: ''
 					// })
-					this.navTo(item.url, item.type)
+					this.navTo(`${item.url}?id=${this.id}`, item.type)
 				}
 				
 			},
@@ -521,8 +675,8 @@
 					});
 				}
 				if (type == 3) {
-					uni.showToast({
-						title: this.memu_msg
+					uni.reLaunch({
+						url: e
 					});
 				}
 				if (type == 4) {
@@ -568,7 +722,8 @@
 					uni.showLoading( )
 					const res = await this.pricingCenter()
 					if(res.code == 1) {
-						
+						// this.setOnlineControl(res)
+						this.ck_price = res.list.ck_price
 					}
 				}).catch(errors => {
 					uni.$u.toast('校验失败')
@@ -577,12 +732,51 @@
 		}
 	};
 </script>
-
+<style lang="scss">
+	page {
+		.dark {
+			/deep/ {
+				.uni-date {
+					.uni-date-x--border {
+						border-color: #111224!important;
+					}
+					.uni-date-x {
+						background-color: #111224!important;
+						color: #bfc5e4!important;
+					}
+				}
+			}
+		}
+		.white {
+			/deep/ {
+				.uni-date {
+					.uni-date-x--border {
+						border-color: #f8f8f8!important;
+					}
+					.uni-date-x {
+						background-color: #f8f8f8!important;
+						color: #333!important;
+					}
+				}
+			}
+		}
+	}
+</style>
 <style scoped lang="scss">
 	// .bg-black {
 	// 	background-color: $page-bg;
 	// }
-
+	.time-btns {
+		padding: 5px 25px 20px 25px;
+		.item {
+			height: 30px;
+			line-height: 30px;
+			font-size: 14px;
+			padding: 0 14px;
+			border-radius: 15px;
+			transition: all .3s;
+		}
+	}
 	.radius {
 		border-radius: 12rpx;
 	}

@@ -28,47 +28,59 @@
 					></u-tabs>
 				</view>
 				<template v-if="loading">
-					<u-loading-icon 
-						mode="circle" 
-						size="36" 
-						text="获取数据中..."
-						:color="themeConfig.followCard.indicatorColor" 
-						:inactiveColor="themeConfig.followCard.indicatorActiveColor" 
-						vertical
-					></u-loading-icon>
-				</template>
-				<u-scroll-list
-					v-else-if="content && content.length > 0"
-					:indicatorColor="themeConfig.followCard.indicatorColor"
-					:indicatorActiveColor="themeConfig.followCard.indicatorActiveColor"
-				>
-					<view class="card-tabs-list u-flex u-flex-items-center">
-						<view class="item-card u-p-20 u-p-l-30 u-p-r-30 u-m-r-20"
-							v-for="(item, index) in content"
-							:key="item.id"
-							:style="{
-								backgroundColor: themeConfig.followCard.boxCardBg
-							}"
-							@click="handleGoto({url: '/pages/index/pan/panDetail', params: {pan: pan, id: item.id}})"
-						>
-							<view class="u-flex u-flex-items-baseline u-m-b-10">
-								<text class="u-font-30 u-line-1" :style="{color: themeConfig.followCard.baseText}">{{item.name}}</text>
-								<text class="u-font-26 u-p-l-10" :style="{color: themeConfig.followCard.subText, whiteSpace: 'nowrap'}">{{item.trade_type | tradeType2}}</text>
-							</view>
-							<view class="u-font-32 u-m-b-10 u-line-1" :style="{color: pan == 's'? themeConfig.warn: themeConfig.error}">
-								<text>{{item.price | price2str(item.dprice)}}</text>
-								<text class="u-font-28 u-p-l-10" v-if="item.price>0">元/{{item.unit}}</text>
-							</view>
-							<view class="u-p-4 u-p-r-16 u-p-l-16 u-font-22" :style="{
-								color: themeConfig.followCard.btnText,
-								backgroundColor: themeConfig.followCard.btnBg,
-								borderRadius: '30rpx',
-								display: 'inline-block'
-							}">查看详情</view>
-						</view>
-						
+					<view class="u-p-20">
+						<u-loading-icon
+							mode="circle" 
+							size="28" 
+							text="获取数据中..."
+							:color="themeConfig.followCard.indicatorColor" 
+							:inactiveColor="themeConfig.followCard.indicatorActiveColor" 
+							vertical
+						></u-loading-icon>
 					</view>
-				</u-scroll-list>
+				</template>
+				<view v-else-if="content && content.length > 0" class="u-s-l-wrap">
+					<view class="s-l-label u-font-26 u-flex u-flex-items-center u-flex-center"
+						:style="{
+							background: themeConfig.followCard.labelBg,
+							color: themeConfig.followCard.labelColor
+						}"
+					>
+						<view class="l-text">向左滑动</view>
+					</view>
+					<u-scroll-list
+						:indicatorColor="themeConfig.followCard.indicatorColor"
+						:indicatorActiveColor="themeConfig.followCard.indicatorActiveColor"
+						>
+						<view class="card-tabs-list u-flex u-flex-items-center">
+							<view class="item-card u-p-20 u-p-l-30 u-p-r-30 u-m-r-20"
+								v-for="(item, index) in content"
+								:key="item.id"
+								:style="{
+									backgroundColor: themeConfig.followCard.boxCardBg
+								}"
+								@click="handleGoto({url: '/pages/index/pan/panDetail', params: {pan: pan, id: item.id}})"
+							>
+								<view class="u-flex u-flex-items-baseline u-m-b-10">
+									<text class="u-font-30 u-line-1" :style="{color: themeConfig.followCard.baseText}">{{item.name}}</text>
+									<text class="u-font-26 u-p-l-10" :style="{color: themeConfig.followCard.subText, whiteSpace: 'nowrap'}">{{item.trade_type | tradeType2}}</text>
+								</view>
+								<view class="u-font-32 u-m-b-10 u-line-1" :style="{color: pan == 's'? themeConfig.warn: themeConfig.error}">
+									<text>{{item.price | price2str(item.dprice)}}</text>
+									<text class="u-font-28 u-p-l-10" v-if="item.price>0">元/{{item.unit}}</text>
+								</view>
+								<view class="u-p-4 u-p-r-16 u-p-l-16 u-font-22" :style="{
+									color: themeConfig.followCard.btnText,
+									backgroundColor: themeConfig.followCard.btnBg,
+									borderRadius: '30rpx',
+									display: 'inline-block'
+								}">查看详情</view>
+							</view>
+							
+						</view>
+					</u-scroll-list>
+				</view>
+				
 				<template v-else>
 					<u-empty
 						mode="data"
@@ -214,6 +226,24 @@
 	
 </style>
 <style lang="scss" scoped>
+	.u-s-l-wrap {
+		position: relative;
+		.s-l-label {
+			position: absolute;
+			right: 0;
+			top: 0;
+			height: 90px;
+			width: 25px;
+			z-index: 10;
+			color: #ccc;
+			border-radius: 5px 0 0 5px;
+			// background: linear-gradient(to right, rgb(16 17 35 / 58%), #111224);
+			.l-text {
+				writing-mode: vertical-rl;
+				letter-spacing: 2px;
+			}
+		}
+	}
 	.card-content {
 		overflow: hidden;
 		border-radius: 20rpx;

@@ -13,7 +13,7 @@
 			</view>
 		</u-sticky>
 		
-		<view class="u-p-20">
+		<view class="u-p-20 ">
 			<view class="list u-p-20">
 				<view class="list-item u-p-12 u-flex u-flex-items-center"
 					v-for="(item, index) in tabs_list[tabs_current].list"
@@ -34,6 +34,14 @@
 						</view>
 					</view>
 				</view>
+				
+			</view>
+		</view>
+		<view class="u-p-20" v-if="guanzhu.info">
+			<view class="list u-p-20">
+				<!-- <view class="title u-text-center u-m-b-30">{{guanzhu.title}}</view> -->
+				<official-account @bindload="bindload" @binderror="binderror"></official-account>
+				<u-parse :content="guanzhu.info"></u-parse>
 			</view>
 		</view>
 		<u-safe-bottom></u-safe-bottom>
@@ -60,6 +68,7 @@
 </template>
 
 <script>
+	import {mapState, mapGetters, mapMutations} from 'vuex'
 	export default {
 		data() {
 			return {
@@ -95,6 +104,7 @@
 				],
 				indexList: [],
 				show: false,
+				guanzhu: {},
 			};
 		},
 		onLoad(options) {
@@ -105,9 +115,12 @@
 				this.str2list(options.list)
 			}
 			// uni.showLoading()
-			// this.getData()
+			this.getGuanzhu()
 		},
 		computed: {
+			...mapState({
+				typeConfig: state => state.theme.typeConfig,
+			}),
 			isPPI() {
 				if(this.tabs_current == 2) {
 					return true
@@ -159,7 +172,18 @@
 					})
 				}
 			},
-			
+			bindload(e) {
+				console.log(e)
+			},
+			binderror(e) {
+				console.log(e)
+			},
+			async getGuanzhu() {
+				const res = await this.$api.guanzhu()
+				if(res.code == 1) {
+					this.guanzhu = res.list
+				}
+			},
 			refreshList() {
 				this.initParamas()
 				this.getData()
@@ -177,6 +201,13 @@
 				this.tabs_current = obj.index
 			},
 			handleRemoveFollow(obj, index) {
+				if(this.tabs_list[this.tabs_current].list.length == 1) {
+					uni.showToast({
+						title: '至少保留一个关注标签',
+						icon: 'none'
+					})
+					return
+				}
 				uni.showModal({
 					title: '提示',
 					content: `是否取消关注【${obj.name}】？`,

@@ -227,15 +227,35 @@
 						@close="showExpressUnit = false"
 						@cancel="showExpressUnit = false"
 					></u-picker>
+					
 					<u-form-item
-						label="交货地"
+						label="交收方式"
+						prop="settle_mode"
+						ref="settle_mode"
+					>
+						 <u-radio-group
+						    v-model="model.settle_mode"
+						    placement="row"
+						  >
+						    <u-radio
+						      :customStyle="{marginRight: '8px'}"
+						      v-for="(item, index) in radiolist_settle_mode_filter"
+						      :key="item.value"
+						      :label="item.name"
+						      :name="item.value"
+						    >
+						    </u-radio>
+						  </u-radio-group>
+					</u-form-item>
+					<u-form-item
+						:label="tradeType2Label[0]"
 						prop="delivery_place"
 						ref="delivery_place"
 						required
 					>
 						<uni-data-picker 
-							placeholder="请选择交货地" 
-							popup-title="请选择所在地区" 
+							placeholder="请选择区域" 
+							popup-title="请选择区域" 
 							:localdata="addressArea" 
 							v-model="model.delivery_place"
 							@change="onchange" 
@@ -244,41 +264,37 @@
 							@popupclosed="onpopupclosed"
 						></uni-data-picker>
 					</u-form-item>
+					
 					<u-form-item
-						label="交收方式"
-						prop="settle_mode"
-						ref="settle_mode"
-						v-if="pan == 's' && auth == 1"
+						:label="tradeType2Label[1]"
 					>
-						 <u-radio-group
-						    v-model="model.settle_mode"
-						    placement="row"
-						  >
-						    <u-radio
-						      :customStyle="{marginRight: '8px'}"
-						      v-for="(item, index) in radiolist_settle_mode"
-						      :key="item.value"
-						      :label="item.name"
-						      :name="item.value"
-						    >
-						    </u-radio>
-						  </u-radio-group>
+						<u--textarea
+							v-model="model.delivery_address" 
+							:placeholder="tradeType2Label[1]" 
+							height="60"
+						></u--textarea>
 					</u-form-item>
-					<!-- <u-form-item
+					<u-form-item
 						label="图片"
-						prop="pics"
-						ref="pics"
 						v-if="pan == 's'"
 					>
-						<u-upload
-							:fileList="fileList1"
-							@afterRead="afterRead"
-							@delete="deletePic"
-							name="1"
-							multiple
-							:maxCount="5"
-						></u-upload>
-					</u-form-item> -->
+						<view>
+							<u-upload
+								:fileList="fileList1"
+								@afterRead="afterRead"
+								@delete="deletePic"
+								name="1"
+								width="75"
+								height="75"
+								multiple 
+								:maxCount="picMaxCount"
+								:maxSize="2048000"
+								@oversize="handleoversize"
+							></u-upload>
+							<view class="u-info u-font-28">建议上传2M以内的图片</view>
+						</view>
+						
+					</u-form-item>
 					<template v-if="auth == 1">
 						<u-form-item
 							label="报盘企业"
@@ -286,19 +302,17 @@
 							ref="customer_id"
 							
 						>
-							<view @click="show2 = true">
-								<u-input
-									:value="model.customer_name"
-									placeholder="点击选择报盘企业" 
-									readonly
-								>
-									<template slot="suffix">
-										<view class="">
-											<i class="custom-icon-unfold custom-icon"></i>
-										</view>	
-									</template>
-								</u-input>
-							</view>
+							<u-input
+								:value="model.customer_name"
+								@input="handleName"
+								placeholder="点击选择报盘企业" 
+							>
+								<template slot="suffix">
+									<view class="" @click="show2 = true">
+										<i class="custom-icon-unfold custom-icon"></i>
+									</view>	
+								</template>
+							</u-input>
 						</u-form-item>
 						<u-form-item
 							label="企业角色"
@@ -311,7 +325,7 @@
 							  >
 							    <u-radio
 							      :customStyle="{marginRight: '8px'}"
-							      v-for="(item, index) in radiolist_mdu"
+							      v-for="(item, index) in radiolist_mdu_filter"
 							      :key="item.value"
 							      :label="item.name"
 							      :name="item.value"
@@ -429,6 +443,7 @@
 			return {
 				pid: '',
 				pan: 'b',
+				picMaxCount: 5,
 				cpy: '',
 				product: '',
 				prodInfo: '',
@@ -451,6 +466,7 @@
 					express_unit_label: '天',
 					express_unit: 'd',
 					delivery_place: '',
+					delivery_address: '',
 					broker_login: '',
 					customer_id: '',
 					customer_name: '',
@@ -488,13 +504,21 @@
 				],
 				radiolist_mdu: [
 					{
+						name: '生产商',
+						disabled: false,
+						show: 's',
+						value: "M"
+					},
+					{
 						name: '经销商',
 						disabled: false,
+						show: 'bs',
 						value: "D"
 					},
 					{
 						name: '下游用户',
 						disabled: false,
+						show: 'b',
 						value: "U"
 					},
 				],
@@ -514,16 +538,25 @@
 					{
 						name: '卖家送货',
 						disabled: false,
+						show: 'bs',
 						value: "S"
 					},
 					{
 						name: '买家自提',
 						disabled: false,
+						show: 's',
 						value: "B"
 					},
 					{
-						name: '均可',
+						name: '两者均可',
 						disabled: false,
+						show: 's',
+						value: ""
+					},
+					{
+						name: '自提或送货',
+						disabled: false,
+						show: 'b',
 						value: ""
 					},
 				],
@@ -567,8 +600,24 @@
 				myCpy: state => state.user.myCpy,
 				addressArea: state => state.user.addressArea,
 				login: state => state.user.login,
-				auth: state => state.user.auth
+				auth: state => state.user.auth,
+				maxSize: state => state.user.maxSize,
 			}),
+			tradeType2Label() {
+				if(this.pan == 's' ) {
+					if(this.model.settle_mode == 'B') {
+						return ['提货区域', '提货地址']
+					}else if(this.model.settle_mode == 'S') {
+						return ['发货区域', '发货地址']
+					}
+					return ['交货区域', '交货地址']
+				}else {
+					return ['收货区域', '收货地址']
+					// if(this.model.settle_mode == 'S') {
+					// 	return '收货区域'
+					// }
+				}
+			},
 			rules() {
 				let baseRules = {
 					'product_id': {
@@ -654,6 +703,12 @@
 				}
 				return {}
 				
+			},
+			radiolist_mdu_filter() {
+				return this.radiolist_mdu.filter(ele => ele.show.includes(this.pan))
+			},
+			radiolist_settle_mode_filter() {
+				return this.radiolist_settle_mode.filter(ele => ele.show.includes(this.pan))
 			}
 		},
 		async onLoad(options) {
@@ -674,6 +729,7 @@
 					const data = JSON.parse(decodeURIComponent(options.data))
 					console.log(data)
 					this.model.delivery_place = data.delivery_place
+					this.model.delivery_address = data.delivery_address
 					this.model.product_id = data.product_id
 					this.model.name = data.name
 					this.model.order_type = data.order_type
@@ -697,7 +753,10 @@
 					this.model.delivery_place = data.delivery_place
 					if(this.pan == 's') {
 						this.model.remark = data.remark
-						this.model.pics = data.list_pics
+						this.model.pics = data.list_pics.map(ele => {
+							ele.url = `https://img-album.rawmex.cn/view/${ele.pic}`
+							return ele
+						})
 					}else {
 						this.model.spec = data.spec
 						this.model.intro = data.intro
@@ -716,6 +775,17 @@
 			}
 			this.setPageTitle()
 		},
+		watch: {
+			['model.pics'](n) {
+				console.log(n)
+				this.fileList1 = n.map(ele => {
+					return {
+						...ele,
+						url: ele.url,
+					}
+				})
+			}
+		},
 		onReady() {
 			this.$refs.from.setRules(this.rules)
 		},
@@ -724,8 +794,15 @@
 				handleGoto: 'user/handleGoto'
 			}),
 			...mapActions({
-				getAddressArea: 'user/getAddressArea'
+				getAddressArea: 'user/getAddressArea',
+				getImageBase64_readFile: 'user/getImageBase64_readFile'
 			}),
+			handleoversize() {
+				uni.showToast({
+					title: '建议上传2M以内的图片',
+					icon: 'none'
+				})
+			},
 			checkboxChange(v) {
 				console.log(v)
 				this.model.broker_login = v[0] ? v[0]: ''
@@ -756,6 +833,10 @@
 			onchange(e) {
 				console.log('onchange:', e);
 				this.$refs.from.validateField('delivery_place')
+			},
+			handleName(e) {
+				this.model.customer_name = e
+				this.model.customer_id = ''
 			},
 			async menusConfirm1(data) {
 				console.log(data)
@@ -815,7 +896,44 @@
 					uni.showLoading()
 					
 					let func = ''
+					let params = {...this.model};
 					if(this.pan == 's') {
+						
+						for(let i = 0; i < this.picMaxCount; i++) {
+							// if(this.model.pics[i]) {
+							// 	params[`pic${i+1}`] = 'https://img-album.rawmex.cn/view/' + this.model.pics[i].pic
+							// }else {
+							// 	params[`pic${i+1}`] = ''
+							// }
+							
+							if(this.fileList1[i]) {
+								let ele = this.fileList1[i]
+								if(ele.hasOwnProperty('id')) {
+									let id = ele.id;
+									let url = this.model.pics.filter(item => item.id == id)[0].url
+									params[`pic${i+1}`] = url
+									params[`pic${i+1}_base64`] = ''
+									params[`pic${i+1}_name`] = ''
+								}else {
+									params[`pic${i+1}`] = ''
+									if(ele.status == 'success') {
+										params[`pic${i+1}_base64`] = ele.url
+										params[`pic${i+1}_name`] = ele.name
+									}else {
+										params[`pic${i+1}_base64`] = ''
+										params[`pic${i+1}_name`] = ''
+									}
+								}
+								
+								
+								
+							}else {
+								params[`pic${i+1}`] = ''
+								params[`pic${i+1}_base64`] = ''
+								params[`pic${i+1}_name`] = ''
+							}
+						}
+						
 						if(this.pid) {
 							func = 'changeSell'
 						}else {
@@ -828,8 +946,8 @@
 							func = 'createBuy'
 						}
 					}
-					let params = {...this.model};
 					if(this.pid) params.id = this.pid
+					console.log(params)
 					const r = await this.$api[func](params)
 					if(r.code == 1) {
 						uni.redirectTo({
@@ -850,9 +968,14 @@
 			
 			deletePic(event) {
 				this[`fileList${event.name}`].splice(event.index, 1)
+				
+				// this.model.pic1 = ''
+				// this.model.pic1_base64 = ''
+				// this.model.pic1_name = ''
 			},
 			// 新增图片
 			async afterRead(event) {
+				console.log(event)
 				// 当设置 mutiple 为 true 时, file 为数组格式，否则为对象格式
 				let lists = [].concat(event.file)
 				let fileListLen = this[`fileList${event.name}`].length
@@ -864,33 +987,34 @@
 					})
 				})
 				for (let i = 0; i < lists.length; i++) {
-					const result = await this.uploadFilePromise(lists[i].url)
+					const result = await this.getImageBase64_readFile(lists[i].url)
 					let item = this[`fileList${event.name}`][fileListLen]
 					this[`fileList${event.name}`].splice(fileListLen, 1, Object.assign(item, {
 						status: 'success',
 						message: '',
-						url: result
+						url: result,
+						name: lists[i].url
 					}))
 					fileListLen++
 				}
 			},
-			uploadFilePromise(url) {
-				return new Promise((resolve, reject) => {
-					let a = uni.uploadFile({
-						url: 'http://192.168.2.21:7001/upload', // 仅为示例，非真实的接口地址
-						filePath: url,
-						name: 'file',
-						formData: {
-							user: 'test'
-						},
-						success: (res) => {
-							setTimeout(() => {
-								resolve(res.data.data)
-							}, 1000)
-						}
-					});
-				})
-			},
+			// uploadFilePromise(url) {
+			// 	return new Promise((resolve, reject) => {
+			// 		let a = uni.uploadFile({
+			// 			url: 'http://192.168.2.21:7001/upload', // 仅为示例，非真实的接口地址
+			// 			filePath: url,
+			// 			name: 'file',
+			// 			formData: {
+			// 				user: 'test'
+			// 			},
+			// 			success: (res) => {
+			// 				setTimeout(() => {
+			// 					resolve(res.data.data)
+			// 				}, 1000)
+			// 			}
+			// 		});
+			// 	})
+			// },
 		}
 	}
 </script>

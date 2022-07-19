@@ -217,41 +217,51 @@
 						@cancel="showExpressUnit = false"
 					></u-picker>
 					<u-form-item
-						label="交货地"
-						prop="delivery_place"
-						ref="delivery_place"
-						required
+						label="交收方式"
+					>
+						<!-- <view>{{model.settle_mode | settleMode}}</view> -->
+						<u-radio-group
+						    v-model="model.settle_mode"
+						    placement="row"
+							disabled
+						  >
+						    <u-radio
+						      :customStyle="{marginRight: '8px'}"
+						      v-for="(item, index) in radiolist_settle_mode_filter"
+						      :key="item.value"
+						      :label="item.name"
+						      :name="item.value"
+							  
+						    >
+						    </u-radio>
+						  </u-radio-group>
+					</u-form-item>
+					<u-form-item
+						:label="tradeType2Label[0]"
 					>
 						<uni-data-picker 
-							placeholder="请选择交货地" 
-							popup-title="请选择所在地区" 
+							placeholder="请选择区域" 
+							popup-title="请选择区域" 
 							:localdata="addressArea" 
 							v-model="model.delivery_place"
+							readonly
 							@change="onchange" 
 							@nodeclick="onnodeclick" 
 							@popupopened="onpopupopened" 
 							@popupclosed="onpopupclosed"
 						></uni-data-picker>
 					</u-form-item>
+					
 					<u-form-item
-						label="交收方式"
-						prop="settle_mode"
-						ref="settle_mode"
-						v-if="pan == 's' && auth == 1"
+						:label="tradeType2Label[1]"
+						v-if="model.delivery_address"
 					>
-						 <u-radio-group
-						    v-model="model.settle_mode"
-						    placement="row"
-						  >
-						    <u-radio
-						      :customStyle="{marginRight: '8px'}"
-						      v-for="(item, index) in radiolist_settle_mode"
-						      :key="item.value"
-						      :label="item.name"
-						      :name="item.value"
-						    >
-						    </u-radio>
-						  </u-radio-group>
+						<view>{{model.delivery_address}}</view>
+						<!-- <u--textarea
+							v-model="model.delivery_address" 
+							:placeholder="tradeType2Label[1]" 
+							height="60"
+						></u--textarea> -->
 					</u-form-item>
 					<!-- <u-form-item
 						label="图片"
@@ -343,6 +353,7 @@
 					express_unit_label: '天',
 					express_unit: 'd',
 					delivery_place: '',
+					delivery_address: '',
 					broker_login: '',
 					customer_id: '',
 					customer_name: '',
@@ -406,16 +417,25 @@
 					{
 						name: '卖家送货',
 						disabled: false,
+						show: 'bs',
 						value: "S"
 					},
 					{
 						name: '买家自提',
 						disabled: false,
+						show: 's',
 						value: "B"
 					},
 					{
-						name: '均可',
+						name: '两者均可',
 						disabled: false,
+						show: 's',
+						value: ""
+					},
+					{
+						name: '自提或送货',
+						disabled: false,
+						show: 'b',
 						value: ""
 					},
 				],
@@ -543,6 +563,25 @@
 				}
 				return {}
 				
+			},
+			
+			tradeType2Label() {
+				if(this.pan == 's' ) {
+					if(this.model.settle_mode == 'B') {
+						return ['提货区域', '提货地址']
+					}else if(this.model.settle_mode == 'S') {
+						return ['发货区域', '发货地址']
+					}
+					return ['交货区域', '交货地址']
+				}else {
+					return ['收货区域', '收货地址']
+					// if(this.model.settle_mode == 'S') {
+					// 	return '收货区域'
+					// }
+				}
+			},
+			radiolist_settle_mode_filter() {
+				return this.radiolist_settle_mode.filter(ele => ele.show.includes(this.pan))
 			}
 		},
 		async onLoad(options) {
@@ -563,6 +602,7 @@
 					console.log(data)
 					this.model.Customer = data.Customer
 					this.model.delivery_place = data.delivery_place
+					this.model.delivery_address = data.delivery_address
 					this.model.product_id = data.product_id
 					this.model.name = data.name
 					this.model.order_type = data.order_type
@@ -726,6 +766,10 @@
 			
 			deletePic(event) {
 				this[`fileList${event.name}`].splice(event.index, 1)
+				
+				this.model.pic1 = ''
+				this.model.pic1_base64 = ''
+				this.model.pic1_name = ''
 			},
 			// 新增图片
 			async afterRead(event) {

@@ -12,10 +12,10 @@
 		</view>	
 		<view class="cpy-wrapper u-p-l-20 u-p-r-20 u-flex u-flex-items-start u-flex-center " :style="{
 			backgroundColor: themeConfig.sharePan.cpyBg
-		}">
+		}" v-if="userInfo.name">
 			<view class="u-font-34 u-m-b-20" :style="{
 				color: themeConfig.sharePan.cpyTitle
-			}">{{name}}</view>
+			}">{{userInfo.name}}</view>
 			<view class="u-flex u-flex-items-center u-font-28" :style="{
 				color: themeConfig.sharePan.cpySub
 			}">
@@ -25,13 +25,13 @@
 					<u-tag :text="pan == 's'? '卖盘清单' : '买盘清单'" :borderColor="themeConfig.sharePan.tagBorderColor" :color="themeConfig.sharePan.tagColor" plain size="mini" type="primary"></u-tag>
 				</view>
 				<view class="u-m-r-10">
-					<u-tag :text="auth | auth2str" plain size="mini" type="primary":borderColor="themeConfig.sharePan.tagBorderColor" :color="themeConfig.sharePan.tagColor" ></u-tag>
+					<u-tag :text="userInfo.auth | auth2str" plain size="mini" type="primary":borderColor="themeConfig.sharePan.tagBorderColor" :color="themeConfig.sharePan.tagColor" ></u-tag>
 				</view>
-				<view class="u-m-r-10" v-if="contact">
-					<u-tag :text="contact" plain size="mini" type="primary":borderColor="themeConfig.sharePan.tagBorderColor" :color="themeConfig.sharePan.tagColor" ></u-tag>
+				<view class="u-m-r-10" v-if="userInfo.contact">
+					<u-tag :text="userInfo.contact" plain size="mini" type="primary":borderColor="themeConfig.sharePan.tagBorderColor" :color="themeConfig.sharePan.tagColor" ></u-tag>
 				</view>
-				<view class=" " v-if="mobile">
-					<u-tag :text="mobile" plain size="mini" type="primary":borderColor="themeConfig.sharePan.tagBorderColor" :color="themeConfig.sharePan.tagColor" ></u-tag>
+				<view class=" " v-if="userInfo.mobile">
+					<u-tag :text="userInfo.mobile" plain size="mini" type="primary":borderColor="themeConfig.sharePan.tagBorderColor" :color="themeConfig.sharePan.tagColor" ></u-tag>
 				</view>
 				
 				
@@ -103,6 +103,7 @@
 		mixins: [mixShareInfo],
 		data() {
 			return {
+				userInfo: {},
 				id: '',
 				pan: '',
 				contact: '',
@@ -118,15 +119,20 @@
 		onLoad(options) {
 			if(uni.$u.pages().length == 1) this.backBtn = false
 			console.log(options)
-			if(options.hasOwnProperty('auth') && options.hasOwnProperty('id') && options.hasOwnProperty('pan')) {
-				this.auth = options.auth
+			if(options.hasOwnProperty('pan') && options.hasOwnProperty('id')) {
 				this.pan = options.pan
-				this.contact = options.contact ? '' : decodeURIComponent(options.contact)
-				console.log(this.contact)
-				this.mobile = options.mobile
-				this.name = decodeURIComponent(options.name)
 				this.id = options.id
-			}else {
+			}
+			// if(options.hasOwnProperty('auth') && options.hasOwnProperty('id') && options.hasOwnProperty('pan')) {
+			// 	this.auth = options.auth
+			// 	this.pan = options.pan
+			// 	this.contact = options.contact ? '' : decodeURIComponent(options.contact)
+			// 	console.log(this.contact)
+			// 	this.mobile = options.mobile
+			// 	this.name = decodeURIComponent(options.name)
+			// 	this.id = options.id
+			// }
+			else {
 				uni.reLaunch({
 					url: '/pages/index/index',
 					success() {
@@ -180,6 +186,7 @@
 				if(res.code == 1) {
 					this.setOnlineControl(res)
 					this.indexList = [...this.indexList, ...res.list]
+					this.userInfo = res.company
 					if(this.indexList.length >= res.total) {
 						this.loadstatus = 'nomore'
 					}else {
