@@ -413,29 +413,34 @@
 			},
 			searchMenus() {
 				this.searchRes = []
+				let k = this.keyword.toUpperCase()
+				let str = ''
 				if(this.isMyProduct) {
 					this.myProduct.forEach(ele => {
-						let i = ele.name.indexOf(this.keyword)
+						str = ele.name.toUpperCase()
+						let i = str.indexOf(k)
 						if(i > -1) {
-							ele.pp = [i, this.keyword.length]
+							ele.pp = [i, k.length]
 							this.searchRes.push(ele)
 						}
 					})
 				}else if(this.isMyAllCpy) {
 					this.myAllCpy.forEach(ele => {
 						ele.name = ele.to_name + '-' + ele.to_contact
-						let i = ele.name.indexOf(this.keyword)
+						str = ele.name.toUpperCase()
+						let i = str.indexOf(k)
 						if(i > -1) {
-							ele.pp = [i, this.keyword.length]
+							ele.pp = [i, k.length]
 							this.searchRes.push(ele)
 						}
 					})
 				}else {
 					this.menusList2.forEach(ele => {
 						ele.list.forEach(item => {
-							let i = item.name.indexOf(this.keyword)
+							str = item.name.toUpperCase()
+							let i = str.indexOf(k)
 							if(i > -1) {
-								item.pp = [i, this.keyword.length]
+								item.pp = [i, k.length]
 								this.searchRes.push(item)
 							}
 						})

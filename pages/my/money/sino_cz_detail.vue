@@ -3,10 +3,10 @@
 		 <view class="main">
 			<view class="main-header">
 				<view class="header-title u-flex u-flex-items-center u-flex-center">
-					<view>充值成功</view>
+					<view>{{list.state}}</view>
 				</view>
 				<view class="header-content u-flex u-flex-items-center u-flex-center">
-					<view>128.00</view>
+					<view>{{list.Sino_fund_refund.price1}}</view>
 				</view>
 			</view>
 			<view class="main-content">
@@ -15,31 +15,31 @@
 						<view>现金账号：</view>
 					</view>
 					<view class="item-right">
-						<view>1100000245</view>
+						<view>{{list.Sino_fund_refund.user_fundaccno}}</view>
 					</view>
 				</view>
 				<view class="row u-flex u-flex-between u-flex-items-center">
 					<view class="item-left">
-						<view>充值银行卡：</view>
+						<view>银行卡：</view>
 					</view>
 					<view class="item-right">
-						<view>666*****465464</view>
+						<view>{{list.Sino_fund_refund.bank_accno1}}</view>
 					</view>
 				</view>
 				<view class="row u-flex u-flex-between u-flex-items-center">
 					<view class="item-left">
-						<view>充值金额：</view>
+						<view>金额：</view>
 					</view>
 					<view class="item-right">
-						<view>123</view>
+						<view>{{list.Sino_fund_refund.price1}}</view>
 					</view>
 				</view>
 				<view class="row u-flex u-flex-between u-flex-items-center">
 					<view class="item-left">
-						<view>充值手续费：</view>
+						<view>手续费：</view>
 					</view>
 					<view class="item-right">
-						<view>123</view>
+						<view>{{list.Sino_fund_refund.fee1}}</view>
 					</view>
 				</view>
 				<view class="row u-flex u-flex-between u-flex-items-center">
@@ -47,15 +47,15 @@
 						<view>状态：</view>
 					</view>
 					<view class="item-right">
-						<view>充值成功</view>
+						<view>{{list.state}}</view>
 					</view>
 				</view>
 				<view class="row u-flex u-flex-between u-flex-items-center">
 					<view class="item-left">
-						<view>充值时间：</view>
+						<view>时间：</view>
 					</view>
 					<view class="item-right">
-						<view>2021-9-9 08:20:14</view>
+						<view>{{list.ctime}}</view>
 					</view>
 				</view>
 			</view>
@@ -67,8 +67,30 @@
 	export default {
 		data() {
 			return {
-				
+				id: '',
+				list: {
+					Sino_fund_refund: {}
+				}
 			};
+		}, 
+		onLoad(options) {
+			if(options.hasOwnProperty('id')) {
+				this.id =  options.id
+			} 
+			uni.showLoading()
+			this.getData()
+		},
+		methods: {
+			async getData() {
+				const res = await this.$api.sino_fund_refund_detail_refund({
+					params: {
+						id: this.id
+					}
+				})
+				if(res.code == 1) {
+					this.list = res.list
+				}
+			}
 		}
 	}
 </script>

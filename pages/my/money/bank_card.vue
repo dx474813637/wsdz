@@ -1,5 +1,16 @@
 <template>
 	<view class="w">
+		<view class="tabs-w">
+			<u-tabs
+				:list="tabs_list"
+				:current="tabs_current"
+				lineHeight="0"
+				:activeStyle="activeTabsStyle"
+				:itemStyle="itemTabsStyle"
+				@change="handleTabsChange"
+			> 
+			</u-tabs>
+		</view>
 		<view class="list">
 			<u-list
 				height="100%"
@@ -8,15 +19,29 @@
 				:preLoadingScreen="100"
 			>
 				<u-list-item
-					v-for="(item, index) in indexList"
+					v-for="(item, index) in list"
 					:key="item.id"
 				>
 					<view class="u-p-10">
-						<BankCard
-							:bank_class="item.bank_class"
-							:bank_name="item.bank_name"
-							@detail="handleCardDetail"
-						></BankCard>
+						<view class="u-p-20 bg-white u-radius-10 uni-shadow-base">
+							<view class="header u-p-10  u-m-b-10 u-flex u-flex-between text-base u-flex-items-center u-font-28">
+								<view class="item">
+									{{item.ctime}}
+								</view>
+								<view class="item">
+									{{item.state |bankcardState2Str}}
+								</view>
+							</view>
+							<BankCard
+								:bank_class="item.bank_class"
+								:bank_name="item.bank_name"
+								:bank_sub="item.bank_accname"
+								:bank_no="item.bank_accno"
+								:origin="item"
+								@detail="handleCardDetail"
+							></BankCard>
+						</view>
+						
 					</view>
 					
 				</u-list-item>
@@ -56,21 +81,62 @@
 	export default {
 		data() {
 			return {
-				keyword: '',
-				
+				keyword: '', 
+				tabs_current: 1,
+				activeTabsStyle: {
+					fontSize: '34rpx',
+					fontWeight: 'bold',
+					color: '#007aff'
+				},
+				itemTabsStyle: {
+					height: '44px',
+					padding: '0 13px'
+				},
+				tabs_list: [
+					{
+						name: '全部',
+						disabled: false,
+						state: 'all'
+					},
+					{
+						name: '已绑定',
+						disabled: false,
+						state: '1'
+					},
+					{
+						name: '已解绑',
+						disabled: false,
+						state: '3'
+					},
+					{
+						name: '绑定失败',
+						disabled: false,
+						state: '2'
+					},
+				],
 				indexList: [],
 				curP: 1,
-				loadstatus: 'loadmore'
+				loadstatus: 'nomore'
 			};
 		},
-		onLoad() {
+		onLoad(opt) {
+			if(opt.hasOwnProperty('current')) {
+				this.tabs_current = opt.current
+			}
 			uni.showLoading()
 			this.getData()
 		},
 		computed: {
 			...mapState({
 				typeConfig: state => state.theme.typeConfig,
+				sino: state => state.sinopay.sino,
+				myCpy: state => state.user.myCpy,
+				sinoFund: state => state.sinopay.sinoFund,
 			}),
+			list() {
+				if(this.tabs_list[this.tabs_current].state == 'all') return this.indexList
+				return this.indexList.filter(ele => ele.state == this.tabs_list[this.tabs_current].state )
+			}
 		},
 		components: {
 			BankCard
@@ -83,7 +149,7 @@
 			initParamas() {
 				this.curP = 1;
 				this.indexList = [];
-				this.loadstatus = 'loadmore'
+				// this.loadstatus = 'loadmore'
 			},
 			handleSearch(v) {
 				console.log(v)
@@ -97,25 +163,26 @@
 			async handleTabsChange(value) {
 				this.changeTabsStatus('disabled', true)
 				this.tabs_current = value.index
-				this.initParamas();
-				uni.showLoading();
-				await this.getData()
+				console.log(value)
+				if(value.state == 'all') {
+					
+					this.initParamas();
+					uni.showLoading();
+					await this.getData()
+				}
 				this.changeTabsStatus('disabled', false)
 			},
 			scrolltolower() {
-				this.getMoreData()
+				// this.getMoreData()
 			},
-			async getData() {
-				if(this.loadstatus != 'loadmore') return
-				this.loadstatus = 'loading'
-				const res = await this.$api.getBankcardList()
-				if(res.code == 1) {
-					this.indexList = [...this.indexList, ...res.data]
-					if(this.curP == res.page_total) {
-						this.loadstatus = 'nomore'
-					}else {
-						this.loadstatus = 'loadmore'
+			async getData() { 
+				const res = await this.$api.sino_fund_account_list_bind({
+					params: {
+						account_id: this.sinoFund[0]?.id
 					}
+				})
+				if(res.code == 1) {
+					this.indexList = res.list 
 				}
 			},
 			async getMoreData() {
@@ -123,9 +190,9 @@
 				this.curP ++
 				await this.getData()
 			},
-			handleCardDetail() {
+			handleCardDetail({id}) {
 				uni.navigateTo({
-					url: '/pages/my/money/bank_card_detail'
+					url: '/pages/my/money/bank_card_detail?id='+ id
 				})
 			}
 		}
@@ -146,7 +213,7 @@
 		padding-bottom: env(safe-area-inset-bottom);  
 	}
 	.list {
-		height: calc(100% - 60px);
+		height: calc(100% - 104px);
 		
 	}
 	

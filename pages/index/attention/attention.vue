@@ -152,7 +152,7 @@
 					plate3: '',
 				}
 				list.forEach((ele, index) => {
-					params[`plate${index+1}`] = ele.list.map(item => `${item.name}|${item.id}`).join(',')
+					params[`plate${index+1}`] = ele.list.filter(item => item.id && item.id != 'undefined').map(item => `${item.name}|${item.id}`).join(',')
 				})
 				return params
 			},
@@ -163,7 +163,8 @@
 					if(k == 'plate1') i = 0
 					else if(k == 'plate2') i = 1
 					else if(k == 'plate3') i = 2
-					this.tabs_list[i].list = list[k].split(',').map(ele => {
+					// /(?<=\|[^\,]*)\,(?=.*[\|]{1}[^\,]*)/g
+					this.tabs_list[i].list = list[k].split(',').filter(ele => ele.includes('|')).map(ele => {
 						let arr = ele.split('|')
 						return {
 							name: arr[0],

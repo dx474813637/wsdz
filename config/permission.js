@@ -12,6 +12,7 @@ const whiteList = [
   // { pattern: /^\/pages\/index\/login*/ },
   { pattern: /^\/pages\/baojia*/ },
   { pattern: /^\/pages\/index*/ },
+  { pattern: /^\/pages\/more*/ },
   // { pattern: /^\/pages\/index\/(?!attention).*/ },
 ]
 // 用户信息未完善 权限列表
@@ -20,7 +21,7 @@ const userStateList = [
 	{ pattern: /^\/pages\/my\/broker\/prod_edit*/ },
 ]
 
-export default async function() {
+export default async function(vm) {
   const list = ['navigateTo', 'redirectTo', 'reLaunch', 'switchTab']
   // 用遍历的方式分别为,uni.navigateTo,uni.redirectTo,uni.reLaunch,uni.switchTab这4个路由方法添加拦截器
   list.forEach(item => {
@@ -29,7 +30,11 @@ export default async function() {
         // 获取要跳转的页面路径（url去掉"?"和"?"后的参数）
         const url = e.url.split('?')[0]
         console.log('url', url)
-
+		const r = uni.getStorageSync('WebSocketInfo')
+		// uni.sendSocketMessage({
+	 //        data: '{"type":"xcx","client_name":"'+r.w_login+'","room_id":"rawmex_xcx","token":"'+r.w_token+'","login":"'+r.w_login+'","content":"'+e.url+'"}'
+		// });
+		vm.$ws.send('{"type":"xcx","client_name":"'+r.w_login+'","rawmex_login":"'+r.login+'","room_id":"rawmex_xcx","token":"'+r.w_token+'","login":"'+r.w_login+'","content":"'+e.url+'"}')
         // 判断当前窗口是白名单，如果是则不重定向路由
         let pass
         if (whiteList) {

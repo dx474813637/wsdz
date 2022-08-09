@@ -1,6 +1,8 @@
 import App from './App'
-import './config/mockData.js'
+// import './config/mockData.js'
 import filters from '@/config/filters.js'
+import wxp from '@/utils/toPromise.js'
+import ws from '@/utils/webstocket.js'
 
 const prePage = ()=>{
 	let pages = getCurrentPages();
@@ -16,12 +18,13 @@ import Vue from 'vue'
 import store from './store'
 import uView from '@/uni_modules/uview-ui'
 import setHttp from '@/config/request.js'
-import * as apis from '@/config/api'
-
+import apis from '@/config/apis/index'
+console.log(apis)
 Object.keys(filters).forEach(item => Vue.filter(item, filters[item]))
 Vue.use(uView)
 Vue.config.productionTip = false
 Vue.prototype.$store = store
+Vue.prototype.$ws = ws  //挂载长链接单例，初始化不在这，根据业务需求选择
 App.mpType = 'app'
 const app = new Vue({
 	store,
@@ -30,6 +33,7 @@ const app = new Vue({
 setHttp(app)
 Vue.prototype.$http = uni.$u.http
 Vue.prototype.$api = apis
+Vue.prototype.$wxp = wxp
 Vue.prototype.$utils = {prePage};
 app.$mount()
 // #endif

@@ -8,13 +8,10 @@
 			</view>
 			<view class="card-content">
 				<view class="bank-name">{{bank_name}}</view>
-				<view class="card-sub">储蓄卡</view>
+				<view class="card-sub">{{bank_sub}}</view>
 				<view class="card-num">
-					<text>****</text>
-					<text>****</text>
-					<text>****</text>
-					<text>****</text>
-					<text>6666</text>
+					{{bank_no.slice(0, bank_no.length - 4).replace(/[A-Za-z0-9]/g, '*')}}
+					{{bank_no.slice(bank_no.length - 4)}}
 				</view>
 			</view>
 			<view class="card-btn">
@@ -28,6 +25,12 @@
 	export default {
 		name: "BankCard",
 		props: {
+			origin: {
+				type: Object,
+				default: () => {
+					return {}
+				}
+			},
 			bank_class: {
 				type: String,
 				default: ''
@@ -35,7 +38,15 @@
 			bank_name: {
 				type: String,
 				default: '其他银行'
-			}
+			},
+			bank_sub: {
+				type: String,
+				default: '储蓄卡'
+			},
+			bank_no: {
+				type: String,
+				default: '***********************'
+			},
 		},
 		data() {
 			return {
@@ -44,9 +55,7 @@
 		},
 		methods: {
 			handleDetail() {
-				this.$emit('detail', {
-					name: this.bank_name
-				})
+				this.$emit('detail', this.origin)
 			}
 		}
 	}
@@ -143,6 +152,7 @@
 			}
 			.card-sub {
 				font-size: 12px;
+				opacity: .8;
 			}
 			.card-num {
 				padding-top: 20px;

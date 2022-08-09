@@ -1,5 +1,6 @@
 import user from '@/store/modules/user.js'
 import theme from '@/store/modules/theme.js'
+import sinopay from '@/store/modules/sinopay.js'
 
 // #ifndef VUE3
 import Vue from 'vue'
@@ -8,7 +9,8 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
 	modules: {
 		user,
-		theme
+		theme,
+		sinopay
 	},
 	strict: true
 })
@@ -19,7 +21,8 @@ import {createStore} from 'vuex'
 const store = createStore({
 	modules: {
 		user,
-		theme
+		theme,
+		sinopay
 	}
 })
 // #endif

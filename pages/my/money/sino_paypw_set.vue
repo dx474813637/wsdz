@@ -7,7 +7,19 @@
 			:rules="rules"
 			ref="from"
 			labelWidth="80"
-		>
+		> 
+			<u-form-item
+				label="原始密码"
+				prop="opasswd"
+				ref="opasswd"
+				 v-if="sino.paypwd == '1'"
+			>
+				<u--input
+					v-model="model.opasswd"
+					password
+					clearable
+				></u--input>
+			</u-form-item>
 			<u-form-item
 				label="新密码"
 				prop="npasswd"
@@ -29,6 +41,15 @@
 					password
 					clearable
 				></u--input>
+			</u-form-item>
+			<!-- <u-form-item>
+				<text class="text-light">密码可使用任何英文字母及阿拉伯数字组合，不得少于5个字符。</text>
+			</u-form-item> -->
+			<u-form-item
+				borderBottom
+				label="手机" 
+			>
+				<view>{{myCpy.mobile}}</view>
 			</u-form-item>
 			<u-form-item
 				label="验证码"
@@ -59,11 +80,14 @@
 					</template>
 				</u-input>
 			</u-form-item>
-			<!-- <u-form-item>
-				<text class="text-light">密码可使用任何英文字母及阿拉伯数字组合，不得少于5个字符。</text>
-			</u-form-item> -->
 		</u--form>
 		
+		<view class="u-p-10 u-font-30"> 
+			<view class="u-m-t-20">
+				<text class="text-base">如果您忘记了支付密码，您可以</text>
+				<text class="text-error" @click="handleGoto({url: '/pages/my/money/sino_paypw_forget', type: 'redirectTo'})">重置支付密码</text>
+			</view>
+		</view>
 		<view class="u-p-t-20 u-m-b-40">
 			<u-button type="primary" @click="submit">提交</u-button>
 		</view>
@@ -71,6 +95,7 @@
 </template>
 
 <script>
+	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
 	export default {
 		data() {
 			return {
@@ -80,9 +105,18 @@
 				model: {
 					cpasswd: '',
 					npasswd: '',
+					opasswd: '',
 					code: ''
 				},
-				rules: {
+			}
+		},
+		computed: {
+			...mapState({
+				myCpy: state => state.user.myCpy,
+				sino: state => state.sinopay.sino,
+			}),
+			rules() {
+				let base = {
 					code: {
 						type: 'string',
 						required: true,
@@ -121,13 +155,35 @@
 						},
 					]
 				}
+				if(this.sino.paypwd == '1') {
+					base = {
+						...base, 
+						opasswd: {
+							type: 'string',
+							required: true,
+							message: '请填写原始密码',
+							trigger: ['blur', 'change']
+						},
+					}
+				}
+				
+				return base
 			}
 		},
 		onReady() {
 			this.$refs.from.setRules(this.rules)
 		},
+		onLoad() {
+			if(this.sino.paypwd == 1) {
+				uni.setNavigationBarTitle({
+					title: '修改资金账号支付密码'
+				})
+			}
+		},
 		methods: {
-			
+			...mapMutations({
+				handleGoto: 'user/handleGoto', 
+			}),
 			codeChange(text) {
 				this.tips = text;
 			},
@@ -137,7 +193,13 @@
 					title: '正在获取验证码'
 				})
 				this.$refs.uCode.start();
-				const res = await this.$api.getPhoneCode()
+				const res = await this.$api.sino_account_change_paypwd({
+					params: {
+						//...this.model, 
+						flag: 1,
+						id: this.sino.id,
+					},
+				})
 				if(res.code == 1) {
 					uni.showToast({
 						title: '验证码已发送'
@@ -148,7 +210,14 @@
 				
 				this.$refs.from.validate().then(async res => {
 					uni.showLoading()
-					const r = await this.$api.updatePayPwd({params: {...this.model}})
+					const r = await this.$api.sino_account_change_paypwd({
+						params: {
+							...this.model, 
+							captcha: this.model.code,
+							flag: 2,
+							id: this.sino.id,
+						},
+					})
 					console.log(r)
 					if(r.code == 1) {
 						// this.$utils.prePage() && this.$utils.prePage().refreshList();
@@ -164,8 +233,7 @@
 				}).catch(errors => {
 					uni.$u.toast('校验失败')
 				})
-			},
-			
+			}
 		}
 	}
 </script>

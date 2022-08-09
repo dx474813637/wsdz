@@ -20,10 +20,10 @@
 			<view class="text-white u-p-b-10 u-font-36">
 				注册支付平(sinopay)账号
 			</view>
-			<view class="text-white u-font-28 u-p-b-30">
+			<!-- <view class="text-white u-font-28 u-p-b-30">
 				所有表单都为必填
-			</view>
-			<view class="form-w u-p-20 u-p-l-40 u-p-r-40">
+			</view> -->
+			<view class="form-w u-p-20 u-p-l-40 u-p-r-40 u-m-t-30">
 				<u--form
 					labelPosition="left"
 					:model="model"
@@ -46,10 +46,10 @@
 							placeholder="请选择用户类型"
 							border="none"
 						></u--input>
-						<u-icon
+						<!-- <u-icon
 							slot="right"
 							name="arrow-right"
-						></u-icon>
+						></u-icon> -->
 					</u-form-item>
 					<u-action-sheet
 						:show="showUserType"
@@ -59,7 +59,7 @@
 						@select="userTypeSelect"
 					>
 					</u-action-sheet>
-					<u-form-item
+					<!-- <u-form-item
 						borderBottom
 						label="手机号"
 						prop="base.phone"
@@ -71,43 +71,11 @@
 							border="none"
 							clearable
 						></u--input>
-					</u-form-item>
-					<u-form-item
-						borderBottom
-						label="验证码"
-						prop="base.code"
-						ref="base_code"
-					>	
-						<view class="u-flex u-flex-items-center">
-							<u-input
-								v-model="model.base.code"
-								placeholder="验证码"
-								border="none"
-								clearable
-							>
-								<template slot="suffix">
-									<u-code
-										ref="uCode"
-										@change="codeChange"
-										keep-running
-										change-text="XS后重新获取"
-										@start="disabled = true"
-										@end="disabled = false"
-									></u-code>
-									<u-button
-										type="primary"
-										@tap="getCode"
-										:text="tips"
-										size="small"
-										:disabled="disabled"
-									></u-button>
-								</template>
-							</u-input>
-						</view>
-					</u-form-item>
+					</u-form-item> -->
+					
 					<template v-if="userType == '个人'">
 						
-						<u-form-item
+						<!-- <u-form-item
 							borderBottom
 							label="姓名"
 							prop="userInfo.name"
@@ -132,11 +100,11 @@
 								border="none"
 								clearable
 							></u--input>
-						</u-form-item>
+						</u-form-item> -->
 					</template>
 					<template v-if="userType == '个体工商户'">
 						
-						<u-form-item
+						<!-- <u-form-item
 							borderBottom
 							label="姓名"
 							prop="userInfo2.name"
@@ -187,12 +155,12 @@
 								border="none"
 								clearable
 							></u--input>
-						</u-form-item>
+						</u-form-item> -->
 					</template>
 					
 					<template v-else-if="userType == '企业'">
 						
-						<u-form-item
+						<!-- <u-form-item
 							borderBottom
 							label="企业名称"
 							prop="cpyInfo.name"
@@ -217,12 +185,13 @@
 								placeholder="信用统一代码"
 								clearable
 							></u--input>
-						</u-form-item>
+						</u-form-item> -->
 						<u-form-item
 							borderBottom
 							label="法人姓名"
 							prop="cpyInfo.name2"
 							ref="cpyInfo_name2"
+							required
 						>
 							<u--input
 								border="none"
@@ -236,6 +205,7 @@
 							label="法人身份证"
 							prop="cpyInfo.id2"
 							ref="cpyInfo_id2"
+							required
 						>
 							<u--input
 								border="none"
@@ -245,6 +215,34 @@
 							></u--input>
 						</u-form-item>
 						<u-form-item
+							borderBottom
+							label="登录密码"
+							prop="cpyInfo.passwd"
+							ref="cpyInfo_passwd"
+							required
+						>
+							<u--input
+								type="password"
+								border="none"
+								v-model="model.cpyInfo.passwd"
+								placeholder="登录密码"
+								clearable
+							></u--input>
+						</u-form-item>
+						<u-form-item
+							borderBottom
+							label="备注"
+							prop="cpyInfo.remark"
+							ref="cpyInfo_remark"
+						>
+							<u--input
+								border="none"
+								v-model="model.cpyInfo.remark"
+								placeholder="备注"
+								clearable
+							></u--input>
+						</u-form-item>
+						<!-- <u-form-item
 							borderBottom
 							label="联系人"
 							prop="cpyInfo.contact"
@@ -256,9 +254,48 @@
 								placeholder="联系人"
 								clearable
 							></u--input>
-						</u-form-item>
+						</u-form-item> -->
 					</template>
-					
+					<u-form-item
+						borderBottom
+						label="手机" 
+					>
+						<view>{{myCpy.mobile}}</view>
+					</u-form-item>
+					<u-form-item
+						borderBottom
+						label="验证码"
+						prop="base.code"
+						ref="base_code"
+						required
+					>	
+						<view class="u-flex u-flex-items-center">
+							<u-input
+								v-model="model.base.code"
+								placeholder="验证码"
+								border="none"
+								clearable
+							>
+								<template slot="suffix">
+									<u-code
+										ref="uCode"
+										@change="codeChange"
+										keep-running
+										change-text="XS后重新获取"
+										@start="disabled = true"
+										@end="disabled = false"
+									></u-code>
+									<u-button
+										type="primary"
+										@tap="getCode"
+										:text="tips"
+										size="small"
+										:disabled="disabled"
+									></u-button>
+								</template>
+							</u-input>
+						</view>
+					</u-form-item>
 					
 				</u--form>
 				<view class="u-p-t-50 u-m-b-40">
@@ -278,7 +315,7 @@
 				
 				tips: '',
 				disabled: false,
-				userType: '个人',
+				userType: '企业',
 				showUserType: false,
 				userActions: [{
 						name: '个人',
@@ -311,86 +348,90 @@
 						name2: '',
 						id2: '',
 						contact: '',
+						remark: '',
 					}
 				},
 				btnDisabled: false,
 			}
 		},
 		computed: {
+			...mapState({
+				myCpy: state => state.user.myCpy,
+			}),
 			rules() {
 				return {
-					'base.phone': [{
-							type: 'string',
-							required: true,
-							message: '请填写手机号',
-							trigger: ['blur', 'change']
-						},{
-							validator: (rule, value, callback) => {
-								return uni.$u.test.mobile(value)
-							},
-							message: '请填写正确的手机号',
-							trigger: ['blur', 'change']
-						}],
+					// 'base.phone': [{
+					// 		type: 'string',
+					// 		required: true,
+					// 		message: '请填写手机号',
+					// 		trigger: ['blur', 'change']
+					// 	},{
+					// 		validator: (rule, value, callback) => {
+					// 			return uni.$u.test.mobile(value)
+					// 		},
+					// 		message: '请填写正确的手机号',
+					// 		trigger: ['blur', 'change']
+					// 	}],
 					'base.code': {
 						type: 'string',
 						required: true,
 						message: '请填写验证码',
 						trigger: ['blur', 'change']
 					},
-					'userInfo.name': {
-						type: 'string',
-						required: true,
-						message: '请填写姓名',
-						trigger: ['blur', 'change']
-					},
-					'userInfo.id': {
-						type: 'string',
-						required: true,
-						message: '请填写身份证',
-						trigger: ['blur', 'change']
-					},
-					'userInfo2.name': {
-						type: 'string',
-						required: true,
-						message: '请填写姓名',
-						trigger: ['blur', 'change']
-					},
-					'userInfo2.id': {
-						type: 'string',
-						required: true,
-						message: '请填写身份证',
-						trigger: ['blur', 'change']
-					},
-					'userInfo2.cpyname': {
-						type: 'string',
-						required: true,
-						message: '请填写公司名称',
-						trigger: ['blur', 'change']
-					},
-					'userInfo2.cpyid': {
-						type: 'string',
-						required: true,
-						message: '请填写公司信用统一代码',
-						trigger: ['blur', 'change']
-					},
-					'cpyInfo.name': {
-						type: 'string',
-						required: true,
-						message: '请填写企业名称',
-						trigger: ['blur', 'change']
-					},
-					'cpyInfo.id': {
-						type: 'string',
-						required: true,
-						message: '请填写信用统一代码',
-						trigger: ['blur', 'change']
-					},
-					'cpyInfo.contact': {
-						type: 'string',
-						required: true,
-						message: '请填写联系人',
-						trigger: ['blur', 'change']
-					},
+					// 'userInfo.name': {
+					// 	type: 'string',
+					// 	required: true,
+					// 	message: '请填写姓名',
+					// 	trigger: ['blur', 'change']
+					// },
+					// 'userInfo.id': {
+					// 	type: 'string',
+					// 	required: true,
+					// 	message: '请填写身份证',
+					// 	trigger: ['blur', 'change']
+					// },
+					// 'userInfo2.name': {
+					// 	type: 'string',
+					// 	required: true,
+					// 	message: '请填写姓名',
+					// 	trigger: ['blur', 'change']
+					// },
+					// 'userInfo2.id': {
+					// 	type: 'string',
+					// 	required: true,
+					// 	message: '请填写身份证',
+					// 	trigger: ['blur', 'change']
+					// },
+					// 'userInfo2.cpyname': {
+					// 	type: 'string',
+					// 	required: true,
+					// 	message: '请填写公司名称',
+					// 	trigger: ['blur', 'change']
+					// },
+					// 'userInfo2.cpyid': {
+					// 	type: 'string',
+					// 	required: true,
+					// 	message: '请填写公司信用统一代码',
+					// 	trigger: ['blur', 'change']
+					// },
+					// 'cpyInfo.name': {
+					// 	type: 'string',
+					// 	required: true,
+					// 	message: '请填写企业名称',
+					// 	trigger: ['blur', 'change']
+					// },
+					// 'cpyInfo.id': {
+					// 	type: 'string',
+					// 	required: true,
+					// 	message: '请填写信用统一代码',
+					// 	trigger: ['blur', 'change']
+					// },
+					// 'cpyInfo.contact': {
+					// 	type: 'string',
+					// 	required: true,
+					// 	message: '请填写联系人',
+					// 	trigger: ['blur', 'change']
+					// },
 					'cpyInfo.name2': {
 						type: 'string',
 						required: true,
@@ -403,6 +444,12 @@
 						message: '请填写法人身份证',
 						trigger: ['blur', 'change']
 					},
+					'cpyInfo.passwd': {
+						type: 'string',
+						required: true,
+						message: '请填写登录密码',
+						trigger: ['blur', 'change']
+					}, 
 				}
 			}
 		},
@@ -422,7 +469,11 @@
 					title: '正在获取验证码'
 				})
 				this.$refs.uCode.start();
-				const res = await this.$api.getPhoneCode()
+				const res = await this.$api.sino_account_create({
+					params: {
+						flag: 1,
+					}
+				})
 				if(res.code == 1) {
 					uni.showToast({
 						title: '验证码已发送'
@@ -435,31 +486,65 @@
 				// this.$refs.form1.validateField('userInfo.sex')
 			},
 			showActions() {
-				this.showUserType = true; 
-				uni.hideKeyboard()
+				// this.showUserType = true; 
+				// uni.hideKeyboard()
 			},
-			submit() {
+			async submit() {
 				
-				this.$refs.userform.validate().then(res => {
+				this.$refs.userform.validate().then(async r => {
 					
-					uni.$u.toast('校验通过')
+					// uni.$u.toast('校验通过')
+					uni.showLoading()
+					const res = await this.$api.sino_account_create({
+						params: {
+							legal_name: this.model.cpyInfo.name2,
+							lecerti_code: this.model.cpyInfo.id2,
+							passwd: this.model.cpyInfo.passwd,
+							remark: this.model.cpyInfo.remark,
+							captcha: this.model.base.code,
+							flag: 2
+						}
+					});
+					if(res.code == 1) {
+						uni.showToast({
+							title: res.msg,
+							icon: 'none',
+							success: () => {
+								this.handleGoto('/pages/my/money/index')
+							}
+						})
+						
+					}
+					
 				}).catch(errors => {
 					uni.$u.toast('校验失败')
 				})
 			},
 			async handleGetCode() {
 				if(this.btnDisabled) return;
-				this.$refs.userform.validateField('base.phone', async (errRes) => {
-					if(errRes.length > 0) return
-					this.btnDisabled = true;
-					const res = await this.$api.getPhoneCode();
-					if(res.code == 1) {
-						uni.showToast({
-							title: res.msg,
-							icon: 'none'
-						})
+				this.btnDisabled = true;
+				const res = await this.$api.sino_account_create({
+					params: {
+						flag: 1
 					}
-				})
+				});
+				if(res.code == 1) {
+					uni.showToast({
+						title: res.msg,
+						icon: 'none'
+					})
+				}
+				// this.$refs.userform.validateField('base.phone', async (errRes) => {
+				// 	if(errRes.length > 0) return
+				// 	this.btnDisabled = true;
+				// 	const res = await this.$api.sino_account_create();
+				// 	if(res.code == 1) {
+				// 		uni.showToast({
+				// 			title: res.msg,
+				// 			icon: 'none'
+				// 		})
+				// 	}
+				// })
 				
 			},
 			handleCountDownFinish() {

@@ -170,9 +170,9 @@
 									v-for="(item, index) in tj_company"
 									:key="item.id"
 								>
-								<chemnetCard
+								<chemnetCardS
 									:origin="item"
-								></chemnetCard>
+								></chemnetCardS>
 							</view>
 							<template v-if="tj_company.length == 0">
 								<u-image :src="no_img" width="100%" height="auto" mode="widthFix"></u-image>
@@ -371,7 +371,7 @@
 				if(res.code == 1) {
 					this.setOnlineControl(res)
 					if(this.curP == 1) {
-						this.tj_company = res.tj_company
+						this.tj_company = res.news_tj?.list_consumption
 						this.list = res.list
 					}
 					this.no_img = res.no_img
@@ -404,6 +404,7 @@
 				this.searchRes = '1'
 				this.searching = true
 				this.curP = 1
+				this.loadstatus = 'loadmore'
 				await this.getData()
 				this.searching = false
 			},

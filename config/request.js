@@ -1,4 +1,4 @@
-
+import {tim_online_login} from '@/utils/tims_login.js'
 
 export default function(vm) {
 	const http = uni.$u.http
@@ -84,6 +84,9 @@ export default function(vm) {
 				isRefreshing = true
 				refreshToken().then(res => {
 					console.log('获取token成功，存入头部',res)
+					uni.setStorageSync('WebSocketInfo', res)
+					// tim_online_login()
+					vm.$ws.init()
 					uni.setStorageSync('poster', res.poster) 
 					let userid = ""
 					// if(res.errMsg != "request:ok") {
@@ -115,7 +118,8 @@ export default function(vm) {
 				})
 			})
 		
-		}
+		} 
+		
 		// 初始化请求拦截器时，会执行此方法，此时data为undefined，赋予默认{}
 		// config.data = config.data || {}
 		// // 根据custom参数中配置的是否需要token，添加对应的请求头

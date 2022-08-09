@@ -191,7 +191,7 @@
 			handleNoticeIndex(index) {
 				this.handleGoto({
 					type: 'reLaunch',
-					url: `/pages/index/notice/noticeDetail?id=${this.notice[index].id}`
+					url: `/pages/index/notice/notice`
 				})
 			},
 			async getNotice() {

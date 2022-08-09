@@ -9,6 +9,38 @@
 			labelWidth="80"
 		>
 			<u-form-item
+				label="新密码"
+				prop="npasswd"
+				ref="npasswd"
+			>
+				<u--input
+					v-model="model.npasswd"
+					password
+					clearable
+				></u--input>
+			</u-form-item>
+			<u-form-item
+				label="确认密码"
+				prop="cpasswd"
+				ref="cpasswd"
+			>
+				<u--input
+					v-model="model.cpasswd"
+					password
+					clearable
+				></u--input>
+			</u-form-item>
+			
+			<!-- <u-form-item>
+				<text class="text-light">密码可使用任何英文字母及阿拉伯数字组合，不得少于5个字符。</text>
+			</u-form-item> -->
+			<u-form-item
+				borderBottom
+				label="手机" 
+			>
+				<view>{{myCpy.mobile}}</view>
+			</u-form-item>
+			<u-form-item
 				label="验证码"
 				prop="code"
 				ref="code"
@@ -37,32 +69,6 @@
 					</template>
 				</u-input>
 			</u-form-item>
-			<u-form-item
-				label="新密码"
-				prop="npasswd"
-				ref="npasswd"
-			>
-				<u--input
-					v-model="model.npasswd"
-					password
-					clearable
-				></u--input>
-			</u-form-item>
-			<u-form-item
-				label="确认密码"
-				prop="cpasswd"
-				ref="cpasswd"
-			>
-				<u--input
-					v-model="model.cpasswd"
-					password
-					clearable
-				></u--input>
-			</u-form-item>
-			
-			<!-- <u-form-item>
-				<text class="text-light">密码可使用任何英文字母及阿拉伯数字组合，不得少于5个字符。</text>
-			</u-form-item> -->
 		</u--form>
 		
 		<view class="u-p-t-20 u-m-b-40">
@@ -72,6 +78,7 @@
 </template>
 
 <script>
+	import {mapState, mapGetters, mapMutations} from 'vuex'
 	export default {
 		data() {
 			return {
@@ -126,6 +133,11 @@
 		},
 		onReady() {
 			this.$refs.from.setRules(this.rules)
+		},
+		computed: {
+			...mapState({
+				myCpy: state => state.user.myCpy,
+			}),
 		},
 		methods: {
 			

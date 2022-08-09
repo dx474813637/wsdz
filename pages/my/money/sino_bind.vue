@@ -20,16 +20,16 @@
 			<view class="text-white u-p-b-10 u-font-36">
 				绑定我的sinopay账号
 			</view>
-			<view class="text-white u-font-28 u-p-b-30">
+			<!-- <view class="text-white u-font-28 u-p-b-30">
 				所有表单都为必填
-			</view>
-			<view class="form-w u-p-20 u-p-l-40 u-p-r-40">
+			</view> -->
+			<view class="form-w u-p-20 u-p-l-40 u-p-r-40 u-m-t-30">
 				<u--form
 					labelPosition="left"
 					:model="model"
 					:rules="rules"
 					ref="userform"
-					labelWidth="80"
+					labelWidth="90"
 					borderBottom
 					:labelStyle="{fontSize: '28rpx'}"
 				>
@@ -46,10 +46,10 @@
 							placeholder="请选择用户类型"
 							border="none"
 						></u--input>
-						<u-icon
+						<!-- <u-icon
 							slot="right"
 							name="arrow-right"
-						></u-icon>
+						></u-icon> -->
 					</u-form-item>
 					<u-action-sheet
 						:show="showUserType"
@@ -86,9 +86,22 @@
 							clearable
 						></u--input>
 					</u-form-item>
+					<u-form-item
+						borderBottom
+						label="备注"
+						prop="base.remark"
+						ref="base_remark"
+					>
+						<u--input
+							v-model="model.base.remark"
+							placeholder="remark"
+							border="none"
+							clearable
+						></u--input>
+					</u-form-item>
 					<template v-if="userType == '个人'">
 						
-						<u-form-item
+						<!-- <u-form-item
 							borderBottom
 							label="姓名"
 							prop="userInfo.name"
@@ -113,11 +126,11 @@
 								border="none"
 								clearable
 							></u--input>
-						</u-form-item>
+						</u-form-item> -->
 					</template>
 					<template v-if="userType == '个体工商户'">
 						
-						<u-form-item
+						<!-- <u-form-item
 							borderBottom
 							label="姓名"
 							prop="userInfo2.name"
@@ -142,13 +155,13 @@
 								border="none"
 								clearable
 							></u--input>
-						</u-form-item>
+						</u-form-item> -->
 						
 					</template>
 					
 					<template v-else-if="userType == '企业'">
 						
-						<u-form-item
+						<!-- <u-form-item
 							borderBottom
 							label="企业名称"
 							prop="cpyInfo.name"
@@ -173,7 +186,7 @@
 								placeholder="信用统一代码"
 								clearable
 							></u--input>
-						</u-form-item>
+						</u-form-item> -->
 						
 					</template>
 					
@@ -194,7 +207,7 @@
 		data() {
 			return {
 				
-				userType: '个人',
+				userType: '企业',
 				showUserType: false,
 				userActions: [{
 						name: '个人',
@@ -241,42 +254,42 @@
 						message: '请填写sinopay密码',
 						trigger: ['blur', 'change']
 					},
-					'userInfo.name': {
-						type: 'string',
-						required: true,
-						message: '请填写姓名',
-						trigger: ['blur', 'change']
-					},
-					'userInfo.id': {
-						type: 'string',
-						required: true,
-						message: '请填写身份证',
-						trigger: ['blur', 'change']
-					},
-					'userInfo2.name': {
-						type: 'string',
-						required: true,
-						message: '请填写姓名',
-						trigger: ['blur', 'change']
-					},
-					'userInfo2.id': {
-						type: 'string',
-						required: true,
-						message: '请填写身份证',
-						trigger: ['blur', 'change']
-					},
-					'cpyInfo.name': {
-						type: 'string',
-						required: true,
-						message: '请填写企业名称',
-						trigger: ['blur', 'change']
-					},
-					'cpyInfo.id': {
-						type: 'string',
-						required: true,
-						message: '请填写信用统一代码',
-						trigger: ['blur', 'change']
-					},
+					// 'userInfo.name': {
+					// 	type: 'string',
+					// 	required: true,
+					// 	message: '请填写姓名',
+					// 	trigger: ['blur', 'change']
+					// },
+					// 'userInfo.id': {
+					// 	type: 'string',
+					// 	required: true,
+					// 	message: '请填写身份证',
+					// 	trigger: ['blur', 'change']
+					// },
+					// 'userInfo2.name': {
+					// 	type: 'string',
+					// 	required: true,
+					// 	message: '请填写姓名',
+					// 	trigger: ['blur', 'change']
+					// },
+					// 'userInfo2.id': {
+					// 	type: 'string',
+					// 	required: true,
+					// 	message: '请填写身份证',
+					// 	trigger: ['blur', 'change']
+					// },
+					// 'cpyInfo.name': {
+					// 	type: 'string',
+					// 	required: true,
+					// 	message: '请填写企业名称',
+					// 	trigger: ['blur', 'change']
+					// },
+					// 'cpyInfo.id': {
+					// 	type: 'string',
+					// 	required: true,
+					// 	message: '请填写信用统一代码',
+					// 	trigger: ['blur', 'change']
+					// },
 				}
 			}
 		},
@@ -293,14 +306,29 @@
 				// this.$refs.form1.validateField('userInfo.sex')
 			},
 			showActions() {
-				this.showUserType = true; 
-				uni.hideKeyboard()
+				// this.showUserType = true; 
+				// uni.hideKeyboard()
 			},
 			submit() {
 				
-				this.$refs.userform.validate().then(res => {
-					
-					uni.$u.toast('校验通过')
+				this.$refs.userform.validate().then(async r => {
+					const res = await this.$api.sino_account_bind({
+						params: {
+							sinopay_poster: this.model.base.sinopay,
+							sinopay_passwd: this.model.base.sinopay_pwd,
+							remark: this.model.base.remark
+						}
+					})
+					if(res.code == 1) {
+						uni.showToast({
+							title: res.msg,
+							icon: 'none',
+							success: () => {
+								this.handleGoto('/pages/my/money/index')
+							}
+						})
+					}
+					// uni.$u.toast('校验通过')
 				}).catch(errors => {
 					uni.$u.toast('校验失败')
 				})

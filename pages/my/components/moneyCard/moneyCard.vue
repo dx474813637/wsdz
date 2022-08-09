@@ -1,9 +1,9 @@
 <template>
-	<view>
+	<view class="wrapper">
 		<view class="box-content">
 			<view class="c-header u-flex u-flex-between">
 				<view class="item-left">
-					<view class="money-title u-flex">
+					<view class="money-title u-flex u-flex-items-center">
 						<p>可用余额 (元)</p>
 						<i class="custom-icon"
 							:class="{
@@ -13,15 +13,16 @@
 							}"
 							@click="showMoney = !showMoney"
 						></i>
+						<i class="custom-icon custom-icon-refresh u-font-30 inactive"  @click="refreshBtn"></i>
 					</view>
-					<view class="money-num u-flex u-flex-items-end">{{!showMoney? '****':'4300.98'}}</view>
+					<view class="money-num u-flex u-flex-items-end">{{!showMoney? '****': wallet.bal}}</view>
 				</view>
 				<view class="item-right">
 					<view class="money-title u-flex u-flex-items-end">
 						<p>冻结金额 (元)</p>
 					</view>
 					<view class="money-num text-danger u-flex u-flex-items-end u-flex-items-end">
-						{{!showMoney? '****':'1110.98'}}
+						{{!showMoney? '****': wallet.bal_freeze}}
 					</view>
 				</view>
 			</view>
@@ -29,7 +30,7 @@
 				<view class="item-left">
 					<view class="u-flex u-flex-items-center">
 						<text>可提金额 (元):</text>
-						<text class="num">{{!showMoney? '****':'321110.98'}}</text>
+						<text class="num">{{!showMoney? '****': wallet.bal_refund}}</text>
 					</view>
 				</view>
 				<view class="item-right">
@@ -41,26 +42,70 @@
 			<view @click="handleGoto({url: '/pages/my/money/sino_cz', params: {cz: 0}})" class="item-btn tx u-flex u-flex-center u-flex-items-center">提现</view>
 			<view @click="handleGoto({url: '/pages/my/money/sino_cz', params: {cz: 1}})" class="item-btn cz u-flex u-flex-center u-flex-items-center">充值</view>
 		</view>
+		
+		<view class="loading-w u-flex u-flex-items-center u-flex-center" v-if="sinoFundLoading">
+			<u-loading-icon mode="circle"></u-loading-icon>
+		</view>
 	</view>
 </template>
 
 <script>
-	import {mapState, mapGetters, mapMutations} from 'vuex'
+	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
 	export default {
+		props: {
+			sinoType: {
+				type: String,
+				default: 'B'
+			}
+		},
 		data() {
 			return {
 				showMoney: false,
 			}
 		},
+		computed: {
+			...mapState({
+				sinoFund: state => state.sinopay.sinoFund,
+				sinoFundLoading: state => state.sinopay.sinoFundLoading
+			}),
+			wallet() {
+				let w = {};
+				if(!this.sinoFund || this.sinoFund.length == 0) return w;
+				w = this.sinoFund.filter(ele => ele.type == this.sinoType)[0] || {}
+				return w
+			}
+		},
 		methods: {
 			...mapMutations({
-				handleGoto: 'user/handleGoto'
+				handleGoto: 'user/handleGoto',
+				setSinoFundLoading: 'sinopay/setSinoFundLoading',
 			}),
+			...mapActions({
+				getSinoFundAccount: 'sinopay/getSinoFundAccount',
+				refreshSinoFundAccount: 'sinopay/refreshSinoFundAccount'
+			}),
+			async refreshBtn() {
+				this.setSinoFundLoading(true)
+				await this.refreshSinoFundAccount({id: this.wallet.id})
+				this.getSinoFundAccount()
+			}
 		},
 	}
 </script>
 
 <style lang="scss" scoped>
+	.wrapper {
+		position: relative;
+		.loading-w {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(255,255,255,.85);
+			z-index: 10;
+		}
+	}
 	.box-content {
 		background-color: #fff;
 		border-radius: 3px;

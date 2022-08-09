@@ -1,5 +1,12 @@
 <template>
 	<view class="w">
+		<view class="tabs-w bg-white u-flex u-flex-items-center u-p-l-20 u-p-r-20" v-if="tabs_list.length > 0" @click="handleTabClick">
+			<view class="tab text-base" v-for="(item, index) in tabs_list" :key="index" :class="{
+				'text-primary': tabs_current == index
+			}" :data-key="index">
+				{{item}}
+			</view>
+		</view>						  
 		<view class="list u-p-l-20 u-p-r-20">
 			<u-list
 				height="100%"
@@ -11,7 +18,7 @@
 					v-for="(item, index) in indexList"
 					:key="item.id"
 				>
-					<view class="u-p-20 bg-white item-card u-m-t-20" @click="handleGoto({url: '/pages/index/notice/noticeDetail', params: {id: item.id}})">
+					<view class="u-p-20 bg-white item-card u-m-t-20" @click="handleGoto({url: '/pages/index/notice/noticeDetail', params: {id: item.id} })">
 						<view class="u-flex u-flex-items-start u-flex-between u-p-b-10">
 							<view class="text-primary">{{item.title}}</view>
 							<view class="u-font-28 text-base u-text-right u-p-t-5" style="flex: 0 0 70px">{{item.uptime | date2timestamp | timeFrom}}</view>
@@ -52,22 +59,28 @@
 			</u-list>
 		</view>
 		
+		<menusBar  theme="white" ></menusBar>
 	</view>
 </template>
 
 <script>
 	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
+	import mixShareInfo from '@/config/mixShareInfo'
 	export default {
+		mixins: [mixShareInfo],
 		data() {
 			return {
 				indexList: [],
 				curP: 1,
 				loadstatus: 'loadmore',
+				tabs_current: 0,
+				tabs_list: [],
 			};
 		},
 		onLoad() {
 			uni.showLoading()
 			this.getData()
+			
 		},
 		computed: {
 			...mapState({
@@ -99,7 +112,10 @@
 					}
 				})
 				if(res.code == 1) {
-					
+					if(this.curP = 1) {
+						this.tabs_list = res.memu
+					}
+					this.setOnlineControl(res)
 					this.indexList = [...this.indexList, ...res.list]
 					if(this.indexList.length >= res.total) {
 						this.loadstatus = 'nomore'
@@ -114,6 +130,16 @@
 				await this.getData()
 				
 			},
+			handleTabClick(e) {
+				console.log(e)
+				if(e.target.dataset.key == 1) {
+					this.handleGoto({
+						url: '/pages/more/zxtk/zxtk',
+						type: 'redirectTo'
+					})
+				}
+			}
+			
 		}
 	}
 </script>
@@ -137,7 +163,13 @@
 		height: 100vh;
 	}
 	.list {
-		height: calc(100% - env(safe-area-inset-bottom));
+		height: calc(100% - 85px - env(safe-area-inset-bottom));
 		
 	}
+	.tab {
+		height: 35px;
+		line-height: 35px;
+		padding: 0 10px;
+	}
+	
 </style>

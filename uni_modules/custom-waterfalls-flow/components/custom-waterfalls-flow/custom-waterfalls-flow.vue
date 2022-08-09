@@ -193,6 +193,7 @@
 					for (let i = 1; i <= this.data.column; i++) {
 						const query = uni.createSelectorQuery().in(this);
 						query.select(`#waterfalls_flow_column_${i}`).boundingClientRect(data => {
+							console.log(i, data.height)
 							heightArr.push({ column: i, height: data.height });
 						}).exec(() => {
 							if (this.data.column <= heightArr.length) {

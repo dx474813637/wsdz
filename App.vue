@@ -2,6 +2,7 @@
 	import routingIntercept from '@/config/permission.js'
 	import store from '@/store'
 	
+	import {tim_online_login} from '@/utils/tims_login.js'
 	export default {
 		onLaunch: async function() {
 			let e = uni.getSystemInfoSync();
@@ -38,14 +39,19 @@
 			}
 			
 			store.dispatch('user/wode', {bd: 1})
-			routingIntercept()
+			routingIntercept(this)
 			
 		},
 		onShow: function() {
 			// console.log('App Show')
+			const res = uni.getStorageSync('WebSocketInfo')
+			if(res) this.$ws.init()
+			// tim_online_login()
 		},
 		onHide: function() {
 			// console.log('App Hide')
+			// uni.closeSocket()
+			this.$ws.completeClose()
 		}
 	}
 </script>

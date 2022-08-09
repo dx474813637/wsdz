@@ -16,7 +16,8 @@
 			"path": "pages/index/notice/notice",
 			"style": {
 				"navigationBarTitleText": "最新公告",
-				"enablePullDownRefresh": false
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#ffffff"
 			}
 
 		}, {
@@ -439,14 +440,14 @@
 			}, {
 				"path": "money/bill",
 				"style": {
-					"navigationBarTitleText": "资金账单列表",
+					"navigationBarTitleText": "支付列表",
 					"enablePullDownRefresh": false
 				}
 
 			}, {
 				"path": "money/bill_detail",
 				"style": {
-					"navigationBarTitleText": "资金账单详情",
+					"navigationBarTitleText": "支付详情",
 					"enablePullDownRefresh": false
 				}
 
@@ -617,6 +618,41 @@
 					"enablePullDownRefresh": false
 				}
 
+			}, {
+				"path": "order/order_edit",
+				"style": {
+					"navigationBarTitleText": "",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "customer/customer_order",
+				"style": {
+					"navigationBarTitleText": "",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "customer/customer_order_detail",
+				"style": {
+					"navigationBarTitleText": "",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "money/sino_loginpw_forget",
+				"style": {
+					"navigationBarTitleText": "重置资金登录密码",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "money/sino_acc_list",
+				"style": {
+					"navigationBarTitleText": "支付账号列表",
+					"enablePullDownRefresh": false
+				}
+
 			}
 		]
 	}, {
@@ -634,6 +670,43 @@
 				"navigationBarTitleText": "详情",
 				"enablePullDownRefresh": false
 			}
+		}, {
+			"path": "zxtk/zxtk",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+
+		}, {
+			"path": "jjfa/jjfa",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "jjfa/list",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "live_detail/live_detail",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+
+		}, {
+			"path": "industry/industry",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
 		}]
 	}],
 	"globalStyle": {

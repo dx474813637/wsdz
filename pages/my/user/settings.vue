@@ -120,11 +120,13 @@
 		methods: {
 			...mapMutations({
 				clearLogout: 'user/clearLogout',
+				clearSino: 'sinopay/clearSino',
 			}),
 			async handleLogout() {
 				const res = await this.$api.logout();
 				if(res.code == 1) {
 					this.clearLogout()
+					this.clearSino()
 					uni.reLaunch({
 						url: '/pages/index/login/login',
 						success() {

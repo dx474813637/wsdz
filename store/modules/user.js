@@ -16,7 +16,7 @@ let state = {
 		bd: 1,
 		sh: 1, //接口接收隐藏一些结构用
 		ppiCate: [],
-		myCpy: {},
+		myCpy: uni.getStorageSync('myCpy') || {},
 		myAllCpy: [],
 		myProduct: [],
 		moreMenus: {},
@@ -55,6 +55,7 @@ let state = {
 		},
 		setMyCpy(state, data) {
 			state.myCpy = data;
+			uni.setStorageSync('myCpy', data)
 		},
 		setAllCpy(state, data) {
 			state.myAllCpy = data;
@@ -89,6 +90,7 @@ let state = {
 			state.bd = 1
 			state.auth = 0
 			state.myCpy = {}
+			uni.setStorageSync('myCpy', {})
 			state.myAllCpy = []
 			state.login = 0
 			state.myProduct = []

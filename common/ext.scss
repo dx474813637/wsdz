@@ -283,6 +283,12 @@ $uni-shadow-lg:0px 1px 10px 10px rgba($color: $shadow, $alpha: .5) !default;
 }
 
 
+@for $i from 0 to 20 {
+	.u-radius-#{$i} {
+		border-radius: $i + px;
+	}
+}
+
 // 定义flex等分
 @for $i from 0 through 12 {
 	.u-flex-#{$i} {

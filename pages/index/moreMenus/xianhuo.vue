@@ -100,6 +100,7 @@
 		watch: {
 			tabs_current(n) {
 				this.customShareParams.current = n
+				this.tabs_list[this.tabs_current] && this.setOnlineControl(this.tabs_list[this.tabs_current])
 			}
 		},
 		async onLoad(options) {
@@ -116,7 +117,7 @@
 			async getIndexData() {
 				const res = await this.$api.xianhuo();
 				if(res.code == 1) {
-					this.setOnlineControl(res)
+					this.setOnlineControl(res.list[this.tabs_current])
 					this.tabs_list = res.list.map(ele => {
 						ele.disabled = false
 						return ele

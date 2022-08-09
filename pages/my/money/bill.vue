@@ -1,7 +1,31 @@
 <template>
 	<view class="w">
+		<view class="search-wrapper u-flex u-p-l-20 u-p-r-20">
+			<view class="item u-flex-1 u-p-b-10">
+				<u-search 
+					:placeholder="placeholder" 
+					v-model="keyword"
+					clearabled
+					:showAction="false"
+					bgColor="#e8e8e8"
+					@search="handleSearch"
+				></u-search>
+			</view>
+			
+		</view>
+		<view class="tabs-w">
+			<u-tabs
+				:list="tabs_list"
+				:current="tabs_current"
+				lineHeight="0"
+				:activeStyle="activeTabsStyle"
+				:itemStyle="itemTabsStyle"
+				@change="handleTabsChange"
+			> 
+			</u-tabs>
+		</view>
 		
-		<view class="list">
+		<view class="list" >
 			<u-list
 				height="100%"
 				enableBackToTop
@@ -14,8 +38,7 @@
 				>
 					<view class="u-p-10">
 						<BillCard
-							:ids="item.id"
-							:name="item.name"
+							:paytype="tabs_list[tabs_current].paytype"
 							:detailData="item"
 							@detail="handleBillDetail"
 						></BillCard>
@@ -62,12 +85,14 @@
 				},
 				tabs_list: [
 					{
-						name: '充值记录',
+						name: '付款列表',
 						disabled: false,
+						paytype: 'B'
 					},
 					{
-						name: '提现记录',
+						name: '收款列表',
 						disabled: false,
+						paytype: 'S'
 					},
 				],
 				indexList: [],
@@ -75,7 +100,10 @@
 				loadstatus: 'loadmore'
 			};
 		},
-		onLoad() {
+		onLoad(options) {
+			if(options.hasOwnProperty('current')) {
+				this.tabs_current = Number(options.current)
+			}
 			uni.showLoading()
 			this.getData()
 		},
@@ -83,7 +111,7 @@
 			...mapState({
 				typeConfig: state => state.theme.typeConfig,
 			}),
-		},
+		}, 
 		components: {
 			BillCard
 		},
@@ -98,7 +126,9 @@
 				this.loadstatus = 'loadmore'
 			},
 			handleSearch(v) {
-				console.log(v)
+				this.initParamas();
+				uni.showLoading();
+				this.getData()
 			},
 			changeTabsStatus(key, value) {
 				this.tabs_list = this.tabs_list.map(ele => {
@@ -109,6 +139,7 @@
 			async handleTabsChange(value) {
 				this.changeTabsStatus('disabled', true)
 				this.tabs_current = value.index
+				this.keyword = ''
 				this.initParamas();
 				uni.showLoading();
 				await this.getData()
@@ -120,10 +151,16 @@
 			async getData() {
 				if(this.loadstatus != 'loadmore') return
 				this.loadstatus = 'loading'
-				const res = await this.$api.getBillList({params: {type: this.tabs_current}})
+				const res = await this.$api.sino_fund_order_list_order({
+					params: {
+						paytype: this.tabs_list[this.tabs_current].paytype,
+						p: this.curP,
+						company: this.keyword
+					},
+				})
 				if(res.code == 1) {
-					this.indexList = [...this.indexList, ...res.data]
-					if(this.curP == res.page_total) {
+					this.indexList = [...this.indexList, ...res.list]
+					if(this.indexList.length >= res.total) {
 						this.loadstatus = 'nomore'
 					}else {
 						this.loadstatus = 'loadmore'
@@ -155,7 +192,7 @@
 		height: 100%;
 	}
 	.list {
-		height: 100%;
+		height: calc(100% - 83px);
 		
 	}
 </style>

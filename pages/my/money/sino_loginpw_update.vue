@@ -45,7 +45,12 @@
 				<text class="text-light">密码可使用任何英文字母及阿拉伯数字组合，不得少于5个字符。</text>
 			</u-form-item> -->
 		</u--form>
-		
+		<view class="u-p-10 u-font-30"> 
+			<view class="u-m-t-20">
+				<text class="text-base">如果您忘记了登录密码，您可以</text>
+				<text class="text-error" @click="handleGoto({url: '/pages/my/money/sino_loginpw_forget', type: 'redirectTo'})">重置登录密码</text>
+			</view>
+		</view>
 		<view class="u-p-t-20 u-m-b-40">
 			<u-button type="primary" @click="submit">提交</u-button>
 		</view>
@@ -53,6 +58,7 @@
 </template>
 
 <script>
+	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
 	export default {
 		data() {
 			return {
@@ -102,16 +108,28 @@
 				}
 			}
 		},
+		computed: {
+			...mapState({
+				sino: state => state.sinopay.sino,
+			}),
+		},
 		onReady() {
 			this.$refs.from.setRules(this.rules)
 		},
 		methods: {
-			
+			...mapMutations({
+				handleGoto: 'user/handleGoto', 
+			}),
 			submit() {
 				
 				this.$refs.from.validate().then(async res => {
 					uni.showLoading()
-					const r = await this.$api.changeSinoLoginPwd({params: {...this.model}})
+					const r = await this.$api.sino_account_change_psw({
+						params: {
+							...this.model, 
+							id: this.sino.id
+						},
+					})
 					console.log(r)
 					if(r.code == 1) {
 						// this.$utils.prePage() && this.$utils.prePage().refreshList();

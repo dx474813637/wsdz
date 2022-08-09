@@ -950,6 +950,19 @@
 					console.log(params)
 					const r = await this.$api[func](params)
 					if(r.code == 1) {
+						const p = uni.$u.pages();
+						if(p.length > 1 && p[p.length - 2].route == 'pages/my/broker/list') {
+							p[p.length - 2].$vm.refreshList();
+							uni.navigateBack({
+								success() {
+									uni.showToast({
+										title: r.msg,
+										icon: 'none'
+									})
+								}
+							})
+							return
+						}
 						uni.redirectTo({
 							url: `/pages/my/broker/list?pan=${this.pan}`,
 							success() {

@@ -3,6 +3,29 @@ const type2str = v => {
 	else if(v == 'C') return '个人用户'
 	else return v
 }
+const orderType2str = v => {
+	if(v == '1') return '线上支付'
+	else if(v == '2') return '线下支付'
+	else return v
+}
+const orderState2Str = v => {
+	if(v == '0') return '发起中'
+	else if(v == '1') return '已完成'
+	else if(v == '2') return '已拒绝'
+	else if(v == '3') return '已取消'
+	else if(v == '4') return '订立中'
+	else if(v == '5') return '已了结'
+	else if(v == '6') return '待支付'
+	else if(v == '8') return '待发货'
+	else return v
+}
+const bankcardState2Str = v => {
+	if(v == '1') return '已绑定'
+	else if(v == '2') return '绑定失败'
+	else if(v == '3') return '已解绑' 
+	else return v
+}
+
 
 //时间简写 转 中文  'd'==>'天'  'h'==>'小时'
 const expressUnit = v => {
@@ -99,5 +122,8 @@ export default {
 	auth2str,
 	price2str,
 	filterAttributes,
-	chatTimeFilter
+	chatTimeFilter,
+	orderState2Str,
+	orderType2str,
+	bankcardState2Str
 }

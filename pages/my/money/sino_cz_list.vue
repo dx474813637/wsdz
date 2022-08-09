@@ -25,14 +25,10 @@
 					:key="item.id"
 				>
 					<view class="u-p-10">
-						<CzCard
-							:ids="item.id"
-							:pid="item.pid"
-							:date="item.date"
-							:type="item.type"
-							:price="item.price"
-							:status="item.status"
+						<CzCard 
+							v-if="tabs_list[tabs_current].value == 'cz' || tabs_list[tabs_current].value == 'tx'"
 							:detailData="item"
+							:type="tabs_list[tabs_current].value"
 							@detail="handleCzDetail"
 						></CzCard>
 					</view>
@@ -65,6 +61,7 @@
 	export default {
 		data() {
 			return {
+				type: 'B', //付B - 收S
 				keyword: '',
 				tabs_current: 0,
 				activeTabsStyle: {
@@ -77,21 +74,29 @@
 					padding: '0 13px'
 				},
 				tabs_list: [
-					{
-						name: '充值记录',
-						disabled: false,
-					},
+					// {
+					// 	name: '充值记录',
+					// 	disabled: false,
+					// 	value: 'cz',
+					// 	func: '', 
+					// },
 					{
 						name: '提现记录',
 						disabled: false,
+						value: 'tx',
+						func: 'sino_fund_refund_list_refund',
 					},
-					{
-						name: '提现卡转账充值',
-						disabled: false,
-					},
+					// {
+					// 	name: '提现卡转账充值',
+					// 	disabled: false,
+					// 	value: 'txzz',
+					// 	func: '',
+					// },
 					{
 						name: '同名账户转账记录',
 						disabled: false,
+						value: 'tmzz',
+						func: '',
 					}
 				],
 				indexList: [],
@@ -103,13 +108,20 @@
 			if(options.hasOwnProperty('tabs_current')) {
 				this.tabs_current = Number(options.tabs_current)
 			}
+			if(options.hasOwnProperty('type')) {
+				this.type = options.type
+			}
 			uni.showLoading()
 			this.getData()
 		},
 		computed: {
 			...mapState({
 				typeConfig: state => state.theme.typeConfig,
+				sinoFund: state => state.sinopay.sinoFund,
 			}),
+			accId() {
+				return this.sinoFund.filter(ele => ele.type == this.type)[0]?.id
+			}
 		},
 		components: {
 			CzCard
@@ -147,10 +159,17 @@
 			async getData() {
 				if(this.loadstatus != 'loadmore') return
 				this.loadstatus = 'loading'
-				const res = await this.$api.getCzList({params: {type: this.tabs_current}})
+				let item = this.tabs_list[this.tabs_current]
+				let func = item.func 
+				let params = {}
+				if(item.value == 'cz' || item.value == 'tx') {
+					params.id = this.accId
+					params.p = this.curP
+				}
+				const res = await this.$api[func]({params})
 				if(res.code == 1) {
-					this.indexList = [...this.indexList, ...res.data]
-					if(this.curP == res.page_total) {
+					this.indexList = [...this.indexList, ...res.list]
+					if(this.indexList.length >= res.total) {
 						this.loadstatus = 'nomore'
 					}else {
 						this.loadstatus = 'loadmore'
@@ -162,10 +181,10 @@
 				this.curP ++
 				await this.getData()
 			},
-			handleCzDetail({id, detail}) {
+			handleCzDetail({id}) {
 				
 				uni.navigateTo({
-					url: `/pages/my/money/sino_cz_detail?id=${id}&data=${encodeURIComponent(JSON.stringify(detail))}`
+					url: `/pages/my/money/sino_cz_detail?id=${id}`
 				})
 			}
 		}

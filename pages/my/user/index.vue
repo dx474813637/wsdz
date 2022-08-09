@@ -112,6 +112,16 @@
 					<text class="u-p-l-20 u-font-28">客户委托买盘</text>
 				</view>
 			</view>
+			<view class="u-flex u-flex-items-center u-flex-between u-p-b-10 u-p-t-24">
+				<view @click="handleGoto({url:'/pages/my/customer/customer_order', params:{ordertype: 'B'}})" class=" step15 u-p-l-30 item u-flex u-flex-items-center u-flex-1">
+					<i class="custom-icon-weituobiangeng custom-icon u-font-38"></i>
+					<text class="u-p-l-20 u-font-28">客户采购订单</text>
+				</view>
+				<view @click="handleGoto({url:'/pages/my/customer/customer_order', params:{ordertype: 'S'}})" class="step16 u-p-l-30 item u-flex u-flex-items-center u-flex-1 u-border-left" style="border-color: #f8f8f8!important;">
+					<i class="custom-icon-weituobiangeng custom-icon u-font-38"></i>
+					<text class="u-p-l-20 u-font-28">客户销售订单</text>
+				</view>
+			</view>
 		</view>
 		
 		<view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26 step6">
@@ -121,70 +131,64 @@
 			</view>
 			<view class="box-row u-flex u-flex-between u-flex-items-center u-p-t-20 u-p-b-10">
 				<view @click="handleGoto('/pages/my/broker/prod_edit')" class="step17 item u-text-center u-flex-1">
-					<i class="custom-icon-roundadd custom-icon u-font-40"></i>
+					<i class="custom-icon-roundadd custom-icon t-label"></i>
 					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">添加交易商品</text>
 				</view>
 				<view @click="handleGoto('/pages/my/broker/prod_set')" class="step18 item u-text-center u-flex-1">
-					<i class="custom-icon-goods custom-icon u-font-40"></i>
+					<i class="custom-icon-goods custom-icon t-label"></i>
 					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">商品列表</text>
 				</view>
 				<view @click="handleGoto({url: '/pages/my/broker/list', params: {pan: 'b'}})" class="step19 item u-text-center u-flex-1">
-					<i class="custom-icon-jinhuoqu custom-icon u-font-40"></i>
+					<i class="custom-icon-jinhuoqu custom-icon t-label"></i>
 					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">我的买盘</text>
 				</view>
 				<view @click="handleGoto({url: '/pages/my/broker/list', params: {pan: 's'}})" class="step20 item u-text-center u-flex-1">
-					<i class="custom-icon-zu555 custom-icon u-font-40"></i>
+					<i class="custom-icon-zu555 custom-icon t-label"></i>
 					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">我的卖盘</text>
 				</view>
 			</view>
 		</view>
 		
-		<!-- <view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26" >
+		<view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26" >
 			<view class="box-header u-flex u-flex-items-end u-border-bottom u-p-b-14 u-p-l-30 u-p-r-30">
 				<view class="u-font-34">订单中心</view>
 				
 			</view>
 			<view class="box-row u-flex u-flex-between u-flex-items-center u-p-t-20 u-p-b-10">
-				<view @click="handleGoto('/pages/my/order/order')" class="item u-text-center u-flex-1">
-					<i class="custom-icon-zu556 custom-icon u-font-40"></i>
+				<view @click="handleGoto({url: '/pages/my/order/order', params: {ordertype: 'B'}})" class="item u-text-center u-flex-1">
+					<i class="custom-icon-zu556 custom-icon t-label"></i>
 					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">采购订单</text>
 				</view>
-				<view @click="handleGoto('/pages/my/order/order')" class="item u-text-center u-flex-1">
-					<i class="custom-icon-zu558 custom-icon u-font-40"></i>
+				<view @click="handleGoto({url: '/pages/my/order/order', params: {ordertype: 'S'}})" class="item u-text-center u-flex-1">
+					<i class="custom-icon-zu558 custom-icon t-label"></i>
 					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">销售订单</text>
-				</view>
-				<view @click="handleGoto('/pages/my/order/order')" class="item u-text-center u-flex-1">
-					<i class="custom-icon-jinhuodan custom-icon u-font-40"></i>
-					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">采购了结单</text>
-				</view>
-				<view @click="handleGoto('/pages/my/order/order')" class="item u-text-center u-flex-1">
-					<i class="custom-icon-chuhuo custom-icon u-font-40"></i>
-					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">销售了结单</text>
-				</view>
+				</view> 
+				<view class="item u-flex-1"></view>
+				<view class="item u-flex-1"></view>
 			</view>
-		</view> -->
+		</view>
 		
 		
-		<view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26" v-if="sh != 1">
+		<view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26" v-if="sh == 1">
 			<view class="box-header u-flex u-flex-items-end u-border-bottom u-p-b-14 u-p-l-30 u-p-r-30">
 				<view class="u-font-34">资金中心</view>
 				
 			</view>
 			<view class="box-row u-flex u-flex-between u-flex-items-center u-p-t-20 u-p-b-10">
 				<view @click="handleGoto('/pages/my/money/index')" class="item u-text-center u-flex-1">
-					<i class="custom-icon-moneybag custom-icon u-font-40"></i>
+					<i class="custom-icon-moneybag custom-icon t-label"></i>
 					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">资金主页</text>
 				</view>
 				<view @click="handleGoto('/pages/my/money/sino_zh1')" class="item u-text-center u-flex-1">
-					<i class="custom-icon-pay custom-icon u-font-40"></i>
+					<i class="custom-icon-pay custom-icon t-label"></i>
 					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">现金账户</text>
 				</view>
 				<view @click="handleGoto('/pages/my/money/bill')" class="item u-text-center u-flex-1">
-					<i class="custom-icon-form custom-icon u-font-40"></i>
+					<i class="custom-icon-form custom-icon t-label"></i>
 					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">付款记录</text>
 				</view>
 				<view @click="handleGoto('/pages/my/money/safe_list')" class="item u-text-center u-flex-1">
-					<i class="custom-icon-lock custom-icon u-font-40"></i>
+					<i class="custom-icon-lock custom-icon t-label"></i>
 					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">安全设置</text>
 				</view>
 			</view>
@@ -194,15 +198,15 @@
 			<view class="box-header u-border-bottom u-flex u-flex-items-end u-p-b-14 u-p-l-30 u-p-r-30">
 				<view class="u-font-34">{{ele.name}}</view>
 			</view>
-			<view class="box-row other-menus u-flex u-flex-wrap u-flex-items-center u-p-t-20 u-p-b-10">
+			<view class="box-row other-menus u-flex u-flex-wrap u-flex-items-center u-p-t-20 ">
 				<view 
-					class="item u-text-center u-m-b-26" 
+					class="item u-text-center u-m-t-15" 
 					v-for="(item, index) in ele.list" 
 					:key="index"
 					@click="handleMenusClick(item)"
 					>
 					<image class="icon-img" :src="item.icon" mode=""></image>
-					<text class="u-font-26 u-p-t-12 u-line-1 menus-name">{{item.name}}</text>
+					<text class="u-font-26 u-p-b-10 u-line-1 menus-name">{{item.name}}</text>
 				</view>
 			</view>
 		</view>
@@ -307,12 +311,15 @@
 	.box-row .custom-icon {
 		color: #333;
 	}
+	.t-label {
+		font-size: 22px!important;
+	}
 	.other-menus {
 		.item {
 			flex: 0 0 25%;
 			.icon-img {
-				width: 20px;
-				height: 20px;
+				width: 22px;
+				height: 22px;
 			}
 		}
 	}

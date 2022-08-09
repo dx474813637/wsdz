@@ -3,7 +3,7 @@
 		<u-navbar
 			bgColor="transparent"
 		>
-			<view @click="handlGoto({url: '/pages/my/money/index', type: 'redirectTo'})" class="u-flex u-flex-items-center text-white" slot="left">
+			<view @click="handleGoto({url: '/pages/my/money/index', type: 'redirectTo'})" class="u-flex u-flex-items-center text-white" slot="left">
 				<i class="custom-icon-back custom-icon"></i>
 				<text class="u-p-l-10">资金中心</text>
 			</view>
@@ -16,8 +16,8 @@
 					<view class="main-card-label">付款账户</view>
 					<view class="main-card-icon">付</view>
 					<view class="main-card-info">
-						<view class="item name">张三</view>
-						<view class="item">户号：110000000568</view>
+						<view class="item name u-line-1">{{wallet.name}}</view>
+						<view class="item text-base">户号：{{wallet.user_fundaccno}}</view>
 					</view>
 				</view>
 			</view>
@@ -30,7 +30,7 @@
 					<moneyCard></moneyCard>
 				</view>
 				<view class="main-list">
-					<view @click="handlGoto('/pages/my/money/bank_card')" class="list-item">
+					<view @click="handleGoto('/pages/my/money/bank_card')" class="list-item">
 						<view class="item-left">
 							<view class="icon-wrap u-flex u-flex-center u-flex-items-center">
 								<i class="custom-icon-vipcard custom-icon"></i>
@@ -41,7 +41,7 @@
 							<i class="custom-icon-right custom-icon"></i>
 						</view>
 					</view>
-					<view @click="handlGoto('/pages/my/money/sino_cz_list')" class="list-item">
+					<view @click="handleGoto('/pages/my/money/sino_cz_list')" class="list-item">
 						<view class="item-left">
 							<view class="icon-wrap u-flex u-flex-center u-flex-items-center">
 								<i class="custom-icon-searchlist custom-icon"></i>
@@ -52,7 +52,7 @@
 							<i class="custom-icon-right custom-icon"></i>
 						</view>
 					</view>
-					<view @click="handlGoto('/pages/my/money/sino_zh2')" class="list-item">
+					<view @click="handleGoto('/pages/my/money/sino_zh2')" class="list-item">
 						<view class="item-left">
 							<view class="icon-wrap u-flex u-flex-center u-flex-items-center">
 								<i class="custom-icon-moneybag custom-icon"></i>
@@ -60,11 +60,11 @@
 							<view class="text-base item-t">收款账户</view>
 						</view>
 						<view class="item-right">
-							<view>100000110011</view>
+							<view>{{wallet.relation_id}}</view>
 							<i class="custom-icon-right custom-icon"></i>
 						</view>
 					</view>
-					<view @click="handlGoto({url: '/pages/my/money/sino_cz_list', params: {tabs_current: 3}})" class="list-item">
+					<view @click="handleGoto({url: '/pages/my/money/sino_cz_list', params: {tabs_current: 3}})" class="list-item">
 						<view class="item-left">
 							<view class="icon-wrap u-flex u-flex-center u-flex-items-center">
 								<i class="custom-icon-moneybag custom-icon"></i>
@@ -77,7 +77,7 @@
 					</view>
 				</view>
 			
-				<view @click="handlGoto({url: '/pages/my/money/sino_cz', params: {cz: 2}})" class="u-flex u-flex-center text-primary u-font-28 u-m-t-40">
+				<view @click="handleGoto({url: '/pages/my/money/sino_cz', params: {cz: 2}})" class="u-flex u-flex-center text-primary u-font-28 u-m-t-40">
 					同名账户转账
 				</view>
 			</view>
@@ -89,13 +89,26 @@
 </template>
 
 <script>
-	import {mapState, mapGetters, mapMutations} from 'vuex'
+	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
 	import moneyCard from '@/pages/my/components/moneyCard/moneyCard.vue'
 	export default {
 		data() {
 			return {
-
+				type: 'B'
 			};
+		},
+		computed: {
+			...mapState({
+				sino: state => state.sinopay.sino,
+				sinoFund: state => state.sinopay.sinoFund,
+				myCpy: state => state.user.myCpy
+			}),
+			wallet() {
+				let w = {};
+				if(!this.sinoFund || this.sinoFund.length == 0) return w;
+				w = this.sinoFund.filter(ele => ele.type == this.type)[0] || {}
+				return w
+			}
 		},
 		components: {
 			moneyCard
@@ -103,6 +116,9 @@
 		methods: {
 			...mapMutations({
 				handleGoto: 'user/handleGoto'
+			}),
+			...mapActions({
+				getSinoFundAccount: 'sinopay/getSinoFundAccount', 
 			}),
 		}
 	}
@@ -141,11 +157,12 @@
 		.main-card-label {
 			position: absolute;
 			right: 0;
-			top: 50%;
-			transform: translateY(-50%);
-			line-height: 30px;
+			bottom: 10px;
+			// top: 50%;
+			// transform: translateY(-50%);
+			line-height: 22px;
 			padding: 0 15px;
-			font-size: 16px;
+			font-size: 15px;
 			background-image: linear-gradient(135deg, #8e0303, red);
 			color: #fff;
 			border-radius: 20px 0 0 20px;

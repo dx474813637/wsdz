@@ -147,7 +147,26 @@
 									label="参考定价可为"
 								>
 									<u--input
-										:value="ck_price"
+										:value="ck_list.ck_price"
+										placeholder="点击参考定价按钮生成"
+										readonly
+										border="none"
+										:color="themeConfig.pageText"
+										:placeholderStyle="{
+											color: themeConfig.pageText
+										}"
+										:customStyle="{
+											background: themeConfig.pageBg,
+											padding: '8px',
+											borderRadius: '5px',
+										}"
+									></u--input>
+								</u-form-item>	
+								<u-form-item
+									label="变化幅度"
+								>
+									<u--input
+										:value="ck_list.difference"
 										placeholder="点击参考定价按钮生成"
 										readonly
 										border="none"
@@ -361,7 +380,10 @@
 					price: '',
 					ddate: uni.$u.timeFormat(new Date().getTime() - 24*60*60*1000, 'yyyy-mm-dd'),
 				},
-				ck_price: '',
+				ck_list: {
+					difference: '',
+					ck_price: ''
+				},
 				pc_content1: '',
 				pc_content2: '',
 				pc_content3: '',
@@ -723,7 +745,7 @@
 					const res = await this.pricingCenter()
 					if(res.code == 1) {
 						// this.setOnlineControl(res)
-						this.ck_price = res.list.ck_price
+						this.ck_list = res.list
 					}
 				}).catch(errors => {
 					uni.$u.toast('校验失败')

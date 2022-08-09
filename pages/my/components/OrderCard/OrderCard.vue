@@ -1,5 +1,5 @@
 <template>
-	<view class="card-w u-p-26"
+	<view class="card-w u-p-20"
 		:style="{
 			backgroundColor: bgColor,
 			borderRadius: borderRadius,
@@ -7,28 +7,54 @@
 		}"
 		 @click="handleGotoDetail"
 		>
-		<view class="card-header u-flex u-flex-items-center u-flex-between u-border-bottom u-p-b-20">
-			<!-- <view class="text-light">{{ids}}</view> -->
-			<view class="u-line-1">{{seller}}</view>
-			<view class="text-primary u-font-28">{{ht_status}}</view>
+		<view class="card-header u-flex u-flex-items-center u-flex-between  u-p-5">
+			<view class="u-flex u-flex-items-baseline">
+				<view class="u-font-28 text-base">
+					{{customData.id}}
+				</view>
+				<!-- <u-tag :text="customData.id" size="mini" ></u-tag> -->
+				<view class="u-line-1 u-m-l-10">{{ordertype == 'B' ? customData.b_company : customData.s_company }}</view>
+			</view>
+			
+			<view class=" u-font-28" style=" flex: 0 0 auto;" >
+				<u-tag :text="customData.state | orderState2Str" size="mini" :type="(customData.state == '2' || customData.state == '3')? 'error': 'primary'"></u-tag>
+			</view>
 		</view>
 		<view class="card-main u-p-t-20">
-			<view class="main-row u-flex u-flex-between u-flex-items-start u-p-b-20 u-p-t-20">
-				<view class="item">{{prod}}</view>
-				<view class="item text-light u-text-right">
+			<view class="main-row u-flex u-flex-between u-flex-items-start u-p-20 u-radius-8 page-bg2">
+				<view class="item">{{customData.title}}</view>
+				<view class="item u-text-right u-m-l-10" style=" flex: 0 0 auto;">
 					<view class="u-m-b-10">
-						<u-count-to fontSize="16" :startVal="price" :endVal="price" :decimals="2" separator=","></u-count-to>
-						<text class="u-p-l-10 u-font-28">{{unit}}/元</text>
+						<!-- <u-count-to fontSize="16" :startVal="0" :endVal="customData.price1" decimals="2"  separator=","></u-count-to> -->
+						<text class="">{{customData.price1}}</text>
+						<text class="u-p-l-10 u-font-28 text-light">{{customData.unit}}/元</text>
 					</view>
-					<view class="u-font-28">x {{num}}{{unit}}</view>
+					<view class="u-font-28 text-light">x {{customData.amount}}{{customData.unit}}</view>
 					
 					<!-- <u-count-to fontSize="16" :startVal="prices" :endVal="prices" :decimals="2" separator=","></u-count-to>
 					<text class="u-p-l-10">元</text> -->
 				</view>
 			</view>
-			<view class="main-row u-flex u-flex-between u-flex-items-center u-p-b-20 u-p-t-20">
-				<view class="item text-light">{{date}}</view>
-				<view class="item ">{{pay_type}}</view>
+			<view class="main-row u-flex u-flex-between u-flex-items-center u-m-t-20 u-p-5">
+				<view class="item text-light u-font-28">支付手段</view>
+				<view class="item ">{{customData.bill_price2}}元</view>
+			</view>
+			<view class="main-row u-flex u-flex-between u-flex-items-center u-m-t-20 u-p-5">
+				<view class="item text-light u-font-28">{{customData.create_time}}</view>
+				<view class="item text-error">
+					<template v-if="customData.order_type == '1'">
+						<text class="u-p-r-10">{{customData.pay_mode.includes('FUNDPAY')? '现金' : '票据'}}</text>
+						<text>
+							<template v-if="customData.settle_type == 'D_P'">款到发货</template>
+							<template v-else-if="customData.settle_type == 'GRT'">担保支付</template>
+							<template v-else-if="customData.settle_type == 'COD'">货到付款</template>
+							<template v-else >{{customData.settle_type}}</template>
+						</text>
+					</template>
+					<template v-if="customData.order_type == '2'">
+						非支付
+					</template>
+				</view>
 			</view>
 		</view>
 		<!-- <view class="card-footer u-flex u-flex-between u-flex-items-center u-p-b-12 u-p-t-12">
@@ -45,6 +71,10 @@
 			bgColor: {
 				type: String,
 				default: '#fff',
+			},
+			ordertype: {
+				type: String,
+				default: 'B',
 			},
 			ids: {
 				type: String,
@@ -109,7 +139,7 @@
 		},
 		methods: {
 			handleGotoDetail() {
-				this.$emit('detail', {id: this.ids, customData: this.customData})
+				this.$emit('detail', this.customData)
 			}
 		}
 	}

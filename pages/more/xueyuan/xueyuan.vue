@@ -1,6 +1,6 @@
 <template>
 	<view class="w">
-		<view class="tabs-w bg-white">
+		<view class="tabs-w bg-white" :key="key">
 			<u-tabs
 				:list="tabs_list"
 				:current="tabs_current"
@@ -8,41 +8,11 @@
 				:activeStyle="activeTabsStyle"
 				:itemStyle="itemTabsStyle"
 				@change="handleTabsChange"
-			>
-				<view
-					slot="right"
-					class="u-p-r-20 u-p-l-30 u-flex u-flex-items-center u-border-left text-base" 
-					
-				>
-					<view class="u-flex u-flex-items-center u-m-r-20"
-						@click="handleShipin(1)"
-						:class="{
-							'text-primary': shipin == 1
-						}"
-					>
-						<text class="u-p-r-8 u-font-28">视频</text>
-						<i class="custom-icon-video custom-icon text-base u-font-28"
-						:class="{
-							'text-primary': shipin == 1
-						}"></i>
-					</view>
-					<view class="u-flex u-flex-items-center"
-						@click="handleShipin(2)"
-						:class="{
-							'text-primary': shipin == 2
-						}">
-						<text class="u-p-r-8 u-font-28">图文</text>
-						<i class="custom-icon-image custom-icon text-base u-font-28"
-						:class="{
-							'text-primary': shipin == 2
-						}"></i>
-					</view>
-					
-				</view>
-			</u-tabs>
+				@click="handleTabsClick"
+			></u-tabs>
 		</view>
-		<view class="search-wrapper u-flex u-p-l-20 u-p-r-20 bg-white">
-			<view class="item u-flex-1 u-p-b-10">
+		<view class="search-wrapper u-flex u-flex-items-center u-flex u-p-l-20 u-p-r-20 bg-white u-p-b-10">
+			<view class="item u-flex-1">
 				<u-search 
 					placeholder="搜索" 
 					v-model="keyword"
@@ -51,6 +21,34 @@
 					bgColor="#eee"
 					@search="handleSearch"
 				></u-search>
+			</view>
+			<view
+				class="item u-p-r-20 u-p-l-40 u-flex u-flex-items-center  text-base " 
+				>
+				<view class="u-flex u-flex-items-center u-m-r-20"
+					@click="handleShipin(1)"
+					:class="{
+						'text-primary': shipin == 1
+					}"
+				>
+					<text class="u-p-r-8 u-font-28 u-p-b-4">视频</text>
+					<i class="custom-icon-video custom-icon text-base u-font-28"
+					:class="{
+						'text-primary': shipin == 1
+					}"></i>
+				</view>
+				<view class="u-flex u-flex-items-center"
+					@click="handleShipin(2)"
+					:class="{
+						'text-primary': shipin == 2
+					}">
+					<text class="u-p-r-8 u-font-28 u-p-b-4">图文</text>
+					<i class="custom-icon-image custom-icon text-base u-font-28"
+					:class="{
+						'text-primary': shipin == 2
+					}"></i>
+				</view>
+				
 			</view>
 			
 		</view>
@@ -81,6 +79,7 @@
 							<view class="card-main u-font-30">
 								<view class="u-line-2">
 									<text v-if="item.shipin == 1" class="label-v custom-icon-videofill custom-icon"></text>
+									<text v-if="item.shipin == 2" class="label-v custom-icon-qunzhibo custom-icon"></text>
 									<text>{{item.title}}</text>
 								</view>
 							</view>
@@ -121,13 +120,14 @@
 				column: 2,
 				keyword: '',
 				tabs_current: 0,
+				last_current: 0,
 				activeTabsStyle: {
 					fontWeight: 'bold',
-					color: '#007aff'
+					color: '#007aff',
 				},
 				itemTabsStyle: {
 					height: '44px',
-					padding: '0 13px'
+					padding: '0 10px',
 				},
 				tabs_list: [
 					{
@@ -142,13 +142,14 @@
 				shipin: 0,
 				listStyle: {
 					boxShadow: '0 0 10px rgba(0,0,0,.1)'
-				}
+				},
+				key: new Date().getTime()
 			};
 		},
-		onLoad() {
+		async onLoad() {
 			uni.showLoading()
-			this.getData()
-		},
+			await this.getData()
+		}, 
 		computed: {
 			...mapState({
 				typeConfig: state => state.theme.typeConfig,
@@ -166,8 +167,16 @@
 			...mapMutations({
 				handleGoto: 'user/handleGoto'
 			}),
+			handleTabsClick(value) {
+				if(value.id == 'jjfa') {
+					uni.navigateTo({
+						url: '/pages/more/jjfa/list',
+					}) 
+				}
+			},
 			async handleTabsChange(value) {
 				this.tabs_current = value.index
+				
 				this.keyword = ""
 				this.changeTabsStatus('disabled', true)
 				uni.showLoading();
@@ -177,7 +186,7 @@
 			},
 			changeTabsStatus(key, value) {
 				this.tabs_list = this.tabs_list.map(ele => {
-					ele[key] = value;
+					ele[key] = ele.id == 'jjfa'? true : value
 					return ele
 				})
 			},
@@ -211,7 +220,7 @@
 					if(this.tabs_list.length == 1) {
 						this.tabs_list = [...this.tabs_list, 
 								...res.cate.map(ele => {
-									ele.disabled = false
+									ele.disabled = ele.id == 'jjfa'? true : false
 									return ele
 								})
 							]
@@ -242,12 +251,28 @@
 				this.refreshList()
 			},
 			handleClick(data) {
+				console.log(data)
 				if(data.shipin == 1) {
 					wx.openChannelsActivity({
 						finderUserName: data.sph,
 						feedId: data.feedid,
 						success(res) {
 							console.log(res)
+						}
+					})
+				}else if(data.shipin == 2) {
+					// wx.openChannelsLive({
+					// 	finderUserName: data.sph,
+					// 	feedId: data.feedid,
+					// 	success(res) {
+					// 		console.log(res)
+					// 	}
+					// })
+					this.handleGoto({
+						url: '/pages/more/live_detail/live_detail',
+						params: {
+							id: data.id,
+							sph: data.sph
 						}
 					})
 				}else {
@@ -266,9 +291,32 @@
 	page {
 		background-color: $page-bg2;
 		height: 100vh;
+		/deep/ {
+			.u-tabs__wrapper {
+				.u-tabs__wrapper__nav__item__text {
+					font-size: 17px!important;
+				}
+				.u-tabs__wrapper__nav__item__text--disabled {
+					color: #606266!important;
+				}
+			}
+		}
 	}
+	
 </style>
 <style lang="scss" scoped>
+	.xx {
+		position: relative;
+		&:after {
+			content: '';
+			position: absolute;
+			right: 100%;
+			top: 0;
+			width: 8px;
+			height: 100%;
+			background: linear-gradient(to right, rgba(90,90,90,0), rgba(90,90,90,.3));
+		}
+	}
 	.item-w {
 		// width: 50%;
 		// flex: 0 0 50%;
