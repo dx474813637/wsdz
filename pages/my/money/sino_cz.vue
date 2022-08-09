@@ -36,6 +36,31 @@
 					:labelStyle="{fontSize: '28rpx', paddingBottom: '10rpx'}"
 				>
 					<u-form-item
+						label="资金账户" 
+						required
+					>
+						<view @click="showPicker">
+							<u--input
+								:value="sino_acc"
+								readonly
+								suffixIcon="arrow-down"
+								suffixIconStyle="color: #bbb" 
+							></u--input>
+						</view>
+						
+					</u-form-item>
+					
+					<u-picker 
+						:show="show_acc" 
+						ref="uPicker" 
+						closeOnClickOverlay
+						:columns="columns_acc" 
+						@confirm="confirm_acc" 
+						@close="show_acc = false" 
+						@cancel="show_acc = false" 
+						></u-picker>
+					
+					<u-form-item
 						label="充值类型"
 						@click="showActions"
 						ref="item1"
@@ -166,8 +191,11 @@
 								<BankCard
 									:bank_class="item.bank_class"
 									:bank_name="item.bank_name"
+									:bank_sub="item.bank_accname"
+									:bank_no="item.bank_accno"
+									:origin="item"
 									@detail="handleClick"
-								></BankCard>
+								></BankCard> 
 							</view>
 							
 						</u-list-item>
@@ -188,11 +216,11 @@
 								</template>
 								
 							</template>
-							<template v-else>
+							<!-- <template v-else>
 								<u-loadmore
 									:status="loadstatus"
 								/>
-							</template>
+							</template> -->
 						</template>
 						
 					</u-list>
@@ -227,11 +255,13 @@
 </template>
 
 <script>
-	import {mapState, mapGetters, mapMutations} from 'vuex'
+	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
 	import BankCard from '@/pages/my/components/BankCard/BankCard.vue'
 	export default {
 		data() {
 			return {
+				show_acc: false,
+				index_acc: 0,
 				cz: 1,
 				cztype: '直接充值',
 				bankPopup: false,
@@ -242,29 +272,66 @@
 					id: '',
 					name: ''
 				},
-				model: {
+				model: { 
 					money: '',
 					bind_id: '',
 					bz: ''
 				},
 				indexList: [],
 				curP: 1,
-				loadstatus: 'loadmore'
+				loadstatus: 'loadmore',
+				bankLoading: false
 			}
 		},
 		components: {
 			BankCard
 		},
-		onLoad(options) {
+		async onLoad(options) {
 			if(options.hasOwnProperty('cz')) {
 				this.cz = options.cz
 			}
-			this.getData()
+			if(!this.sinoFund || this.sinoFund.length == 0) {
+				await this.getSinoFundAccount()
+			}
+			this.bankLoading = true;
+			await this.getBankCard()
+			this.bankLoading = false;
+		},
+		watch: {
+			index_acc: {
+				// immediate: true,
+				async handler(n) {
+					this.bankLoading = true;
+					await this.getBankCard()
+					this.bankLoading = false;
+				}
+			}
 		},
 		computed: {
 			...mapState({
 				typeConfig: state => state.theme.typeConfig,
+				sinoFund: state => state.sinopay.sinoFund,
+				sinoFundLoading: state => state.sinopay.sinoFundLoading,
 			}),
+			columns_acc() {
+				if(!this.sinoFund || this.sinoFund.length == 0) return [];
+				return [
+					this.sinoFund.map(ele => {
+						let label = '';
+						if(ele.type == 'S') label = '【收】'
+						else label = '【付】'
+						return `${label}${ele.user_fundaccno}-${ele.name}`
+					})
+				]
+			},
+			sino_acc() {
+				if(!this.sinoFund || this.sinoFund.length == 0) return '';
+				let item = this.sinoFund[this.index_acc]
+				let label = ''; 
+				if(item.type == 'S') label = '【收】'
+				else label = '【付】'
+				return `${label}${item.user_fundaccno}-${item.name}`
+			},
 			rules() {
 				if(this.cz != '2') {
 					return {
@@ -345,6 +412,17 @@
 			...mapMutations({
 				handleGoto: 'user/handleGoto'
 			}),
+			...mapActions({
+				getSinoFundAccount: 'sinopay/getSinoFundAccount'
+			}),
+			showPicker() {
+				if(this.columns_acc.length == 0) return;
+				this.show_acc = true
+			},
+			confirm_acc(e) { 
+				this.show_acc = false
+				this.index_acc = e.indexs[0]
+			},
 			refreshList() {
 				if(this.cz == '2') return
 				this.initParamas()
@@ -357,19 +435,19 @@
 			},
 			
 			scrolltolower() {
-				this.getMoreData()
+				// this.getMoreData()
 			},
-			async getData() {
-				if(this.loadstatus != 'loadmore' || this.cz == '2') return
-				this.loadstatus = 'loading'
-				const res = await this.$api.getBankcardList()
-				if(res.code == 1) {
-					this.indexList = [...this.indexList, ...res.data]
-					if(this.curP == res.page_total) {
-						this.loadstatus = 'nomore'
-					}else {
-						this.loadstatus = 'loadmore'
+			async getBankCard() {
+				if( this.cz == '2') return
+				// this.loadstatus = 'loading'
+				const res = await this.$api.sino_fund_account_list_bind({
+					params: {
+						account_id: this.sinoFund[this.index_acc].id
 					}
+				})
+				if(res.code == 1) {
+					this.indexList = res.list
+					 
 				}
 			},
 			async getMoreData() {
