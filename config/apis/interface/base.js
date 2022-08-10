@@ -349,6 +349,11 @@ export const brokerChangeSell = (data, config={}) => http.post('broker_change_se
 // broker_able_sell 修改客户委托卖盘状态 参数跟修改卖盘状态一致
 export const brokerAbleSell = (data) => http.get('broker_able_sell', data)
 
+// broker_customer_sell 客户自主卖盘列表
+export const broker_customer_sell = (data) => http.get('broker_customer_sell', data)
+// broker_customer_buy 客户自主买盘列表
+// 参数都是terms商品名称搜索 p页码 product_id商品ID搜索
+export const broker_customer_buy = (data) => http.get('broker_customer_buy', data)
 
 
 // tims_news_list 未读消息列表

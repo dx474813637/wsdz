@@ -653,7 +653,14 @@
 					"enablePullDownRefresh": false
 				}
 
-			}
+			}, {
+				"path": "customer/customer_pan_zz",
+				"style": {
+					"navigationBarTitleText": "客户自主盘列表",
+					"enablePullDownRefresh": false
+				}
+
+			} 
 		]
 	}, {
 		"root": "pages/more",

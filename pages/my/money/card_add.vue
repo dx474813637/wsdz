@@ -211,9 +211,10 @@
 				disabled: true,
 				codeInputShow: false,
 				type: 'b',
+				from_wallet: 'B',
 				code: '',
 				model: {
-					id: '',
+					account_id: '',
 					name: '',
 					bank_accno: '',
 					card_id: '',
@@ -316,8 +317,11 @@
 			},
 			
 		},
-		onLoad() {
-			this.model.id = this.sinoFund[0]?.id
+		async onLoad(options) { 
+			if(options.hasOwnProperty('wallet')) {
+				this.from_wallet = options.wallet
+			}
+			this.model.account_id = this.sinoFund.filter(ele => ele.type == this.from_wallet)[0]?.id
 			this.model.name = this.myCpy.name
 			this.model.card_id = this.myCpy.credit_code
 			this.model.mobile = this.myCpy.mobile
@@ -373,7 +377,9 @@
 			submit_yanzheng() {
 				this.$refs.from_yanzheng.validate().then(async res => {
 					uni.showLoading()
-					const r = await this.$api.sino_fund_account_check({...this.model_yanzheng})
+					const r = await this.$api.sino_fund_account_check({
+						params: {...this.model_yanzheng}
+					})
 					console.log(r)
 					if(r.code == 1) { 
 						uni.showToast({
@@ -394,7 +400,11 @@
 				
 				this.$refs.from.validate().then(async res => {
 					uni.showLoading()
-					const r = await this.$api.sino_fund_account_refresh_bal({...this.model})
+					const r = await this.$api.sino_fund_account_refresh_bal({
+						params: {
+							...this.model
+						}
+					})
 					console.log(r)
 					if(r.code == 1) {
 						this.codeInputShow = true

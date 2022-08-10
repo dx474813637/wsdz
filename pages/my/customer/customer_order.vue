@@ -15,7 +15,9 @@
 				></u--input>
 			</view>
 			<view class="item u-m-l-20" @click="resetCustom">
-				<i class="custom-icon-roundclosefill custom-icon " style="color: #9e9e9e;font-size: 28px"></i>
+				<view class=" u-radius-18 u-flex u-flex-items-center u-flex-center" style="width: 30px;height: 30px;background-color: #999; ">
+					<i class="custom-icon-shanchu-copy custom-icon" style="color:#fff; font-size: 14px"></i>
+				</view>
 			</view>
 		</view>
 		<view class="search-wrapper u-flex u-flex-items-center u-p-l-20 u-p-r-20 u-p-b-10">
@@ -41,7 +43,7 @@
 				></u-search>
 			</view>
 			<view class="item u-m-l-20" @click="handleSearch">
-				<view class="u-p-15 u-radius-18 bg-primary" style="background-color:#999; ">
+				<view class=" u-radius-18 bg-primary u-flex u-flex-items-center u-flex-center" style="width: 30px;height: 30px; ">
 					<i class="custom-icon-search custom-icon" style="color:#fff; font-size: 14px"></i>
 				</view>
 			</view>
@@ -165,7 +167,7 @@
 				this.ordertype = options.ordertype
 			} 
 			uni.setNavigationBarTitle({
-				title: this.ordertype == 'B' ? '我的采购订单' : '我的销售订单'
+				title: this.ordertype == 'B' ? '客户采购订单' : '客户销售订单'
 			})
 			uni.showLoading()
 			await this.getData()

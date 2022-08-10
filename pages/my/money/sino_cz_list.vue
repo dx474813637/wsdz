@@ -108,8 +108,8 @@
 			if(options.hasOwnProperty('tabs_current')) {
 				this.tabs_current = Number(options.tabs_current)
 			}
-			if(options.hasOwnProperty('type')) {
-				this.type = options.type
+			if(options.hasOwnProperty('wallet')) {
+				this.type = options.wallet
 			}
 			uni.showLoading()
 			this.getData()

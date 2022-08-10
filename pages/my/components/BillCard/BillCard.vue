@@ -13,7 +13,11 @@
 					<view class="name u-flex u-flex-items-center ">
 						{{detailData.id}}
 					</view>
-					<view class="pp text-primary">state:{{detailData.state}}, o_state:{{detailData.Order.state}}</view>
+					<view class="pp" :class="{
+						'text-success': detailData.state == '5',
+						'text-error': detailData.state == '6',
+						'text-primary': detailData.state != '5' && detailData.state != '6'
+					}">{{detailData.state | payFundState2Str}}</view>
 				</view>
 				<view class="item u-flex u-flex-between u-flex-items-start u-m-b-20 ">
 					<view class="pp u-flex u-flex-items-start">
@@ -26,8 +30,9 @@
 							<template v-else-if="paytype == 'S'">{{detailData.b_company}}</template>
 						</text>
 					</view>
-					<view class="u-font-28 u-text-right" style="flex: 0 0 100px">
-						paystate:{{detailData.Order.pay_state}}
+					<view class="u-font-28 u-text-right text-base" style="flex: 0 0 100px">
+						<template v-if="detailData.Order.settle_type == 'GRT'">担保支付</template>
+						<template v-else>直接支付</template>
 					</view>
 					
 					

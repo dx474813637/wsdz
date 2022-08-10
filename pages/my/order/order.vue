@@ -23,7 +23,7 @@
 				></u-search>
 			</view>
 			<view class="item u-m-l-20" @click="handleSearch">
-				<view class="u-p-15 u-radius-18 bg-primary" style="background-color:#999; ">
+				<view class=" u-radius-18 bg-primary u-flex u-flex-items-center u-flex-center" style="width: 30px;height: 30px; ">
 					<i class="custom-icon-search custom-icon" style="color:#fff; font-size: 14px"></i>
 				</view>
 			</view>

@@ -2,7 +2,11 @@
 let state = {
 		sino: uni.getStorageSync('sino') || {},
 		sinoFund: [],
-		sinoFundLoading: false
+		sinoFundLoading: false,
+		sinoBillAccount: {},
+		sinoBillLoading: false,
+		sinoBillAccountList: [],
+		sinoBillListLoading: false,
 	},
 	getters = {
 		
@@ -17,6 +21,18 @@ let state = {
 		},
 		setSinoFundLoading(state, data) {
 			state.sinoFundLoading = data
+		},
+		setSinoBillLoading(state, data) {
+			state.sinoBillLoading = data
+		},
+		setSinoBillListLoading(state, data) {
+			state.sinoBillListLoading = data
+		},
+		setSinoBillAccount(state, data) {
+			state.sinoBillAccount = data
+		},
+		setSinoBillAccountList(state, data) {
+			state.sinoBillAccountList = data
 		},
 		clearSino(state, data) {
 			state.sinoFund = []
@@ -38,6 +54,25 @@ let state = {
 			commit('setSinoFundLoading', false)
 			if(res.code == 1) {
 				commit('setSinoFundAccount', res.list)
+			}
+		},
+		async getSinoBillAccount({commit, state}, data={}) {
+			 
+			commit('setSinoBillLoading', true)
+			const res = await this._vm.$api.sino_bill_account_list(); 
+			
+			commit('setSinoBillLoading', false)
+			if(res.code == 1) {
+				commit('setSinoBillAccount', res.list.bill_account)
+			}
+		},
+		async getSinoBillAccountList({commit, state}, data={}) {
+			 
+			commit('setSinoBillListLoading', true)
+			const res = await this._vm.$api.sino_bill_account_list_account(); 
+			commit('setSinoBillListLoading', false)
+			if(res.code == 1) {
+				commit('setSinoBillAccountList', res.list.list_accounts)
 			}
 		},
 		async refreshSinoFundAccount({commit, state}, data={}) {

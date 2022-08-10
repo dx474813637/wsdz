@@ -30,7 +30,7 @@
 					<moneyCard></moneyCard>
 				</view>
 				<view class="main-list">
-					<view @click="handleGoto('/pages/my/money/bank_card')" class="list-item">
+					<view @click="handleGoto({url: '/pages/my/money/bank_card', params: {wallet: 'B'}})" class="list-item">
 						<view class="item-left">
 							<view class="icon-wrap u-flex u-flex-center u-flex-items-center">
 								<i class="custom-icon-vipcard custom-icon"></i>
@@ -41,7 +41,7 @@
 							<i class="custom-icon-right custom-icon"></i>
 						</view>
 					</view>
-					<view @click="handleGoto('/pages/my/money/sino_cz_list')" class="list-item">
+					<view @click="handleGoto({url: '/pages/my/money/sino_cz_list', params: {wallet: 'B'}})" class="list-item">
 						<view class="item-left">
 							<view class="icon-wrap u-flex u-flex-center u-flex-items-center">
 								<i class="custom-icon-searchlist custom-icon"></i>

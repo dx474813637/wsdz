@@ -81,6 +81,7 @@
 	export default {
 		data() {
 			return {
+				wallet_type: 'B',
 				keyword: '', 
 				tabs_current: 1,
 				activeTabsStyle: {
@@ -123,6 +124,9 @@
 			if(opt.hasOwnProperty('current')) {
 				this.tabs_current = opt.current
 			}
+			if(opt.hasOwnProperty('wallet')) {
+				this.wallet_type = opt.wallet
+			}
 			uni.showLoading()
 			this.getData()
 		},
@@ -136,6 +140,12 @@
 			list() {
 				if(this.tabs_list[this.tabs_current].state == 'all') return this.indexList
 				return this.indexList.filter(ele => ele.state == this.tabs_list[this.tabs_current].state )
+			},
+			wallet() {
+				let w = {};
+				if(!this.sinoFund || this.sinoFund.length == 0) return w;
+				w = this.sinoFund.filter(ele => ele.type == this.wallet_type)[0] || {}
+				return w
 			}
 		},
 		components: {
@@ -178,7 +188,7 @@
 			async getData() { 
 				const res = await this.$api.sino_fund_account_list_bind({
 					params: {
-						account_id: this.sinoFund[0]?.id
+						account_id: this.wallet.id
 					}
 				})
 				if(res.code == 1) {

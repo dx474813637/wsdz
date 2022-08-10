@@ -1,7 +1,7 @@
 <template>
 	<view class="w u-p-20">
 		<view class="bg" :style="{
-			backgroundColor: textObj.themeColor
+			backgroundColor: configObj.themeColor
 		}"></view>
 		<u-navbar
 			bgColor="transparent"
@@ -20,10 +20,10 @@
 		</u-navbar>
 		<view class="main u-p-10 u-p-t-20">
 			<view class="text-white u-p-b-10 u-font-36">
-				{{textObj.title}}
+				{{configObj.title}}
 			</view>
 			<view class="text-white u-font-28 u-p-b-30">
-				{{textObj.sub}}
+				{{configObj.sub}}
 			</view>
 			<view class="form-w u-p-20 u-p-l-40 u-p-r-40">
 				<u--form
@@ -72,17 +72,17 @@
 						    placement="row">
 							<u-radio label="直接充值" name="直接充值"></u-radio>
 							<view class="u-p-l-20"></view>
-							<u-radio label="财务充值" name="财务充值"></u-radio>
+							<u-radio label="预约充值" name="预约充值"></u-radio>
 						</u-radio-group>
 					</u-form-item>
-					<template v-if="cz != 2">
+					<template v-if="cz == 0">
 						<u-form-item
 							:label="`选择${cz == 1? '充值' : '提现'}银行卡`"
-							prop="bind_id"
-							ref="form_bind_id"
+							prop="bank_accid"
+							ref="form_bank_accid"
 							required
 						>
-							<view @click="handleSelectBankcard">
+							<view @click="handleSelectBankcard" style="position: relative;">
 								<u--input
 									v-model="bank.name"
 									placeholder="点击选择银行卡"
@@ -90,6 +90,9 @@
 									suffixIconStyle="color: #bbb"
 									readonly
 								></u--input>
+								<view class="loading-w u-flex u-flex-items-center u-flex-center" v-if="bankLoading" >
+									<u-loading-icon mode="circle" ></u-loading-icon>
+								</view>
 							</view>
 							
 						</u-form-item>
@@ -114,7 +117,7 @@
 					</view>
 					
 					<u-form-item
-						:label="`${textObj.label}金额`"
+						:label="`${configObj.label}金额`"
 						prop="money"
 						ref="form_money"
 						required
@@ -123,6 +126,7 @@
 							v-model="model.money"
 							placeholder="请输入金额"
 							clearable
+							@change="$u.debounce(handleMoneyChange, 800)"
 						></u--input>
 					</u-form-item>
 					
@@ -130,7 +134,9 @@
 						<template v-if="cz != 2">
 							<view class="u-flex u-flex-items-center u-m-b-10">
 								<text class="text-light u-font-28">手续费：</text>
+								<u-loading-icon mode="circle" v-if="sxfLoading" size="18"></u-loading-icon>
 								<u--text mode="price" :text="sxf"></u--text>
+								
 							</view>
 							<view class="u-flex u-flex-items-center">
 								<text class="text-light u-font-28">到账金额：</text>
@@ -158,8 +164,8 @@
 				</u--form>
 				<view class="u-p-t-50 u-m-b-40">
 					<u-button type="primary" :customStyle="{
-						backgroundColor: textObj.themeColor,
-						borderColor: textObj.themeColor,
+						backgroundColor: configObj.themeColor,
+						borderColor: configObj.themeColor,
 					}" @click="submit">提交</u-button>
 				</view>
 			</view>
@@ -174,11 +180,19 @@
 				<view class="wrapper-title u-p-r-40 text-light u-flex u-flex-items-center u-flex-between">
 					<text></text>
 					<text>选择银行卡</text>
-					<i @click="refreshList" class="custom-icon-refresh custom-icon"></i>
+					<i @click="refreshBankList" class="custom-icon-refresh custom-icon"></i>
 				</view>
 				<view class="wrapper-main">
+					
+					<template v-if="bankLoading">
+						<view class="loading-w u-flex u-flex-items-center u-flex-center" :style="{
+							backgroundColor: typeConfig.white.mask,
+						}">
+							<u-loading-icon mode="circle" size="36" text="获取最新数据中..." vertical></u-loading-icon>
+						</view>
+					</template>
 					<u-list
-						height="100%"
+						height="100%" 
 						enableBackToTop
 						@scrolltolower="scrolltolower"
 						:preLoadingScreen="100"
@@ -198,8 +212,8 @@
 								></BankCard> 
 							</view>
 							
-						</u-list-item>
-						
+						</u-list-item> 
+					
 						<template name="dataStatus">
 							<template v-if="indexList.length == 0">
 								<template v-if="loadstatus == 'loading'">
@@ -222,7 +236,7 @@
 								/>
 							</template> -->
 						</template>
-						
+					
 					</u-list>
 				</view>
 				<view class="wrapper-footer">
@@ -233,22 +247,45 @@
 				</view>
 			</view>
 		</u-popup>
-		<u-modal :show="codeInputShow" negativeTop="220" title="输入手机验证码"
-			confirmText="返回资金中心"
+		<u-modal :show="codeInputShow" negativeTop="220" title="输入支付密码" 
 			closeOnClickOverlay
-			confirmColor="#999"
-			@confirm="handleBack"
 			@close="codeInputShow = false"
+			showCancelButton
+			cancelText="返回资金中心"
+			cancelColor="#999"
+			@cancel="handleBack"
+			:confirmText="`当前${configObj.label}订单详情`" 
+			@confirm="handleBackDetail"
 		 >
-			<view class="slot-content u-p-t-40 u-p-b-40">
-				<u-code-input
-					v-model="code" 
-					mode="line" 
-					:maxlength="6" 
-					:focus="focus"
-					hairline
-					@finish="handleSumbitCode"
-				></u-code-input>
+			<view class="slot-content u-p-t-10">
+				<view class="u-m-b-20 text-light2 u-font-28">
+					如跳过当前步骤，后续可在账户{{configObj.label}}详情中验证
+				</view>
+				<u--form
+					:model="model_yanzheng"
+					:rules="rules_yanzheng"
+					ref="from_yanzheng"
+					labelWidth="100%"
+					labelPosition="top"
+					:labelStyle="{color: '#777'}"
+				>
+					<u-form-item
+						label="支付密码"
+						prop="paypwd"
+						ref="paypwd"
+						required 
+					> 
+						<u--input
+							v-model="model_yanzheng.paypwd" 
+							placeholder="支付密码"
+							clearable
+						></u--input> 
+					</u-form-item>
+				</u--form> 
+				<view class="u-m-t-40">
+					<u-button type="primary" @click="submit_yanzheng">提交 验证</u-button>
+				</view> 
+				
 			</view>
 		</u-modal>
 	</view>
@@ -262,20 +299,25 @@
 			return {
 				show_acc: false,
 				index_acc: 0,
+				from_wallet: 'B',
 				cz: 1,
 				cztype: '直接充值',
 				bankPopup: false,
 				codeInputShow: false,
-				focus: false,
 				code: '',
+				sxf: 0,
 				bank: {
 					id: '',
 					name: ''
 				},
 				model: { 
 					money: '',
-					bind_id: '',
+					bank_accid: '',
 					bz: ''
+				},
+				model_yanzheng: { 
+					id: '',
+					paypwd: '',
 				},
 				indexList: [],
 				curP: 1,
@@ -290,23 +332,23 @@
 			if(options.hasOwnProperty('cz')) {
 				this.cz = options.cz
 			}
+			if(options.hasOwnProperty('wallet')) {
+				this.from_wallet = options.wallet
+			}
 			if(!this.sinoFund || this.sinoFund.length == 0) {
 				await this.getSinoFundAccount()
 			}
-			this.bankLoading = true;
-			await this.getBankCard()
-			this.bankLoading = false;
+			this.index_acc = this.sinoFund.findIndex(ele => ele.type == this.from_wallet)
+			this.refreshBankList()
 		},
-		watch: {
-			index_acc: {
-				// immediate: true,
-				async handler(n) {
-					this.bankLoading = true;
-					await this.getBankCard()
-					this.bankLoading = false;
-				}
-			}
-		},
+		// watch: {
+		// 	index_acc: {
+		// 		// immediate: true,
+		// 		async handler(n) {
+		// 			this.refreshBankList()
+		// 		}
+		// 	}
+		// },
 		computed: {
 			...mapState({
 				typeConfig: state => state.theme.typeConfig,
@@ -346,7 +388,7 @@
 							},
 							message: '金额数值必须大于0'
 						}],
-						'bind_id': {
+						'bank_accid': {
 							type: 'string',
 							required: true,
 							message: '请选择银行卡',
@@ -370,21 +412,31 @@
 				}
 				
 			},
+			rules_yanzheng() {
+				return {
+					'paypwd': {
+						type: 'string',
+						required: true,
+						message: '支付密码不得为空',
+						trigger: ['blur', 'change']
+					}, 
+				}
+			},
 			money() {
 				if(!this.model.money) return 0
 				return this.model.money - this.sxf
-			},
-			sxf() {
-				if(!this.model.money) return 0
-				return this.model.money * 0
-			},
-			textObj() {
+			}, 
+			configObj() {
 				if(this.cz == 1) {
 					return {
 						title: '我要充值',
 						label: '充值',
 						themeColor: '#d34c3c',
-						sub: ''
+						sub: '',
+						func_getbankcard: 'sino_fund_account_list_bind',
+						func_sxf: '',
+						func_create: '',
+						func_paypwd: '',
 					}
 				}
 				else if(this.cz == 0){
@@ -392,7 +444,11 @@
 						title: '提现申请',
 						label: '提现',
 						themeColor: '#408df4',
-						sub: '提现提前绑定好提现银行卡，且有可提余额。'
+						sub: '提现提前绑定好提现银行卡，且有可提余额。',
+						func_getbankcard: 'sino_fund_account_list_bind',
+						func_sxf: 'sino_fund_refund_fee_fund_count',
+						func_create: 'sino_fund_refund_create',
+						func_paypwd: 'sino_fund_refund_refund',
 					}
 				}
 				else if(this.cz == 2){
@@ -407,6 +463,7 @@
 		},
 		onReady() {
 			this.$refs.form.setRules(this.rules)
+			this.$refs.from_yanzheng.setRules(this.rules_yanzheng)
 		},
 		methods: {
 			...mapMutations({
@@ -415,13 +472,28 @@
 			...mapActions({
 				getSinoFundAccount: 'sinopay/getSinoFundAccount'
 			}),
+			async refreshBankList() {
+				if(this.cz != 0) return
+				this.bankLoading = true;
+				this.initBankCardInfo()
+				await this.getBankCard()
+				this.bankLoading = false;
+			},
+			initBankCardInfo() {
+				this.model.bank_accid = ''
+				this.bank.name = ''
+			},
 			showPicker() {
 				if(this.columns_acc.length == 0) return;
 				this.show_acc = true
 			},
 			confirm_acc(e) { 
 				this.show_acc = false
-				this.index_acc = e.indexs[0]
+				if(this.index_acc != e.indexs[0]) {
+					this.index_acc = e.indexs[0]
+					this.refreshBankList()
+				}
+				
 			},
 			refreshList() {
 				if(this.cz == '2') return
@@ -437,6 +509,35 @@
 			scrolltolower() {
 				// this.getMoreData()
 			},
+			async handleMoneyChange() {
+				if(this.model.money == 0) {
+					this.sxf = 0
+					return
+				} 
+				if(this.cz == 1) {
+					// 充 
+				}
+				else if(this.cz == 0){
+					// 提  
+				}
+				else if(this.cz == 2){
+					// 转账 
+				}
+				if(!this.configObj.func_sxf) {
+					this.sxf = 0
+					return
+				}
+				this.sxfLoading = true
+				const res = await this.$api[this.configObj.func_sxf]({
+					params: {
+						price: this.model.money
+					}
+				})
+				this.sxfLoading = false
+				if(res.code == 1) {
+					this.sxf = res.list
+				}
+			},
 			async getBankCard() {
 				if( this.cz == '2') return
 				// this.loadstatus = 'loading'
@@ -446,7 +547,7 @@
 					}
 				})
 				if(res.code == 1) {
-					this.indexList = res.list
+					this.indexList = res.list.filter(ele => ele.state == '1')
 					 
 				}
 			},
@@ -461,11 +562,55 @@
 			bankOpen() {
 				
 			},
+			handleBack() {
+				uni.redirectTo({
+					url: '/pages/my/money/index'
+				})
+			},
+			handleBackDetail() {
+				uni.redirectTo({
+					url: '/pages/my/money/sino_cz_detail?id=' + this.model_yanzheng.id
+				})
+			},
+			submit_yanzheng() {
+				this.$refs.from_yanzheng.validate().then(async res => {
+					uni.showLoading()
+					const r = await this.$api[this.configObj.func_paypwd]({
+						params: {
+							id: this.model_yanzheng.id,
+							paypwd: this.model_yanzheng.paypwd, 
+						}
+					})
+					if(r.code == 1) { 
+						uni.showToast({
+							title: r.msg,
+							icon: 'none',
+							success: () => {
+								uni.redirectTo({
+									url: '/pages/my/money/sino_cz_detail?id=' + this.model_yanzheng.id
+								})
+							}
+						})
+					}
+				})
+			},
 			submit() {
 				
-				this.$refs.form.validate().then(async res => {
+				this.$refs.form.validate().then(async res => { 
+					console.log(res)
 					uni.showLoading()
-					const r = await this.$api.czApply({...this.model})
+					const r = await this.$api[this.configObj.func_create]({
+						params: {
+							account_id: this.sinoFund[this.index_acc].id,
+							bank_accid: this.model.bank_accid,
+							rice: this.model.money,
+							remark: this.model.bz
+						}
+					})
+					// const r = {
+					// 	code: 1,
+					// 	msg: '测试成功'
+					// }
 					console.log(r)
 					if(r.code == 1) {
 						if(this.cz != '2') {
@@ -473,9 +618,6 @@
 							uni.showToast({
 								title: r.msg,
 								icon: 'none'
-							})
-							this.$nextTick(() => {
-								this.focus = true
 							})
 						}else {
 							uni.showToast({
@@ -490,6 +632,7 @@
 						}
 					}
 				}).catch(errors => {
+					console.log(errors)
 					uni.$u.toast('校验失败')
 				})
 			},
@@ -516,8 +659,9 @@
 				this.bankPopup = true
 			},
 			handleClick(bank) {
-				this.bank.name = bank.name
-				this.model.bind_id = '321321'
+				console.log(bank)
+				this.bank.name = `${bank.bank_accno}-${bank.bank_name}`
+				this.model.bank_accid = bank.id
 				this.bankClose()
 			},
 			handleBack() {
@@ -549,6 +693,15 @@
 	}
 </style>
 <style scoped lang="scss">
+	.loading-w {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 10;
+		background-color: rgba(255,255,255,.7);
+	}
 	.popup-wrapper {
 		width: 100%;
 		.wrapper-title {
@@ -560,6 +713,7 @@
 			height: 650rpx;
 			width: 100%;
 			background-color: $page-bg2;
+			position: relative;
 		}
 		.wrapper-footer {
 			height: 90rpx;

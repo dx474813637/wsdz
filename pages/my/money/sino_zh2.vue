@@ -30,7 +30,7 @@
 					<moneyCard sinoType="S"></moneyCard>
 				</view>
 				<view class="main-list">
-					<view @click="handlGoto('/pages/my/money/bank_card')" class="list-item">
+					<view @click="handleGoto({url: '/pages/my/money/bank_card', params: {wallet: 'S'}})" class="list-item">
 						<view class="item-left">
 							<view class="icon-wrap u-flex u-flex-center u-flex-items-center">
 								<i class="custom-icon-vipcard custom-icon"></i>
@@ -41,7 +41,7 @@
 							<i class="custom-icon-right custom-icon"></i>
 						</view>
 					</view>
-					<view @click="handlGoto('/pages/my/money/sino_cz_list')" class="list-item">
+					<view @click="handleGoto({url: '/pages/my/money/sino_cz_list', params: {wallet: 'S'}})" class="list-item">
 						<view class="item-left">
 							<view class="icon-wrap u-flex u-flex-center u-flex-items-center">
 								<i class="custom-icon-searchlist custom-icon"></i>
@@ -52,7 +52,7 @@
 							<i class="custom-icon-right custom-icon"></i>
 						</view>
 					</view>
-					<view @click="handlGoto('/pages/my/money/sino_zh2')" class="list-item">
+					<view @click="handleGoto('/pages/my/money/sino_zh1')" class="list-item">
 						<view class="item-left">
 							<view class="icon-wrap u-flex u-flex-center u-flex-items-center">
 								<i class="custom-icon-moneybag custom-icon"></i>
@@ -76,7 +76,7 @@
 						</view>
 					</view>
 				</view>
-				<view @click="handlGoto({url: '/pages/my/money/sino_cz', params: {cz: 2}})" class="u-flex u-flex-center text-primary u-font-28 u-m-t-40">
+				<view @click="handleGoto({url: '/pages/my/money/sino_cz', params: {cz: 2}})" class="u-flex u-flex-center text-primary u-font-28 u-m-t-40">
 					同名账户转账
 				</view>
 			</view>

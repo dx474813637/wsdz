@@ -79,26 +79,85 @@
 				<view class="item u-text-right">{{list.remark}}</view>
 			</view>
 		</view>
-		<view class="main u-p-20 u-m-t-30">
+		<view class="main u-p-8 u-m-t-30">
 			<view class="btn-wrap u-flex u-flex-items-center u-flex-wrap">
-				<view class="item u-p-10">
+				<view class="item u-p-6"
+						v-if="btnList.button1"
+					> <!-- 取消 -->
+					<u-button type="primary" @click="order_cancel">{{btnList.button1_title}}</u-button>
+				</view>
+				<view class="item u-p-6"
+						v-if="btnList.button2"
+					> <!-- 修改 -->
+					<u-button type="primary" @click="handleGoto(`/pages/my/order/order_edit?type=edit&id=${id}&ordertype=${ordertype}`)">{{btnList.button2_title}}</u-button>
+				</view>
+				<view class="item u-p-6"
+						v-if="btnList.button3"
+					> <!-- 发送 -->
+					<u-button type="primary" @click="order_submit">{{btnList.button3_title}}</u-button>
+				</view>
+				<view class="item u-p-6"
+						v-if="btnList.button4"
+					> <!-- 审核 -->
+					<u-button type="primary" @click="handleShowPopup('audit')">{{btnList.button4_title}}</u-button>
+				</view>
+				<view class="item u-p-6"
+						v-if="btnList.button5"
+					> <!-- 现金发起支付 -->
+					<u-button type="primary" @click="handleShowPopup('create_pay', 'xianjin')">{{btnList.button5_title}}</u-button>
+				</view>
+				<view class="item u-p-6"
+						v-if="btnList.button6"
+					> <!-- 发货 -->
+					<u-button type="primary" @click="handleShowPopup('send')">{{btnList.button6_title}}</u-button>
+				</view>
+				<view class="item u-p-6"
+						v-if="btnList.button7"
+					> <!-- 直接支付确认收货 -->
+					<u-button type="primary" @click="handleShowPopup('confirm')">{{btnList.button7_title}}</u-button>
+				</view>
+				<view class="item u-p-6"
+						v-if="btnList.button8"
+					> <!-- 担保支付确认收货 -->
+					<u-button type="primary" @click="handleShowPopup('confirm')">{{btnList.button8_title}}</u-button>
+				</view>
+				<view class="item u-p-6"
+						v-if="btnList.button9"
+					> <!-- 票据发起支付 -->
+					<u-button type="primary" @click="handleShowPopup('create_pay', 'piaoju')">{{btnList.button9_title}}</u-button>
+				</view>
+				<view class="item u-p-6"
+						v-if="btnList.button10"
+					> <!-- 票据直接支付确认收货 -->
+					<u-button type="primary" @click="handleShowPopup('confirm')">{{btnList.button10_title}}</u-button>
+				</view>
+				<view class="item u-p-6"
+						v-if="btnList.button11"
+					> <!-- 票据担保支付确认收货 -->
+					<u-button type="primary" @click="handleShowPopup('confirm')">{{btnList.button11_title}}</u-button>
+				</view>
+				<!-- 
+				<view class="item u-p-6">
 					<u-button type="primary" @click="order_cancel">取消</u-button>
 				</view>
-				<view class="item u-p-10">
-					<u-button type="primary"  @click="handleGoto(`/pages/my/order/order_edit?type=edit&id=${id}&ordertype=${ordertype}`)">修改</u-button>
+				<view class="item u-p-6">
+					<u-button type="primary"  >修改</u-button>
 				</view>
-				<view class="item u-p-10">
+				<view class="item u-p-6">
 					<u-button type="primary" @click="order_submit">发送</u-button>
 				</view>
-				<view class="item u-p-10" v-if="ordertype == 'B'">
+				<view class="item u-p-6"> 
 					<u-button type="primary" @click="order_pay">支付</u-button>
 				</view>
-				<view class="item u-p-10" v-if="ordertype == 'S' && list.state == '4'">
+				<view class="item u-p-6">  
 					<u-button type="primary" @click="handleShowPopup('audit')">审核</u-button>
 				</view>
-				<view class="item u-p-10" v-if="ordertype == 'S'">
+				<view class="item u-p-6"> 
 					<u-button type="primary" @click="handleShowPopup('send')">发货</u-button>
 				</view>
+				<view class="item u-p-6"> 
+					<u-button type="primary" @click="handleShowPopup('confirm')">确认收获</u-button>
+				</view> -->
 				
 			</view>
 		</view>
@@ -121,7 +180,11 @@
 							<text class="u-info" @click="show = false">取消</text>
 						</view>
 						<view class="item u-flex-1 u-text-center">
-							<text class="u-font-34">{{formActive == 'send'? '发货' : '审核'}}表单</text>
+							<text class="u-font-34">
+								<template v-if="formActive == 'send'">发货表单</template>
+								<template v-else-if="formActive == 'audit'">审核表单</template>
+								<template v-else-if="formActive == 'confirm'">确认收货</template>
+							</text>
 						</view>
 						<view class="item u-flex-1 u-text-right">
 						
@@ -142,15 +205,13 @@
 									>
 									<u-form-item
 										label="交付方式" 
+										v-if="ordertype == 'B'"
 									>
-										<u--input
-											:value="list.total_price2" 
-											readyonly
-											:customStyle="{background: '#fff'}"
-										></u--input>
+										<view>{{list.settle_type | settleType2str}}</view>
 									</u-form-item>
 									<u-form-item
 										label="支付工具" 
+										v-if="ordertype == 'B'"
 									>
 										<u-radio-group
 										    v-model="zfgjValue"
@@ -203,6 +264,7 @@
 											maxlength="-1"
 										></u--textarea>
 									</u-form-item>
+									 
 								</u--form>
 							</template>
 							
@@ -219,6 +281,27 @@
 										<u--textarea
 											v-model="form_send.remark_send" 
 											placeholder="发货备注" 
+											height="90"
+											maxlength="-1"
+										></u--textarea>
+									</u-form-item>
+								</u--form>
+							</template>
+							
+							<template v-if="formActive == 'confirm'">
+								<u--form
+									labelPosition="left"
+									:model="form_confirm"
+									ref="form_confirm"
+									labelWidth="80"
+									>
+									<u-form-item
+										label="支付密码" 
+										v-if="list.settle_type == 'GRT'"
+									>
+										<u--textarea
+											v-model="form_confirm.paypwd" 
+											placeholder="支付密码" 
 											height="90"
 											maxlength="-1"
 										></u--textarea>
@@ -255,6 +338,10 @@
 				form_send: {
 					remark_send: '',
 				},
+				form_confirm: {
+					paypwd: '',
+				},
+				btnList: {},
 				shyj: [
 					{
 						name: '退回订单',
@@ -339,6 +426,10 @@
 				})
 				if(res.code == 1) {
 					this.list = res.list.Order
+					this.btnList = res.button
+					if(this.list.settle_type == 'GRT') {
+						this.zfgj[1].disabled = false
+					}
 				}
 			},
 			async order_cancel() {
@@ -364,7 +455,7 @@
 				})
 				const res = await this.$api.order_send({
 					params: {
-						ordertype: this.ordertype,
+						remark_send: this.form_send.remark_send,
 						id: this.id,
 					}
 				})
@@ -407,9 +498,13 @@
 			},
 			handleConfirm() {
 				if(this.formActive == 'audit') {
-					
-				}else if(this.formActive == 'send') {
-					
+					this.order_audit()
+				}
+				else if(this.formActive == 'send') {
+					this.order_send()
+				}
+				else if(this.formActive == 'confirm') {
+					this.confirm_shouhuo()
 				}
 			},
 			async order_audit() {
@@ -417,6 +512,29 @@
 					title: '提交审核中...'
 				})
 				const res = await this.$api.order_audit({
+					params: { 
+						...this.form_audit,
+						id: this.id,
+						ordertype: this.ordertype,
+						pyeelnfo: '',
+					}
+				})
+				if(res.code == 1) { 
+					uni.showLoading({
+						title: '审核成功！正在刷新'
+					})
+					this.getData()
+				}
+			},
+			async confirm_shouhuo() {
+				let func = 'sino_fund_order_order_confirm'
+				if(this.list.settle_type == 'GRT') {
+					func = 'sino_fund_order_confirm'
+				}
+				uni.showLoading({
+					title: '提交确认收货...'
+				})
+				const res = await this.$api[func]({
 					params: { 
 						...this.form_audit,
 						id: this.id,
@@ -487,7 +605,7 @@
 	}
 	.btn-wrap {
 		.item {
-			flex: 0 0 33%;
+			flex: 0 0 50%;
 			box-sizing: border-box;
 		}
 	}

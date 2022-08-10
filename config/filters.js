@@ -8,6 +8,15 @@ const orderType2str = v => {
 	else if(v == '2') return '线下支付'
 	else return v
 }
+const settleType2str = v => {
+	if(v == 'D_P') return '款到发货'
+	else if(v == 'GRT') return '担保支付'
+	else if(v == 'COD') return '货到付款'
+	else return v
+}
+
+
+//采购/销售交易订单（order）状态：
 const orderState2Str = v => {
 	if(v == '0') return '发起中'
 	else if(v == '1') return '已完成'
@@ -16,9 +25,48 @@ const orderState2Str = v => {
 	else if(v == '4') return '订立中'
 	else if(v == '5') return '已了结'
 	else if(v == '6') return '待支付'
+	else if(v == '7') return '支付中'
 	else if(v == '8') return '待发货'
+	else if(v == '9') return '待收货'
 	else return v
 }
+//现金支付（pay  fund）状态：
+const payFundState2Str = v => {
+	if(v == '5') return '支付成功'
+	else if(v == '6') return '支付失败'
+	
+	else if(v == '14') return '监管中'   //（直接）
+	else if(v == '10') return '待支付'   //（直接）
+	else if(v == '11') return '支付中'   //（直接）
+	
+	else if(v == '13') return '监管中'   //（担保）
+	else if(v == '0') return '待支付'   //（担保）
+	else if(v == '1') return '支付中'   //（担保）
+	else if(v == '3') return '等待收货'   //（担保）
+	else if(v == '4') return '确认支付中'   //（担保）
+	else if(v == '9') return '已冻结'   //（担保）
+	
+	else if(v == '2') return '退款中'   //（担保）
+	else if(v == '7') return '已全额退款'   //（担保）
+	else if(v == '8') return '已部分退款'   //（担保）
+	else return v
+}
+
+//票据支付（pay  bill）状态：
+const payBillState2Str = v => {
+	if(v == '0') return '等待支付'
+	else if(v == '1') return '票付申请中'
+	else if(v == '2') return '财务已确认'
+	else if(v == '3') return '财务已拒绝 支付失败可重新发起'
+	else if(v == '4') return '票据支付中'
+	else if(v == '5') return '票据已取消'
+	else if(v == '6') return '票据已锁定'
+	else if(v == '13') return '票据可签收'
+	else if(v == '8') return '支付已完成 支付成功'
+	else if(v == '21') return '支付失败'
+	else return v
+}
+
 const bankcardState2Str = v => {
 	if(v == '1') return '已绑定'
 	else if(v == '2') return '绑定失败'
@@ -125,5 +173,8 @@ export default {
 	chatTimeFilter,
 	orderState2Str,
 	orderType2str,
-	bankcardState2Str
+	bankcardState2Str,
+	payFundState2Str,
+	payBillState2Str,
+	settleType2str,
 }

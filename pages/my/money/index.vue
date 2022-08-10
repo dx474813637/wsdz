@@ -5,11 +5,14 @@
 			mode="1"
 		></SinoHeader>
 		<view class="main">
-			<view class="main-wrapper">
+			<view class="main-wrapper" v-if="index_mode == 0">
 				<view class="main-box">
 					<view class="box-header u-flex u-flex-between u-flex-items-end">
-						<view class="item-left u-flex">
+						<view class="item-left u-flex u-flex-items-baseline">
 							<view class="box-title">现金账户</view>
+							<view class="box-title u-m-l-20"> 
+								<u-tag text="票据账户" size="mini" type="primary" @click="index_mode = 1"></u-tag>
+							</view>
 						</view>
 						<view class="item-right u-flex">
 							<view @click="handleGoto('/pages/my/money/sino_zh1')" class="u-flex a-href">
@@ -21,7 +24,7 @@
 					<moneyCard sinoType="B"></moneyCard>
 				</view>
 				<view class="main-list">
-					<view @click="handleGoto('/pages/my/money/bank_card')" class="list-item">
+					<view @click="handleGoto({url: '/pages/my/money/bank_card', params: {wallet: 'B'}})" class="list-item">
 						<view class="item-left">
 							<view class="icon-wrap u-flex u-flex-center u-flex-items-center">
 								<i class="custom-icon-vipcard custom-icon"></i>
@@ -32,7 +35,7 @@
 							<i class="custom-icon-right custom-icon"></i>
 						</view>
 					</view>
-					<view @click="handleGoto('/pages/my/money/sino_cz_list')" class="list-item">
+					<view @click="handleGoto({url: '/pages/my/money/sino_cz_list', params: {wallet: 'B'}})" class="list-item">
 						<view class="item-left">
 							<view class="icon-wrap u-flex u-flex-center u-flex-items-center">
 								<i class="custom-icon-searchlist custom-icon"></i>
@@ -51,12 +54,112 @@
 							<view class="text-base item-t">收款账户</view>
 						</view>
 						<view class="item-right">
-							<view>100000110011</view>
+							<view>{{wallet_s.user_fundaccno}}</view>
 							<i class="custom-icon-right custom-icon"></i>
 						</view>
 					</view>
 				</view>
 			</view>
+			<view class="main-wrapper" v-else>
+				<view class="main-box">
+					<view class="box-header u-flex u-flex-between u-flex-items-end">
+						<view class="item-left u-flex u-flex-items-baseline">
+							<view class="box-title">票据账户</view>
+							<view class="box-title u-m-l-20"> 
+								<u-tag text="现金账户" size="mini" type="primary" @click="index_mode = 0"></u-tag>
+							</view>
+						</view> 
+						<view class="item-right u-flex">
+							<view @click="getSinoBillAccount" class="u-flex a-href">
+								<i class="custom-icon custom-icon-refresh u-font-30 " ></i>
+							</view>
+						</view>
+					</view> 
+					<view style="position: relative;">
+						<view v-if="sinoBillLoading" class="loading-w u-flex u-flex-items-center u-flex-center">
+							<u-loading-icon mode="circle" ></u-loading-icon>
+						</view>
+						<view class="pj-box bg-white u-radius-10 uni-shadow-base u-p-30">
+							<view class="rows u-flex u-flex-items-start u-flex-between u-m-b-20">
+								<view class="item text-base u-font-28 u-m-r-20" style="flex-shrink: 0;">SINOPAY票据账户</view>
+								<view class="item u-font-30 u-text-right">{{sinoBillAccount.user_billaccno}}</view>
+							</view> 
+							<view class="rows u-flex u-flex-items-start u-flex-between u-m-b-20">
+								<view class="item text-base u-font-28 u-m-r-20" style="flex-shrink: 0;">开户银行</view>
+								<view class="item u-font-30 u-text-right">{{sinoBillAccount.bank_code}}-{{sinoBillAccount.bank_name}}</view>
+							</view> 
+							<view class="rows u-flex u-flex-items-start u-flex-between u-m-b-20">
+								<view class="item text-base u-font-28 u-m-r-20" style="flex-shrink: 0;">票据账户名称</view>
+								<view class="item u-font-30 u-text-right">{{sinoBillAccount.bank_bill_name}}</view>
+							</view> 
+							<view class="rows u-flex u-flex-items-start u-flex-between ">
+								<view class="item text-base u-font-28 u-m-r-20" style="flex-shrink: 0;">创建时间</view>
+								<view class="item text-base u-font-30 u-text-right">{{sinoBillAccount.ctime}}</view>
+							</view> 
+						</view>
+					</view>
+					
+				</view>
+				<view class="main-box"> 
+					<view class="box-header u-flex u-flex-between u-flex-items-end">
+						<view class="item-left u-flex u-flex-items-baseline">
+							<view class="box-title">电票账户</view> 
+						</view>  
+						<view class="item-right u-flex">
+							<view @click="getSinoBillAccountList" class="u-flex a-href">
+								<i class="custom-icon custom-icon-refresh u-font-30 " ></i>
+							</view>
+						</view>
+					</view>
+					<view class="" style="position: relative;">
+						<view v-if="sinoBillListLoading" class="loading-w u-flex u-flex-items-center u-flex-center">
+							<u-loading-icon mode="circle" ></u-loading-icon>
+						</view>
+					 	<view class="list" v-if="sinoBillAccountList.length > 0">
+					 		<view 
+					 			v-for="item in sinoBillAccountList"
+					 			:key="item.id"
+					 			class="pj-box bg-white u-radius-10 uni-shadow-base u-p-30 u-m-b-30">
+					 			<view class="rows u-flex u-flex-items-start u-flex-between u-m-b-20">
+					 				<view class="item text-base u-font-28 u-m-r-20" style="flex-shrink: 0;">SINOPAY票据账户</view>
+					 				<view class="item u-font-30 u-text-right">{{item.user_billaccno}}</view>
+					 			</view> 
+					 			<view class="rows u-flex u-flex-items-start u-flex-between u-m-b-20">
+					 				<view class="item text-base u-font-28 u-m-r-20" style="flex-shrink: 0;">电票账户</view>
+					 				<view class="item u-font-30 u-text-right">{{item.acctNo}}</view>
+					 			</view> 
+					 			<view class="rows u-flex u-flex-items-start u-flex-between u-m-b-20">
+					 				<view class="item text-base u-font-28 u-m-r-20" style="flex-shrink: 0;">账户名称</view>
+					 				<view class="item u-font-30 u-text-right">{{item.acctName}}</view>
+					 			</view> 
+					 			<view class="rows u-flex u-flex-items-start u-flex-between u-m-b-20">
+					 				<view class="item text-base u-font-28 u-m-r-20" style="flex-shrink: 0;">开户行号</view>
+					 				<view class="item u-font-30 u-text-right">{{item.acctSvcr}}</view>
+					 			</view> 
+					 			<view class="rows u-flex u-flex-items-start u-flex-between u-m-b-20">
+					 				<view class="item text-base u-font-28 u-m-r-20" style="flex-shrink: 0;">开户行名</view>
+					 				<view class="item text-base u-font-30 u-text-right">{{item.acctSvcname}}</view>
+					 			</view> 
+					 			<view class="rows u-flex u-flex-items-start u-flex-between ">
+					 				<view class="item text-base u-font-28 u-m-r-20" style="flex-shrink: 0;">创建时间</view>
+					 				<view class="item text-base u-font-30 u-text-right">{{item.ctime}}</view>
+					 			</view> 
+					 		</view>
+					 	</view>
+					 	<view class="" v-else>
+					 		<u-empty
+					 				mode="data"
+					 				:icon="typeConfig.white.empty"
+					 			>
+					 			</u-empty> 
+					 	</view>
+					</view>
+					 
+				</view>
+				
+				
+			</view>
+			
 		</view>
 		<u-popup 
 			:show="show" 
@@ -65,7 +168,7 @@
 			mode="center" 
 			round="16"
 			:closeOnClickOverlay="false"
-		>
+			>
 			<view class="dx-popup-wrap bg-white">
 				<view class="wrap-header wrap-header-bg u-flex u-flex-column u-flex-items-center">
 					<view class="bg">
@@ -102,12 +205,27 @@
 			return {
 				show: false,
 				indexLoading: true,
+				index_mode: 0,
 			};
 		},
 		computed: {
 			...mapState({
-				sino: state => state.sinopay.sino
-			})
+				typeConfig: state => state.theme.typeConfig,
+				sino: state => state.sinopay.sino,
+				sinoFund: state => state.sinopay.sinoFund,
+				sinoBillLoading: state => state.sinopay.sinoBillLoading,
+				sinoBillListLoading: state => state.sinopay.sinoBillListLoading,
+				sinoBillAccount: state => state.sinopay.sinoBillAccount,
+				sinoBillAccountList: state => state.sinopay.sinoBillAccountList,
+			}),
+			wallet_b() {
+				if(!this.sinoFund || this.sinoFund.length == 0) return {}
+				return this.sinoFund.filter(ele => ele.type == 'B')[0] || {}
+			},
+			wallet_s() {
+				if(!this.sinoFund || this.sinoFund.length == 0) return {}
+				return this.sinoFund.filter(ele => ele.type == 'S')[0] || {}
+			}
 		},
 		components: {
 			moneyCard,
@@ -120,6 +238,7 @@
 				this.show = true
 			}
 			this.getSinoFundAccount() 
+			this.initSinoBill()
 		},
 		methods: {
 			...mapMutations({
@@ -127,9 +246,15 @@
 			}),
 			...mapActions({
 				getSinoFundAccount: 'sinopay/getSinoFundAccount',
+				getSinoBillAccount: 'sinopay/getSinoBillAccount',
+				getSinoBillAccountList: 'sinopay/getSinoBillAccountList',
 				getSinoAccount: 'sinopay/getSinoAccount',
 				myCompany: 'user/myCompany'
 			}),
+			initSinoBill() {
+				this.getSinoBillAccount()
+				this.getSinoBillAccountList() 
+			},
 			close() {
 				
 			},
@@ -148,6 +273,15 @@
 	}
 </style>
 <style lang="scss" scoped>
+	.loading-w {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 10;
+		background-color: rgba(255,255,255,.7);
+	}
 	.wrapper {
 		padding-bottom: 60px;
 	} 
@@ -155,6 +289,7 @@
 		.main-wrapper {
 			padding: 5px 12px;
 			.main-box {
+				position: relative;
 				margin-bottom: 20px;
 				.box-header {
 					margin-bottom: 15px;

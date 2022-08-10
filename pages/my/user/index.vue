@@ -92,7 +92,23 @@
 					<view class="text-light u-font-26">撮合员代为发布买卖盘时前置设定</view>
 				</view>
 			</view>
-			<view class="u-flex u-flex-items-center u-flex-between u-p-b-10 u-p-t-24">
+			<view class="step25 u-m-t-20">
+				<u-scroll-list> 
+					<view 
+						v-for="(item, index) in brokerList"
+						@click="scrollListItemClick(item)" 
+						:class="['item-broker u-p-20', item.step13]"
+						>
+						<view class="icon-w u-flex u-flex-center u-flex-items-center">
+							<i :class="['custom-icon u-font-36', item.icon]"></i>
+						</view>
+						
+						<view class="u-p-t-20 u-font-26 " style="white-space: nowrap;color: #4d525d;">{{item.title}}</view>
+					</view> 
+				</u-scroll-list>
+			</view>
+			
+			<!-- <view class="u-flex u-flex-items-center u-flex-between u-p-b-10 u-p-t-24">
 				<view @click="handleGoto('/pages/my/customer/customer')" class=" step13 u-p-l-30 item u-flex u-flex-items-center u-flex-1">
 					<i class="custom-icon-sort custom-icon u-font-38"></i>
 					<text class="u-p-l-20 u-font-28">客户列表</text>
@@ -113,15 +129,25 @@
 				</view>
 			</view>
 			<view class="u-flex u-flex-items-center u-flex-between u-p-b-10 u-p-t-24">
-				<view @click="handleGoto({url:'/pages/my/customer/customer_order', params:{ordertype: 'B'}})" class=" step15 u-p-l-30 item u-flex u-flex-items-center u-flex-1">
-					<i class="custom-icon-weituobiangeng custom-icon u-font-38"></i>
-					<text class="u-p-l-20 u-font-28">客户采购订单</text>
+				<view @click="handleGoto({url:'/pages/my/customer/customer_pan_zz', params:{pan: 's'}})" class=" step15 u-p-l-30 item u-flex u-flex-items-center u-flex-1">
+					<i class="custom-icon-zu555 custom-icon u-font-38"></i>
+					<text class="u-p-l-20 u-font-28">客户自主卖盘</text>
 				</view>
-				<view @click="handleGoto({url:'/pages/my/customer/customer_order', params:{ordertype: 'S'}})" class="step16 u-p-l-30 item u-flex u-flex-items-center u-flex-1 u-border-left" style="border-color: #f8f8f8!important;">
-					<i class="custom-icon-weituobiangeng custom-icon u-font-38"></i>
-					<text class="u-p-l-20 u-font-28">客户销售订单</text>
+				<view @click="handleGoto({url:'/pages/my/customer/customer_pan_zz', params:{pan: 'b'}})" class="step16 u-p-l-30 item u-flex u-flex-items-center u-flex-1 u-border-left" style="border-color: #f8f8f8!important;">
+					<i class="custom-icon-jinhuoqu custom-icon u-font-38"></i>
+					<text class="u-p-l-20 u-font-28">客户自主买盘</text>
 				</view>
 			</view>
+			<view class="u-flex u-flex-items-center u-flex-between u-p-b-10 u-p-t-24">
+				<view @click="handleGoto({url:'/pages/my/customer/customer_order', params:{ordertype: 'S'}})" class="step16 u-p-l-30 item u-flex u-flex-items-center u-flex-1 u-border-left" style="border-color: #f8f8f8!important;">
+					<i class="custom-icon-zu558 custom-icon u-font-38"></i>
+					<text class="u-p-l-20 u-font-28">客户销售订单</text>
+				</view>
+				<view @click="handleGoto({url:'/pages/my/customer/customer_order', params:{ordertype: 'B'}})" class=" step15 u-p-l-30 item u-flex u-flex-items-center u-flex-1">
+					<i class="custom-icon-zu556 custom-icon u-font-38"></i>
+					<text class="u-p-l-20 u-font-28">客户采购订单</text>
+				</view>
+			</view> -->
 		</view>
 		
 		<view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26 step6">
@@ -229,6 +255,64 @@
 				    name:'wode_guide',
 				    guideList: []
 				},
+				brokerList: [
+					{
+						title: '客户列表',
+						icon: 'custom-icon-sort',
+						url: '/pages/my/customer/customer',
+						params: {},
+						class: 'step13',
+					},
+					{
+						title: '领取账号',
+						icon: 'custom-icon-friendadd',
+						flag: 1,
+						func: 'handleTakeAccount',
+						class: 'step14',
+					},
+					{
+						title: '委托卖盘',
+						icon: 'custom-icon-weituobiangeng',
+						url: '/pages/my/broker/auth_list',
+						params: {pan: 's'},
+						class: 'step15',
+					},
+					{
+						title: '委托买盘',
+						icon: 'custom-icon-weituobiangeng',
+						url: '/pages/my/broker/auth_list',
+						params: {pan: 'b'},
+						class: 'step16',
+					},
+					{
+						title: '自主卖盘',
+						icon: 'custom-icon-zu555',
+						url: '/pages/my/customer/customer_pan_zz',
+						params: {pan: 's'},
+						class: 'step21',
+					},
+					{
+						title: '自主买盘',
+						icon: 'custom-icon-jinhuoqu',
+						url: '/pages/my/customer/customer_pan_zz',
+						params: {pan: 'b'},
+						class: 'step22',
+					},
+					{
+						title: '销售订单',
+						icon: 'custom-icon-zu558',
+						url: '/pages/my/customer/customer_order',
+						params: {ordertype: 'B'},
+						class: 'step23',
+					},
+					{
+						title: '采购订单',
+						icon: 'custom-icon-zu556',
+						url: '/pages/my/customer/customer_order',
+						params: {ordertype: 'S'},
+						class: 'step24',
+					},
+				], 
 			};
 		},
 		computed: {
@@ -277,6 +361,16 @@
 				}
 				
 			},
+			scrollListItemClick(item) {
+				if(item.hasOwnProperty('url')) {
+					this.handleGoto({
+						url: item.url,
+						params: item.params
+					})
+				}else if(item.flag == 1) {
+					this[item.func]()
+				}
+			},
 			handleMenusClick(item) {
 				console.log(item)
 				if(item.type == 1 ){
@@ -313,6 +407,20 @@
 	}
 	.t-label {
 		font-size: 22px!important;
+	}
+	.item-broker {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+	.icon-w {
+		width: 40px;
+		height: 40px;
+		border-radius: 20px;
+		background-color: #e4eef9;
+		.custom-icon {
+			color: #0d266b;
+		}
 	}
 	.other-menus {
 		.item {

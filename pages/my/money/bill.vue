@@ -111,6 +111,10 @@
 			...mapState({
 				typeConfig: state => state.theme.typeConfig,
 			}),
+			placeholder() {
+				if(this.tabs_list[this.tabs_current].paytype == 'S') return '输入买方关键字'
+				return '输入卖方关键字'
+			}
 		}, 
 		components: {
 			BillCard

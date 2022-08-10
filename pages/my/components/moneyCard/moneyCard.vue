@@ -34,13 +34,13 @@
 					</view>
 				</view>
 				<view class="item-right">
-					<view @click="handleGoto({url: '/pages/my/money/card_add'})" class="btn">绑卡认证</view>
+					<view @click="handleGoto({url: '/pages/my/money/card_add', params: { wallet: sinoType }})" class="btn">绑卡认证</view>
 				</view>
 			</view>
 		</view>
 		<view class="box-caozuo u-flex">
-			<view @click="handleGoto({url: '/pages/my/money/sino_cz', params: {cz: 0}})" class="item-btn tx u-flex u-flex-center u-flex-items-center">提现</view>
-			<view @click="handleGoto({url: '/pages/my/money/sino_cz', params: {cz: 1}})" class="item-btn cz u-flex u-flex-center u-flex-items-center">充值</view>
+			<view @click="handleGoto({url: '/pages/my/money/sino_cz', params: {cz: 0, wallet: sinoType}})" class="item-btn tx u-flex u-flex-center u-flex-items-center">提现</view>
+			<view @click="handleGoto({url: '/pages/my/money/sino_cz', params: {cz: 1, wallet: sinoType}})" class="item-btn cz u-flex u-flex-center u-flex-items-center">充值</view>
 		</view>
 		
 		<view class="loading-w u-flex u-flex-items-center u-flex-center" v-if="sinoFundLoading">
