@@ -11,7 +11,13 @@
 						<view class="item-left u-flex u-flex-items-baseline">
 							<view class="box-title">现金账户</view>
 							<view class="box-title u-m-l-20"> 
-								<u-tag text="票据账户" size="mini" type="primary" @click="index_mode = 1"></u-tag>
+								<u-button size="mini" type="primary" @click="index_mode = 1">
+									<view class="u-flex u-flex-items-center">
+										<text class="custom-icon-qiehuan1 custom-icon u-font-24"></text>
+										<text class="u-m-l-10 u-font-26">票据账户</text>
+									</view> 
+								</u-button>
+								<!-- <u-tag text="票据账户" size="mini" type="primary" @click="index_mode = 1"></u-tag> -->
 							</view>
 						</view>
 						<view class="item-right u-flex">
@@ -66,7 +72,12 @@
 						<view class="item-left u-flex u-flex-items-baseline">
 							<view class="box-title">票据账户</view>
 							<view class="box-title u-m-l-20"> 
-								<u-tag text="现金账户" size="mini" type="primary" @click="index_mode = 0"></u-tag>
+								<u-button size="mini" type="primary" @click="index_mode = 0">
+									<view class="u-flex u-flex-items-center">
+										<text class="custom-icon-qiehuan1 custom-icon u-font-24"></text>
+										<text class="u-m-l-10 u-font-26">现金账户</text>
+									</view> 
+								</u-button> 
 							</view>
 						</view> 
 						<view class="item-right u-flex">
@@ -79,7 +90,7 @@
 						<view v-if="sinoBillLoading" class="loading-w u-flex u-flex-items-center u-flex-center">
 							<u-loading-icon mode="circle" ></u-loading-icon>
 						</view>
-						<view class="pj-box bg-white u-radius-10 uni-shadow-base u-p-30">
+						<view class="pj-box bg-white u-radius-10 uni-shadow-base u-p-30" v-if="sinoBillAccount">
 							<view class="rows u-flex u-flex-items-start u-flex-between u-m-b-20">
 								<view class="item text-base u-font-28 u-m-r-20" style="flex-shrink: 0;">SINOPAY票据账户</view>
 								<view class="item u-font-30 u-text-right">{{sinoBillAccount.user_billaccno}}</view>
@@ -97,6 +108,13 @@
 								<view class="item text-base u-font-30 u-text-right">{{sinoBillAccount.ctime}}</view>
 							</view> 
 						</view>
+					 	<view class="bg-white uni-shadow-base u-radius-10 u-p-30" v-else> 
+					 		<u-empty
+					 				mode="data"
+					 				:icon="typeConfig.white.empty"
+					 			>
+					 			</u-empty> 
+					 	</view>
 					</view>
 					
 				</view>
@@ -146,7 +164,7 @@
 					 			</view> 
 					 		</view>
 					 	</view>
-					 	<view class="" v-else>
+					 	<view class="bg-white uni-shadow-base u-radius-10 u-p-30" v-else> 
 					 		<u-empty
 					 				mode="data"
 					 				:icon="typeConfig.white.empty"

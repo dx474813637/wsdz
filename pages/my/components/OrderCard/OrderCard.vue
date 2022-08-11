@@ -13,7 +13,7 @@
 					{{customData.id}}
 				</view>
 				<!-- <u-tag :text="customData.id" size="mini" ></u-tag> -->
-				<view class="u-line-1 u-m-l-10">{{ordertype == 'B' ? customData.b_company : customData.s_company }}</view>
+				<view class="u-line-1 u-m-l-10">{{ordertype == 'S' ? customData.b_company : customData.s_company }}</view>
 			</view>
 			
 			<view class=" u-font-28" style=" flex: 0 0 auto;" >
@@ -27,7 +27,7 @@
 					<view class="u-m-b-10">
 						<!-- <u-count-to fontSize="16" :startVal="0" :endVal="customData.price1" decimals="2"  separator=","></u-count-to> -->
 						<text class="">{{customData.price1}}</text>
-						<text class="u-p-l-10 u-font-28 text-light">{{customData.unit}}/元</text>
+						<text class="u-p-l-10 u-font-28 text-light">元/{{customData.unit}}</text>
 					</view>
 					<view class="u-font-28 text-light">x {{customData.amount}}{{customData.unit}}</view>
 					
@@ -36,7 +36,7 @@
 				</view>
 			</view>
 			<view class="main-row u-flex u-flex-between u-flex-items-center u-m-t-20 u-p-5">
-				<view class="item text-light u-font-28">支付手段</view>
+				<view class="item text-light u-font-28">商品总额</view>
 				<view class="item ">{{customData.bill_price2}}元</view>
 			</view>
 			<view class="main-row u-flex u-flex-between u-flex-items-center u-m-t-20 u-p-5">

@@ -55,24 +55,31 @@
 				<view class="item u-text-right">{{list.order_type | orderType2str}}</view>
 			</view>
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
-				<view class="item text-light item-label">交付方式</view>
-				<view class="item u-text-right">{{list.create_time}}</view>
-			</view>
-			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
-				<view class="item text-light item-label">支付工具</view>
-				<view class="item u-text-right">{{list.create_time}}</view>
-			</view>
-			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
 				<view class="item text-light item-label">下单日期</view>
 				<view class="item u-text-right">{{list.create_time}}</view>
 			</view>
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
-				<view class="item text-light item-label">合同状态</view>
-				<view class="item u-text-right">{{list.state | orderState2Str}}</view>
+				<view class="item text-light item-label">交付方式</view>
+				<view class="item u-text-right">{{list.settle_type | settleType2str}}</view>
+			</view>
+			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
+				<view class="item text-light item-label">支付工具</view>
+				<view class="item u-text-right">{{list.pay_mode | paymode2str}}</view>
+			</view>
+			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.pay_state">
+				<view class="item text-light item-label">支付状态</view>
+				<view class="item u-text-right" v-if="list.pay_mode"> 
+					<template v-if="list.pay_mode.includes('FUNDPAY')">{{list.pay_state | payFundState2Str}}</template>
+					<template v-else-if="list.pay_mode.includes('BILLPAY')">{{list.pay_state | payBillState2Str}}</template>
+				</view>
 			</view>
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
 				<view class="item text-light item-label">交收状态</view>
-				<view class="item u-text-right">{{list.settle_state}}</view>
+				<view class="item u-text-right">{{list.settle_state == '1'? '已交收' :'未交收'}}</view>
+			</view>
+			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
+				<view class="item text-light item-label">订单状态</view>
+				<view class="item u-text-right">{{list.state | orderState2Str}}</view>
 			</view>
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.remark">
 				<view class="item text-light item-label">备注</view>
@@ -99,66 +106,43 @@
 				<view class="item u-p-6"
 						v-if="btnList.button4"
 					> <!-- 审核 -->
-					<u-button type="primary" @click="handleShowPopup('audit')">{{btnList.button4_title}}</u-button>
+					<u-button type="primary" @click="handleShowPopup({mode:'audit'})">{{btnList.button4_title}}</u-button>
 				</view>
 				<view class="item u-p-6"
 						v-if="btnList.button5"
 					> <!-- 现金发起支付 -->
-					<u-button type="primary" @click="handleShowPopup('create_pay', 'xianjin')">{{btnList.button5_title}}</u-button>
+					<u-button type="primary" @click="handleShowPopup({mode:'create_pay', isBill: false })">{{btnList.button5_title}}</u-button>
 				</view>
 				<view class="item u-p-6"
 						v-if="btnList.button6"
 					> <!-- 发货 -->
-					<u-button type="primary" @click="handleShowPopup('send')">{{btnList.button6_title}}</u-button>
+					<u-button type="primary" @click="handleShowPopup({mode:'send'})">{{btnList.button6_title}}</u-button>
 				</view>
 				<view class="item u-p-6"
 						v-if="btnList.button7"
 					> <!-- 直接支付确认收货 -->
-					<u-button type="primary" @click="handleShowPopup('confirm')">{{btnList.button7_title}}</u-button>
+					<u-button type="primary" @click="handleShowPopup({mode:'confirm', isBill: false, isGRT: false })">{{btnList.button7_title}}</u-button>
 				</view>
 				<view class="item u-p-6"
 						v-if="btnList.button8"
 					> <!-- 担保支付确认收货 -->
-					<u-button type="primary" @click="handleShowPopup('confirm')">{{btnList.button8_title}}</u-button>
+					<u-button type="primary" @click="handleShowPopup({mode:'confirm', isBill: false, isGRT: true})">{{btnList.button8_title}}</u-button>
 				</view>
 				<view class="item u-p-6"
 						v-if="btnList.button9"
 					> <!-- 票据发起支付 -->
-					<u-button type="primary" @click="handleShowPopup('create_pay', 'piaoju')">{{btnList.button9_title}}</u-button>
+					<u-button type="primary" @click="handleShowPopup({mode:'create_pay', isBill: true })">{{btnList.button9_title}}</u-button>
 				</view>
 				<view class="item u-p-6"
 						v-if="btnList.button10"
 					> <!-- 票据直接支付确认收货 -->
-					<u-button type="primary" @click="handleShowPopup('confirm')">{{btnList.button10_title}}</u-button>
+					<u-button type="primary" @click="handleShowPopup({mode:'confirm', isBill: true, isGRT: false})">{{btnList.button10_title}}</u-button>
 				</view>
 				<view class="item u-p-6"
 						v-if="btnList.button11"
 					> <!-- 票据担保支付确认收货 -->
-					<u-button type="primary" @click="handleShowPopup('confirm')">{{btnList.button11_title}}</u-button>
-				</view>
-				<!-- 
-				<view class="item u-p-6">
-					<u-button type="primary" @click="order_cancel">取消</u-button>
-				</view>
-				<view class="item u-p-6">
-					<u-button type="primary"  >修改</u-button>
-				</view>
-				<view class="item u-p-6">
-					<u-button type="primary" @click="order_submit">发送</u-button>
-				</view>
-				<view class="item u-p-6"> 
-					<u-button type="primary" @click="order_pay">支付</u-button>
-				</view>
-				<view class="item u-p-6">  
-					<u-button type="primary" @click="handleShowPopup('audit')">审核</u-button>
-				</view>
-				<view class="item u-p-6"> 
-					<u-button type="primary" @click="handleShowPopup('send')">发货</u-button>
-				</view>
-				<view class="item u-p-6"> 
-					<u-button type="primary" @click="handleShowPopup('confirm')">确认收获</u-button>
-				</view> -->
-				
+					<u-button type="primary" @click="handleShowPopup({mode:'confirm', isBill: true, isGRT: false})">{{btnList.button11_title}}</u-button>
+				</view> 
 			</view>
 		</view>
 		<u-popup 
@@ -167,7 +151,7 @@
 			@close="show = false"  
 			round="25"
 			bgColor="#fff"
-		>
+			>
 			<view class="wrapper" :style="{
 				backgroundColor: themeConfig.pageBg,
 				color: themeConfig.baseText,
@@ -181,9 +165,10 @@
 						</view>
 						<view class="item u-flex-1 u-text-center">
 							<text class="u-font-34">
-								<template v-if="formActive == 'send'">发货表单</template>
-								<template v-else-if="formActive == 'audit'">审核表单</template>
-								<template v-else-if="formActive == 'confirm'">确认收货</template>
+								<template v-if="formActive.mode == 'send'">发货表单</template>
+								<template v-else-if="formActive.mode == 'audit'">审核表单</template>
+								<template v-else-if="formActive.mode == 'create_pay'">支付确认</template>
+								<template v-else-if="formActive.mode == 'confirm'">收货确认</template>
 							</text>
 						</view>
 						<view class="item u-flex-1 u-text-right">
@@ -195,8 +180,23 @@
 					backgroundColor: themeConfig.pageBg,
 				}">
 					<u-list height="100%">
-						<view class="form-content u-p-20">
-							<template v-if="formActive == 'audit'">
+						<view class="form-content u-p-20"> 
+							<template v-if="formActive.mode == 'audit'">
+								<u--form
+									labelPosition="left" 
+									labelWidth="80"
+									>
+									<u-form-item
+										label="交付方式" 
+										>
+										<view>{{list.settle_type | settleType2str}}</view>
+									</u-form-item>
+									<u-form-item
+										label="支付工具" 
+										>
+										<view>{{list.pay_mode | paymode2str}}</view>
+									</u-form-item>
+								</u--form>
 								<u--form
 									labelPosition="left"
 									:model="form_audit"
@@ -255,6 +255,23 @@
 										></u--input>
 									</u-form-item>
 									<u-form-item
+										label="收款票据" 
+										required
+										v-if="list.pay_mode.includes('BILLPAY')"
+									>
+										<view class="" @click="show_billacc = true">
+											<u--input
+												:value="form_audit.pyeelnfo" 
+												placeholder="选择收款票据账户"
+												suffixIcon="arrow-down"
+												suffixIconStyle="color: #909399"
+												readyonly
+												:customStyle="{background: '#fff'}"
+											></u--input>
+										</view>
+										
+									</u-form-item>
+									<u-form-item
 										label="审核备注" 
 									>
 										<u--textarea
@@ -268,7 +285,7 @@
 								</u--form>
 							</template>
 							
-							<template v-if="formActive == 'send'">
+							<template v-if="formActive.mode == 'send'">
 								<u--form
 									labelPosition="left"
 									:model="form_send"
@@ -288,23 +305,103 @@
 								</u--form>
 							</template>
 							
-							<template v-if="formActive == 'confirm'">
+							<template v-if="formActive.mode == 'create_pay' || formActive.mode == 'confirm' ">
+								<u--form
+									labelPosition="left" 
+									labelWidth="80"
+									>
+										<u-form-item
+											label="交付方式" 
+											>
+											<view>{{list.settle_type | settleType2str}}</view>
+										</u-form-item>
+										<u-form-item
+											label="支付工具" 
+											>
+											<view>{{list.pay_mode | paymode2str}}</view>
+										</u-form-item>
+										<u-form-item
+											label="支付订单" 
+											>
+											<view class="u-flex u-flex-items-center"> 
+												<view class="item text-primary"
+													@click="handleGoto({ url: '/pages/my/money/bill_detail', params: {id: this.list.pay_id, paytype: this.ordertype} })" >
+													查看当前支付订单详情
+												</view>
+											</view>
+										</u-form-item>
+										<u-form-item
+											label="支付状态" 
+											>
+											<view v-if="!formActive.isBill">{{list.pay_state | payFundState2Str}}</view>
+											<view v-else>{{list.pay_state | payBillState2Str}}</view>
+										</u-form-item>
+									</u--form>
+								
+							</template>
+							
+							<template v-if="formActive.mode == 'create_pay'">
+								<u--form
+									labelPosition="left"
+									:model="form_pay"
+									ref="form_pay"
+									labelWidth="80"
+									v-if="formActive.isBill == false"
+									> 
+									<u-form-item
+										label="支付方式" 
+										>
+										<u-radio-group
+											v-model="form_pay.paymode"
+											placement="row"
+											>
+											<u-radio
+											  :customStyle="{marginRight: '8px'}"
+											  v-for="(item, index) in paymode_radios"
+											  :key="index"
+											  :name="item.value"
+											  :label="item.name"
+											  :disabled="item.disabled"
+											>
+											</u-radio>
+										  </u-radio-group>
+									</u-form-item>
+									<u-form-item
+										label="支付密码" 
+										v-if="form_pay.paymode == '1'"
+										required
+									>
+										<u--input
+											type="password"
+											v-model="form_pay.paypwd"  
+											:customStyle="{background: '#fff'}"
+											placeholder="支付密码" 
+										></u--input>
+									</u-form-item> 
+									
+								</u--form>
+							</template>
+							
+							<template v-if="formActive.mode == 'confirm'">
 								<u--form
 									labelPosition="left"
 									:model="form_confirm"
 									ref="form_confirm"
 									labelWidth="80"
+									v-if="formActive.isGRT"
 									>
+									
 									<u-form-item
 										label="支付密码" 
-										v-if="list.settle_type == 'GRT'"
+										type="password"
+										required
 									>
-										<u--textarea
-											v-model="form_confirm.paypwd" 
+										<u--input
+											type="password"
+											v-model="form_confirm.paypwd"  
+											:customStyle="{background: '#fff'}"
 											placeholder="支付密码" 
-											height="90"
-											maxlength="-1"
-										></u--textarea>
+										></u--input>
 									</u-form-item>
 								</u--form>
 							</template>
@@ -314,10 +411,23 @@
 				<view class="confirm-rows u-p-20" :style="{
 					backgroundColor: themeConfig.navBg,
 				}">
-					<u-button :customStyle="{backgroundColor: themeConfig.badgeBg, color: '#fff', border: 'none'}" shape="circle" @click="handleConfirm">提 交</u-button>
+					<u-button :customStyle="{backgroundColor: themeConfig.badgeBg, color: '#fff', border: 'none'}" shape="circle" 
+					@click="handleConfirm">确认并提交</u-button>
 				</view>
 			</view>
 		</u-popup>
+	
+		<menusPopupBillAcc
+			:show="show_billacc" 
+			theme="white"  
+			:params="{
+				source_id: id,
+				source: 'BUY'
+			}"
+			@close="show_billacc = false"
+			@confirm="menusConfirm"
+		></menusPopupBillAcc>
+	
 	</view>
 </template>
 
@@ -329,14 +439,20 @@
 				id: '',
 				ordertype: '',
 				list: {},
+				show_billacc: false,
 				show: false,
-				formActive: '',
+				formActive: {}, 
 				form_audit: {
 					audit: '1',
+					pyeelnfo: '',
 					remark_audit: '',
 				},
 				form_send: {
 					remark_send: '',
+				},
+				form_pay: {
+					paymode: '1',
+					paypwd: '',
 				},
 				form_confirm: {
 					paypwd: '',
@@ -371,7 +487,19 @@
 						value: 'piaoju',
 						disabled: true,
 					},
-				]
+				],
+				paymode_radios: [
+					{
+						name: '一站式',
+						value: '1',
+						disabled: false,
+					},
+					{
+						name: '两站式',
+						value: '2',
+						disabled: true,
+					},
+				],
 			};
 		},
 		onLoad(options) {
@@ -413,10 +541,27 @@
 			...mapMutations({
 				handleGoto: 'user/handleGoto'
 			}),
-			handleShowPopup(mode) {
-				this.formActive = mode;
+			async handleShowPopup(data) {
+				this.formActive = data; 
+				if(data.mode == 'create_pay') {
+					//发起支付 如未发起过则先执行发起接口（仅1次），再弹窗；
+					if(this.list == '6') {
+						//state=6 为待支付
+						await this.order_pay()
+					}
+					
+				}
+				if(data.mode == 'audit') {
+					if(this.list.pay_mode.includes('BILLPAY')) {
+						this.form_audit.pyeelnfo = this.list.payeeAccNm
+					}
+				}
 				this.show = true
 			},
+			menusConfirm(data) {
+				console.log(data)
+				this.form_audit.pyeelnfo = `${data.acctName}|${data.acctNo}|${data.acctSvcr}|${data.acctSvcname}`
+			}, 
 			async getData() {
 				const res = await this.$api.order_detail({
 					params: {
@@ -446,7 +591,7 @@
 					uni.showLoading({
 						title: '取消成功！正在刷新'
 					})
-					this.getData()
+					await this.getData()
 				}
 			},
 			async order_send() {
@@ -461,9 +606,11 @@
 				})
 				if(res.code == 1) {
 					uni.showLoading({
-						title: '取消成功！正在刷新'
+						title: '发货成功！正在刷新'
 					})
-					this.getData()
+					await this.getData()
+				}else {
+					throw new Error(res.msg)
 				}
 			},
 			async order_submit() {
@@ -479,8 +626,8 @@
 				if(res.code == 1) {
 					uni.showLoading({
 						title: '发送成功！正在刷新'
-					})
-					this.getData()
+					}) 
+					await this.getData()
 				}
 			},
 			async order_pay() {
@@ -493,61 +640,128 @@
 					}
 				})
 				if(res.code == 1) { 
-					
+					uni.showLoading({
+						title: '发起成功！正在刷新'
+					}) 
+					await this.getData()
 				}
 			},
-			handleConfirm() {
-				if(this.formActive == 'audit') {
-					this.order_audit()
+			async order_paying() {
+				
+				let func = 'sino_fund_order_pay';
+				let params = {
+					...this.form_pay,
+					pay_id: this.list.pay_id
+				};
+				if(this.formActive.isBill) {
+					func = 'sino_bill_order_pay';
+					params = {
+						pay_id: this.list.pay_id
+					}
 				}
-				else if(this.formActive == 'send') {
-					this.order_send()
+				if(params.hasOwnProperty('paypwd') && !params.paypwd ) {
+					uni.showToast({
+						title: '请输入支付密码',
+						icon: 'none'
+					})
+					throw new Error('请输入支付密码')
 				}
-				else if(this.formActive == 'confirm') {
-					this.confirm_shouhuo()
+				uni.showLoading({
+					title: '支付中...'
+				})
+				const res = await this.$api[func]({ params })
+				if(res.code == 1) { 
+					uni.showLoading({
+						title: '支付成功！正在刷新'
+					}) 
+					await this.getData()
+				}else {
+					throw new Error(res.msg)
 				}
 			},
 			async order_audit() {
 				uni.showLoading({
 					title: '提交审核中...'
-				})
+				}) 
+				if(this.list.pay_mode.includes('BILLPAY') && !this.form_audit.pyeelnfo ) {
+					uni.showToast({
+						title: '票据账户不能为空',
+						icon: 'none'
+					})
+					throw new Error('票据账户不能为空')
+				}
 				const res = await this.$api.order_audit({
 					params: { 
 						...this.form_audit,
 						id: this.id,
 						ordertype: this.ordertype,
-						pyeelnfo: '',
 					}
 				})
 				if(res.code == 1) { 
 					uni.showLoading({
 						title: '审核成功！正在刷新'
 					})
-					this.getData()
+					await this.getData()
+				}else {
+					throw new Error(res.msg)
 				}
 			},
 			async confirm_shouhuo() {
 				let func = 'sino_fund_order_order_confirm'
-				if(this.list.settle_type == 'GRT') {
-					func = 'sino_fund_order_confirm'
+				let params = {
+					pay_id: this.list.pay_id
+				}
+				if(!this.formActive.isBill && this.formActive.isGRT) { 
+					func = 'sino_fund_order_confirm';
+					params = {
+						...params,
+						paypwd: this.form_confirm.paypwd
+					}
+				}
+				if(this.formActive.isBill) {
+					func = 'sino_bill_order_order_confirm';
+				}else if(this.formActive.isGRT) {
+					func = 'sino_bill_order_confirm';
+					params = {
+						...params,
+						paypwd: this.form_confirm.paypwd
+					}
+				}
+				if(params.hasOwnProperty('paypwd') && !params.paypwd ) {
+					uni.showToast({
+						title: '请输入支付密码',
+						icon: 'none'
+					})
+					throw new Error('请输入支付密码')
 				}
 				uni.showLoading({
 					title: '提交确认收货...'
 				})
-				const res = await this.$api[func]({
-					params: { 
-						...this.form_audit,
-						id: this.id,
-						ordertype: this.ordertype,
-						pyeelnfo: '',
-					}
-				})
+				const res = await this.$api[func]({ params })
 				if(res.code == 1) { 
 					uni.showLoading({
-						title: '审核成功！正在刷新'
+						title: '收货成功！正在刷新'
 					})
-					this.getData()
+					await this.getData()
+				}else {
+					throw new Error(res.msg)
 				}
+			},
+			async handleConfirm() {
+				if(this.formActive.mode == 'audit') {
+					await this.order_audit()
+				}
+				else if(this.formActive.mode == 'send') {
+					await this.order_send()
+				}
+				else if(this.formActive.mode == 'create_pay') {
+					//提交支付密码支付表单
+					await this.order_paying()
+				}
+				else if(this.formActive.mode == 'confirm') {
+					await this.confirm_shouhuo()
+				}
+				this.show = false
 			},
 		}
 	}

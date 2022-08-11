@@ -58,7 +58,7 @@
 						</view>
 					</view>
 					<view v-if="shows" class="u-p-10 tag_list">
-						<view class="t1 u-m-10 u-p-10 u-line-1" @click="navTo('/pagesb/ichain/detail?id='+item.id)" v-for="(item, index) in list.s_list" :key="index">
+						<view class="t1 u-m-10 u-p-10 u-line-1" @click="handleGoto({url:'/pages/baojia/ichain/detail', params: {id: item.id}, type: 'redirect'})" v-for="(item, index) in list.s_list" :key="index">
 							{{item.pname}}
 						</view>
 					</view>
@@ -70,7 +70,7 @@
 						</view>
 					</view>
 					<view v-if="showx" class="u-p-10 tag_list">
-						<view class="t1 u-m-10 u-p-10 u-line-1" @click="navTo('/pagesb/ichain/detail?id='+item.id)" v-for="(item, index) in list.x_list" :key="index">
+						<view class="t1 u-m-10 u-p-10 u-line-1" @click="handleGoto({url:'/pages/baojia/ichain/detail', params: {id: item.id}, type: 'redirect'})" v-for="(item, index) in list.x_list" :key="index">
 							{{item.pname}}
 						</view>
 					</view>
@@ -256,7 +256,9 @@
 			await this.ichain_detail()
 		},
 		methods: {
-			
+			...mapMutations({
+				handleGoto: 'user/handleGoto'
+			}),
 			handleBackEvent() {
 				uni.navigateBack()
 			},

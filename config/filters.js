@@ -14,6 +14,18 @@ const settleType2str = v => {
 	else if(v == 'COD') return '货到付款'
 	else return v
 }
+const paymode2str = v => {
+	if(!v) return v
+	else if(v.includes('FUNDPAY')) return '现金'
+	else if(v.includes('BILLPAY')) return '票据' 
+	else return v
+}
+const paystate2str = v => {
+	if(v == '0') return '待支付'
+	else if(v == '1') return '1' 
+	else return v
+}
+
 
 
 //采购/销售交易订单（order）状态：
@@ -177,4 +189,6 @@ export default {
 	payFundState2Str,
 	payBillState2Str,
 	settleType2str,
+	paymode2str,
+	paystate2str,
 }

@@ -145,7 +145,7 @@
 											v-for="(item, index) in list.fprod.split(' ')" 
 											:key="index"
 											>
-											<u-tag :text="item" plain></u-tag>
+											<u-tag :text="item" plain @click="setKw(item)"></u-tag>
 										</view>
 									</view>
 								</view>
@@ -156,7 +156,7 @@
 											v-for="(item, index) in list.bprod.split(' ')" 
 											:key="index"
 											>
-											<u-tag :text="item" plain></u-tag>
+											<u-tag :text="item" plain @click="setKw(item)"></u-tag>
 										</view>
 									</view>
 								</view>
@@ -354,6 +354,11 @@
 			
 		},
 		methods: {
+			setKw(key) {
+				this.keyword = '';
+				this.keyword = key;
+				this.handleSearch(key)
+			},
 			scrolltolower() {
 				if(this.tabs_current != 2) return
 				this.getMoreData()

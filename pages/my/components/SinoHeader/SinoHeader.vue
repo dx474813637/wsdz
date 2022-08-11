@@ -57,7 +57,7 @@
 					<view class="item-top icon">
 						<i class="custom-icon-form custom-icon"></i>
 					</view>
-					<view class="item-bottom c-title">付款记录</view>
+					<view class="item-bottom c-title">收付记录</view>
 				</view>
 				<view @click="handleGoto('/pages/my/money/safe_list')" class="card-item">
 					<view class="item-top icon">

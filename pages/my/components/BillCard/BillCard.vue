@@ -7,17 +7,20 @@
 			transition: 'all .3s'
 		}" 
 		>
-		<view class="card-header ">
+		<view class="card-header " @click="handleGotoDetail">
 			<view class="item">
 				<view class="item u-flex u-flex-between u-flex-items-center u-m-b-20">
 					<view class="name u-flex u-flex-items-center ">
 						{{detailData.id}}
 					</view>
-					<view class="pp" :class="{
-						'text-success': detailData.state == '5',
-						'text-error': detailData.state == '6',
-						'text-primary': detailData.state != '5' && detailData.state != '6'
-					}">{{detailData.state | payFundState2Str}}</view>
+					<view class="pp text-primary" >
+						<template v-if="mode == 'FUNDPAY'">
+							{{detailData.state | payFundState2Str}}
+						</template>
+						<template v-else-if="mode == 'BILLPAY'">
+							{{detailData.state | payBillState2Str}}
+						</template>
+					</view>
 				</view>
 				<view class="item u-flex u-flex-between u-flex-items-start u-m-b-20 ">
 					<view class="pp u-flex u-flex-items-start">
@@ -65,7 +68,7 @@
 		</view>
 		<view style="overflow: hidden;transition: all .3s;">
 			<u-transition :show="toggle" mode="fade-down">
-				<view class="card-more" >
+				<view class="card-more" @click="handleGotoDetail">
 					<view class="item u-flex u-flex-between u-flex-items-center u-m-b-20">
 						<view class="pp u-flex u-flex-items-center">
 							交易编号
@@ -82,14 +85,14 @@
 							{{detailData.sinopay_id}}
 						</view>
 					</view>
-					<view class="item u-flex u-flex-between u-flex-items-center ">
+					<view class="item u-flex u-flex-between u-flex-items-center " v-if="mode == 'FUNDPAY'">
 						<view class="pp u-flex u-flex-items-center">
 							资金账号
 						</view>
-						<view class="u-font-28">
+						<view class="u-font-28"> 
 							{{detailData.b_user_fundaccno}}
 						</view>
-					</view>
+					</view> 
 				</view>
 			</u-transition>
 		</view>
@@ -109,6 +112,10 @@
 			paytype: {
 				type: String,
 				default: 'B',
+			},
+			mode: {
+				type: String,
+				default: 'FUNDPAY',
 			},
 			ids: {
 				type: String,
@@ -158,7 +165,7 @@
 		},
 		methods: {
 			handleGotoDetail() {
-				// this.$emit('detail')
+				this.$emit('detail', this.detailData)
 			}
 		}
 	}

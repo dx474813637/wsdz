@@ -30,6 +30,11 @@ export const create_order = (data, config={}) => http.post('create_order', data,
 // change_order 修改订单
 export const change_order = (data, config={}) => http.post('change_order', data, config)
 
+// order_get_account  获取卖方票据账户
+// 订单类型： source *SELL-采购订单BUY-销售订单 
+// 订单ID: source_id
+export const order_get_account = (data) => http.get('order_get_account', data)
+
 // my_order 采购/销售订单列表
 // 订单类型： ordertype *B-我的采购订单S-我的销售订单
 // 支付工具： paymode FUND:现金BILL:票据
@@ -57,11 +62,6 @@ export const order_audit = (data) => http.get('order_audit', data)
 // order_send 销售订单-发货 id：订单id remark_send：发货备注
 export const order_send = (data) => http.get('order_send', data)
 
-// order_get_account  
-// 订单类型： source *SELL-采购订单BUY-销售订单 
-// 订单ID: source_id
-export const order_get_account = (data) => http.get('order_get_account', data)
-
 // broker_order  broker客户采购/销售订单列表 
 // 订单类型： ordertype *B-客户采购订单S-客户销售订单
 // 支付工具： paymode FUND:现金BILL:票据
@@ -78,4 +78,24 @@ export const broker_order = (data) => http.get('broker_order', data)
 export const broker_order_detail = (data) => http.get('broker_order_detail', data)
  
 
+// sino_fund_order_pay 支付订单
+	// 支付ID： pay_id *
+	// 支付方式：  paymode * 1-一站式 2-两站式
+	// 支付密码：  paypwd * 支付方式为一站式时必填
+export const sino_fund_order_pay = (data) => http.get('sino_fund_order_pay', data)
+
+// sino_fund_order_order_confirm 直接支付-订单确认收货 支付ID：pay_id
+export const sino_fund_order_order_confirm = (data) => http.get('sino_fund_order_order_confirm', data)
+// sino_fund_order_confirm 担保支付-订单确认收货 支付ID： pay_id 支付密码：paypwd
+export const sino_fund_order_confirm = (data) => http.get('sino_fund_order_confirm', data)
+// sino_fund_order_confirm_apply 担保支付-二站式-订单申请确认收货 支付ID：pay_id
+export const sino_fund_order_confirm_apply = (data) => http.get('sino_fund_order_confirm_apply', data)
+
+// sino_bill_order_pay 票据支付订单 支付ID：pay_id
+export const sino_bill_order_pay = (data) => http.get('sino_bill_order_pay', data)
+
+// sino_bill_order_order_confirm 票据直接支付-订单确认收货 支付ID：pay_id
+export const sino_bill_order_order_confirm = (data) => http.get('sino_bill_order_order_confirm', data)
+// sino_bill_order_confirm 票据担保支付-确认收货-解冻转账 支付ID： pay_id 支付密码：paypwd
+export const sino_bill_order_confirm = (data) => http.get('sino_bill_order_confirm', data)
 

@@ -107,19 +107,6 @@ export const sino_fund_order_list_order = (data) => http.get('sino_fund_order_li
 	// 支付ID：  pay_id *
 export const sino_fund_order_detail_order = (data) => http.get('sino_fund_order_detail_order', data)
 
-// sino_fund_order_pay 支付订单
-	// 支付ID： pay_id *
-	// 支付方式：  paymode * 1-一站式 2-两站式
-	// 支付密码：  paypwd * 支付方式为一站式时必填
-export const sino_fund_order_pay = (data) => http.get('sino_fund_order_pay', data)
-
-// sino_fund_order_order_confirm 直接支付-订单确认收货 支付ID：pay_id
-export const sino_fund_order_order_confirm = (data) => http.get('sino_fund_order_order_confirm', data)
-// sino_fund_order_confirm 担保支付-订单确认收货 支付ID： pay_id 支付密码：paypwd
-export const sino_fund_order_confirm = (data) => http.get('sino_fund_order_confirm', data)
-// sino_fund_order_confirm_apply 担保支付-二站式-订单申请确认收货 支付ID：pay_id
-export const sino_fund_order_confirm_apply = (data) => http.get('sino_fund_order_confirm_apply', data)
-
 // sino_bill_account_list  票据账号列表
 export const sino_bill_account_list = (data) => http.get('sino_bill_account_list', data)
 // sino_bill_account_list_account 电票账号列表
@@ -135,10 +122,3 @@ export const sino_bill_order_list = (data) => http.get('sino_bill_order_list', d
 	// 支付类型： paytype B-买方支付 S-卖方支付
 	// 支付ID：  pay_id *
 export const sino_bill_order_detail = (data) => http.get('sino_bill_order_detail', data)
-
-// sino_bill_order_pay 票据支付订单 支付ID：pay_id
-export const sino_bill_order_pay = (data) => http.get('sino_bill_order_pay', data)
-// sino_bill_order_order_confirm 票据直接支付-订单确认收货 支付ID：pay_id
-export const sino_bill_order_order_confirm = (data) => http.get('sino_bill_order_order_confirm', data)
-// sino_bill_order_confirm 票据担保支付-确认收货-解冻转账 支付ID： pay_id 支付密码：paypwd
-export const sino_bill_order_confirm = (data) => http.get('sino_bill_order_confirm', data)
