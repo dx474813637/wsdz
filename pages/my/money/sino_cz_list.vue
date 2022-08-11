@@ -92,12 +92,12 @@
 					// 	value: 'txzz',
 					// 	func: '',
 					// },
-					{
-						name: '同名账户转账记录',
-						disabled: false,
-						value: 'tmzz',
-						func: '',
-					}
+					// {
+					// 	name: '同名账户转账记录',
+					// 	disabled: true,
+					// 	value: 'tmzz',
+					// 	func: '',
+					// }
 				],
 				indexList: [],
 				curP: 1,
@@ -111,6 +111,9 @@
 			if(options.hasOwnProperty('wallet')) {
 				this.type = options.wallet
 			}
+			uni.setNavigationBarTitle({
+				title: this.type == 'B'? '付款账户' : '收款账户'
+			})
 			uni.showLoading()
 			this.getData()
 		},

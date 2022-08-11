@@ -326,7 +326,9 @@
 				newMsg: state => state.user.newMsg, 
 				bd: state => state.user.bd, 
 				tips: state => state.user.tips, 
-				wode_guide: state => state.user.wode_guide
+				wode_guide: state => state.user.wode_guide, 
+				sino: state => state.sinopay.sino,
+				sinoFundLoading: state => state.sinopay.sinoFundLoading,
 			}),
 		},
 		async onLoad() {
@@ -342,6 +344,7 @@
 			}else {
 				this.myCompany()
 			}
+			this.getSinoAccount()
 		},
 		methods: {
 			...mapMutations({
@@ -349,7 +352,8 @@
 			}),
 			...mapActions({
 				myCompany: 'user/myCompany',
-				wode: 'user/wode'
+				wode: 'user/wode',
+				getSinoAccount: 'sinopay/getSinoAccount'
 			}),
 			async handleTakeAccount() {
 				uni.showLoading()

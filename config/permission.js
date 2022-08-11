@@ -20,6 +20,13 @@ const userStateList = [
 	{ pattern: /^\/pages\/my\/broker\/edit*/ },
 	{ pattern: /^\/pages\/my\/broker\/prod_edit*/ },
 ]
+// 资金sinopay 白名单列表
+const sinopayWhiteList = [
+	{ pattern: /^\/pages\/my\/money\/index/ },
+	{ pattern: /^\/pages\/my\/money\/sino_bind/ },
+	{ pattern: /^\/pages\/my\/money\/sino_reg/ },
+	{ pattern: /^\/pages\/my\/money\/sino_info/ },
+]
 
 export default async function(vm) {
   const list = ['navigateTo', 'redirectTo', 'reLaunch', 'switchTab']
@@ -30,13 +37,11 @@ export default async function(vm) {
         // 获取要跳转的页面路径（url去掉"?"和"?"后的参数）
         const url = e.url.split('?')[0]
         console.log('url', url)
-		const r = uni.getStorageSync('WebSocketInfo')
-		// uni.sendSocketMessage({
-	 //        data: '{"type":"xcx","client_name":"'+r.w_login+'","room_id":"rawmex_xcx","token":"'+r.w_token+'","login":"'+r.w_login+'","content":"'+e.url+'"}'
-		// });
+		const r = uni.getStorageSync('WebSocketInfo') 
 		vm.$ws.send('{"type":"xcx","client_name":"'+r.w_login+'","rawmex_login":"'+r.login+'","room_id":"rawmex_xcx","token":"'+r.w_token+'","login":"'+r.w_login+'","content":"'+e.url+'"}')
         // 判断当前窗口是白名单，如果是则不重定向路由
         let pass
+		let pass_sino
         if (whiteList) {
           pass = whiteList.some((item) => {
             if (typeof (item) === 'object' && item.pattern) {
@@ -44,7 +49,7 @@ export default async function(vm) {
             }
             return url === item
           })
-        }
+        } 
 		// 不是白名单并且没有token
 		if (!pass && store.state.user.login == 0) {
 		  
@@ -60,7 +65,7 @@ export default async function(vm) {
 		  })
 		  return false
 		}
-		
+		 
         if (!pass && userStateList) {
 			//用户信息是否完善校验
           pass = !userStateList.some((item) => {
@@ -69,7 +74,8 @@ export default async function(vm) {
             }
             return url === item
           })
-        }
+        } 
+       
         if (!pass ) {
 			if(store.state.user.myCpy.hasOwnProperty('state') && store.state.user.myCpy.state == 0) {
 				uni.showToast({
@@ -96,10 +102,37 @@ export default async function(vm) {
 					}
 				});
 				return false
-			}
+			}  
+			
 			
 			
         }
+		
+		if (sinopayWhiteList) {
+			//sinopay页面 
+			if(url.includes('/pages/my/money/')) { 
+				pass_sino = sinopayWhiteList.some((item) => {
+					if (typeof (item) === 'object' && item.pattern) {
+					  return item.pattern.test(url)
+					}
+					return url === item
+				  })
+				if (!pass_sino ) {
+					if(store.state.sinopay.sino.state != 2 || store.state.sinopay.sino.auth_state != 1) {
+						uni.navigateTo({
+							url: '/pages/my/money/index',
+							success: () => { 
+								uni.showToast({
+									title: '资金账户权限不足',
+									icon: 'none'
+								})
+							}
+						})
+						return false
+					}
+				}
+			}
+		}
         
         return e
       },
