@@ -15,7 +15,7 @@
 							<view class="icon-acc u-flex u-flex-items-center u-flex-center">
 								<i class="custom-icon-my custom-icon"></i>
 							</view>
-							<span class="acc-name">{{sino.sinopay_poster}}</span>
+							<span class="acc-name">{{sino.sinopay_poster ? sino.sinopay_poster : '--'}}</span>
 						</view>
 					</view>
 				</view>

@@ -106,48 +106,7 @@
 						<view class="u-p-t-20 u-font-26 " style="white-space: nowrap;color: #4d525d;">{{item.title}}</view>
 					</view> 
 				</u-scroll-list>
-			</view>
-			
-			<!-- <view class="u-flex u-flex-items-center u-flex-between u-p-b-10 u-p-t-24">
-				<view @click="handleGoto('/pages/my/customer/customer')" class=" step13 u-p-l-30 item u-flex u-flex-items-center u-flex-1">
-					<i class="custom-icon-sort custom-icon u-font-38"></i>
-					<text class="u-p-l-20 u-font-28">客户列表</text>
-				</view>
-				<view @click="handleTakeAccount" class=" step14 u-p-l-30 item u-flex u-flex-items-center u-flex-1 u-border-left" style="border-color: #f8f8f8!important;">
-					<i class="custom-icon-friendadd custom-icon u-font-38"></i>
-					<text class="u-p-l-20 u-font-28">领取客户账号</text>
-				</view>
-			</view>
-			<view class="u-flex u-flex-items-center u-flex-between u-p-b-10 u-p-t-24">
-				<view @click="handleGoto({url:'/pages/my/broker/auth_list', params:{pan: 's'}})" class=" step15 u-p-l-30 item u-flex u-flex-items-center u-flex-1">
-					<i class="custom-icon-weituobiangeng custom-icon u-font-38"></i>
-					<text class="u-p-l-20 u-font-28">客户委托卖盘</text>
-				</view>
-				<view @click="handleGoto({url:'/pages/my/broker/auth_list', params:{pan: 'b'}})" class="step16 u-p-l-30 item u-flex u-flex-items-center u-flex-1 u-border-left" style="border-color: #f8f8f8!important;">
-					<i class="custom-icon-weituobiangeng custom-icon u-font-38"></i>
-					<text class="u-p-l-20 u-font-28">客户委托买盘</text>
-				</view>
-			</view>
-			<view class="u-flex u-flex-items-center u-flex-between u-p-b-10 u-p-t-24">
-				<view @click="handleGoto({url:'/pages/my/customer/customer_pan_zz', params:{pan: 's'}})" class=" step15 u-p-l-30 item u-flex u-flex-items-center u-flex-1">
-					<i class="custom-icon-zu555 custom-icon u-font-38"></i>
-					<text class="u-p-l-20 u-font-28">客户自主卖盘</text>
-				</view>
-				<view @click="handleGoto({url:'/pages/my/customer/customer_pan_zz', params:{pan: 'b'}})" class="step16 u-p-l-30 item u-flex u-flex-items-center u-flex-1 u-border-left" style="border-color: #f8f8f8!important;">
-					<i class="custom-icon-jinhuoqu custom-icon u-font-38"></i>
-					<text class="u-p-l-20 u-font-28">客户自主买盘</text>
-				</view>
-			</view>
-			<view class="u-flex u-flex-items-center u-flex-between u-p-b-10 u-p-t-24">
-				<view @click="handleGoto({url:'/pages/my/customer/customer_order', params:{ordertype: 'S'}})" class="step16 u-p-l-30 item u-flex u-flex-items-center u-flex-1 u-border-left" style="border-color: #f8f8f8!important;">
-					<i class="custom-icon-zu558 custom-icon u-font-38"></i>
-					<text class="u-p-l-20 u-font-28">客户销售订单</text>
-				</view>
-				<view @click="handleGoto({url:'/pages/my/customer/customer_order', params:{ordertype: 'B'}})" class=" step15 u-p-l-30 item u-flex u-flex-items-center u-flex-1">
-					<i class="custom-icon-zu556 custom-icon u-font-38"></i>
-					<text class="u-p-l-20 u-font-28">客户采购订单</text>
-				</view>
-			</view> -->
+			</view> 
 		</view>
 		
 		<view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26 step6">
@@ -175,7 +134,7 @@
 			</view>
 		</view>
 		
-		<view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26" >
+		<!-- <view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26" >
 			<view class="box-header u-flex u-flex-items-end u-border-bottom u-p-b-14 u-p-l-30 u-p-r-30">
 				<view class="u-font-34">订单中心</view>
 				
@@ -218,7 +177,7 @@
 					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">安全设置</text>
 				</view>
 			</view>
-		</view>
+		</view> -->
 		
 		<view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26" v-for="(ele, i) in moreMenusNew" :key="i">
 			<view class="box-header u-border-bottom u-flex u-flex-items-end u-p-b-14 u-p-l-30 u-p-r-30">
@@ -312,6 +271,13 @@
 						params: {ordertype: 'B'},
 						class: 'step24',
 					},
+					{
+						title: '营销推送',
+						icon: 'custom-icon-forward',
+						url: '/pages/my/user/subscribe',
+						params: {},
+						class: 'step25',
+					},
 				], 
 			};
 		},
@@ -344,7 +310,7 @@
 			}else {
 				this.myCompany()
 			}
-			this.getSinoAccount()
+			// this.getSinoAccount()
 		},
 		methods: {
 			...mapMutations({

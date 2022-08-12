@@ -660,7 +660,14 @@
 					"enablePullDownRefresh": false
 				}
 
-			} 
+			}, {
+				"path": "user/subscribe",
+				"style": {
+					"navigationBarTitleText": "营销推送",
+					"enablePullDownRefresh": false
+				}
+
+			}
 		]
 	}, {
 		"root": "pages/more",

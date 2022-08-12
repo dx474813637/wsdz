@@ -4,6 +4,7 @@
 
 // import { getAuthorization } from '@/utils/auth'
 import store from '@/store'
+import wx_permission from '@/config/permission/wx.js'
 
 // 白名单
 const whiteList = [
@@ -36,7 +37,8 @@ export default async function(vm) {
       invoke(e) {
         // 获取要跳转的页面路径（url去掉"?"和"?"后的参数）
         const url = e.url.split('?')[0]
-        console.log('url', url)
+        console.log('url', e.url) 
+		if(!wx_permission(e.url)) return false
 		const r = uni.getStorageSync('WebSocketInfo') 
 		vm.$ws.send('{"type":"xcx","client_name":"'+r.w_login+'","rawmex_login":"'+r.login+'","room_id":"rawmex_xcx","token":"'+r.w_token+'","login":"'+r.w_login+'","content":"'+e.url+'"}')
         // 判断当前窗口是白名单，如果是则不重定向路由

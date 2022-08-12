@@ -108,18 +108,23 @@
 								<view class="item text-base u-font-30 u-text-right">{{sinoBillAccount.ctime}}</view>
 							</view> 
 						</view>
-					 	<view class="bg-white uni-shadow-base u-radius-10 u-p-30" v-else> 
+						<view v-else>
+							<DisabledCard
+								title="票据账户"
+								></DisabledCard>
+						</view>
+					 	<!-- <view class="bg-white uni-shadow-base u-radius-10 u-p-30" v-else> 
 					 		<u-empty
 					 				mode="data"
 					 				:icon="typeConfig.white.empty"
 					 			>
 					 			</u-empty> 
-					 	</view>
+					 	</view> -->
 					</view>
 					
 				</view>
 				<view class="main-box"> 
-					<view class="box-header u-flex u-flex-between u-flex-items-end">
+					<view class="box-header u-flex u-flex-between u-flex-items-end" v-if="sinoBillAccountList.length > 0">
 						<view class="item-left u-flex u-flex-items-baseline">
 							<view class="box-title">电票账户</view> 
 						</view>  
@@ -164,13 +169,18 @@
 					 			</view> 
 					 		</view>
 					 	</view>
-					 	<view class="bg-white uni-shadow-base u-radius-10 u-p-30" v-else> 
+						<view v-else>
+							<DisabledCard
+								title="电票账户"
+								></DisabledCard>
+						</view>
+					 	<!-- <view class="bg-white uni-shadow-base u-radius-10 u-p-30" v-else> 
 					 		<u-empty
 					 				mode="data"
 					 				:icon="typeConfig.white.empty"
 					 			>
 					 			</u-empty> 
-					 	</view>
+					 	</view> -->
 					</view>
 					 
 				</view>
@@ -197,8 +207,8 @@
 				<view class="wrap-content">
 					<view class="content u-flex u-flex-column u-flex-items-center">
 						<view class="warning">请准备好</view>
-						<view>身份信息/企业信息</view>
-						<view>银行卡号/企业开户账号</view>
+						<view>企业信息</view>
+						<view>企业开户账号</view>
 						<view class="handle-box u-flex u-flex-column u-flex-items-center">
 							<view @click="handleGoto('/pages/my/money/sino_reg')" class="handle-btn reg">注册新账号</view>
 							<view @click="handleGoto('/pages/my/money/sino_bind')" class="handle-btn">绑定已有账号</view>
@@ -218,6 +228,7 @@
 	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
 	import moneyCard from '@/pages/my/components/moneyCard/moneyCard.vue'
 	import SinoHeader from '@/pages/my/components/SinoHeader/SinoHeader.vue'
+	import DisabledCard from '@/pages/my/components/DisabledCard/DisabledCard.vue'
 	export default {
 		data() {
 			return {
@@ -247,16 +258,18 @@
 		},
 		components: {
 			moneyCard,
-			SinoHeader
+			SinoHeader,
+			DisabledCard
 		},
 		async onLoad() {
 			this.myCompany()
 			await this.getSinoAccount()
 			if(!this.sino.hasOwnProperty('id')) {
 				this.show = true
+			}else { 
+				this.getSinoFundAccount() 
+				this.initSinoBill()
 			}
-			this.getSinoFundAccount() 
-			this.initSinoBill()
 		},
 		methods: {
 			...mapMutations({

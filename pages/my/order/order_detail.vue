@@ -422,7 +422,7 @@
 			theme="white"  
 			:params="{
 				source_id: id,
-				source: 'BUY'
+				source: ordertype == 'S' ? 'SELL' : 'BUY'
 			}"
 			@close="show_billacc = false"
 			@confirm="menusConfirm"

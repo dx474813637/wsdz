@@ -407,3 +407,9 @@ export const brokerCompanyProduct = (data) => http.get('broker_company_product',
 // guanzhu
 export const guanzhu = (data) => http.get('guanzhu', data)
 
+// extension_msg_index 推广首页
+export const extension_msg_index = (data) => http.get('extension_msg_index', data)
+// extension_msg_list 推广企业列表 参数 type 分类名称
+export const extension_msg_list = (data) => http.get('extension_msg_list', data)
+// extension_msg_send  推广推送 参数id  企业id
+export const extension_msg_send = (data) => http.get('extension_msg_send', data)

@@ -3,7 +3,7 @@ let state = {
 		sino: uni.getStorageSync('sino') || {},
 		sinoFund: [],
 		sinoFundLoading: false,
-		sinoBillAccount: {},
+		sinoBillAccount: false,
 		sinoBillLoading: false,
 		sinoBillAccountList: [],
 		sinoBillListLoading: false,
