@@ -82,103 +82,50 @@
 			</view>
 		</view>
 		
-		<view class="user-item-box u-p-24 bg-white u-m-b-26 step5" v-if=" auth == 1">
-			<view @click="handleGoto('/pages/my/customer/customer')" class="u-flex u-flex-items-center u-p-t-6 u-p-b-30  u-border-bottom" style="border-color: #f8f8f8!important;">
-				<view class="radius-50 bg-primary text-white u-flex u-flex-items-center u-flex-center u-p-16">
-					<i class=" custom-icon-friend custom-icon u-font-40"></i>
-				</view>
+		<!-- 客户管理 远程控制 -->
+		<view class="user-item-box u-p-24 bg-white u-m-b-26 step5" v-if="menus_broker.hasOwnProperty('list') && menus_broker.list.length > 0">
+			<view @click="handleGoto('/pages/my/customer/customer')" class="u-flex u-flex-items-center u-p-t-6 u-p-b-30  u-border-bottom" style="border-color: #dadbde!important;">
+				<image style="width: 35px;height: 35px;" :src="menus_broker.icon" mode="scaleToFill"></image>
 				<view class="item u-p-l-20">
-					<view class="u-font-36">客户管理</view>
-					<view class="text-light u-font-26">撮合员代为发布买卖盘时前置设定</view>
+					<view class="u-font-36">{{menus_broker.name}}</view>
+					<view class="text-light u-font-26">{{menus_broker.title}}</view>
 				</view>
 			</view>
 			<view class="step25 u-m-t-20">
 				<u-scroll-list> 
 					<view 
-						v-for="(item, index) in brokerList"
-						@click="scrollListItemClick(item)" 
-						:class="['item-broker u-p-20', item.step13]"
+						v-for="(item, index) in menus_broker.list"
+						@click="handleMenusClick(item)" 
+						class="item-broker u-p-10 u-p-l-20 u-p-r-20"
 						>
-						<view class="icon-w u-flex u-flex-center u-flex-items-center">
-							<i :class="['custom-icon u-font-36', item.icon]"></i>
-						</view>
-						
-						<view class="u-p-t-20 u-font-26 " style="white-space: nowrap;color: #4d525d;">{{item.title}}</view>
+						<image style="width: 40px;height: 40px;" :src="item.icon" mode="scaleToFill"></image> 
+						<view class="u-p-t-15 u-font-26 " style="white-space: nowrap;color: #4d525d;">{{item.name}}</view>
 					</view> 
 				</u-scroll-list>
 			</view> 
-		</view>
-		
-		<view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26 step6">
-			<view class="box-header u-flex u-flex-items-end u-border-bottom u-p-b-14 u-p-l-30 u-p-r-30">
-				<view class="u-font-34">买盘卖盘</view>
-				<view class="text-light u-font-26 u-p-l-10">发布前设置交易商品</view>
+		</view> 
+		<!-- 我的菜单列表 远程控制 -->
+		<view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26" v-for="(ele, i) in menus_wd" :key="i">
+			<view class="box-header u-border-bottom u-flex u-flex-items-end u-p-b-14 u-p-l-30 u-p-r-30">
+				<view class="u-font-34 u-flex u-flex-items-center">
+					<image v-if="ele.icon" class="u-m-r-5" style="width: 15px;height:15px;" :src="ele.icon" mode=""></image>
+					<text>{{ele.name}}</text>
+				</view>
+				<view class="text-light u-font-26 u-p-l-10" v-if="ele.title">{{ele.title}}</view>
 			</view>
-			<view class="box-row u-flex u-flex-between u-flex-items-center u-p-t-20 u-p-b-10">
-				<view @click="handleGoto('/pages/my/broker/prod_edit')" class="step17 item u-text-center u-flex-1">
-					<i class="custom-icon-roundadd custom-icon t-label"></i>
-					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">添加交易商品</text>
-				</view>
-				<view @click="handleGoto('/pages/my/broker/prod_set')" class="step18 item u-text-center u-flex-1">
-					<i class="custom-icon-goods custom-icon t-label"></i>
-					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">商品列表</text>
-				</view>
-				<view @click="handleGoto({url: '/pages/my/broker/list', params: {pan: 'b'}})" class="step19 item u-text-center u-flex-1">
-					<i class="custom-icon-jinhuoqu custom-icon t-label"></i>
-					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">我的买盘</text>
-				</view>
-				<view @click="handleGoto({url: '/pages/my/broker/list', params: {pan: 's'}})" class="step20 item u-text-center u-flex-1">
-					<i class="custom-icon-zu555 custom-icon t-label"></i>
-					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">我的卖盘</text>
+			<view class="box-row other-menus u-flex u-flex-wrap u-flex-items-center u-p-t-20 ">
+				<view 
+					class="item u-text-center u-m-t-15" 
+					v-for="(item, index) in ele.list" 
+					:key="index"
+					@click="handleMenusClick(item)"
+					>
+					<image class="icon-img" :src="item.icon" mode=""></image>
+					<text class="u-font-26 u-p-b-10 u-line-1 menus-name">{{item.name}}</text>
 				</view>
 			</view>
 		</view>
-		
-		<!-- <view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26" >
-			<view class="box-header u-flex u-flex-items-end u-border-bottom u-p-b-14 u-p-l-30 u-p-r-30">
-				<view class="u-font-34">订单中心</view>
-				
-			</view>
-			<view class="box-row u-flex u-flex-between u-flex-items-center u-p-t-20 u-p-b-10">
-				<view @click="handleGoto({url: '/pages/my/order/order', params: {ordertype: 'B'}})" class="item u-text-center u-flex-1">
-					<i class="custom-icon-zu556 custom-icon t-label"></i>
-					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">采购订单</text>
-				</view>
-				<view @click="handleGoto({url: '/pages/my/order/order', params: {ordertype: 'S'}})" class="item u-text-center u-flex-1">
-					<i class="custom-icon-zu558 custom-icon t-label"></i>
-					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">销售订单</text>
-				</view> 
-				<view class="item u-flex-1"></view>
-				<view class="item u-flex-1"></view>
-			</view>
-		</view>
-		
-		
-		<view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26" v-if="sh == 1">
-			<view class="box-header u-flex u-flex-items-end u-border-bottom u-p-b-14 u-p-l-30 u-p-r-30">
-				<view class="u-font-34">资金中心</view>
-				
-			</view>
-			<view class="box-row u-flex u-flex-between u-flex-items-center u-p-t-20 u-p-b-10">
-				<view @click="handleGoto('/pages/my/money/index')" class="item u-text-center u-flex-1">
-					<i class="custom-icon-moneybag custom-icon t-label"></i>
-					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">资金主页</text>
-				</view>
-				<view @click="handleGoto('/pages/my/money/sino_zh1')" class="item u-text-center u-flex-1">
-					<i class="custom-icon-pay custom-icon t-label"></i>
-					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">现金账户</text>
-				</view>
-				<view @click="handleGoto('/pages/my/money/bill')" class="item u-text-center u-flex-1">
-					<i class="custom-icon-form custom-icon t-label"></i>
-					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">付款记录</text>
-				</view>
-				<view @click="handleGoto('/pages/my/money/safe_list')" class="item u-text-center u-flex-1">
-					<i class="custom-icon-lock custom-icon t-label"></i>
-					<text class="u-font-26 u-p-t-16 u-line-1 menus-name">安全设置</text>
-				</view>
-			</view>
-		</view> -->
-		
+		<!-- 其他公告列表 远程控制 -->
 		<view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26" v-for="(ele, i) in moreMenusNew" :key="i">
 			<view class="box-header u-border-bottom u-flex u-flex-items-end u-p-b-14 u-p-l-30 u-p-r-30">
 				<view class="u-font-34">{{ele.name}}</view>
@@ -289,6 +236,8 @@
 				sh: state => state.user.sh,
 				moreMenus: state => state.user.moreMenus,
 				moreMenusNew: state => state.user.moreMenusNew, 
+				menus_broker: state => state.user.menus_broker, 
+				menus_wd: state => state.user.menus_wd, 
 				newMsg: state => state.user.newMsg, 
 				bd: state => state.user.bd, 
 				tips: state => state.user.tips, 

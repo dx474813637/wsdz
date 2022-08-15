@@ -203,7 +203,7 @@
 									ref="form_audit"
 									labelWidth="80"
 									>
-									<u-form-item
+									<!-- <u-form-item
 										label="交付方式" 
 										v-if="ordertype == 'B'"
 									>
@@ -227,7 +227,7 @@
 										    >
 										    </u-radio>
 										  </u-radio-group>
-									</u-form-item>
+									</u-form-item> -->
 									<u-form-item
 										label="审核意见" 
 									>
@@ -250,22 +250,22 @@
 									>
 										<u--input
 											:value="list.total_price2" 
-											readyonly
+											readonly
 											:customStyle="{background: '#fff'}"
 										></u--input>
 									</u-form-item>
 									<u-form-item
 										label="收款票据" 
-										required
+										 required
 										v-if="list.pay_mode.includes('BILLPAY')"
 									>
 										<view class="" @click="show_billacc = true">
 											<u--input
-												:value="form_audit.pyeelnfo" 
+												:value="form_audit.pyeeInfo" 
 												placeholder="选择收款票据账户"
 												suffixIcon="arrow-down"
 												suffixIconStyle="color: #909399"
-												readyonly
+												readonly
 												:customStyle="{background: '#fff'}"
 											></u--input>
 										</view>
@@ -422,7 +422,7 @@
 			theme="white"  
 			:params="{
 				source_id: id,
-				source: ordertype == 'S' ? 'SELL' : 'BUY'
+				source: ordertype == 'S' ? 'BUY' : 'SELL'
 			}"
 			@close="show_billacc = false"
 			@confirm="menusConfirm"
@@ -444,7 +444,7 @@
 				formActive: {}, 
 				form_audit: {
 					audit: '1',
-					pyeelnfo: '',
+					pyeeInfo: '',
 					remark_audit: '',
 				},
 				form_send: {
@@ -545,7 +545,7 @@
 				this.formActive = data; 
 				if(data.mode == 'create_pay') {
 					//发起支付 如未发起过则先执行发起接口（仅1次），再弹窗；
-					if(this.list == '6') {
+					if(this.list.state == '6') {
 						//state=6 为待支付
 						await this.order_pay()
 					}
@@ -553,14 +553,14 @@
 				}
 				if(data.mode == 'audit') {
 					if(this.list.pay_mode.includes('BILLPAY')) {
-						this.form_audit.pyeelnfo = this.list.payeeAccNm
+						this.form_audit.pyeeInfo = this.list.payeeAccNm
 					}
 				}
 				this.show = true
 			},
 			menusConfirm(data) {
 				console.log(data)
-				this.form_audit.pyeelnfo = `${data.acctName}|${data.acctNo}|${data.acctSvcr}|${data.acctSvcname}`
+				this.form_audit.pyeeInfo = data.pyeeInfo
 			}, 
 			async getData() {
 				const res = await this.$api.order_detail({
@@ -683,7 +683,7 @@
 				uni.showLoading({
 					title: '提交审核中...'
 				}) 
-				if(this.list.pay_mode.includes('BILLPAY') && !this.form_audit.pyeelnfo ) {
+				if(this.list.pay_mode.includes('BILLPAY') && !this.form_audit.pyeeInfo ) {
 					uni.showToast({
 						title: '票据账户不能为空',
 						icon: 'none'

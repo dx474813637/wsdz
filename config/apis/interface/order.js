@@ -8,7 +8,7 @@ const http = uni.$u.http
 // 商品总额： total_price  *根据采购量和单价计算
 // 交付方式： pay_option1	D_P:款到发货GRT:担保支付COD:货到付款
 // 支付工具： pay_option2 *FUNDPAY:现金BILLPAY:票据（交付方式为担保支付时）
-// 卖方票据账户(修改无)： pyeelnfo *从接口获取卖方票据账户中获取并选择（支付工具为票据时必填）
+// 卖方票据账户(修改无)： pyeeInfo *从接口获取卖方票据账户中获取并选择（支付工具为票据时必填）
 // 交收方式： settle_mode *订单类型为销售订单时，直接从买盘信息里读取B:买家自提S:卖家送货
 // 交收区域：delivery_place
 // 			订单类型为采购订单时：

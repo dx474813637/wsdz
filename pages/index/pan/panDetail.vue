@@ -367,7 +367,7 @@
 					<text>在线联系</text>
 				</view>
 				<u-line direction="col" :color="themeConfig.pageTextSub" length="30%"></u-line>
-				<!-- <view class="item-btn u-flex u-flex-items-center u-flex-center"
+				<view class="item-btn u-flex u-flex-items-center u-flex-center"
 					:style="{
 						color: themeConfig.tabTextActive
 					}"
@@ -377,7 +377,7 @@
 					<text class="u-p-l-10">立即下单</text>
 				</view>
 				<u-line direction="col" :color="themeConfig.pageTextSub" length="30%"></u-line>
-				 -->
+				
 				 <view class="item-btn  u-flex u-flex-items-center u-flex-center">
 					<u-button open-type="share" :customStyle="{
 						color: themeConfig.tabText,

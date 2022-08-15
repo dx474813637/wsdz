@@ -115,25 +115,34 @@
 										</view>
 									</view>
 								</view>
-								<view class="f-rows" v-if="list.risk_description">
+								<view class="f-rows" v-if="list.risk_description_arr">
 									<view class="label"><u-tag text="风险术语"></u-tag></view>
 									<view class="content u-flex u-flex-items-center u-flex-wrap">
 										<view class="item link-label u-p-5" 
-											v-for="(item, index) in list.risk_description.split('||')" 
+											v-for="(item, index) in list.risk_description_arr" 
 											:key="index"
 											>
-											<u-tag :text="item" plain></u-tag>
+											<view class="u-p-5 u-p-l-10 u-p-r-10 u-radius-4" style="border: 1rpx solid #007aff">
+												<dxTooltip :text="item.name" color="#007aff" size="13px"  >
+													{{item.info}}
+												</dxTooltip>
+											</view>
 										</view>
 									</view>
 								</view>
-								<view class="f-rows" v-if="list.safety_description">
+								<view class="f-rows" v-if="list.safety_description_arr">
 									<view class="label"><u-tag text="安全术语"></u-tag></view>
-									<view class="content u-flex u-flex-items-center u-flex-wrap">
+									<view class="content u-flex u-flex-items-center u-flex-wrap" >
 										<view class="item link-label u-p-5"
-											v-for="(item, index) in list.safety_description.split('||')" 
+											v-for="(item, index) in list.safety_description_arr" 
 											:key="index"
 											>
-											<u-tag :text="item" plain></u-tag>
+											<view class="u-p-5 u-p-l-10 u-p-r-10 u-radius-4" style="border: 1rpx solid #007aff">
+												<dxTooltip :text="item.name" color="#007aff" size="13px"  >
+													{{item.info}}
+												</dxTooltip>
+											</view>
+											 
 										</view>
 									</view>
 									
@@ -304,6 +313,8 @@
 					},
 				],
 				list: {},
+				risk_description: [],
+				safety_description: [],
 				searchRes: '1',
 				list_company: [],
 				tj_company: [],
@@ -377,7 +388,7 @@
 					this.setOnlineControl(res)
 					if(this.curP == 1) {
 						this.tj_company = res.news_tj?.list_consumption
-						this.list = res.list
+						this.list = res.list 
 					}
 					this.no_img = res.no_img
 					this.list_company = [...this.list_company, ...res.list_company]
@@ -421,7 +432,7 @@
 				}
 				arr.unshift(k)
 				this.chemnetList = arr
-			}
+			}, 
 		}
 	}
 </script>

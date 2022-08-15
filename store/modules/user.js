@@ -21,6 +21,8 @@ let state = {
 		myProduct: [],
 		moreMenus: {},
 		moreMenusNew: [],
+		menus_broker: {},
+		menus_wd: [],
 		newMsg: 0,
 		tips: {},
 		wode_guide: {},
@@ -29,6 +31,12 @@ let state = {
 	getters = {
 	},
 	mutations = {
+		setWdMenus(state, data) {
+			state.menus_wd = data;
+		},
+		setBrokerMenus(state, data) {
+			state.menus_broker = data;
+		},
 		setGuide(state, data) {
 			state.wode_guide = data;
 		},

@@ -77,6 +77,8 @@
 			...mapMutations({
 				setMoreMenus: 'user/setMoreMenus',
 				setMoreMenusNew: 'user/setMoreMenusNew',
+				setWdMenus: 'user/setWdMenus',
+				setBrokerMenus: 'user/setBrokerMenus',
 				setNewMsg: 'user/setNewMsg'
 			}),
 			async getData() {
@@ -84,6 +86,8 @@
 				if(res.code == 1) {
 					this.list = res.list
 					this.setNewMsg(res.news)
+					this.setBrokerMenus(res.broker_memu)
+					this.setWdMenus(res.new_memu_wd)
 					this.setMoreMenusNew(res.new_memu)
 					this.setMoreMenus({
 						menusList: res.wd_memu,

@@ -99,6 +99,7 @@
 						prop="pay_option1"
 						ref="pay_option1"
 						required
+						v-if="panRes.list.order_type == '1'"
 					>
 						<u-radio-group
 							v-model="form.pay_option1"
@@ -119,6 +120,7 @@
 						label="支付工具"
 						prop="pay_option2"
 						ref="pay_option2"
+						v-if="panRes.list.order_type == '1'"
 						required
 					>
 						<u-radio-group
@@ -136,6 +138,26 @@
 							</u-radio>
 						</u-radio-group>
 					</u-form-item>
+					<u-form-item
+						label="卖方票据" 
+						prop="pyeeInfo"
+						ref="pyeeInfo"
+						required
+						v-if="form.pay_option2 == 'BILLPAY'"
+					>
+						<view class="" @click="show_billacc = true">
+							<u--input
+								:value="form.pyeeInfo" 
+								placeholder="选择卖方收款票据账户"
+								suffixIcon="arrow-down"
+								suffixIconStyle="color: #909399"
+								readyonly
+								:customStyle="{background: '#fff'}"
+							></u--input>
+						</view>
+						
+					</u-form-item>
+					
 					<u-form-item
 						label="交收方式"
 						prop="settle_mode"
@@ -238,6 +260,17 @@
 			loading-text="loading..."
 			loadingMode="semicircle" 
 		></u-loading-page>
+		
+		<menusPopupBillAcc
+			:show="show_billacc" 
+			theme="white"  
+			:params="{
+				source_id: id,
+				source: ordertype == 'S' ? 'BUY' : 'SELL'
+			}"
+			@close="show_billacc = false"
+			@confirm="menusConfirm"
+		></menusPopupBillAcc>
 	</view>
 </template>
 
@@ -253,6 +286,7 @@
 				order: {},
 				tar: '',
 				pageLoading: true,
+				show_billacc: false,
 				form: { 
 					source: '',
 					source_id: '',
@@ -261,7 +295,7 @@
 					total_price: '',
 					pay_option1: '',
 					pay_option2: '',
-					pyeelnfo: '',
+					pyeeInfo: '',
 					settle_mode: '',
 					delivery_place: '',
 					settle_address: '',
@@ -311,7 +345,9 @@
 		},
 		computed: {
 			...mapState({
-				addressArea: state => state.user.addressArea
+				addressArea: state => state.user.addressArea,
+				sinoBillAccount: state => state.sinopay.sinoBillAccount,
+				sinoBillAccountList: state => state.sinopay.sinoBillAccountList,
 			}),
 			qiehuan() {
 				let qiehuan
@@ -356,33 +392,50 @@
 						message: '请填写正确的数值',
 						trigger: ['blur', 'change']
 					},
-					pay_option1: {
-						required: true, 
-						message: '请选择',
-						trigger: ['blur', 'change']
-					},
-					pay_option2: {
-						required: true, 
-						message: '请选择',
-						trigger: ['blur', 'change']
-					},
 				}	
+				if(this.panRes.order_type == '1') {
+					base = {
+						...base,
+						pay_option1: {
+							required: true, 
+							message: '请选择',
+							trigger: ['blur', 'change']
+						},
+						pay_option2: {
+							required: true, 
+							message: '请选择',
+							trigger: ['blur', 'change']
+						},
+					}
+				} 
+				if(this.form.pay_option2 == 'BILLPAY') {
+					base = {
+						...base,
+						pyeeInfo: {
+							required: true, 
+							message: '请选择卖方票据账户',
+							trigger: ['blur', 'change']
+						},
+					}
+				} 
 				if(!this.qiehuan) {
 					base = {
 						...base,
 						delivery_place: {
-							require: true,
+							required: true,
 							message: '请选择所在区域',
 							trigger: ['blur', 'change']
 						},
 						settle_address: {
-							require: true,
+							required: true,
 							message: '请填写地址',
 							trigger: ['blur', 'change']
 						},
 					}
 				}
-					
+				if(this.$refs.form && this.$refs.form.setRules) {
+					this.$refs.form.setRules(base)	 
+				}
 				return base
 			}
 		},
@@ -401,12 +454,14 @@
 			
 		},
 		onReady() {
-			this.$refs.form.setRules(this.rules)
+			this.$refs.form.setRules(this.rules) 
 		},
 		watch: {
 			['form.pay_option1'](n, o) {
 				if(n == 'GRT') {
-					this.pay_option2_radios[1].disabled = false
+					if(this.sinoBillAccount && this.sinoBillAccountList.length > 0) { 
+						this.pay_option2_radios[1].disabled = false
+					}
 				}else {
 					this.pay_option2_radios[1].disabled = true
 					if(o == 'GRT') {
@@ -416,15 +471,15 @@
 			}, 
 			['form.amount'](n, o) {
 				if(this.form.price === '') return
-				this.form.total_price = (this.form.price * n).toFixed(2)
+				this.form.total_price =  Number((this.form.price * n).toFixed(2))
 			}, 
 			['form.price'](n, o) {
 				if(this.form.amount === '' || this.tar == 'total_price') return
-				this.form.total_price = (this.form.amount * n).toFixed(2)
+				this.form.total_price =  Number((this.form.amount * n).toFixed(2))
 			}, 
 			['form.total_price'](n, o) {
 				if(o === '' || this.tar == 'price') return
-				this.form.price = (n / this.form.amount).toFixed(2)
+				this.form.price = Number((n / this.form.amount).toFixed(2))
 			}, 
 		},
 		methods: {
@@ -433,7 +488,14 @@
 			}),
 			...mapActions({
 				getAddressArea: 'user/getAddressArea',
+				getSinoBillAccount: 'sinopay/getSinoBillAccount',
+				getSinoBillAccountList: 'sinopay/getSinoBillAccountList',
 			}),
+			menusConfirm(data) {
+				console.log(data)
+				this.form.pyeeInfo = data.pyeeInfo
+				this.$refs.form.validateField('pyeeInfo')
+			}, 
 			async init() {
 				this.getAddressArea()
 				if(this.type == 'add') {
@@ -444,14 +506,19 @@
 						title: '获取商品信息'
 					})
 					await this.getPan()
-					if(this.ordertype == 'S') {
-						this.form.delivery_place = this.panRes.list.delivery_place1
-						this.form.settle_address = this.panRes.list.delivery_address
-						//订单类型为销售订单时，settle_mode直接从买盘信息里读取 BS
-						
-						this.settle_mode_radios = this.settle_mode_radios.filter(ele => this.panRes.list.settle_mode.includes(ele.value) )
-						this.form.settle_mode = this.settle_mode_radios[1] ? this.settle_mode_radios[1].value : this.settle_mode_radios[0].value
-					}
+					
+					this.form.delivery_place = this.panRes.list.delivery_place1
+					this.form.settle_address = this.panRes.list.delivery_address
+					//订单类型为销售订单时，settle_mode直接从买盘信息里读取 BS
+					this.form.source_id = this.id
+					this.form.source = this.ordertype == 'S'? 'BUY' : 'SELL'
+					this.settle_mode_radios = this.settle_mode_radios.filter(ele => this.panRes.list.settle_mode.includes(ele.value) )
+					this.form.settle_mode = this.settle_mode_radios[1] ? this.settle_mode_radios[1].value : this.settle_mode_radios[0].value
+					 this.form.price = this.panRes.list.price1
+					 if(this.panRes.list.order_type == '1') {
+						 this.form.pay_option1 = 'D_P'
+						 this.form.pay_option2 = 'FUNDPAY'
+					 }
 				}else {
 					uni.setNavigationBarTitle({
 						title: '修改订单'
@@ -462,6 +529,14 @@
 					await this.getOrder()
 				}
 				this.pageLoading = false
+				 if(!this.sinoBillAccount) {
+					 await this.getSinoBillAccount()
+					 if(this.sinoBillAccount) {
+						 await this.getSinoBillAccountList()
+					 }else {
+						 this.pay_option2_radios[1].name = '票据-您未开通票据账户'
+					 }
+				 }
 				
 			},
 			async getPan() {
@@ -486,6 +561,9 @@
 				})
 				if(res.code == 1) {
 					this.pan = res.list.Order.Source
+					this.panRes = {
+						list: res.list.Order.Source
+					}
 					this.order = res.list.Order 
 					this.form.source = res.list.Order.source
 					this.form.source_id = res.list.Order.source_id
@@ -493,8 +571,8 @@
 					this.form.price = res.list.Order.price1
 					this.form.total_price = res.list.Order.total_price1
 					this.form.pay_option1 = res.list.Order.settle_type
-					this.form.pay_option2 = res.list.Order.pay_mode == 'FUNDPAYGUARANTE' ? 'FUNDPAY' : 'BILLPAY'
-					this.form.pyeelnfo = res.list.Order.payeeAccNm || ''
+					this.form.pay_option2 = res.list.Order.pay_mode.includes == 'BILLPAYGUARANTE' ? 'BILLPAY' : 'FUNDPAY'
+					this.form.pyeeInfo = res.list.Order.payeeAccNm || ''
 					this.form.settle_mode = res.list.Order.settle_mode
 					this.form.delivery_place = res.list.Order.delivery_place
 					this.form.settle_address = res.list.Order.settle_address
