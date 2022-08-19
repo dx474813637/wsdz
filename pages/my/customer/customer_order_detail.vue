@@ -26,9 +26,11 @@
 				<view class="item text-light item-label">来源</view>
 				<view class="item text-primary" @click="handleGoto(`/pages/index/pan/panDetail?id=${list.source_id}&pan=${list.source == 'BUY'? 'b' : 's'}`)">{{list.source | source2str}}：{{list.source_name}}</view>
 			</view> 
-			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.intro1">
+			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.intro">
 				<view class="item text-light item-label">商品详情</view>
-				<view class="item u-text-right u-line-3">{{list.intro1}}</view>
+				<view class="item ">
+					<rich-text :nodes="list.intro" ></rich-text>
+				</view>
 			</view>
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
 				<view class="item text-light item-label">买方</view>
@@ -55,28 +57,37 @@
 				<view class="item u-text-right">{{list.order_type | orderType2str}}</view>
 			</view>
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
-				<view class="item text-light item-label">交付方式</view>
-				<view class="item u-text-right">{{list.create_time}}</view>
-			</view>
-			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
-				<view class="item text-light item-label">支付工具</view>
-				<view class="item u-text-right">{{list.create_time}}</view>
-			</view>
-			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
 				<view class="item text-light item-label">下单日期</view>
 				<view class="item u-text-right">{{list.create_time}}</view>
 			</view>
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
-				<view class="item text-light item-label">合同状态</view>
-				<view class="item u-text-right">{{list.state | orderState2Str}}</view>
+				<view class="item text-light item-label">交付方式</view>
+				<view class="item u-text-right">{{list.settle_type | settleType2str}}</view>
+			</view>
+			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
+				<view class="item text-light item-label">支付工具</view>
+				<view class="item u-text-right">{{list.pay_mode | paymode2str}}</view>
+			</view>
+			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.pay_state">
+				<view class="item text-light item-label">支付状态</view>
+				<view class="item u-text-right" v-if="list.pay_mode"> 
+					<template v-if="list.pay_mode.includes('FUNDPAY')">{{list.pay_state | payFundState2Str}}</template>
+					<template v-else-if="list.pay_mode.includes('BILLPAY')">{{list.pay_state | payBillState2Str}}</template>
+				</view>
 			</view>
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
 				<view class="item text-light item-label">交收状态</view>
-				<view class="item u-text-right">{{list.settle_state}}</view>
+				<view class="item u-text-right">{{list.settle_state == '1'? '已交收' :'未交收'}}</view>
+			</view>
+			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
+				<view class="item text-light item-label">订单状态</view>
+				<view class="item u-text-right">{{list.state | orderState2Str}}</view>
 			</view>
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.remark">
 				<view class="item text-light item-label">备注</view>
-				<view class="item u-text-right">{{list.remark}}</view>
+				<view class="item u-text-right" style="word-break: break-all;">
+					<rich-text :nodes="list.remark"></rich-text>
+				</view>
 			</view>
 		</view>
 		

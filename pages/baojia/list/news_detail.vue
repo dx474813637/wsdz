@@ -26,6 +26,10 @@
 					<text>首页</text>
 				</view>
 				<u-line direction="col" :color="themeConfig.pageTextSub" length="30%"></u-line>
+				<view @click="handleGoto({url: '/pages/baojia/list/list', params: {id: pid, dir}})" class="item-btn  u-flex u-flex-items-center u-flex-center">
+					<text>价格大数据</text>
+				</view>
+				<u-line direction="col" :color="themeConfig.pageTextSub" length="30%"></u-line>
 				<view class="item-btn  u-flex u-flex-items-center u-flex-center">
 					<u-button open-type="share" :customStyle="{
 						color: themeConfig.tabText,
@@ -54,6 +58,8 @@
 				list: '',
 				mode: 'event',
 				id: '',
+				dir: '',
+				pid: '',
 			};
 		},
 		onLoad(options) {
@@ -64,6 +70,12 @@
 			}
 			if(options.hasOwnProperty('mode')) {
 				this.mode = options.mode
+			}
+			if(options.hasOwnProperty('dir')) {
+				this.dir = options.dir
+			}
+			if(options.hasOwnProperty('pid')) {
+				this.pid = options.pid
 			}
 			uni.showLoading()
 			this.getData()

@@ -76,16 +76,29 @@
 							></u-button>
 						</template>
 					</u-input>
-				</u-form-item>
+				</u-form-item> 
 			</u--form>
+			<view class="u-flex u-flex-items-start u-m-t-30">
+				<u-checkbox-group 
+					v-model="agree"
+					placement="row" 
+					>
+					<u-checkbox name="agree"></u-checkbox>
+				</u-checkbox-group>
+				<view class="hint u-flex-1 u-p-l-5">
+					注册前请先阅读并同意
+					<text @click="handleGoto('/pages/index/login/xieyi')" class="link">《服务条款》</text>
+				</view>
+			</view>
 			<u-button type="primary" :ripple="true" @click="submit" :custom-style="inputStyle">注册</u-button>
 
-
+			
 			<view class="alternative">
 				<view class="issue" @click="handleGoto({url:'/pages/index/login/login', type: 'reLaunch'})">返回登录</view>
 			</view> 
+			
 		</view>
-		<view class="buttom safe-area-inset-bottom ">
+		<!-- <view class="buttom safe-area-inset-bottom ">
 			<view class="u-flex u-flex-items-center u-p-20 u-p-l-40">
 				<u-checkbox-group 
 					v-model="agree"
@@ -99,8 +112,11 @@
 				</view>
 			</view>
 			<u-safe-bottom></u-safe-bottom>
-		</view>
+		</view> -->
 		
+		<view class="u-p-l-10 u-p-r-10">
+			<u-parse :content="denglu_info['info3']"></u-parse>
+		</view>
 	</view>
 </template>
 
@@ -122,6 +138,9 @@
 				searchRes: 0,
 				timer: null,
 				agree: [],
+				denglu_info: {
+					info3: ''
+				}
 			}
 		},
 		onReady() {
@@ -229,8 +248,12 @@
 				}
 			}
 		},
-		onLoad(){
-			
+		
+		async onLoad(){
+			const res = await this.$api.denglu_info()
+			if(res.code == 1) {
+				this.denglu_info = res.list
+			}
 		},
 		methods: {
 			...mapMutations({
@@ -246,7 +269,7 @@
 			submit() {
 				if(this.agree.length == 0) {
 					uni.showToast({
-						title: '请先阅读并勾选底部协议',
+						title: '请先阅读并勾选服务条款',
 						icon: 'none'
 					})
 					return
@@ -354,13 +377,13 @@
 
 		.content {
 			width: 600rpx;
-			margin: 80rpx auto 0;
+			margin: 20rpx auto 0;
 
 			.title {
 				text-align: left;
 				font-size: 50rpx;
 				font-weight: 500;
-				margin-bottom: 100rpx;
+				margin-bottom: 50rpx;
 			}
 
 			input {

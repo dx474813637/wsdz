@@ -82,7 +82,8 @@
 			"path": "pages/index/login/register",
 			"style": {
 				"navigationBarTitleText": "",
-				"enablePullDownRefresh": false
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#ffffff"
 			}
 
 		}, {

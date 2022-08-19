@@ -26,9 +26,11 @@
 				<view class="item text-light item-label">来源</view>
 				<view class="item text-primary" @click="handleGoto(`/pages/index/pan/panDetail?id=${list.source_id}&pan=${list.source == 'BUY'? 'b' : 's'}`)">{{list.source | source2str}}：{{list.source_name}}</view>
 			</view> 
-			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.intro1">
+			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.intro">
 				<view class="item text-light item-label">商品详情</view>
-				<view class="item u-text-right u-line-3">{{list.intro1}}</view>
+				<view class="item u-text-right u-line-3">
+					<rich-text :nodes="list.intro"></rich-text>
+				</view>
 			</view>
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
 				<view class="item text-light item-label">买方</view>
@@ -83,7 +85,9 @@
 			</view>
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.remark">
 				<view class="item text-light item-label">备注</view>
-				<view class="item u-text-right">{{list.remark}}</view>
+				<view class="item u-text-right" style="word-break: break-all;">
+					<rich-text :nodes="list.remark"></rich-text>
+				</view>
 			</view>
 		</view>
 		<view class="main u-p-8 u-m-t-30">

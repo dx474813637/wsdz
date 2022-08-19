@@ -672,7 +672,7 @@
 					// 	id: this.indexData?.pid,
 					// 	keyword: ''
 					// })
-					this.navTo(`${item.url}?id=${this.id}`, item.type)
+					this.navTo(`${item.url}?id=${this.id}&dir=${this.dir}`, item.type)
 				}
 				
 			},

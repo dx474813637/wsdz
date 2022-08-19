@@ -30,7 +30,7 @@ const sinopayWhiteList = [
 ]
 
 export default async function(vm) {
-  const list = ['navigateTo', 'redirectTo', 'reLaunch', 'switchTab']
+  const list = ['navigateTo', 'redirectTo', 'reLaunch', 'switchTab' ]
   // 用遍历的方式分别为,uni.navigateTo,uni.redirectTo,uni.reLaunch,uni.switchTab这4个路由方法添加拦截器
   list.forEach(item => {
     uni.addInterceptor(item, {
@@ -121,7 +121,7 @@ export default async function(vm) {
 				  })
 				if (!pass_sino ) {
 					if(store.state.sinopay.sino.state != 2 || store.state.sinopay.sino.auth_state != 1) {
-						uni.navigateTo({
+						uni.redirectTo({
 							url: '/pages/my/money/index',
 							success: () => { 
 								uni.showToast({

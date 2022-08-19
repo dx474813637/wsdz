@@ -151,6 +151,8 @@ export const passwdReset = (data) => http.get('passwd_reset', data)
 // 修改密码 参数opasswd原密码 npasswd新密码
 export const passwdResetA = (data) => http.get('passwd_reseta', data)
 
+// denglu_info 返回的 info1账号登录页说明 info2手机登录页说明 info3注册页说明
+export const denglu_info = (data) => http.get('denglu_info', data)
 
 //  我的接口，通过list.login有值登录，0未登录。未登录状态，
 // 点一般的都跳转登录，除非是一些帮助说明的链接。

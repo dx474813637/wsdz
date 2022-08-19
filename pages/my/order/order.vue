@@ -52,7 +52,7 @@
 					v-for="(item, index) in indexList"
 					:key="item.id"
 				>
-					<view class="u-p-10">
+					<view class="u-p-10 u-p-l-20 u-p-r-20">
 						<OrderCard
 							:customData="item"
 							:ordertype="ordertype"

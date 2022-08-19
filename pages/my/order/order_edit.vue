@@ -49,7 +49,7 @@
 								<u--input
 									v-model="form.amount"
 									clearable
-									type="number"
+									type="digit"
 								></u--input>
 							</view>
 							<view class="u-p-l-10">{{type == 'edit' ? order.Source.unit : panRes.list.unit}}</view>
@@ -67,7 +67,7 @@
 								<u--input
 									v-model="form.price"
 									clearable
-									type="number"
+									type="digit"
 									@focus="tar = 'price'"
 								></u--input>
 							</view>

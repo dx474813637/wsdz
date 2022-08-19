@@ -82,7 +82,7 @@
 			</view>
 		</view>
 		
-		<!-- 客户管理 远程控制 -->
+		<!-- 客户管理 远程控制 --> 
 		<view class="user-item-box u-p-24 bg-white u-m-b-26 step5" v-if="menus_broker.hasOwnProperty('list') && menus_broker.list.length > 0">
 			<view @click="handleGoto('/pages/my/customer/customer')" class="u-flex u-flex-items-center u-p-t-6 u-p-b-30  u-border-bottom" style="border-color: #dadbde!important;">
 				<image style="width: 35px;height: 35px;" :src="menus_broker.icon" mode="scaleToFill"></image>
@@ -103,45 +103,50 @@
 					</view> 
 				</u-scroll-list>
 			</view> 
-		</view> 
+		</view>  
 		<!-- 我的菜单列表 远程控制 -->
-		<view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26" v-for="(ele, i) in menus_wd" :key="i">
-			<view class="box-header u-border-bottom u-flex u-flex-items-end u-p-b-14 u-p-l-30 u-p-r-30">
-				<view class="u-font-34 u-flex u-flex-items-center">
-					<image v-if="ele.icon" class="u-m-r-5" style="width: 15px;height:15px;" :src="ele.icon" mode=""></image>
-					<text>{{ele.name}}</text>
+		<template v-if="menus_wd && menus_wd.length > 0">
+			<view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26" v-for="(ele, i) in menus_wd" :key="i">
+				<view class="box-header u-border-bottom u-flex u-flex-items-end u-p-b-14 u-p-l-30 u-p-r-30">
+					<view class="u-font-34 u-flex u-flex-items-center">
+						<image v-if="ele.icon" class="u-m-r-5" style="width: 15px;height:15px;" :src="ele.icon" mode=""></image>
+						<text>{{ele.name}}</text>
+					</view>
+					<view class="text-light u-font-26 u-p-l-10" v-if="ele.title">{{ele.title}}</view>
 				</view>
-				<view class="text-light u-font-26 u-p-l-10" v-if="ele.title">{{ele.title}}</view>
-			</view>
-			<view class="box-row other-menus u-flex u-flex-wrap u-flex-items-center u-p-t-20 ">
-				<view 
-					class="item u-text-center u-m-t-15" 
-					v-for="(item, index) in ele.list" 
-					:key="index"
-					@click="handleMenusClick(item)"
-					>
-					<image class="icon-img" :src="item.icon" mode=""></image>
-					<text class="u-font-26 u-p-b-10 u-line-1 menus-name">{{item.name}}</text>
+				<view class="box-row other-menus u-flex u-flex-wrap u-flex-items-center u-p-t-20 ">
+					<view 
+						class="item u-text-center u-m-t-15" 
+						v-for="(item, index) in ele.list" 
+						:key="index"
+						@click="handleMenusClick(item)"
+						>
+						<image class="icon-img" :src="item.icon" mode=""></image>
+						<text class="u-font-26 u-p-b-10 u-line-1 menus-name">{{item.name}}</text>
+					</view>
 				</view>
 			</view>
-		</view>
+		</template>
+		
 		<!-- 其他公告列表 远程控制 -->
-		<view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26" v-for="(ele, i) in moreMenusNew" :key="i">
-			<view class="box-header u-border-bottom u-flex u-flex-items-end u-p-b-14 u-p-l-30 u-p-r-30">
-				<view class="u-font-34">{{ele.name}}</view>
-			</view>
-			<view class="box-row other-menus u-flex u-flex-wrap u-flex-items-center u-p-t-20 ">
-				<view 
-					class="item u-text-center u-m-t-15" 
-					v-for="(item, index) in ele.list" 
-					:key="index"
-					@click="handleMenusClick(item)"
-					>
-					<image class="icon-img" :src="item.icon" mode=""></image>
-					<text class="u-font-26 u-p-b-10 u-line-1 menus-name">{{item.name}}</text>
+		<template v-if="moreMenusNew && moreMenusNew.length > 0">
+			<view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26" v-for="(ele, i) in moreMenusNew" :key="i">
+				<view class="box-header u-border-bottom u-flex u-flex-items-end u-p-b-14 u-p-l-30 u-p-r-30">
+					<view class="u-font-34">{{ele.name}}</view>
+				</view>
+				<view class="box-row other-menus u-flex u-flex-wrap u-flex-items-center u-p-t-20 ">
+					<view 
+						class="item u-text-center u-m-t-15" 
+						v-for="(item, index) in ele.list" 
+						:key="index"
+						@click="handleMenusClick(item)"
+						>
+						<image class="icon-img" :src="item.icon" mode=""></image>
+						<text class="u-font-26 u-p-b-10 u-line-1 menus-name">{{item.name}}</text>
+					</view>
 				</view>
 			</view>
-		</view>
+		</template>
 		
 		<xky-guideStep :step="step" :otherHeight="$u.sys().safeAreaInsets.top"></xky-guideStep>
 		<u-safe-bottom></u-safe-bottom>

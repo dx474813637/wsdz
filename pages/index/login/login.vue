@@ -1,6 +1,6 @@
 <template>
 	<view class="wrap">
-		<view class="top"></view>
+		<!-- <view class="top"></view> -->
 		<view class="content">
 			<view class="title">欢迎登录</view>
 			<u--form 
@@ -49,13 +49,16 @@
 				<view class="issue" @click="handleGoto({url:'/pages/index/login/register'})">注册账号</view>
 			</view> 
 			
-			<view class="u-p-t-80 u-m-t-80 u-flex u-flex-center">
+			<view class=" u-m-t-40 u-flex u-flex-end">
 				<view>
 					<u--text type="warning" decoration="underline" text="忘记密码？" @click="handleGoto('/pages/index/login/resetPwd')"></u--text>
 				</view>
 				
 				
 			</view>
+		</view>
+		<view class="u-p-l-10 u-p-r-10">
+			<u-parse :content="denglu_info[logintype == 1? 'info1' : 'info2']"></u-parse>
 		</view>
 		<!-- <view class="buttom safe-area-inset-bottom ">
 			<view class="u-flex u-flex-items-center u-p-20 u-p-l-40">
@@ -88,6 +91,7 @@
 					login: '',
 					passwd: '',
 				},
+				denglu_info: {},
 				passwordType: true
 				// agree: [],
 			}
@@ -139,8 +143,11 @@
 				}
 			}
 		},
-		onLoad(){
-			
+		async onLoad(){
+			const res = await this.$api.denglu_info()
+			if(res.code == 1) {
+				this.denglu_info = res.list
+			}
 		},
 		methods: {
 			...mapMutations({
@@ -260,13 +267,13 @@
 
 		.content {
 			width: 600rpx;
-			margin: 80rpx auto 0;
+			margin: 20rpx auto 0;
 
 			.title {
 				text-align: left;
 				font-size: 50rpx;
 				font-weight: 500;
-				margin-bottom: 100rpx;
+				margin-bottom: 50rpx;
 			}
 
 			input {

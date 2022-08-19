@@ -1,7 +1,7 @@
 <template>
 	<view class="w">
 		<view class="search-wrapper u-flex u-flex-items-center u-p-l-20 u-p-r-20 u-p-b-10">
-			<view class="item u-flex-1" @click="show = true" >
+			<view class="item u-flex-1" @click="show = true" style="position: relative;" >
 				<u--input 
 					:value="customer_name"
 					suffixIcon="arrow-down"
@@ -13,6 +13,7 @@
 					fontSize="14"
 					:customStyle="{paddingTop: '4px', paddingBottom: '4px', background: '#e8e8e8', border: 'none'}"
 				></u--input>
+				<view style="position: absolute;left: 0;top: 0;width: 100%;height: 100%;z-index: 10;" > </view>
 			</view>
 			<view class="item u-m-l-20" @click="resetCustom">
 				<view class=" u-radius-18 u-flex u-flex-items-center u-flex-center" style="width: 30px;height: 30px;background-color: #999; ">

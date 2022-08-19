@@ -56,11 +56,7 @@
 							:price="item.price"
 							:dprice="item.dprice"
 							:unit="item.unit"
-							:origin="item"
-							@changeStatus="handleChangeStatus"
-							@delet="handleDelet"
-							@resubmit="handleResubmit"
-							@detail="handleProdDetail"
+							:origin="item" 
 							@front="handleProdFront"
 						></CustomPanCard>
 					</view>

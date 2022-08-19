@@ -367,16 +367,20 @@
 					<text>在线联系</text>
 				</view>
 				<u-line direction="col" :color="themeConfig.pageTextSub" length="30%"></u-line>
-				<view class="item-btn u-flex u-flex-items-center u-flex-center"
-					:style="{
-						color: themeConfig.tabTextActive
-					}"
-					@click="handleGoto({url: '/pages/my/order/order_edit', params: {ordertype: pan == 's'? 'B' : 'S', id: id, type: 'add'}})"
-				>
-					<i class="custom-icon-add-product custom-icon"></i>
-					<text class="u-p-l-10">立即下单</text>
-				</view>
-				<u-line direction="col" :color="themeConfig.pageTextSub" length="30%"></u-line>
+				
+				<template v-if="orderBtnShow == 1">
+					<view class="item-btn u-flex u-flex-items-center u-flex-center"
+						:style="{
+							color: themeConfig.tabTextActive
+						}"
+						@click="handleGoto({url: '/pages/my/order/order_edit', params: {ordertype: pan == 's'? 'B' : 'S', id: id, type: 'add'}})"
+					>
+						<i class="custom-icon-add-product custom-icon"></i>
+						<text class="u-p-l-10">立即下单</text>
+					</view>
+					<u-line direction="col" :color="themeConfig.pageTextSub" length="30%"></u-line>
+				</template>
+				
 				
 				 <view class="item-btn  u-flex u-flex-items-center u-flex-center">
 					<u-button open-type="share" :customStyle="{
@@ -430,7 +434,8 @@
 						content: ''
 					},
 				],
-				pageLoading: true
+				pageLoading: true,
+				orderBtnShow: 1,
 			};
 		},
 		async onLoad(options) {
@@ -476,7 +481,7 @@
 					this.cpy = res.company
 					this.tabs_desc[0].content = this.list.intro
 					this.tabs_desc[1].content = this.list.remark
-					
+					this.orderBtnShow = res.button
 					this.setOnlineControl(res)
 				}
 			},

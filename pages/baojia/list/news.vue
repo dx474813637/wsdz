@@ -11,7 +11,7 @@
 					v-for="(item, index) in indexList"
 					:key="item.id"
 				>
-					<view class="u-p-20 bg-white item-card u-m-t-20" @click="handleGoto({url: '/pages/baojia/list/news_detail', params: {id: item.id, mode: item.mode}})">
+					<view class="u-p-20 bg-white item-card u-m-t-20" @click="handleGoto({url: '/pages/baojia/list/news_detail', params: {id: item.id, mode: item.mode, dir: dir, pid: id}})">
 						<view class="u-flex u-flex-items-start u-flex-between u-p-b-10">
 							<view class="text-primary">{{item.title}}</view>
 							<view class="u-font-28 text-base u-text-right u-p-t-5" style="flex: 0 0 100px">{{item.post_date | date2timestamp | timeFrom}}</view>
@@ -53,6 +53,7 @@
 		data() {
 			return {
 				indexList: [],
+				dir: '',
 				curP: 1,
 				loadstatus: 'loadmore',
 				id: ''
@@ -64,6 +65,10 @@
 				this.customShareParams.id = options.id
 			}else {
 				uni.navigateBack()
+			}
+			if(options.hasOwnProperty('dir')) {
+				this.dir = options.dir
+				this.customShareParams.dir = options.dir
 			}
 			uni.showLoading()
 			this.getData()
