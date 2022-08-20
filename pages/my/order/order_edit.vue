@@ -14,15 +14,7 @@
 					<u-form-item
 						:label="ordertype == 'S' ? '买方' : '卖方'"
 					>
-						<view class="">
-							<template v-if="type == 'edit'">
-								{{ordertype == 'S' ? order.b_company : order.s_company}}
-							</template>
-							<template v-else>
-								{{panRes.company.name}}
-							</template>
-							
-						</view>
+						<view class="">{{company}}</view>
 					</u-form-item>
 					<u-form-item
 						label="商品" 
@@ -219,10 +211,10 @@
 							></u--input>
 							<view v-else>
 								<template v-if="type == 'add'">
-									{{panRes.list.delivery_address}}
+									<rich-text :nodes="panRes.list.delivery_address"></rich-text> 
 								</template>
 								<template v-else>
-									{{order.settle_address}}
+									<rich-text :nodes="order.settle_address"></rich-text>  
 								</template>
 							</view>
 						</view>
@@ -349,6 +341,19 @@
 				sinoBillAccount: state => state.sinopay.sinoBillAccount,
 				sinoBillAccountList: state => state.sinopay.sinoBillAccountList,
 			}),
+			company() {
+				let company = ''
+				if(this.type == 'edit') {
+					if(this.ordertype == 'S') {
+						company = this.order.b_company
+					}else {
+						company = this.order.s_company
+					}
+				}else {
+					company = this.panRes?.company?.name
+				} 
+				return company 
+			},
 			qiehuan() {
 				let qiehuan
 				if(this.ordertype == 'S') {
@@ -369,7 +374,7 @@
 			rules() {
 				let base = {
 					amount: {
-						required: true,
+						required: true, 
 						validator: (rule, value, callback) => {
 							return uni.$u.test.number(value)
 						},
@@ -392,8 +397,14 @@
 						message: '请填写正确的数值',
 						trigger: ['blur', 'change']
 					},
-				}	
-				if(this.panRes.order_type == '1') {
+				}	 
+				if(this.panRes.list?.amount ) {
+					base.amount.validator = (rule, value, callback) => {
+						return uni.$u.test.number(value) && value > 0 && value <= +this.panRes.list.amount
+					}
+					base.amount.message = `请填写0-${this.panRes.list.amount}范围内的数值` 
+				}
+				if(this.panRes.list?.order_type == '1') {
 					base = {
 						...base,
 						pay_option1: {
@@ -467,6 +478,28 @@
 					if(o == 'GRT') {
 						this.form.pay_option2 = this.pay_option2_radios[0].value
 					}
+				}
+			}, 
+			['form.settle_mode'](n, o) {
+				if(this.ordertype == 'B') {
+					if(n == 'S') {
+						this.form.delivery_place = ''
+						this.form.settle_address = ''
+						return
+					} 
+				}else {
+					if(n == 'B') {
+						this.form.delivery_place = ''
+						this.form.settle_address = ''
+						return
+					} 
+				}
+				if(this.type == 'add') {
+					this.form.delivery_place = this.panRes.list.delivery_place1
+					this.form.settle_address = this.panRes.list.delivery_address
+				}else {
+					this.form.delivery_place = this.panRes.list.delivery_place
+					this.form.settle_address = this.panRes.list.delivery_address
 				}
 			}, 
 			['form.amount'](n, o) {
@@ -564,8 +597,8 @@
 					this.panRes = {
 						list: res.list.Order.Source
 					}
-					this.order = res.list.Order 
-					this.form.source = res.list.Order.source
+					this.order = res.list.Order  
+					this.form.id = this.id
 					this.form.source_id = res.list.Order.source_id
 					this.form.amount = res.list.Order.amount
 					this.form.price = res.list.Order.price1

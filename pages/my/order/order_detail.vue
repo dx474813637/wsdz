@@ -24,7 +24,7 @@
 			</view>
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.Source">
 				<view class="item text-light item-label">来源</view>
-				<view class="item text-primary" @click="handleGoto(`/pages/index/pan/panDetail?id=${list.source_id}&pan=${list.source == 'BUY'? 'b' : 's'}`)">{{list.source | source2str}}：{{list.source_name}}</view>
+				<view class="item text-primary" @click="handleGoto({url: '/pages/index/pan/panDetail', params: {id: list.source_id, pan: list.source == 'BUY'? 'b' : 's'}})">{{list.source | source2str}}：{{list.source_name}}</view>
 			</view> 
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.intro">
 				<view class="item text-light item-label">商品详情</view>
@@ -89,6 +89,12 @@
 					<rich-text :nodes="list.remark"></rich-text>
 				</view>
 			</view>
+			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.remark_audit">
+				<view class="item text-light item-label">审核备注</view>
+				<view class="item u-text-right" style="word-break: break-all;">
+					<rich-text :nodes="list.remark_audit"></rich-text>
+				</view>
+			</view>
 		</view>
 		<view class="main u-p-8 u-m-t-30">
 			<view class="btn-wrap u-flex u-flex-items-center u-flex-wrap">
@@ -100,7 +106,7 @@
 				<view class="item u-p-6"
 						v-if="btnList.button2"
 					> <!-- 修改 -->
-					<u-button type="primary" @click="handleGoto(`/pages/my/order/order_edit?type=edit&id=${id}&ordertype=${ordertype}`)">{{btnList.button2_title}}</u-button>
+					<u-button type="primary" @click="handleGoto({url: '/pages/my/order/order_edit', params: {type: 'edit', id, ordertype}})">{{btnList.button2_title}}</u-button>
 				</view>
 				<view class="item u-p-6"
 						v-if="btnList.button3"
@@ -329,7 +335,7 @@
 											>
 											<view class="u-flex u-flex-items-center"> 
 												<view class="item text-primary"
-													@click="handleGoto({ url: '/pages/my/money/bill_detail', params: {id: this.list.pay_id, paytype: this.ordertype} })" >
+													@click="handleGoto({ url: '/pages/my/money/bill_detail', params: {id: list.pay_id, paytype: ordertype} })" >
 													查看当前支付订单详情
 												</view>
 											</view>
@@ -431,7 +437,7 @@
 			@close="show_billacc = false"
 			@confirm="menusConfirm"
 		></menusPopupBillAcc>
-	
+		<u-toast ref="uToast"></u-toast>
 	</view>
 </template>
 
@@ -545,6 +551,12 @@
 			...mapMutations({
 				handleGoto: 'user/handleGoto'
 			}),
+			showToast(params) {
+				this.$refs.uToast.show({
+					position: 'bottom',
+					...params, 
+				})
+			},
 			async handleShowPopup(data) {
 				this.formActive = data; 
 				if(data.mode == 'create_pay') {
@@ -592,8 +604,12 @@
 					}
 				})
 				if(res.code == 1) {
+					this.showToast({
+						type: 'success',
+						message: '取消成功！', 
+					})
 					uni.showLoading({
-						title: '取消成功！正在刷新'
+						title: '获取最新数据中'
 					})
 					await this.getData()
 				}
@@ -609,8 +625,12 @@
 					}
 				})
 				if(res.code == 1) {
+					this.showToast({
+						type: 'success',
+						message: '发货成功！', 
+					})
 					uni.showLoading({
-						title: '发货成功！正在刷新'
+						title: '获取最新数据中'
 					})
 					await this.getData()
 				}else {
@@ -628,9 +648,13 @@
 					}
 				})
 				if(res.code == 1) {
+					this.showToast({
+						type: 'success',
+						message: '发送成功！', 
+					})
 					uni.showLoading({
-						title: '发送成功！正在刷新'
-					}) 
+						title: '获取最新数据中'
+					})
 					await this.getData()
 				}
 			},
@@ -644,9 +668,13 @@
 					}
 				})
 				if(res.code == 1) { 
+					this.showToast({
+						type: 'success',
+						message: '发送成功！', 
+					})
 					uni.showLoading({
-						title: '发起成功！正在刷新'
-					}) 
+						title: '获取最新数据中'
+					})
 					await this.getData()
 				}
 			},
@@ -675,9 +703,13 @@
 				})
 				const res = await this.$api[func]({ params })
 				if(res.code == 1) { 
+					this.showToast({
+						type: 'success',
+						message: '支付成功！', 
+					})
 					uni.showLoading({
-						title: '支付成功！正在刷新'
-					}) 
+						title: '获取最新数据中'
+					})
 					await this.getData()
 				}else {
 					throw new Error(res.msg)
@@ -702,8 +734,12 @@
 					}
 				})
 				if(res.code == 1) { 
+					this.showToast({
+						type: 'success',
+						message: '审核成功！', 
+					})
 					uni.showLoading({
-						title: '审核成功！正在刷新'
+						title: '获取最新数据中'
 					})
 					await this.getData()
 				}else {
@@ -743,8 +779,12 @@
 				})
 				const res = await this.$api[func]({ params })
 				if(res.code == 1) { 
+					this.showToast({
+						type: 'success',
+						message: '收货成功！', 
+					})
 					uni.showLoading({
-						title: '收货成功！正在刷新'
+						title: '获取最新数据中'
 					})
 					await this.getData()
 				}else {
