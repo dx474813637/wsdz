@@ -4,7 +4,8 @@
 			:show="show" 
 			mode="bottom"  
 			@close="close" 
-			@open="open"
+			@open="open" 
+			:overlayStyle="overlayStyle"
 			round="25"
 			:bgColor="themeConfig.pageBg"
 		>
@@ -229,6 +230,12 @@
 			pan: {
 				type: String,
 				default: 's'
+			},
+			overlayStyle: {
+				type: Object,
+				default: () => {
+					return {}
+				}
 			},
 			minNum: {
 				type: Number,

@@ -61,6 +61,29 @@
 					</u-action-sheet>
 					<u-form-item
 						borderBottom
+						label="企业名称" 
+					>
+						<u--input
+							border="none"
+							:value="myCpy.name"
+							readonly
+							placeholder="企业名称"
+							clearable
+						></u--input>
+					</u-form-item>
+					<u-form-item
+						label="信用统一代码"
+						borderBottom 
+					>
+						<u--input
+							border="none"
+							readonly
+							:value="myCpy.credit_code"
+							placeholder="信用统一代码" 
+						></u--input>
+					</u-form-item>
+					<u-form-item
+						borderBottom
 						label="sinopay账号"
 						prop="base.sinopay"
 						ref="base_sinopay"
@@ -93,8 +116,7 @@
 						ref="base_remark"
 					>
 						<u--input
-							v-model="model.base.remark"
-							placeholder="remark"
+							v-model="model.base.remark" 
 							border="none"
 							clearable
 						></u--input>
@@ -240,6 +262,9 @@
 			}
 		},
 		computed: {
+			...mapState({
+				myCpy: state => state.user.myCpy,
+			}),
 			rules() {
 				return {
 					'base.sinopay': {

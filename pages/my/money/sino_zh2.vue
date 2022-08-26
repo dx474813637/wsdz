@@ -46,7 +46,7 @@
 							<view class="icon-wrap u-flex u-flex-center u-flex-items-center">
 								<i class="custom-icon-searchlist custom-icon"></i>
 							</view>
-							<view class="text-base item-t">充值 / 提现 / 转账 记录</view>
+							<view class="text-base item-t">充值 / 提现 / 转账记录</view>
 						</view>
 						<view class="item-right">
 							<i class="custom-icon-right custom-icon"></i>
@@ -64,7 +64,7 @@
 							<i class="custom-icon-right custom-icon"></i>
 						</view>
 					</view>
-					<view @click="handleGoto({url: '/pages/my/money/sino_cz_list', params: {tabs_current: 3}})" class="list-item">
+					<!-- <view @click="handleGoto({url: '/pages/my/money/sino_cz_list', params: {tabs_current: 3}})" class="list-item">
 						<view class="item-left">
 							<view class="icon-wrap u-flex u-flex-center u-flex-items-center">
 								<i class="custom-icon-moneybag custom-icon"></i>
@@ -74,7 +74,7 @@
 						<view class="item-right">
 							<i class="custom-icon-right custom-icon"></i>
 						</view>
-					</view>
+					</view> -->
 				</view>
 				<view @click="handleGoto({url: '/pages/my/money/sino_cz', params: {cz: 2}})" class="u-flex u-flex-center text-primary u-font-28 u-m-t-40">
 					同名账户转账

@@ -400,7 +400,7 @@
 				
 				this.$refs.from.validate().then(async res => {
 					uni.showLoading()
-					const r = await this.$api.sino_fund_account_refresh_bal({
+					const r = await this.$api.sino_fund_account_bind({
 						params: {
 							...this.model
 						}

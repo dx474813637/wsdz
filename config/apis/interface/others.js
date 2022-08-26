@@ -44,3 +44,4 @@ export const blacklist = (data) => http.get('blacklist', data)
 export const sinoaaaIndex = (data) => http.get('sinoaaa_index', data)
 // 搜索 精准 参数name 企业名称
 export const sinoaaaSearch = (data) => http.get('sinoaaa_search', data)
+ 

@@ -358,7 +358,7 @@
 					backgroundColor: themeConfig.tabBg,
 				}"
 			>
-				<view @click="handleGoto('/pages/index/index')" class="item-btn  u-flex u-flex-items-center u-flex-center">
+				<view @click="handleGoto({url: '/pages/index/index', type: 'reLaunch'})" class="item-btn  u-flex u-flex-items-center u-flex-center">
 					<text>首页</text>
 				</view>
 				<u-line direction="col" :color="themeConfig.pageTextSub" length="30%"></u-line>

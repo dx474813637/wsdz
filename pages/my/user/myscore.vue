@@ -1,6 +1,5 @@
 <template>
-	<view class="w">
-		
+	<view class="w"> 
 		<view class="tabs-w">
 			<u-tabs
 				:list="tabs_list"
@@ -10,10 +9,16 @@
 				:itemStyle="itemTabsStyle"
 				@change="handleTabsChange"
 			>
+				<view
+					slot="right"
+					class="u-p-r-30 u-flex u-flex-items-center u-font-28 text-error"  
+				>
+					积分：{{allscore}}
+				</view>
 			</u-tabs>
 		</view>
 		
-		<view class="list">
+		<view class="list" >
 			<u-list
 				height="100%"
 				enableBackToTop
@@ -24,19 +29,28 @@
 					v-for="(item, index) in indexList"
 					:key="item.id"
 				>
-					<view class="u-p-10">
-						<CzCard 
-							v-if="tabs_list[tabs_current].value == 'cz' || tabs_list[tabs_current].value == 'tx'"
-							:detailData="item"
-							:type="tabs_list[tabs_current].value"
-							@detail="handleCzDetail"
-						></CzCard>
-						<tmzzCard 
-							v-else-if="tabs_list[tabs_current].value == 'tmzz'"
-							:detailData="item"
-							:type="tabs_list[tabs_current].value" 
-							 @refresh="refreshList"
-						></tmzzCard>
+					<view class="u-p-10 u-p-l-20 u-p-r-20"> 
+						<view class="bg-white u-radius-10 u-p-10">
+							<view class="u-p-10 u-border-bottom u-flex u-flex-items-center u-flex-between u-p-l-25 u-p-r-25">
+								<view class="item">
+									{{item.msg}}
+								</view>
+								<view class="item" :class="{
+									'text-primary': item.zt == 1,
+									'text-error': item.zt == 2,
+								}"> 
+									{{item.score}}
+								</view>
+							</view>
+							<view class="u-p-10 u-flex u-flex-items-center u-flex-between u-p-l-25 u-p-r-25">
+								<view class="item u-font-28 text-base">
+									<text v-if="item.login">{{item.login}}</text>
+								</view>
+								<view class="item text-base u-font-28">
+									{{item.uptime}}
+								</view>
+							</view>
+						</view>
 					</view>
 					
 				</u-list-item>
@@ -58,18 +72,15 @@
 				
 			</u-list>
 		</view>
-		
 	</view>
 </template>
 
 <script>
 	import {mapState, mapGetters, mapMutations} from 'vuex'
-	import CzCard from '@/pages/my/components/CzCard/CzCard.vue'
-	import tmzzCard from '@/pages/my/components/tmzzCard/tmzzCard.vue'
+	import BillCard from '@/pages/my/components/BillCard/BillCard.vue'
 	export default {
 		data() {
 			return {
-				type: 'B', //付B - 收S
 				keyword: '',
 				tabs_current: 0,
 				activeTabsStyle: {
@@ -83,61 +94,41 @@
 				},
 				tabs_list: [
 					{
-						name: '提现记录',
+						name: '全部',
 						disabled: false,
-						value: 'tx',
-						func: 'sino_fund_refund_list_refund',
+						zt: '0'
 					},
 					{
-						name: '网银充值记录',
+						name: '获取记录',
 						disabled: false,
-						value: 'cz',
-						func: 'sino_fund_account_list_charge', 
+						zt: '1'
 					},
-					// {
-					// 	name: '提现卡转账充值',
-					// 	disabled: false,
-					// 	value: 'txzz',
-					// 	func: '',
-					// },
 					{
-						name: '同名账户转账',
+						name: '使用记录',
 						disabled: false,
-						value: 'tmzz',
-						func: 'sino_fund_account_list_tran',
-					}
-				],
+						zt: '2'
+					},
+				], 
 				indexList: [],
+				allscore: 0,
 				curP: 1,
-				loadstatus: 'loadmore',
-				codeInputShow: false,
+				loadstatus: 'loadmore'
 			};
-		},
+		}, 
 		onLoad(options) {
-			if(options.hasOwnProperty('tabs_current')) {
-				this.tabs_current = Number(options.tabs_current)
-			}
-			if(options.hasOwnProperty('wallet')) {
-				this.type = options.wallet
-			}
-			uni.setNavigationBarTitle({
-				title: this.type == 'B'? '付款账户' : '收款账户'
-			})
+			if(options.hasOwnProperty('current')) {
+				this.tabs_current = Number(options.current)
+			} 
 			uni.showLoading()
 			this.getData()
 		},
 		computed: {
 			...mapState({
 				typeConfig: state => state.theme.typeConfig,
-				sinoFund: state => state.sinopay.sinoFund,
-			}),
-			accId() {
-				return this.sinoFund.filter(ele => ele.type == this.type)[0]?.id
-			}
-		},
+			}), 
+		}, 
 		components: {
-			CzCard,
-			tmzzCard
+			BillCard
 		},
 		methods: {
 			refreshList() {
@@ -150,7 +141,9 @@
 				this.loadstatus = 'loadmore'
 			},
 			handleSearch(v) {
-				console.log(v)
+				this.initParamas();
+				uni.showLoading();
+				this.getData()
 			},
 			changeTabsStatus(key, value) {
 				this.tabs_list = this.tabs_list.map(ele => {
@@ -161,6 +154,16 @@
 			async handleTabsChange(value) {
 				this.changeTabsStatus('disabled', true)
 				this.tabs_current = value.index
+				this.keyword = ''
+				this.initParamas();
+				uni.showLoading();
+				await this.getData()
+				this.changeTabsStatus('disabled', false)
+			},
+			async subsectionChange(index) { 
+				this.changeTabsStatus('disabled', true)
+				this.mode_current = index
+				this.keyword = ''
 				this.initParamas();
 				uni.showLoading();
 				await this.getData()
@@ -168,20 +171,18 @@
 			},
 			scrolltolower() {
 				this.getMoreData()
-			}, 
+			},
 			async getData() {
 				if(this.loadstatus != 'loadmore') return
 				this.loadstatus = 'loading'
-				let item = this.tabs_list[this.tabs_current]
-				let func = item.func 
-				let params = {
-					p: this.curP
-				}
-				if(item.value == 'cz' || item.value == 'tx') {
-					params.account_id = this.accId
-				} 
-				const res = await this.$api[func]({params})
+				const res = await this.$api.my_score({
+					params: { 
+						p: this.curP,
+						zt: this.tabs_list[this.tabs_current].zt
+					},
+				})
 				if(res.code == 1) {
+					this.allscore = res.score
 					this.indexList = [...this.indexList, ...res.list]
 					if(this.indexList.length >= res.total) {
 						this.loadstatus = 'nomore'
@@ -194,12 +195,6 @@
 				if(this.loadstatus != 'loadmore') return
 				this.curP ++
 				await this.getData()
-			},
-			handleCzDetail({id}) {
-				
-				uni.navigateTo({
-					url: `/pages/my/money/sino_cz_detail?id=${id}`
-				})
 			}, 
 		}
 	}

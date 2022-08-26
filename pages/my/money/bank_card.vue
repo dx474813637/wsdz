@@ -41,7 +41,12 @@
 								<view class="item">
 									{{item.ctime}}
 								</view>
-								<view class="item">
+								<view class="item" :class="{
+									'text-success': item.state == '1',
+									'text-error': item.state == '2',
+									'text-primary': item.state == '3',
+									'text-ligit2': item.state == '0'
+								}">
 									{{item.state |bankcardState2Str}}
 								</view>
 							</view>

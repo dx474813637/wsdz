@@ -9,7 +9,7 @@
 		>
 		<view class="card-header ">
 			<view class="item u-m-b-20">
-				<view class="item u-flex u-flex-between u-flex-items-center u-m-b-20">
+				<view class="item u-flex u-flex-between u-flex-items-center u-m-b-20" v-if="detailData.bank_accname">
 					<view class="name">户名：{{detailData.bank_accname}}</view>
 				</view>
 				<view class="item u-flex u-flex-between u-flex-items-center u-m-b-30">
@@ -31,15 +31,9 @@
 					</view>
 					<view class="pp" :class="{
 						'text-error': detailData.state == 2,
-						'text-primary': detailData.state == 3,
 						'text-success': detailData.state == 1,
-					}"> 
-						<template v-if="detailData.state == 1">{{typeStr}}成功</template>
-						<template v-else-if="detailData.state == 3">{{typeStr}}中</template>
-						<template v-else-if="detailData.state == 4">等待{{typeStr}}</template>
-						<!-- <template v-else-if="detailData.state == 3">{{typeStr}}失败</template> -->
-						<template v-else >{{detailData.state}}</template>
-					</view>
+						'text-primary': detailData.state == 3 || detailData.state == 10,
+					}"> {{detailData.state | tixianState2Str}}</view>
 				</view>
 			</view>
 			

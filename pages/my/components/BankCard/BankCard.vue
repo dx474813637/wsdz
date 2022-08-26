@@ -7,9 +7,9 @@
 				</view>
 			</view>
 			<view class="card-content">
-				<view class="bank-name">{{bank_name}}</view>
-				<view class="card-sub">{{bank_sub}}</view>
-				<view class="card-num">
+				<view class="bank-name u-line-1">{{bank_name}}</view>
+				<view class="card-sub u-line-1">{{bank_sub}}</view>
+				<view class="card-num u-line-1">
 					{{bank_no.slice(0, bank_no.length - 4).replace(/[A-Za-z0-9]/g, '*')}}
 					{{bank_no.slice(bank_no.length - 4)}}
 				</view>
@@ -66,7 +66,7 @@
 		border-radius: 10px;
 		display: flex;
 		position: relative;
-		padding: 20px 10px;
+		padding: 20px 10px ;
 		height: 120px;
 		box-sizing: border-box;
 		background-color: $bank-card-normal;

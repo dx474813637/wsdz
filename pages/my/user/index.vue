@@ -24,7 +24,7 @@
 				<template v-if="loading">
 					<u-loading-icon></u-loading-icon>
 				</template>
-				<template v-else>
+				<template v-else-if="login || myCpy.mobile">
 					<view class="item u-flex u-flex-items-center">
 						<view class="name u-line-1 u-font-38 step7">{{login || myCpy.mobile}}</view>
 						<view v-if="myCpy.type" class="step8 sub text-white u-font-24 u-flex u-flex-items-center u-p-4 u-p-l-10 u-p-r-16 u-m-l-20">
@@ -42,6 +42,11 @@
 							<text v-else>点击完善用户信息，解锁更多功能</text>
 							<i class="custom-icon-edit custom-icon u-font-28 text-light u-m-l-10"></i>
 						</view>
+					</view>
+				</template>
+				<template v-else>
+					<view class="item u-flex u-flex-items-center">
+						<view class="name u-line-1 u-font-38 step7">请先注册/登录</view>
 					</view>
 				</template>
 				
@@ -254,6 +259,7 @@
 		async onLoad() {
 			await this.wode()
 			this.step.guideList = this.wode_guide.list
+			if(!this.login) return
 			if(!this.myCpy.id) {
 				this.loading = true
 				uni.showLoading({

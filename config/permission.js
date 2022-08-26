@@ -9,6 +9,7 @@ import wx_permission from '@/config/permission/wx.js'
 // 白名单
 const whiteList = [
   '/', 
+  '/pages/my/user/index',
   { pattern: /^\/pages\/list.*/ },
   // { pattern: /^\/pages\/index\/login*/ },
   { pattern: /^\/pages\/baojia*/ },
@@ -34,7 +35,7 @@ export default async function(vm) {
   // 用遍历的方式分别为,uni.navigateTo,uni.redirectTo,uni.reLaunch,uni.switchTab这4个路由方法添加拦截器
   list.forEach(item => {
     uni.addInterceptor(item, {
-      invoke(e) {
+      async invoke(e) {
         // 获取要跳转的页面路径（url去掉"?"和"?"后的参数）
         const url = e.url.split('?')[0]
         console.log('url', e.url) 
@@ -120,6 +121,19 @@ export default async function(vm) {
 					return url === item
 				  })
 				if (!pass_sino ) {
+					if(!store.state.sinopay.sino.hasOwnProperty('state')) {
+						uni.showLoading({
+							title: '正在获取资金账户'
+						})
+						try{
+							await store.dispatch('sinopay/getSinoAccount')
+						}catch(e){
+							uni.$u.toast(e)
+							console.error('getSinoAccount error: ', res)
+							return false
+						}
+						
+					}
 					if(store.state.sinopay.sino.state != 2 || store.state.sinopay.sino.auth_state != 1) {
 						uni.redirectTo({
 							url: '/pages/my/money/index',

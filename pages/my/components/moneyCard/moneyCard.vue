@@ -34,7 +34,10 @@
 					</view>
 				</view>
 				<view class="item-right">
-					<view @click="handleGoto({url: '/pages/my/money/card_add', params: { wallet: sinoType }})" class="btn">绑卡认证</view>
+					<view @click="handleGoto({url: '/pages/my/money/card_add', params: { wallet: sinoType }})" class="btn">
+						<template v-if="sino.state == 2">添加银行卡</template>
+						<template v-else>绑卡认证</template>
+					</view>
 				</view>
 			</view>
 		</view>
@@ -65,6 +68,7 @@
 		},
 		computed: {
 			...mapState({
+				sino: state => state.sinopay.sino,
 				sinoFund: state => state.sinopay.sinoFund,
 				sinoFundLoading: state => state.sinopay.sinoFundLoading
 			}),

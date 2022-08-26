@@ -34,19 +34,19 @@
 			<!-- <u-form-item>
 				<text class="text-light">密码可使用任何英文字母及阿拉伯数字组合，不得少于5个字符。</text>
 			</u-form-item> -->
-			<u-form-item
-				borderBottom
+			<u-form-item 
 				label="手机" 
+				v-if="sino.mobile1"
 			>
-				<view>{{myCpy.mobile}}</view>
+				<view>{{sino.mobile1}}</view>
 			</u-form-item>
 			<u-form-item
 				label="验证码"
-				prop="code"
-				ref="code"
+				prop="captcha"
+				ref="captcha"
 			>	
 				<u-input
-					v-model="model.code"
+					v-model="model.captcha"
 					placeholder="验证码"
 					clearable
 				>
@@ -85,13 +85,13 @@
 				tips: '',
 				disabled: false,
 				btnDisabled: false,
-				model: {
+				model: { 
 					cpasswd: '',
 					npasswd: '',
-					code: ''
+					captcha: ''
 				},
 				rules: {
-					code: {
+					captcha: {
 						type: 'string',
 						required: true,
 						message: '请填写验证码',
@@ -102,17 +102,7 @@
 							required: true,
 							message: '请填写新密码',
 							trigger: ['blur', 'change']
-						},
-						// {
-						// 	type: 'string',
-						// 	message: '新密码格式不正确',
-						// 	trigger: ['blur'],
-						// 	validator: (rule, value, callback) => {
-						// 		const reg1 = new RegExp(/[a-zA-Z]/)
-						// 		const reg2 = new RegExp(/[\d]/)
-						// 		return reg1.test(value) && reg2.test(value) && value.length >= 5 ;
-						// 	},
-						// },
+						}, 
 					],
 					cpasswd: [{
 							type: 'string',
@@ -133,10 +123,11 @@
 		},
 		onReady() {
 			this.$refs.from.setRules(this.rules)
-		},
+		}, 
 		computed: {
 			...mapState({
 				myCpy: state => state.user.myCpy,
+				sino: state => state.sinopay.sino
 			}),
 		},
 		methods: {
@@ -150,7 +141,7 @@
 					title: '正在获取验证码'
 				})
 				this.$refs.uCode.start();
-				const res = await this.$api.getPhoneCode()
+				const res = await this.$api.sino_account_reset_paypwd({params: { flag: 1, id: this.sino.id}})
 				if(res.code == 1) {
 					uni.showToast({
 						title: '验证码已发送'
@@ -161,7 +152,7 @@
 				
 				this.$refs.from.validate().then(async res => {
 					uni.showLoading()
-					const r = await this.$api.forgetPayPwd({params: {...this.model}})
+					const r = await this.$api.sino_account_reset_paypwd({params: {...this.model, flag: 2, id: this.sino.id}})
 					console.log(r)
 					if(r.code == 1) {
 						// this.$utils.prePage() && this.$utils.prePage().refreshList();

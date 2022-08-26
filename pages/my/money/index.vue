@@ -10,15 +10,14 @@
 					<view class="box-header u-flex u-flex-between u-flex-items-end">
 						<view class="item-left u-flex u-flex-items-baseline">
 							<view class="box-title">现金账户</view>
-							<view class="box-title u-m-l-20"> 
+							<!-- <view class="box-title u-m-l-20"> 
 								<u-button size="mini" type="primary" @click="index_mode = 1">
 									<view class="u-flex u-flex-items-center">
 										<text class="custom-icon-qiehuan1 custom-icon u-font-24"></text>
 										<text class="u-m-l-10 u-font-26">票据账户</text>
 									</view> 
 								</u-button>
-								<!-- <u-tag text="票据账户" size="mini" type="primary" @click="index_mode = 1"></u-tag> -->
-							</view>
+							</view> -->
 						</view>
 						<view class="item-right u-flex">
 							<view @click="handleGoto('/pages/my/money/sino_zh1')" class="u-flex a-href">
@@ -66,7 +65,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="main-wrapper" v-else>
+			<!-- <view class="main-wrapper" v-else>
 				<view class="main-box">
 					<view class="box-header u-flex u-flex-between u-flex-items-end">
 						<view class="item-left u-flex u-flex-items-baseline">
@@ -112,14 +111,7 @@
 							<DisabledCard
 								title="票据账户"
 								></DisabledCard>
-						</view>
-					 	<!-- <view class="bg-white uni-shadow-base u-radius-10 u-p-30" v-else> 
-					 		<u-empty
-					 				mode="data"
-					 				:icon="typeConfig.white.empty"
-					 			>
-					 			</u-empty> 
-					 	</view> -->
+						</view> 
 					</view>
 					
 				</view>
@@ -173,20 +165,13 @@
 							<DisabledCard
 								title="电票账户"
 								></DisabledCard>
-						</view>
-					 	<!-- <view class="bg-white uni-shadow-base u-radius-10 u-p-30" v-else> 
-					 		<u-empty
-					 				mode="data"
-					 				:icon="typeConfig.white.empty"
-					 			>
-					 			</u-empty> 
-					 	</view> -->
+						</view> 
 					</view>
 					 
 				</view>
 				
 				
-			</view>
+			</view> -->
 			
 		</view>
 		<u-popup 
@@ -228,7 +213,7 @@
 	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
 	import moneyCard from '@/pages/my/components/moneyCard/moneyCard.vue'
 	import SinoHeader from '@/pages/my/components/SinoHeader/SinoHeader.vue'
-	import DisabledCard from '@/pages/my/components/DisabledCard/DisabledCard.vue'
+	// import DisabledCard from '@/pages/my/components/DisabledCard/DisabledCard.vue'
 	export default {
 		data() {
 			return {
@@ -259,7 +244,7 @@
 		components: {
 			moneyCard,
 			SinoHeader,
-			DisabledCard
+			// DisabledCard
 		},
 		async onLoad() {
 			this.myCompany()
@@ -268,7 +253,7 @@
 				this.show = true
 			}else { 
 				this.getSinoFundAccount() 
-				this.initSinoBill()
+				// this.initSinoBill()
 			}
 		},
 		methods: {

@@ -75,7 +75,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="add-btn u-m-t-30" @click="codeInputShow = true">
+			<view class="add-btn u-m-t-30" v-if="list.hasOwnProperty('state') && list.state == 0" @click="codeInputShow = true">
 				<i class="custom-icon-info custom-icon"></i>
 				<text>银行卡鉴权</text>
 			</view>

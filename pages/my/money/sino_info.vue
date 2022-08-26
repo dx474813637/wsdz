@@ -103,7 +103,8 @@
 		},
 		methods: {
 			...mapMutations({
-				handleGoto: 'user/handleGoto'
+				handleGoto: 'user/handleGoto',
+				clearSino: 'sinopay/clearSino'
 			}),
 			...mapActions({
 				getSinoAccount: 'sinopay/getSinoAccount',
@@ -126,6 +127,7 @@
 									title: res.msg,
 									icon: 'none',
 									success: () => {
+										this.clearSino()
 										this.handleGoto('/pages/my/money/index')
 									}
 								})

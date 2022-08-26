@@ -78,7 +78,7 @@
 								<u--input
 									v-model="form.total_price"
 									clearable
-									type="number"
+									type="digit"
 									@focus="tar = 'total_price'"
 								></u--input>
 							</view>
@@ -350,7 +350,7 @@
 						company = this.order.s_company
 					}
 				}else {
-					company = this.panRes?.company?.name
+					company = this.panRes?.login_company?.name
 				} 
 				return company 
 			},
@@ -549,7 +549,7 @@
 					this.form.settle_mode = this.settle_mode_radios[1] ? this.settle_mode_radios[1].value : this.settle_mode_radios[0].value
 					 this.form.price = this.panRes.list.price1
 					 if(this.panRes.list.order_type == '1') {
-						 this.form.pay_option1 = 'D_P'
+						 this.form.pay_option1 = 'GRT'
 						 this.form.pay_option2 = 'FUNDPAY'
 					 }
 				}else {

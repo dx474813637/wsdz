@@ -31,13 +31,20 @@ export const sino_account_change_psw = (data) => http.get('sino_account_change_p
 	// 操作标志： flag *1-获取短信2-回填验证码
 export const sino_account_reset_psw = (data) => http.get('sino_account_reset_psw', data)
 
+
 // sino_account_change_paypwd 设置/修改支付密码
 	// 支付账号ID: id
-	// 原始密码： npasswd 修改支付密码时必填
-	// 新密码： opasswd
+	// 原始密码： opasswd 修改支付密码时必填
+	// 新密码： npasswd
 	// 验证码： captcha
 	// 操作标志： flag *1-获取短信2-回填验证码
 export const sino_account_change_paypwd = (data) => http.get('sino_account_change_paypwd', data)
+// sino_account_reset_paypwd Sinopay重置支付密码  
+	// 支付账号ID: id 
+	// 新密码： npasswd
+	// 验证码： captcha
+	// 操作标志： flag *1-获取短信2-回填验证码
+export const sino_account_reset_paypwd = (data) => http.get('sino_account_reset_paypwd', data)
 
 // sino_fund_account 现金账号列表
 export const sino_fund_account = (data) => http.get('sino_fund_account', data)
@@ -80,7 +87,7 @@ export const sino_fund_refund_list_refund = (data) => http.get('sino_fund_refund
 // sino_fund_refund_create 创建提现订单
 	// 现金账户ID： account_id *
 	// 绑定银行卡ID：  bank_accid *
-	// 提现金额： rice *
+	// 提现金额： price *
 	// 备注： remark
 export const sino_fund_refund_create = (data) => http.get('sino_fund_refund_create', data)
 
@@ -102,7 +109,7 @@ export const sino_fund_refund_cancel = (data) => http.get('sino_fund_refund_canc
 	// 卖方/买方： company 支付类型为付款时为卖方 支付类型为收款时为买方
 export const sino_fund_order_list_order = (data) => http.get('sino_fund_order_list_order', data)
 
-// 我砍 sino_fund_order_detail_order 付款/收款详情
+// sino_fund_order_detail_order 付款/收款详情
 	// 支付类型：  paytype B-付款 S-收款
 	// 支付ID：  pay_id *
 export const sino_fund_order_detail_order = (data) => http.get('sino_fund_order_detail_order', data)
@@ -122,3 +129,16 @@ export const sino_bill_order_list = (data) => http.get('sino_bill_order_list', d
 	// 支付类型： paytype B-买方支付 S-卖方支付
 	// 支付ID：  pay_id *
 export const sino_bill_order_detail = (data) => http.get('sino_bill_order_detail', data)
+
+// sino_fund_account_tran_apply  
+	// 同名子账户转账-创建订单 b_user_fundaccno转出账户 s_user_fundaccno转入账户 price金额 remark备注
+export const sino_fund_account_tran_apply = (data) => http.get('sino_fund_account_tran_apply', data)
+// sino_fund_account_tran 
+	// 同名子账户转账 id订单id captcha短信验证码 flag1-获取短信验证码 2-校验短信验证码 3-查询状态 4-取消订单
+export const sino_fund_account_tran = (data) => http.get('sino_fund_account_tran', data)
+// sino_fund_account_list_tran 
+	// 同名子账户转账列表 p页数
+export const sino_fund_account_list_tran = (data) => http.get('sino_fund_account_list_tran', data)
+// sino_fund_account_list_charge 
+	// 网银充值列表 account_id现金账户ID p页数
+export const sino_fund_account_list_charge = (data) => http.get('sino_fund_account_list_charge', data)

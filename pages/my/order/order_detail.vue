@@ -358,36 +358,53 @@
 									labelWidth="80"
 									v-if="formActive.isBill == false"
 									> 
-									<u-form-item
-										label="支付方式" 
+									<template v-if="payOrderLoading">
+										<view class="u-p-20">
+											<u-loading-icon mode="circle" ></u-loading-icon>
+										</view> 
+									</template>
+									<template v-else-if="paylist.hasOwnProperty('Sino_fund_order') && paylist.Sino_fund_order.paymode == '2'">
+										<u-form-item
+											label="支付方式" 
+											>
+											<view class="text-error">
+												两站式-请财务登录电脑端sinopay平台完成支付
+											</view>
+										</u-form-item>
+									</template>
+									<template v-else>
+										<u-form-item
+											label="支付方式" 
+											>
+											<u-radio-group
+												v-model="form_pay.paymode"
+												placement="row"
+												>
+												<u-radio
+												  :customStyle="{marginRight: '8px'}"
+												  v-for="(item, index) in paymode_radios"
+												  :key="index"
+												  :name="item.value"
+												  :label="item.name"
+												  :disabled="item.disabled"
+												>
+												</u-radio>
+											  </u-radio-group>
+										</u-form-item>
+										<u-form-item
+											label="支付密码" 
+											v-if="form_pay.paymode == '1'"
+											required
 										>
-										<u-radio-group
-											v-model="form_pay.paymode"
-											placement="row"
-											>
-											<u-radio
-											  :customStyle="{marginRight: '8px'}"
-											  v-for="(item, index) in paymode_radios"
-											  :key="index"
-											  :name="item.value"
-											  :label="item.name"
-											  :disabled="item.disabled"
-											>
-											</u-radio>
-										  </u-radio-group>
-									</u-form-item>
-									<u-form-item
-										label="支付密码" 
-										v-if="form_pay.paymode == '1'"
-										required
-									>
-										<u--input
-											type="password"
-											v-model="form_pay.paypwd"  
-											:customStyle="{background: '#fff'}"
-											placeholder="支付密码" 
-										></u--input>
-									</u-form-item> 
+											<u--input
+												type="password"
+												v-model="form_pay.paypwd"  
+												:customStyle="{background: '#fff'}"
+												placeholder="支付密码" 
+											></u--input>
+										</u-form-item> 
+									</template>
+									
 									
 								</u--form>
 							</template>
@@ -419,8 +436,10 @@
 					</u-list>
 				</view>
 				<view class="confirm-rows u-p-20" :style="{
-					backgroundColor: themeConfig.navBg,
-				}">
+						backgroundColor: themeConfig.navBg,
+					}"
+					v-if="!paylist.hasOwnProperty('Sino_fund_order') || paylist.Sino_fund_order.paymode != '2' "
+					>
 					<u-button :customStyle="{backgroundColor: themeConfig.badgeBg, color: '#fff', border: 'none'}" shape="circle" 
 					@click="handleConfirm">确认并提交</u-button>
 				</view>
@@ -449,6 +468,8 @@
 				id: '',
 				ordertype: '',
 				list: {},
+				paylist: {},
+				payOrderLoading: false,
 				show_billacc: false,
 				show: false,
 				formActive: {}, 
@@ -507,7 +528,7 @@
 					{
 						name: '两站式',
 						value: '2',
-						disabled: true,
+						disabled: false,
 					},
 				],
 			};
@@ -564,6 +585,8 @@
 					if(this.list.state == '6') {
 						//state=6 为待支付
 						await this.order_pay()
+					}else {
+						this.get_pay_order()
 					}
 					
 				}
@@ -571,7 +594,7 @@
 					if(this.list.pay_mode.includes('BILLPAY')) {
 						this.form_audit.pyeeInfo = this.list.payeeAccNm
 					}
-				}
+				} 
 				this.show = true
 			},
 			menusConfirm(data) {
@@ -658,6 +681,19 @@
 					await this.getData()
 				}
 			},
+			async get_pay_order() {
+				this.payOrderLoading = true
+				const res = await this.$api.sino_fund_order_detail_order({
+					params: { 
+						pay_id: this.list.pay_id,
+						paytype: 'B'
+					}
+				})
+				if(res.code == 1) {  
+					this.paylist = res.list
+				}
+				this.payOrderLoading = false
+			},
 			async order_pay() {
 				uni.showLoading({
 					title: '发起支付中...'
@@ -700,7 +736,7 @@
 				}
 				uni.showLoading({
 					title: '支付中...'
-				})
+				}) 
 				const res = await this.$api[func]({ params })
 				if(res.code == 1) { 
 					this.showToast({
@@ -711,7 +747,23 @@
 						title: '获取最新数据中'
 					})
 					await this.getData()
-				}else {
+				} 
+				else { 
+					if(res.errcode == '6012') {
+						uni.showModal({
+							title: '提示',
+							content: res.msg,
+							success: async (r) => {
+								if (r.confirm) {
+									this.handleGoto({
+										url: '/pages/my/money/sino_paypw_forget'
+									})
+								} else if (r.cancel) {
+									console.log('用户点击取消');
+								}
+							}
+						});
+					}
 					throw new Error(res.msg)
 				}
 			},
@@ -750,7 +802,7 @@
 				let func = 'sino_fund_order_order_confirm'
 				let params = {
 					pay_id: this.list.pay_id
-				}
+				} 
 				if(!this.formActive.isBill && this.formActive.isGRT) { 
 					func = 'sino_fund_order_confirm';
 					params = {
@@ -758,7 +810,7 @@
 						paypwd: this.form_confirm.paypwd
 					}
 				}
-				if(this.formActive.isBill) {
+				else if(this.formActive.isBill) {
 					func = 'sino_bill_order_order_confirm';
 				}else if(this.formActive.isGRT) {
 					func = 'sino_bill_order_confirm';
@@ -791,7 +843,7 @@
 					throw new Error(res.msg)
 				}
 			},
-			async handleConfirm() {
+			async handleConfirm() { 
 				if(this.formActive.mode == 'audit') {
 					await this.order_audit()
 				}
@@ -800,7 +852,8 @@
 				}
 				else if(this.formActive.mode == 'create_pay') {
 					//提交支付密码支付表单
-					await this.order_paying()
+					await this.order_paying() 
+					
 				}
 				else if(this.formActive.mode == 'confirm') {
 					await this.confirm_shouhuo()

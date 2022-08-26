@@ -18,7 +18,7 @@
 		
 		<view class="main u-p-10 u-p-t-20">
 			<view class="text-white u-p-b-10 u-font-36">
-				注册支付平(sinopay)账号
+				注册支付平台(sinopay)账号
 			</view>
 			<!-- <view class="text-white u-font-28 u-p-b-30">
 				所有表单都为必填
@@ -160,32 +160,29 @@
 					
 					<template v-else-if="userType == '企业'">
 						
-						<!-- <u-form-item
+						<u-form-item
 							borderBottom
-							label="企业名称"
-							prop="cpyInfo.name"
-							ref="cpyInfo_name"
+							label="企业名称" 
 						>
 							<u--input
 								border="none"
-								v-model="model.cpyInfo.name"
+								:value="myCpy.name"
+								readonly
 								placeholder="企业名称"
 								clearable
 							></u--input>
 						</u-form-item>
 						<u-form-item
 							label="信用统一代码"
-							borderBottom
-							prop="cpyInfo.id"
-							ref="cpyInfo_id"
+							borderBottom 
 						>
 							<u--input
 								border="none"
-								v-model="model.cpyInfo.id"
-								placeholder="信用统一代码"
-								clearable
+								readonly
+								:value="myCpy.credit_code"
+								placeholder="信用统一代码" 
 							></u--input>
-						</u-form-item> -->
+						</u-form-item>
 						<u-form-item
 							borderBottom
 							label="法人姓名"
@@ -225,6 +222,21 @@
 								type="password"
 								border="none"
 								v-model="model.cpyInfo.passwd"
+								placeholder="登录密码"
+								clearable
+							></u--input>
+						</u-form-item>
+						<u-form-item
+							borderBottom
+							label="确认密码"
+							prop="cpyInfo.cpasswd"
+							ref="cpyInfo_cpasswd"
+							required
+						>
+							<u--input
+								type="password"
+								border="none"
+								v-model="model.cpyInfo.cpasswd"
 								placeholder="登录密码"
 								clearable
 							></u--input>
@@ -346,6 +358,8 @@
 						name: '',
 						id: '',
 						name2: '',
+						passwd: '',
+						cpasswd: '',
 						id2: '',
 						contact: '',
 						remark: '',
@@ -440,14 +454,24 @@
 					},
 					'cpyInfo.id2': {
 						type: 'string',
-						required: true,
-						message: '请填写法人身份证',
+						validator: (rule, value, callback) => {
+							return uni.$u.test.idCard(value)
+						},
+						message: '请填写正确的身份证',
 						trigger: ['blur', 'change']
 					},
 					'cpyInfo.passwd': {
 						type: 'string',
 						required: true,
 						message: '请填写登录密码',
+						trigger: ['blur', 'change']
+					}, 
+					'cpyInfo.cpasswd': {
+						type: 'string', 
+						validator: (rule, value, callback) => { 
+							return value.length>0 && value == this.model.cpyInfo.passwd
+						},
+						message: '确认密码与登录密码必须一致',
 						trigger: ['blur', 'change']
 					}, 
 				}
@@ -468,9 +492,20 @@
 				uni.showLoading({
 					title: '正在获取验证码'
 				})
+				if(!this.model.cpyInfo.name2 
+					|| !uni.$u.test.idCard(this.model.cpyInfo.id2) 
+					|| !this.model.cpyInfo.passwd
+					|| this.model.cpyInfo.passwd != this.model.cpyInfo.cpasswd 
+					)  {
+						uni.$u.toast('请检查除验证码以外的必填项')
+						return
+					}
 				this.$refs.uCode.start();
 				const res = await this.$api.sino_account_create({
 					params: {
+						legal_name: this.model.cpyInfo.name2,
+						lecerti_code: this.model.cpyInfo.id2,
+						passwd: this.model.cpyInfo.passwd,
 						flag: 1,
 					}
 				})
@@ -520,33 +555,7 @@
 					uni.$u.toast('校验失败')
 				})
 			},
-			async handleGetCode() {
-				if(this.btnDisabled) return;
-				this.btnDisabled = true;
-				const res = await this.$api.sino_account_create({
-					params: {
-						flag: 1
-					}
-				});
-				if(res.code == 1) {
-					uni.showToast({
-						title: res.msg,
-						icon: 'none'
-					})
-				}
-				// this.$refs.userform.validateField('base.phone', async (errRes) => {
-				// 	if(errRes.length > 0) return
-				// 	this.btnDisabled = true;
-				// 	const res = await this.$api.sino_account_create();
-				// 	if(res.code == 1) {
-				// 		uni.showToast({
-				// 			title: res.msg,
-				// 			icon: 'none'
-				// 		})
-				// 	}
-				// })
-				
-			},
+			 
 			handleCountDownFinish() {
 				this.btnDisabled = false;
 			},

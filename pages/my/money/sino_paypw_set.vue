@@ -45,11 +45,11 @@
 			<!-- <u-form-item>
 				<text class="text-light">密码可使用任何英文字母及阿拉伯数字组合，不得少于5个字符。</text>
 			</u-form-item> -->
-			<u-form-item
-				borderBottom
+			<u-form-item 
 				label="手机" 
+				v-if="sino.mobile1"
 			>
-				<view>{{myCpy.mobile}}</view>
+				<view>{{sino.mobile1}}</view>
 			</u-form-item>
 			<u-form-item
 				label="验证码"

@@ -83,8 +83,30 @@ const bankcardState2Str = v => {
 	if(v == '1') return '已绑定'
 	else if(v == '2') return '绑定失败'
 	else if(v == '3') return '已解绑' 
+	else if(v == '0') return '未验证' 
 	else return v
 }
+
+const tixianState2Str = v => {
+	if(v == '0') return '等待提现'
+	else if(v == '1') return '提现成功'
+	else if(v == '2') return '提现失败' 
+	else if(v == '3') return '提现中'  
+	else if(v == '4') return '已取消'
+	else if(v == '6') return '已过期' 
+	else if(v == '10') return '等待审核' 
+	else return v
+}
+const zzState2Str = v => {
+	if(v == '0') return '等待转账'
+	else if(v == '1') return '转账成功'
+	else if(v == '2') return '转账失败' 
+	else if(v == '3') return '转账中'  
+	else if(v == '4') return '已取消' 
+	else if(v == '9') return '等待提交' 
+	else return v
+}
+
 
 
 //时间简写 转 中文  'd'==>'天'  'h'==>'小时'
@@ -191,4 +213,6 @@ export default {
 	settleType2str,
 	paymode2str,
 	paystate2str,
+	tixianState2Str,
+	zzState2Str
 }

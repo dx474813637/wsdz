@@ -668,6 +668,41 @@
 					"enablePullDownRefresh": false
 				}
 
+			}, {
+				"path": "user/myscore",
+				"style": {
+					"navigationBarTitleText": "我的积分",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "money/sino_zz_detail",
+				"style": {
+					"navigationBarTitleText": "同名账户转账详情",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "mdu/mdu_detail",
+				"style": {
+					"navigationBarTitleText": "MDU详情",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "mdu/mdu_list",
+				"style": {
+					"navigationBarTitleText": "MDU列表",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "mdu/mdu_edit",
+				"style": {
+					"navigationBarTitleText": "MDU编辑",
+					"enablePullDownRefresh": false
+				}
+
 			}
 		]
 	}, {

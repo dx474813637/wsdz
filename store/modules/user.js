@@ -98,7 +98,11 @@ let state = {
 			state.bd = 1
 			state.auth = 0
 			state.myCpy = {}
-			uni.setStorageSync('myCpy', {})
+			uni.setStorageSync('myCpy', {}) 
+			uni.setStorageSync('WebSocketInfo', {
+				...uni.getStorageSync('WebSocketInfo'),
+				login: ''
+			})
 			state.myAllCpy = []
 			state.login = 0
 			state.myProduct = []
@@ -141,6 +145,10 @@ let state = {
 				tips_info: res.list.tips_info,
 				tips_title: res.list.tips_title,
 				tips_url: res.list.tips_url
+			})
+			uni.setStorageSync('WebSocketInfo', {
+				...uni.getStorageSync('WebSocketInfo'),
+				login: res.list.login
 			})
 		},
 		async getAddressArea({commit, state}) {

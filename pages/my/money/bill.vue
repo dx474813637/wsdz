@@ -22,7 +22,7 @@
 				:itemStyle="itemTabsStyle"
 				@change="handleTabsChange"
 			> 
-				<view
+				<!-- <view
 					slot="right"
 					class="u-p-r-20 u-flex u-flex-items-center" 
 					style="width: 100px;"
@@ -34,7 +34,7 @@
 						keyName="name"
 						@change="subsectionChange"
 						></u-subsection>
-				</view>
+				</view> -->
 			</u-tabs>
 		</view>
 		

@@ -98,21 +98,20 @@
 						</u-form-item>
 					</template>
 					<view class="u-p-t-20 u-p-b-20" v-if="cz == 2">
-						<view class="u-flex u-flex-items-center u-m-b-10">
+						<view class="u-flex u-flex-items-center u-m-b-30">
 							<text class="text-light u-font-28">转出资金账户：</text>
-							<u--text text="1100000565"></u--text>
-						</view>
-						<view class="u-flex u-flex-items-center u-m-b-10">
-							<text class="text-light u-font-28">可用余额：</text>
-							<u--text mode="price" text="123.5"></u--text>
-						</view>
-						<view class="u-flex u-flex-items-center u-m-b-10">
-							<text class="text-light u-font-28">可提余额：</text>
-							<u--text mode="price" text="12.5"></u--text>
-						</view>
+							<view><u--text :text="tmzzData.from.user_fundaccno"></u--text></view> 
+							<view class="bg-primary u-radius-5 u-p-l-10 u-p-r-20 u-m-l-25" >
+								<u--text color="#fff" mode="price" :text="tmzzData.from.bal || 0"></u--text>
+							</view>
+							
+						</view> 
 						<view class="u-flex u-flex-items-center u-m-b-10">
 							<text class="text-light u-font-28">转入资金账户：</text>
-							<u--text text="1100000566"></u--text>
+							<view><u--text :text="tmzzData.to.user_fundaccno"></u--text></view> 
+							<view class="bg-primary u-radius-5 u-p-l-10 u-p-r-20 u-m-l-25" >
+								<u--text color="#fff" mode="price" :text="tmzzData.to.bal || 0"></u--text>
+							</view>
 						</view>
 					</view>
 					
@@ -144,7 +143,7 @@
 							</view>
 						</template>
 						<template v-else>
-							<text class="text-error u-font-28">当天可提，转账金额需要小于等于可提余额 ??</text>
+							<!-- <text class="text-error u-font-28">当天可提，转账金额需要小于等于可提余额 ??</text> -->
 						</template>
 					</view>
 					
@@ -247,16 +246,14 @@
 				</view>
 			</view>
 		</u-popup>
-		<u-modal :show="codeInputShow" negativeTop="220" title="输入支付密码" 
-			closeOnClickOverlay
-			@close="codeInputShow = false"
+		<u-modal :show="codeInputShow" negativeTop="220" title="输入支付密码"  
 			showCancelButton
 			cancelText="返回资金中心"
 			cancelColor="#999"
 			@cancel="handleBack"
 			:confirmText="`当前${configObj.label}订单详情`" 
 			@confirm="handleBackDetail"
-		 >
+			>
 			<view class="slot-content u-p-t-10">
 				<view class="u-m-b-20 text-light2 u-font-28">
 					如跳过当前步骤，后续可在账户{{configObj.label}}详情中验证
@@ -288,6 +285,64 @@
 				
 			</view>
 		</u-modal>
+		<!-- 
+			closeOnClickOverlay
+			@close="codeInputShow_code = false" -->
+		<u-modal :show="codeInputShow_code" negativeTop="220" title="短信验证码校验" 
+			showCancelButton
+			cancelText="返回资金中心"
+			cancelColor="#999"
+			@cancel="handleBack"
+			:confirmText="`账户${configObj.label}列表`" 
+			@confirm="handleGoZz"
+			>
+			<view class="slot-content u-p-t-10">
+				<view class="u-m-b-20 text-light2 u-font-28">
+					如跳过当前步骤，后续可在同名账户{{configObj.label}}列表中验证
+				</view>
+				<u--form
+					:model="model_yanzheng_code"
+					:rules="rules_yanzheng_code"
+					ref="from_yanzheng_code"
+					labelWidth="100%"
+					labelPosition="top"
+					:labelStyle="{color: '#777'}"
+				>
+					<u-form-item
+						label="短信验证码"
+						prop="captcha"
+						ref="captcha"
+						required 
+					> 
+						<u-input
+							v-model="model_yanzheng_code.captcha" 
+							placeholder="短信验证码"
+							clearable
+						>
+							<template slot="suffix">
+								<u-code
+									ref="uCode"
+									@change="codeChange"
+									seconds="60"
+									changeText="X秒重新获取"
+								></u-code>
+								<u-button
+									@tap="getCode"
+									:text="tips"
+									type="success"
+									size="mini"
+								></u-button>
+							</template>
+						</u-input> 
+					</u-form-item>
+				</u--form> 
+				<view class="u-m-t-40">
+					<u-button type="primary" @click="submit_yanzheng_code">提交验证码</u-button>
+				</view> 
+				
+			</view>
+		</u-modal>
+		<u-toast ref="uToast"></u-toast>
 	</view>
 </template>
 
@@ -297,6 +352,7 @@
 	export default {
 		data() {
 			return {
+				tips: '',
 				show_acc: false,
 				index_acc: 0,
 				from_wallet: 'B',
@@ -304,6 +360,7 @@
 				cztype: '直接充值',
 				bankPopup: false,
 				codeInputShow: false,
+				codeInputShow_code: false,
 				code: '',
 				sxf: 0,
 				bank: {
@@ -318,6 +375,10 @@
 				model_yanzheng: { 
 					id: '',
 					paypwd: '',
+				},
+				model_yanzheng_code: { 
+					id: '',
+					captcha: '',
 				},
 				indexList: [],
 				curP: 1,
@@ -365,6 +426,13 @@
 						return `${label}${ele.user_fundaccno}-${ele.name}`
 					})
 				]
+			},
+			tmzzData() {
+				if(!this.sinoFund || this.sinoFund.length == 0) return {};
+				return {
+					from: this.sinoFund[this.index_acc],
+					to:  this.sinoFund[1-this.index_acc],
+				}
 			},
 			sino_acc() {
 				if(!this.sinoFund || this.sinoFund.length == 0) return '';
@@ -422,6 +490,16 @@
 					}, 
 				}
 			},
+			rules_yanzheng_code() {
+				return {
+					'captcha': {
+						type: 'string',
+						required: true,
+						message: '验证码不得为空',
+						trigger: ['blur', 'change']
+					}, 
+				}
+			},
 			money() {
 				if(!this.model.money) return 0
 				return this.model.money - this.sxf
@@ -456,7 +534,9 @@
 						title: '转账到同名账户',
 						label: '转账',
 						themeColor: '#408df4',
-						sub: ''
+						sub: '',
+						func_create: 'sino_fund_account_tran_apply',
+						func_code: 'sino_fund_account_tran', 
 					}
 				}
 			}
@@ -464,6 +544,7 @@
 		onReady() {
 			this.$refs.form.setRules(this.rules)
 			this.$refs.from_yanzheng.setRules(this.rules_yanzheng)
+			this.$refs.from_yanzheng_code.setRules(this.rules_yanzheng_code)
 		},
 		methods: {
 			...mapMutations({
@@ -472,6 +553,12 @@
 			...mapActions({
 				getSinoFundAccount: 'sinopay/getSinoFundAccount'
 			}),
+			showToast(params) {
+				this.$refs.uToast.show({
+					position: 'bottom',
+					...params, 
+				})
+			},
 			async refreshBankList() {
 				if(this.cz != 0) return
 				this.bankLoading = true;
@@ -572,6 +659,44 @@
 					url: '/pages/my/money/sino_cz_detail?id=' + this.model_yanzheng.id
 				})
 			},
+			handleGoZz() {
+				uni.redirectTo({
+					url: '/pages/my/money/sino_cz_list?tabs_current=2' 
+				})
+			},
+			submit_yanzheng_code() {
+				this.$refs.from_yanzheng_code.validate().then(async () => {
+					uni.showLoading()
+					const r = await this.$api.sino_fund_account_tran({
+						params: {
+							id: this.model_yanzheng_code.id,
+							captcha: this.model_yanzheng_code.captcha, 
+							flag: 2,
+						}
+					})
+					if(r.code == 1) { 
+						this.showToast({
+							type: 'success',
+							message: r.msg, 
+						})
+						uni.showModal({
+							title: '提示',
+							content: '转账成功！',
+							confirmText: '查看记录',
+							cancelText: '返回资金中心',
+							success: async (res) => {
+								if (res.confirm) {
+									 this.handleGoZz()
+								} else if (res.cancel) {
+									uni.redirectTo({
+										url: '/pages/my/money/index'
+									})
+								}
+							}
+						});  
+					}
+				})
+			},
 			submit_yanzheng() {
 				this.$refs.from_yanzheng.validate().then(async res => {
 					uni.showLoading()
@@ -598,15 +723,24 @@
 				
 				this.$refs.form.validate().then(async res => { 
 					console.log(res)
-					uni.showLoading()
-					const r = await this.$api[this.configObj.func_create]({
-						params: {
+					let params = {}
+					if(this.cz == '2') {
+						params = {
+							b_user_fundaccno: this.tmzzData.from.user_fundaccno,
+							s_user_fundaccno: this.tmzzData.to.user_fundaccno,
+							price: this.model.money,
+							remark: this.model.bz,
+						}
+					}else {
+						params = {
 							account_id: this.sinoFund[this.index_acc].id,
 							bank_accid: this.model.bank_accid,
-							rice: this.model.money,
+							price: this.model.money,
 							remark: this.model.bz
 						}
-					})
+					}
+					uni.showLoading()
+					const r = await this.$api[this.configObj.func_create]({params})
 					// const r = {
 					// 	code: 1,
 					// 	msg: '测试成功'
@@ -614,45 +748,61 @@
 					console.log(r)
 					if(r.code == 1) {
 						if(this.cz != '2') {
+							this.model_yanzheng.id = r.list.id
 							this.codeInputShow = true
 							uni.showToast({
 								title: r.msg,
 								icon: 'none'
 							})
 						}else {
-							uni.showToast({
-								title: r.msg,
-								icon: 'none'
-							})
-							setTimeout(() => {
-								uni.redirectTo({
-									url: '/pages/my/money/index'
-								})
-							}, 1000)
+							this.model_yanzheng_code.id = r.list.id
+							uni.showModal({
+								title: '提示',
+								content: '创建转账订单成功！是否立即发送验证短信？',
+								success: async (res) => {
+									if (res.confirm) {
+										this.codeInputShow_code = true 
+										await this.getCode()
+										
+									} else if (res.cancel) {
+										uni.redirectTo({
+											url: '/pages/my/money/index'
+										})
+									}
+								}
+							});  
 						}
 					}
 				}).catch(errors => {
 					console.log(errors)
 					uni.$u.toast('校验失败')
 				})
+			},  
+			codeChange(text) {
+				this.tips = text;
 			},
-			async handleGetCode() {
-				if(this.btnDisabled) return;
-				this.$refs.form.validateField('base.phone', async (errRes) => {
-					if(errRes.length > 0) return
-					this.btnDisabled = true;
-					const res = await this.$api.getPhoneCode();
+			async getCode() {
+				if (this.$refs.uCode.canGetCode) {
+				  // 模拟向后端请求验证码
+				  uni.showLoading({
+					title: '正在获取验证码'
+				  })
+					const res = await this.$api.sino_fund_account_tran({
+						params: {
+							id: this.model_yanzheng_code.id,
+							flag: 1,
+						}
+					})
 					if(res.code == 1) {
-						uni.showToast({
-							title: res.msg,
-							icon: 'none'
+						this.showToast({
+							type: 'success',
+							message: '发送成功！', 
 						})
+						 this.$refs.uCode.start();
 					}
-				})
-				
-			},
-			handleCountDownFinish() {
-				this.btnDisabled = false;
+				} else {
+				  uni.$u.toast('倒计时结束后再发送');
+				}
 			},
 			handleSelectBankcard() {
 				

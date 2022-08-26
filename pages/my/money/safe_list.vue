@@ -9,16 +9,26 @@
 				</view>
 			</view>
 			<view class="mian-list-title">请选择以下密码设置</view>
-			<view class="main-list" :style="{
-				height: show? 'auto' : '300px'
-			}">
+			<view class="main-list" >
 				<view @click="handleGoto({url: '/pages/my/money/sino_loginpw_update'})" class="main-item u-flex u-flex-items-center">
 					<view class="item-left u-flex u-flex-center u-flex-items-center">
 						<i class="custom-icon-lock custom-icon"></i>
 					</view>
 					<view class="item-center">
-						<view class="item-title">修改登录密码</view>
+						<view class="item-title">修改sinopay登录密码</view>
 						<view class="item-sub">此密码注册时以短信发送至绑定手机</view>
+					</view>
+					<view class="item-right">
+						<i class="custom-icon-right custom-icon"></i>
+					</view>
+				</view>
+				<view @click="handleGoto({url: '/pages/my/money/sino_loginpw_forget'})" class="main-item u-flex u-flex-items-center">
+					<view class="item-left u-flex u-flex-center u-flex-items-center">
+						<i class="custom-icon-question custom-icon"></i>
+					</view>
+					<view class="item-center">
+						<view class="item-title">重置登录密码</view>
+						<view class="item-sub">忘记支付密码通过短信验证重置</view>
 					</view>
 					<view class="item-right">
 						<i class="custom-icon-right custom-icon"></i>
@@ -41,14 +51,14 @@
 						<i class="custom-icon-question custom-icon"></i>
 					</view>
 					<view class="item-center">
-						<view class="item-title">忘记支付密码</view>
+						<view class="item-title">重置支付密码</view>
 						<view class="item-sub">忘记支付密码通过短信验证重置</view>
 					</view>
 					<view class="item-right">
 						<i class="custom-icon-right custom-icon"></i>
 					</view>
 				</view>
-				<view v-if="show" @click="handleGoto({url: '/pages/my/money/sino_zh2'})" class="main-item u-flex u-flex-items-center">
+				<!-- <view v-if="show" @click="handleGoto({url: '/pages/my/money/sino_zh2'})" class="main-item u-flex u-flex-items-center">
 					<view class="item-left u-flex u-flex-center u-flex-items-center">
 						<i class="custom-icon-friendadd custom-icon"></i>
 					</view>
@@ -59,12 +69,12 @@
 					<view class="item-right">
 						<i class="custom-icon-right custom-icon"></i>
 					</view>
-				</view>
+				</view> -->
 			</view>
-			<view v-if="!show" class="main-list-more u-flex u-flex-center u-flex-items-center dx-col" @click="handleMoreTools">
+			<!-- <view v-if="!show" class="main-list-more u-flex u-flex-center u-flex-items-center dx-col" @click="handleMoreTools">
 				<text>更多安全设置</text>
 				<i class="custom-icon-unfold custom-icon"></i>
-			</view>
+			</view> -->
 		</view>
 	</view>
 </template>

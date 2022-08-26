@@ -6,15 +6,30 @@
 			backgroundColor: themeConfig.navBg
 		}">
 			<navBar :title="`${onlineControl.title? onlineControl.title :pageConfig[pan].navtitle}`" ></navBar>
-			<view @click="handleGoto({url: '/pages/index/search/search', params: {pan: pan}})" class="search-w u-p-l-20 u-p-r-20 u-p-b-10 u-p-t-10" >
-				<u-search 
-					placeholder="搜索商品" 
-					:value="keyword"
-					:showAction="false"
-					disabled
-					:bgColor="themeConfig.pageBg"
-				></u-search>
+			<view class="search-w u-p-l-20 u-p-r-20 u-p-b-10 u-p-t-10 u-flex u-flex-items-center ">
+				<view @click="handleGoto({url: '/pages/index/search/search', params: {pan: pan}})" class="item u-flex-1" >
+					<u-search 
+						placeholder="搜索商品" 
+						:value="keyword"
+						:showAction="false"
+						disabled
+						:bgColor="themeConfig.pageBg"
+					></u-search>
+				</view>
+				<view class="item u-m-l-20">
+					<view
+						class="u-flex u-flex-items-center"
+						:style="{
+							color: themeConfig.pan.pageText
+						}"
+						@click="show = true"
+					>
+						<i class="custom-icon-filter2 custom-icon"></i>
+						<text class="u-p-l-8 u-font-30">分类筛选</text>
+					</view>
+				</view>
 			</view>
+			
 			<view class="tabs-w">
 				<u-tabs
 					:list="tabs_list"
@@ -24,18 +39,19 @@
 					:inactiveStyle="{ color: themeConfig.tabTextInactive}"
 					:itemStyle="itemTabsStyle"
 					@change="handleTabsChange"
-				>
-					<view
+				> 
+					<view 
 						slot="right"
 						class="u-p-r-20 u-flex u-flex-items-center"
 						:style="{
-							color: themeConfig.baseText
+							color:  themeConfig.tabTextActive
 						}"
-						@click="show = true"
+						@click="handleGoto({url: '/pages/my/broker/edit', params: {pan}})"
 					>
-						<i class="custom-icon-filter2 custom-icon"></i>
-						<text class="u-p-l-8 u-font-30">分类筛选</text>
+						<i class="custom-icon-roundadd custom-icon"></i>
+						<text class="u-p-l-8 u-font-30">发布{{pan == 's'? '卖盘' : '买盘'}}</text>
 					</view>
+					
 				</u-tabs>
 			</view>
 		</view>

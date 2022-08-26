@@ -3,10 +3,10 @@
 		 <view class="main">
 			<view class="main-header">
 				<view class="header-title u-flex u-flex-items-center u-flex-center">
-					<view>{{list.state}}</view>
+					<view>{{list.state | tixianState2Str}}</view>
 				</view>
 				<view class="header-content u-flex u-flex-items-center u-flex-center">
-					<view>{{list.Sino_fund_refund.price1}}</view>
+					<view>{{list.Sino_fund_refund.price1}} 元</view>
 				</view>
 			</view>
 			<view class="main-content">
@@ -31,7 +31,7 @@
 						<view>金额：</view>
 					</view>
 					<view class="item-right">
-						<view>{{list.Sino_fund_refund.price1}}</view>
+						<view>{{list.Sino_fund_refund.price1}} 元</view>
 					</view>
 				</view>
 				<view class="row u-flex u-flex-between u-flex-items-center">
@@ -39,7 +39,7 @@
 						<view>手续费：</view>
 					</view>
 					<view class="item-right">
-						<view>{{list.Sino_fund_refund.fee1}}</view>
+						<view>{{list.Sino_fund_refund.fee1}} 元</view>
 					</view>
 				</view>
 				<view class="row u-flex u-flex-between u-flex-items-center">
@@ -47,7 +47,7 @@
 						<view>状态：</view>
 					</view>
 					<view class="item-right">
-						<view>{{list.state}}</view>
+						<view>{{list.state | tixianState2Str}}</view>
 					</view>
 				</view>
 				<view class="row u-flex u-flex-between u-flex-items-center">

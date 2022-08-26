@@ -11,16 +11,16 @@ export default function wx_permission (fullPath) {
 		if(params.hasOwnProperty('cz') && params.cz == '1') {
 			flag = false
 		}
-		if(params.hasOwnProperty('cz') && params.cz == '2') {
-			flag = false
-		}
+		// if(params.hasOwnProperty('cz') && params.cz == '2') {
+		// 	flag = false
+		// }
 	}
 	// 同名账户转账记录
-	if(url == '/pages/my/money/sino_cz_list') {
-		if(params.hasOwnProperty('tabs_current') && params.tabs_current == '3') {
-			flag = false
-		} 
-	}
+	// if(url == '/pages/my/money/sino_cz_list') {
+	// 	if(params.hasOwnProperty('tabs_current') && params.tabs_current == '3') {
+	// 		flag = false
+	// 	} 
+	// }
 	
 	if(!flag) {
 		uni.showToast({
