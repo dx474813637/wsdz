@@ -25,7 +25,18 @@ const paystate2str = v => {
 	else if(v == '1') return '1' 
 	else return v
 }
-
+const mdu2Str = v => {
+	if(v == 'M') return '生产商'
+	else if(v == 'D') return '经销商'
+	else if(v == 'U') return '下游用户'
+	else return v
+}
+const mduState2Str = v => {
+	if(v == '0') return '待确认'
+	else if(v == '1') return '已确认'
+	else if(v == '2') return '不通过'
+	else return v
+}
 
 
 //采购/销售交易订单（order）状态：
@@ -214,5 +225,7 @@ export default {
 	paymode2str,
 	paystate2str,
 	tixianState2Str,
-	zzState2Str
+	zzState2Str,
+	mdu2Str,
+	mduState2Str
 }
