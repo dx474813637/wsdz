@@ -15,14 +15,14 @@
 						></i>
 						<i class="custom-icon custom-icon-refresh u-font-30 inactive"  @click="refreshBtn"></i>
 					</view>
-					<view class="money-num u-flex u-flex-items-end">{{!showMoney? '****': wallet.bal}}</view>
+					<view class="money-num u-flex u-flex-items-end">{{!showMoney? '****': (wallet.bal || 0)}}</view>
 				</view>
 				<view class="item-right">
 					<view class="money-title u-flex u-flex-items-end">
 						<p>冻结金额 (元)</p>
 					</view>
 					<view class="money-num text-danger u-flex u-flex-items-end u-flex-items-end">
-						{{!showMoney? '****': wallet.bal_freeze}}
+						{{!showMoney? '****': (wallet.bal_freeze || 0)}}
 					</view>
 				</view>
 			</view>
@@ -30,30 +30,38 @@
 				<view class="item-left">
 					<view class="u-flex u-flex-items-center">
 						<text>可提金额 (元):</text>
-						<text class="num">{{!showMoney? '****': wallet.bal_refund}}</text>
+						<text class="num">{{!showMoney? '****': (wallet.bal_refund || 0)}}</text>
 					</view>
 				</view>
 				<view class="item-right">
 					<view @click="handleGoto({url: '/pages/my/money/card_add', params: { wallet: sinoType }})" class="btn">
-						<template v-if="sino.state == 2">添加银行卡</template>
+						<template v-if="sino.auth_state == '1'">添加银行卡</template>
 						<template v-else>绑卡认证</template>
+						
 					</view>
 				</view>
 			</view>
 		</view>
 		<view class="box-caozuo u-flex">
 			<view @click="handleGoto({url: '/pages/my/money/sino_cz', params: {cz: 0, wallet: sinoType}})" class="item-btn tx u-flex u-flex-center u-flex-items-center">提现</view>
-			<view @click="handleGoto({url: '/pages/my/money/sino_cz', params: {cz: 1, wallet: sinoType}})" class="item-btn cz u-flex u-flex-center u-flex-items-center">充值</view>
+			<view @click="show_zzlc = true" class="item-btn cz u-flex u-flex-center u-flex-items-center">转账充值</view>
 		</view>
 		
 		<view class="loading-w u-flex u-flex-items-center u-flex-center" v-if="sinoFundLoading">
 			<u-loading-icon mode="circle"></u-loading-icon>
 		</view>
+		<ZzCzPopup
+			:aid="aid"
+			:sinoType="sinoType"
+			:show="show_zzlc"
+			@close="show_zzlc = false"  
+			></ZzCzPopup>
 	</view>
 </template>
 
 <script>
 	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
+	import ZzCzPopup from '@/pages/my/components/ZzCzPopup/ZzCzPopup.vue'
 	export default {
 		props: {
 			sinoType: {
@@ -64,7 +72,11 @@
 		data() {
 			return {
 				showMoney: false,
+				show_zzlc: false,
 			}
+		},
+		components: {
+			ZzCzPopup
 		},
 		computed: {
 			...mapState({
@@ -77,7 +89,12 @@
 				if(!this.sinoFund || this.sinoFund.length == 0) return w;
 				w = this.sinoFund.filter(ele => ele.type == this.sinoType)[0] || {}
 				return w
-			}
+			},
+			aid() { 
+				if(!this.sinoFund || this.sinoFund.length == 0) return '';
+				console.log(this.sinoType, this.sinoFund.filter(ele => ele.type == this.sinoType)[0]?.id )
+				return this.sinoFund.filter(ele => ele.type == this.sinoType)[0]?.id 
+			},
 		},
 		methods: {
 			...mapMutations({

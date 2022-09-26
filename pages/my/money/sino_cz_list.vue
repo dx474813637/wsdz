@@ -31,6 +31,11 @@
 							:type="tabs_list[tabs_current].value"
 							@detail="handleCzDetail"
 						></CzCard>
+						<txzzCard 
+							v-if="tabs_list[tabs_current].value == 'txzz' "
+							:detailData="item"
+							:type="tabs_list[tabs_current].value" 
+						></txzzCard>
 						<tmzzCard 
 							v-else-if="tabs_list[tabs_current].value == 'tmzz'"
 							:detailData="item"
@@ -66,6 +71,7 @@
 	import {mapState, mapGetters, mapMutations} from 'vuex'
 	import CzCard from '@/pages/my/components/CzCard/CzCard.vue'
 	import tmzzCard from '@/pages/my/components/tmzzCard/tmzzCard.vue'
+	import txzzCard from '@/pages/my/components/txzzCard/txzzCard.vue'
 	export default {
 		data() {
 			return {
@@ -94,18 +100,18 @@
 						value: 'cz',
 						func: 'sino_fund_account_list_charge', 
 					},
-					// {
-					// 	name: '提现卡转账充值',
-					// 	disabled: false,
-					// 	value: 'txzz',
-					// 	func: '',
-					// },
 					{
 						name: '同名账户转账',
 						disabled: false,
 						value: 'tmzz',
 						func: 'sino_fund_account_list_tran',
-					}
+					},
+					{
+						name: '提现卡转账',
+						disabled: false,
+						value: 'txzz',
+						func: 'sino_fund_deposit_list_bind_deposit',
+					},
 				],
 				indexList: [],
 				curP: 1,
@@ -137,7 +143,8 @@
 		},
 		components: {
 			CzCard,
-			tmzzCard
+			tmzzCard,
+			txzzCard
 		},
 		methods: {
 			refreshList() {
@@ -177,7 +184,7 @@
 				let params = {
 					p: this.curP
 				}
-				if(item.value == 'cz' || item.value == 'tx') {
+				if(item.value == 'cz' || item.value == 'tx' || item.value == 'txzz') {
 					params.account_id = this.accId
 				} 
 				const res = await this.$api[func]({params})
@@ -196,7 +203,7 @@
 				await this.getData()
 			},
 			handleCzDetail({id}) {
-				
+				if(this.tabs_current != 0) return
 				uni.navigateTo({
 					url: `/pages/my/money/sino_cz_detail?id=${id}`
 				})

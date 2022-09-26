@@ -21,7 +21,7 @@
 						<u--text mode="price" :text="detailData.price/100" type="error"></u--text>
 					</view>
 					<view class="pp">
-						<i class="custom-icon-right custom-icon"></i>
+						<i class="custom-icon-right custom-icon" v-if="type == 'tx'"></i>
 					</view>
 				</view>
 				<view class="item u-flex u-flex-between u-flex-items-center ">
@@ -33,7 +33,14 @@
 						'text-error': detailData.state == 2,
 						'text-success': detailData.state == 1,
 						'text-primary': detailData.state == 3 || detailData.state == 10,
-					}"> {{detailData.state | tixianState2Str}}</view>
+					}"> 
+						<template v-if="type == 'tx'">
+							{{detailData.state | tixianState2Str}}
+						</template>
+						<template v-if="type == 'cz'">
+							{{detailData.state | wyczState2Str}}
+						</template>
+					</view>
 				</view>
 			</view>
 			

@@ -10,6 +10,7 @@ export default {
 		}
 	},
 	async onLoad(options) {
+			console.log(options)
 		if(options && options.poster) {
 			this.$http.setToken({
 				poster: options.poster
@@ -57,9 +58,7 @@ export default {
 				return `${ele}=${options[ele]}`
 			}).join('&')
 			console.log(query)
-			return {
-				query
-			}
+			return query
 		},
 		getPath() {
 			

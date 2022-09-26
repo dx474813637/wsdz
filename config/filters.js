@@ -37,17 +37,34 @@ const mduState2Str = v => {
 	else if(v == '2') return '不通过'
 	else return v
 }
+// state 绑定状态（1：等待绑定:2：绑定成功；3：已解除；4：绑定失败）
+// auth_state 认证状态（0：未认证: 1：已认证）
 
+const sinoState2str = v => {
+	if(v == '1') return '等待绑定'
+	else if(v == '2') return '绑定成功'
+	else if(v == '3') return '已解除'
+	else if(v == '4') return '绑定失败'
+	else return v
+}
+const sinoAuthState2str = v => {
+	if(v == '0') return '未认证'
+	else if(v == '1') return '已认证' 
+	else return v
+}
 
 //采购/销售交易订单（order）状态：
-const orderState2Str = v => {
+const orderState2Str = (v, order_type) => { 
 	if(v == '0') return '发起中'
 	else if(v == '1') return '已完成'
 	else if(v == '2') return '已拒绝'
 	else if(v == '3') return '已取消'
 	else if(v == '4') return '订立中'
 	else if(v == '5') return '已了结'
-	else if(v == '6') return '待支付'
+	else if(v == '6') {
+		if(order_type == '1') return '待支付'
+		else return '已订立'
+	}
 	else if(v == '7') return '支付中'
 	else if(v == '8') return '待发货'
 	else if(v == '9') return '待收货'
@@ -106,6 +123,16 @@ const tixianState2Str = v => {
 	else if(v == '4') return '已取消'
 	else if(v == '6') return '已过期' 
 	else if(v == '10') return '等待审核' 
+	else return v
+} 
+const wyczState2Str = v => {
+	if(v == '0') return '未提交'
+	else if(v == '1') return '充值成功'
+	else if(v == '2') return '充值失败' 
+	else if(v == '3') return '充值中'  
+	else if(v == '4') return '订单异常'
+	else if(v == '5') return '订单冲正' 
+	else if(v == '10') return '预约充值中' 
 	else return v
 }
 const zzState2Str = v => {
@@ -225,7 +252,10 @@ export default {
 	paymode2str,
 	paystate2str,
 	tixianState2Str,
+	wyczState2Str,
 	zzState2Str,
 	mdu2Str,
-	mduState2Str
+	mduState2Str,
+	sinoAuthState2str,
+	sinoState2str
 }

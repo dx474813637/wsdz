@@ -105,6 +105,8 @@
 							<template v-if="mode == 'BILLPAY'">{{list.settle_type | settleType2str}}</template>
 							<template v-if="mode == 'FUNDPAY'">{{list.settle_type | settleType2str}}</template>
 						</text>
+						<text class="u-m-l-10" v-if="list.pay_mode && list.pay_mode.includes('GUARANTE')">担保支付</text>
+						<text class="u-m-l-10" v-if="list.pay_type == '2'">二站式</text>
 					</view>
 				</view>
 				<view class="row u-flex">

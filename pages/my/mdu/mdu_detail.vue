@@ -51,8 +51,8 @@
 						<view>{{list.audit_time}}</view>
 					</view>
 				</view>
-				<view class="row u-flex u-flex-between u-flex-items-center" v-if="list.remark">
-					<view class="item-left">
+				<view class="row u-flex u-flex-between u-flex-items-start" v-if="list.remark">
+					<view class="item-left" style="flex-shrink: 0">
 						<view>备注</view>
 					</view>
 					<view class="item-right">

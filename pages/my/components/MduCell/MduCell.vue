@@ -25,7 +25,7 @@
 				<view class="item"> 
 				</view>
 				<view class="item u-flex u-flex-items-center">
-					<view class="u-m-l-15" @click.stop="handleAudit" v-if="isBroker == '0'" >
+					<view class="u-m-l-15" @click.stop="handleAudit" v-if="isBroker == '0' && detailData.broker_login" >
 						<u-button type="primary" size="small" plain shape="circle">审核</u-button>
 					</view>
 					<view class="u-m-l-15" @click.stop="handleDelete" v-if="isBroker == '0' || detailData.state != '1'">

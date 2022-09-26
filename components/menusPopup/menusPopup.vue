@@ -25,7 +25,7 @@
 						</view>
 						<view class="item u-flex-1 u-text-right">
 							<text class="u-primary" v-if="isMyProduct" @click="handleGoto('/pages/my/broker/prod_set')">商品管理</text>
-							<text class="u-primary" v-else-if="isMyAllCpy" @click="handleGoto('/pages/my/customer/customer')">客户管理</text>
+							<text class="u-primary" v-else-if="isMyAllCpy || isMduCpy" @click="handleGoto('/pages/my/customer/customer')">客户管理</text>
 							<text class="u-primary" @click="refresh" v-else >刷新数据</text>
 						</view>
 					</view>
@@ -75,7 +75,7 @@
 											v-for="(ele, i) in searchRes"
 											:key="ele.id"
 											:class="{
-												'rows': isMyAllCpy || isMyProduct,
+												'rows': isMduCpy || isMyAllCpy || isMyProduct,
 												'normal_white':  theme == 'white',
 												'normal_dark':  theme == 'dark',
 												'active_white': theme == 'white' && ele.active,
@@ -123,6 +123,32 @@
 													color: themeConfig.pageTextSub
 												}"
 											>{{item.to_contact}}</view>
+										</view>
+									</view>
+								</u-list-item>
+							</template>
+							<template v-else-if="isMduCpy">
+								<u-list-item
+									v-for="(item, index) in mduCpy"
+									:key="item.id">
+									<view class="u-p-10">
+										<view class="u-p-20 u-flex u-flex-items-center"
+											:style="{
+												backgroundColor: themeConfig.boxBg,
+												borderRadius: '10rpx'
+											}"
+											@click="selectLabel(item)"
+										>
+											<view class="u-font-32"
+												:style="{
+													color: themeConfig.baseText
+												}"
+											>{{item.Company.name}}</view>
+											<view class="u-font-28 u-p-l-20 u-flex-1 u-line-1"
+												:style="{
+													color: themeConfig.pageTextSub
+												}"
+											>{{item.Company.contact}}</view>
 										</view>
 									</view>
 								</u-list-item>
@@ -269,6 +295,10 @@
 				type: Boolean,
 				default: false
 			},
+			isMduCpy: {
+				type: Boolean,
+				default: false
+			},
 			showMode: {
 				type: String,
 				default: 'grid' //grid or list
@@ -340,6 +370,7 @@
 				ppiCate: state => state.user.ppiCate, 
 				myProduct: state => state.user.myProduct, 
 				myAllCpy: state => state.user.myAllCpy,
+				mduCpy: state => state.user.mduCpy, 
 				typeConfig: state => state.theme.typeConfig,
 			}),
 			themeConfig() {
@@ -363,7 +394,8 @@
 				getMenusList: 'user/getMenusList',
 				getPPiCate: 'user/getPPiCate',
 				getCompanyProduct: 'user/getCompanyProduct',
-				getAllCompany: 'user/getAllCompany'
+				getAllCompany: 'user/getAllCompany',
+				getMduCompany: 'user/getMduCompany'
 			}),
 			initSelect() {
 				this.multipleList = []
@@ -384,7 +416,7 @@
 				})
 			},
 			initMenusStatus() {
-				if(this.isMyProduct || this.isMyAllCpy) return
+				if(this.isMyProduct || this.isMyAllCpy || this.isMduCpy) return
 				//初始化菜单所有状态
 				// console.log(this.isPPI)
 				let arr = uni.$u.deepClone(this.isPPI ? this.ppiCate : this.menusList);
@@ -441,6 +473,16 @@
 							this.searchRes.push(ele)
 						}
 					})
+				}else if(this.isMduCpy) {
+					this.mduCpy.forEach(ele => {
+						ele.name = ele.Company.name + '-' + ele.Company.contact
+						str = ele.name.toUpperCase()
+						let i = str.indexOf(k)
+						if(i > -1) {
+							ele.pp = [i, k.length]
+							this.searchRes.push(ele)
+						}
+					})
 				}else {
 					this.menusList2.forEach(ele => {
 						ele.list.forEach(item => {
@@ -471,6 +513,11 @@
 				else if(this.isMyAllCpy) {
 					this.loading = true
 					await this.getAllCompany()
+					this.loading = false;
+				}
+				else if(this.isMduCpy) {
+					this.loading = true
+					await this.getMduCompany()
 					this.loading = false;
 				}
 				else if(this[this.isPPI ? 'ppiCate': 'menusList'].length == 0) {

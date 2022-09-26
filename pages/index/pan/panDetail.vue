@@ -376,7 +376,7 @@
 						@click="handleGoto({url: '/pages/my/order/order_edit', params: {ordertype: pan == 's'? 'B' : 'S', id: id, type: 'add'}})"
 					>
 						<i class="custom-icon-add-product custom-icon"></i>
-						<text class="u-p-l-10">立即下单</text>
+						<text class="u-p-l-10">{{orderBtnName}}</text>
 					</view>
 					<u-line direction="col" :color="themeConfig.pageTextSub" length="30%"></u-line>
 				</template>
@@ -436,6 +436,7 @@
 				],
 				pageLoading: true,
 				orderBtnShow: 1,
+				orderBtnName: '立即下单',
 			};
 		},
 		async onLoad(options) {
@@ -482,6 +483,7 @@
 					this.tabs_desc[0].content = this.list.intro
 					this.tabs_desc[1].content = this.list.remark
 					this.orderBtnShow = res.button
+					this.orderBtnName = res.button_name
 					this.setOnlineControl(res)
 				}
 			},
@@ -500,6 +502,8 @@
 						login: this.list.login, 
 						// standard: this.list.standard,
 						p: 1,
+						expressed: 1,
+						pr: 3
 					}})
 				if(res.code == 1) {
 					this.indexList = res.list.filter(ele => ele.id != this.id)

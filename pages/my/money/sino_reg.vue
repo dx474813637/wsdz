@@ -574,7 +574,7 @@
 		// position: absolute;
 		// z-index: 1;
 		min-height: 100vh;
-		background-image: url("http://dingxiang.netsun.testwebsite.cn/mShop/img/bg1.png");
+		background-image: url("https://wx.rawmex.cn/Public/bg1.png");
 		background-size: 100% 240px;
 		background-position: top;
 		background-repeat: no-repeat;

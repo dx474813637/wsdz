@@ -9,41 +9,22 @@
 		<view class="card-header ">
 			<view class="item u-m-b-20">
 				<view class="item u-flex u-flex-between u-flex-items-center u-m-b-20" >
-					<view class="name">{{detailData.b_user_fundaccno}}</view>
+					<view class="name">
+						<view class="u-m-b-10">{{detailData.bank_name}}</view>
+						<view class="text-base u-font-26">{{detailData.account_no}}</view>
+					</view>
 					<i class="custom-icon-youjiantou-sange-copy custom-icon text-primary u-font-40"></i>
-					<view class="name">{{detailData.s_user_fundaccno}}</view>
+					<view class="name">{{detailData.user_fundaccno}}</view>
 				</view>  
 				<view class="item u-flex u-flex-between u-flex-items-center u-m-b-20">
 					<view class="pp u-flex u-flex-items-center">
 						<i class="custom-icon-moneybag custom-icon"></i>
-						<u--text mode="price" :text="detailData.price" type="error"></u--text>
-					</view>
-					<view class="pp u-flex u-flex-items-center">
-						
-						<view class="u-p-r-20" v-if="detailData.state == '3' || detailData.state == '0'">
-							<u--text decoration="underline" type="error" text="取消转账" size="14" @click="handleExit"></u--text>
-						</view>
-						<template v-if="detailData.state == '3'">
-							<u--text decoration="underline" type="warning" text="校验短信验证码" size="14" @click="codeInputShow = true"></u--text>
-						</template>
-						<template v-else-if="detailData.state == '0'">
-							<u--text decoration="underline" type="warning" text="发起短信校验" size="14" @click="handleValidator"></u--text>
-						</template>
-						<!-- <i class="custom-icon-right custom-icon"></i> -->
-					</view>
-				</view>
-				<view class="item u-flex u-flex-between u-flex-items-center ">
-					<view class="pp u-flex u-flex-items-center">
-						<i class="custom-icon-info custom-icon"></i>
-						<text class="u-p-l-6">{{detailData.ctime}}</text>
+						<u--text mode="price" :text="detailData.amount" type="error"></u--text>
 					</view> 
-					<view class="pp " :class="{
-						'text-error': detailData.state == 2,
-						'text-success': detailData.state == 1,
-						'text-primary': detailData.state == 3 || detailData.state == 10,
-					}"> {{detailData.state | zzState2Str}}</view> 
-					
-				</view>
+					<view class="pp u-flex u-flex-items-center">
+						<text class=" ">{{detailData.cr_time}}</text>
+					</view> 
+				</view> 
 			</view>
 			
 		</view>

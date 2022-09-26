@@ -6,6 +6,9 @@
 			:rules="rules"
 			ref="from"
 			labelWidth="80"
+			:labelStyle="{
+				flex: '0 0 80px'
+			}"
 			>
 			<u-form-item
 				
@@ -95,35 +98,40 @@
 				prop="remark"
 				ref="remark" 
 			>
-				<u-input
+				<u--textarea
 					v-model="model.remark"
-					placeholder="备注" 
-					clearable
-					></u-input>
+					placeholder="备注"
+					height="80"
+					maxlength="60"
+					></u--textarea>
+			</u-form-item> 
+			<u-form-item
+				label="确认状态" 
+				v-if="$u.test.number(list.state)"
+			>
+				<view class="u-flex u-flex-items-center" :class="{
+					'text-error': list.state == '2',
+					'text-success': list.state == '1',
+					'text-primary': list.state == '0',
+				}">
+					<text class="u-m-r-20">{{list.state | mduState2Str}}</text>
+					<view class="">
+						<u-button v-if="list.broker_login && isBroker == '0'" @click="handleAudit" type="primary" size="mini" plain shape="circle">审核</u-button>
+					</view>
+					
+				</view>
 			</u-form-item>
-			<template v-if="isBroker == '0'">
-				<u-form-item
-					label="确认状态" 
-				>
-					<view :class="{
-						'text-error': list.state == '2',
-						'text-success': list.state == '1',
-						'text-primary': list.state == '0',
-					}">
-						{{list.state | mduState2Str}}
-					</view>
-				</u-form-item>
-				<u-form-item
-					label="添加时间" 
-				>
-					<view class="text-base">
-						{{list.ctime}}
-					</view>
-				</u-form-item>
-			</template>
+			<u-form-item
+				label="添加时间" 
+				v-if="list.ctime"
+			>
+				<view class="text-base">
+					{{list.ctime}}
+				</view>
+			</u-form-item>
 			
 		</u--form>
-		<view class="u-m-t-40">
+		<view class="u-m-t-40" >
 			<u-button type="primary" @click="submit">提交表单</u-button>
 		</view>
 		
@@ -135,13 +143,13 @@
 		></menusPopup>
 		
 		<menusPopup 
-			:show="show2" 
 			theme="white"
-			:isMyAllCpy="true"
-			showMode="list"
+			:show="show2"  
+			:isMduCpy="true"
+			showMode="list"  
 			@close="show2 = false"
 			@confirm="menusConfirm2"
-		></menusPopup>
+			></menusPopup> 
 	</view>
 </template>
 
@@ -283,9 +291,9 @@
 				this.show = false;
 			},
 			async menusConfirm2(data) {
-				console.log(data)
+				console.log(data) 
 				this.model.customer_login = data.login
-				this.customer_name = `${data.to_contact} - ${data.to_name}` 
+				this.customer_name = `${data.Company.contact} - ${data.Company.name}` 
 				this.show2 = false;
 			},
 			checkboxChange(n) { 
@@ -306,7 +314,7 @@
 				if(res.code == 1) {
 					this.list = res.list.Result
 					this.model.customer_login = this.list.Company.login
-					this.customer_name = this.list.Company.name
+					this.customer_name = `${this.list.Company.contact} - ${this.list.Company.name}` 
 					this.model.pid = this.list.pid
 					this.pid_name = this.list.list_standards.filter(ele => ele.pid == this.model.pid)[0]?.name
 					this.model.mdu = this.list.mdu
@@ -336,6 +344,33 @@
 					console.log(errors)
 					uni.$u.toast('校验失败')
 				})
+			},
+			
+			handleAudit(data) { 
+				uni.showActionSheet({
+					itemList: ['通过', '不通过'],
+					success:  async (res) => {
+						let index = res.tapIndex + 1 
+						uni.showLoading()
+						const resAjax = await this.$api.customer_mdu_audit_mdu({
+							params: {
+								id: this.id,
+								audit: index
+							}
+						})
+						if(resAjax.code == 1) {
+							 await this.getData()
+							uni.showToast({
+								title: resAjax.msg,
+								icon: 'none'
+							})  
+						}
+						
+					},
+					fail: function (res) {
+						console.log(res.errMsg);
+					}
+				});
 			},
 		}
 	}

@@ -60,9 +60,13 @@
 								}"
 							>{{originalData.Company.state | state2Str}}</view>
 						</view>
-						<view  class="item u-flex u-flex-between u-flex-items-center u-m-b-14" v-if="item.guanzhu == '1'">
+						<view  class="item u-flex u-flex-between u-flex-items-center u-m-b-14" v-if="originalData.guanzhu == '1'">
 							<view class="name">服务号</view>
 							<view class="pp u-line-1 u-flex-1 u-text-right text text-error" >已关注</view>
+						</view>
+						<view  class="item u-flex u-flex-between u-flex-items-center u-m-b-14" v-if="originalData.shezhi == '1'">
+							<view class="name">首页设置</view>
+							<view class="pp u-line-1 u-flex-1 u-text-right text text-error" >已设置</view>
 						</view>
 						<view v-if="originalData.bangding" class="item u-flex u-flex-between u-flex-items-center u-m-b-14">
 							<view class="name">绑定时间</view>

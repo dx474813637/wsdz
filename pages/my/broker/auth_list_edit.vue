@@ -473,6 +473,19 @@
 				
 			}
 		},
+		watch: {
+			
+			['model.trade_type'](n) {
+				this.$nextTick(() => {
+					this.$refs.from.validateField('express_time')
+				})
+			},
+			['model.express_unit'](n) {
+				this.$nextTick(() => {
+					this.$refs.from.validateField('express_time')
+				})
+			}
+		},
 		computed: {
 			...mapState({
 				myCpy: state => state.user.myCpy,
@@ -481,6 +494,7 @@
 				auth: state => state.user.auth
 			}),
 			rules() {
+				let max_express_time = this.model.trade_type == '1'? 360 : 10 
 				let baseRules = {
 					'product_id': {
 						type: 'string',
@@ -509,8 +523,14 @@
 					}],
 					'express_time': {
 						type: 'string',
-						required: true,
-						message: '请填写有效时间',
+						validator: (rule, value, callback) => { 
+							if(this.model.express_unit == 'd') { 
+								return Number(value) > 0 && value <= max_express_time
+							}else {
+								return Number(value) > 0
+							} 
+						},
+						message: this.model.express_unit == 'd' ? `请填写有效时间，当前现货类型不得超过${max_express_time}天` : '请填写有效时间',
 						trigger: ['blur', 'change']
 					},
 					'delivery_place': {
@@ -551,15 +571,23 @@
 				let sRules = {
 				}
 				if(this.pan == 'b') {
-					return {
+					let obj = {
 						...baseRules,
 						...bRules
 					}
+					if(this.$refs.from && this.$refs.from.setRules) {
+						this.$refs.from.setRules(obj)
+					} 
+					return obj
 				}else if(this.pan == 's') {
-					return {
+					let obj = {
 						...baseRules,
 						...sRules
 					}
+					if(this.$refs.from && this.$refs.from.setRules) {
+						this.$refs.from.setRules(obj)
+					} 
+					return obj
 				}
 				return {}
 				

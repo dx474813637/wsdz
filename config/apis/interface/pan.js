@@ -52,11 +52,11 @@ export const changeProduct = (data, config={}) => http.post('change_product', da
  * (只有c开头的账号允许填写)
  * 
  */
-//获取 买盘列表 参数p
+//获取 买盘列表 参数p  expressed=1 有效期内 pr: 3
 export const getBuy = (data) => http.get('buy', data)
 //获取 买盘明细 参数id
 export const getBuyDetail = (data) => http.get('buy_detail', data)
-//获取 卖盘列表 参数p
+//获取 卖盘列表 参数p   expressed=1 有效期内
 export const getSell = (data) => http.get('sell', data)
 //获取 卖盘明细 参数id
 export const getSellDetail = (data) => http.get('sell_detail', data)
@@ -80,7 +80,7 @@ export const getPidTrade = (data) => http.get('pid_trade', data)
 // 点价规则： dprice
 // 数量： amount *(大于0.01的数字)
 // 主规格： spec
-// 有效时间： express_time *(整数时间)
+// 有效时间： express_time *(整数时间) 即期现货有效期最多10天，合约现货有效期最多360天
 // 有效时间单位： express_unit d-天h-小时
 // 交收期-月份： settle_month 1-12*现货类型为1-合约现货时必输
 // 交收期-旬： settle_date td-上旬mtd-中旬td-下旬*现货类型为1-合约现货时必输
@@ -109,7 +109,7 @@ export const deleteBuy = (data) => http.get('delete_buy', data)
 // 单价： price *元填0表示点价，请说明点价规侧
 // 点价规则： dprice
 // 数量： amount *(大于0.01的数字)
-// 有效时间： express_time *(整数时间)
+// 有效时间： express_time *(整数时间) 即期现货有效期最多10天，合约现货有效期最多360天
 // 有效时间单位： express_unit d-天h-小时
 // 交收期-月份： settle_month 1-12*现货类型为1-合约现货时必输
 // 交收期-旬： settle_date td-上旬mtd-中旬td-下旬*现货类型为1-合约现货时必输

@@ -142,3 +142,18 @@ export const sino_fund_account_list_tran = (data) => http.get('sino_fund_account
 // sino_fund_account_list_charge 
 	// 网银充值列表 account_id现金账户ID p页数
 export const sino_fund_account_list_charge = (data) => http.get('sino_fund_account_list_charge', data)
+
+
+// sino_fund_deposit_list_bind_deposit 转账充值列表 account_id现金账户ID p页码
+export const sino_fund_deposit_list_bind_deposit = (data) => http.get('sino_fund_deposit_list_bind_deposit', data)
+// sino_fund_deposit_white_list  提现卡充值 account_id现金账户ID
+export const sino_fund_deposit_white_list = (data) => http.get('sino_fund_deposit_white_list', data)
+// 用提现卡充值 页面显示及判断
+// 说明： 结果分为三种：
+// 1.如果有list_binds，代表正常显示，
+// 	list_binds为提现银行卡绑定列表，
+// 	白名单状态是qingfen_state 1-已受理 2-已添加成功 0-未添加
+// 2.如果返回array('State' => 'SUCCESS','confirm' => 1,'msg' => '转账白名单确认流程');，
+// 	需要跳转 转账白名单确认流程，根据流程进行操作确认
+// 3.如果返回错误：请确认两个同名子账户都已绑定相同的提现卡。
+// 	需要先收款付款都绑卡才能进行此操作

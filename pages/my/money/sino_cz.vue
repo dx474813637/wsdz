@@ -66,7 +66,7 @@
 						ref="item1"
 						:borderBottom="false"
 						v-if="cz == 1"
-					>
+						>
 						<u-radio-group 
 						    v-model="cztype"
 						    placement="row">
@@ -76,6 +76,15 @@
 						</u-radio-group>
 					</u-form-item>
 					<template v-if="cz == 0">
+						<view class="u-p-t-20 u-p-b-20" >
+							<view class="u-flex u-flex-items-center u-m-b-30">
+								<text class="text-light u-font-28">可提金额：</text>  
+								<view class="u-p-l-10" >
+									<u--text color="#f00" mode="price" :text="sinoFund[index_acc].bal || 0"></u--text>
+								</view>
+								
+							</view>  
+						</view>
 						<u-form-item
 							:label="`选择${cz == 1? '充值' : '提现'}银行卡`"
 							prop="bank_accid"
@@ -125,6 +134,7 @@
 							v-model="model.money"
 							placeholder="请输入金额"
 							clearable
+							type="digit"
 							@change="$u.debounce(handleMoneyChange, 800)"
 						></u--input>
 					</u-form-item>
@@ -139,7 +149,7 @@
 							</view>
 							<view class="u-flex u-flex-items-center">
 								<text class="text-light u-font-28">到账金额：</text>
-								<u--text mode="price" :text="money">></u--text>
+								<u--text mode="price" :text="money"></u--text>
 							</view>
 						</template>
 						<template v-else>
@@ -239,9 +249,9 @@
 					</u-list>
 				</view>
 				<view class="wrapper-footer">
-					<view @click="handleGoto('/pages/my/money/card_add')" class="footer-a u-flex u-flex-items-center u-flex-center">
+					<view @click="handleGoto({url: '/pages/my/money/card_add', params: { wallet: sinoFund[index_acc].type }})" class="footer-a u-flex u-flex-items-center u-flex-center">
 						<u-icon name="plus-circle-fill" color="#f00"></u-icon>
-						<text class="u-p-l-10 text-error">使用新银行卡充值</text>
+						<text class="u-p-l-10 text-error">添加新的银行卡</text>
 					</view>
 				</view>
 			</view>
@@ -276,6 +286,7 @@
 							v-model="model_yanzheng.paypwd" 
 							placeholder="支付密码"
 							clearable
+							type="password"
 						></u--input> 
 					</u-form-item>
 				</u--form> 
@@ -452,9 +463,9 @@
 							trigger: ['blur', 'change']
 						},{
 							validator: (rule, value, callback) => {
-								return value > 0
+								return value >= 0.01 && value <= Number(this.sinoFund[this.index_acc].bal)
 							},
-							message: '金额数值必须大于0'
+							message: '金额数值必须大于等于0.01且小于等于账户余额'
 						}],
 						'bank_accid': {
 							type: 'string',
@@ -471,10 +482,10 @@
 							message: '请填写金额数值',
 							trigger: ['blur', 'change']
 						},{
-							validator: (rule, value, callback) => {
-								return value > 0
+							validator: (rule, value, callback) => { 
+								return value >= 0.01 && value <= Number(this.sinoFund[this.index_acc].bal)
 							},
-							message: '金额数值必须大于0'
+							message: '金额数值必须大于等于0.01且小于等于账户余额'
 						}]
 					}
 				}
@@ -679,21 +690,8 @@
 							type: 'success',
 							message: r.msg, 
 						})
-						uni.showModal({
-							title: '提示',
-							content: '转账成功！',
-							confirmText: '查看记录',
-							cancelText: '返回资金中心',
-							success: async (res) => {
-								if (res.confirm) {
-									 this.handleGoZz()
-								} else if (res.cancel) {
-									uni.redirectTo({
-										url: '/pages/my/money/index'
-									})
-								}
-							}
-						});  
+						this.codeInputShow_code = false
+						this.handleGoZz()
 					}
 				})
 			},
@@ -886,7 +884,7 @@
 		// position: absolute;
 		// z-index: 1;
 		min-height: 100vh;
-		// background-image: url("http://dingxiang.netsun.testwebsite.cn/mShop/img/bg1.png");
+		// background-image: url("https://wx.rawmex.cn/Public/bg1.png");
 		// background-size: 100% 240px;
 		// background-position: top;
 		// background-repeat: no-repeat;

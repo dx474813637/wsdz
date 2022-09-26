@@ -18,6 +18,7 @@ let state = {
 		ppiCate: [],
 		myCpy: uni.getStorageSync('myCpy') || {},
 		myAllCpy: [],
+		mduCpy: [],
 		myProduct: [],
 		moreMenus: {},
 		moreMenusNew: [],
@@ -67,6 +68,9 @@ let state = {
 		},
 		setAllCpy(state, data) {
 			state.myAllCpy = data;
+		},
+		setMduCpy(state, data) {
+			state.mduCpy = data;
 		},
 		setMyProduct(state, data) {
 			state.myProduct = data;
@@ -120,6 +124,12 @@ let state = {
 			const res = await this._vm.$api.getAllCompany();
 			if(res.code == 1) {
 				commit('setAllCpy', res.list)
+			}
+		},
+		async getMduCompany({commit, state}) {
+			const res = await this._vm.$api.mdu_broker();
+			if(res.code == 1) {
+				commit('setMduCpy', res.list)
 			}
 		},
 		async myCompany({commit, state}) {

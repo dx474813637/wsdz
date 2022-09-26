@@ -1,6 +1,7 @@
 <template>
 	<view class="text-white w" :style="{
-		backgroundColor: themeConfig.pageBg
+		backgroundColor: themeConfig.pageBg,
+		transition: 'all .3s'
 	}">
 		<navBar fixed :title="onlineControl.title" ></navBar>
 		<u-status-bar></u-status-bar>

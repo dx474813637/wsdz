@@ -1,6 +1,6 @@
 <template>
 	<view class="w"> 
-		<view class="tabs-w">
+		<view class="tabs-w u-p-l-10">
 			<u-tabs
 				:list="tabs_list"
 				:current="tabs_current"
@@ -13,10 +13,10 @@
 					slot="right"
 					class="u-p-r-30 text-base u-flex u-flex-items-center"  
 				>
-					<view class="u-flex u-flex-items-center u-font-28 u-m-l-15" style="position: relative;" @click="handleGoto({url: '/pages/my/mdu/mdu_edit', params: {type:'add', isBroker}})">
+					<!-- <view class="u-flex u-flex-items-center u-font-28 u-m-l-15" style="position: relative;" @click="handleGoto({url: '/pages/my/mdu/mdu_edit', params: {type:'add', isBroker}})">
 						<i class="custom-icon-roundaddfill custom-icon u-info"></i>
 						<text class="u-m-l-5">MDU</text> 
-					</view>
+					</view> -->
 					<view class="u-flex u-flex-items-center u-font-28 u-m-l-15" style="position: relative;" @click="showFilter">
 						<i class="custom-icon-filter2 custom-icon u-info"></i>
 						<text class="u-m-l-5">筛选</text>
@@ -90,8 +90,8 @@
 		
 		<menusPopup 
 			theme="white"
-			:show="showCpy" 
-			:isMyAllCpy="true"
+			:show="showCpy"  
+			:isMduCpy="true"
 			showMode="list"
 			:overlayStyle="{zIndex: '10075'}"
 			zIndex="10076"
@@ -99,12 +99,25 @@
 			@confirm="menusCpyConfirm"
 			></menusPopup>
 			 
-			<u-toast ref="uToast"></u-toast>
+		<u-toast ref="uToast"></u-toast>
+		
+		<tabBar :customStyle="{
+			'boxShadow': '0 0 10rpx rgba(0,0,0,.1)'
+		}">
+			<view class=" u-flex u-flex-items-center u-flex-around u-p-20">
+				<view class="item u-flex-1" @click="handleGoto({url: '/pages/my/mdu/mdu_edit', params: {type:'add', isBroker}})">
+					<u-button type="primary" icon="plus-circle">添加MDU</u-button>
+				</view> 
+				<view class="item u-m-l-10 u-flex-1" v-if="isBroker == 1">
+					<u-button type="primary" plain icon="order" open-type="share">分享交易商MDU</u-button>
+				</view>
+			</view>
+		</tabBar>
 	</view>
 </template>
 
 <script>
-	import {mapState, mapGetters, mapMutations} from 'vuex'
+	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
 	import MduCell from '@/pages/my/components/MduCell/MduCell.vue'
 	export default {
 		data() {
@@ -159,14 +172,33 @@
 					pid_name: '',
 					state: '',
 				}, 
+				shareInfo: {
+					title: ''
+				}
 			};
 		}, 
-		onLoad(options) {
+		async onLoad(options) { 
 			if(options.hasOwnProperty('current')) {
 				this.tabs_current = Number(options.current)
 			} 
 			if(options.hasOwnProperty('isBroker')) {
 				this.isBroker = options.isBroker 
+				if(options.isBroker == '0') {
+					//分享给交易商进进入的第一个页面单独检验登录信息
+					await this.wode()
+					if(this.login == 0) {
+						uni.setStorageSync('prePage', getCurrentPages()[0].$page.fullPath)
+						uni.redirectTo({
+							url: "/pages/index/login/login",
+							success() {
+								uni.showToast({
+									title: '请先登录',
+									icon: 'none'
+								})
+							}
+						})
+					}
+				}
 			} 
 			uni.showLoading()
 			this.getData()
@@ -180,6 +212,14 @@
 				this.tabs_current = this.tabs_list.findIndex(ele => ele.mdu == n);
 			}
 		},
+		onShareAppMessage(res) { 
+			return {
+				title: this.shareInfo.title,
+				path: '/pages/my/mdu/mdu_list?isBroker=0',
+				imageUrl: ''
+			}; 
+			
+		}, 
 		computed: {
 			...mapState({
 				typeConfig: state => state.theme.typeConfig,
@@ -210,6 +250,9 @@
 			MduCell
 		},
 		methods: {
+			...mapActions({ 
+				wode: 'user/wode', 
+			}),
 			...mapMutations({
 				handleGoto: 'user/handleGoto'
 			}),
@@ -244,7 +287,7 @@
 			async menusCpyConfirm(data) {
 				console.log(data)
 				this.formData.customer_login = data.login
-				this.formData.customer_name = `${data.to_contact} - ${data.to_name}` 
+				this.formData.customer_name = `${data.Company.contact} - ${data.Company.name}` 
 				this.showCpy = false
 			},
 			handleShowPopup(type) {
@@ -288,6 +331,7 @@
 				})
 				if(res.code == 1) { 
 					this.indexList = [...this.indexList, ...res.list]
+					if(this.isBroker == '1')  this.shareInfo.title = res.share_title
 					if(this.indexList.length >= res.total) {
 						this.loadstatus = 'nomore'
 					}else {
@@ -404,7 +448,6 @@
 		height: 100%;
 	}
 	.list {
-		height: calc(100% - 44px);
-		
+		height: calc(100% - 104px - env(safe-area-inset-bottom));  
 	}
 </style>

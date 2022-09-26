@@ -185,9 +185,9 @@
 			<view class="dx-popup-wrap bg-white">
 				<view class="wrap-header wrap-header-bg u-flex u-flex-column u-flex-items-center">
 					<view class="bg">
-						<image src="http://dingxiang.netsun.testwebsite.cn/mShop/img/bg-sou.png" alt="" />
+						<!-- <image src="http://dingxiang.netsun.testwebsite.cn/mShop/img/bg-sou.png" alt="" /> -->
 					</view>
-					<view class="header-title">您还未注册</view>
+					<view class="header-title">您还未开通或绑定资金账号</view>
 				</view>
 				<view class="wrap-content">
 					<view class="content u-flex u-flex-column u-flex-items-center">
@@ -195,9 +195,9 @@
 						<view>企业信息</view>
 						<view>企业开户账号</view>
 						<view class="handle-box u-flex u-flex-column u-flex-items-center">
-							<view @click="handleGoto('/pages/my/money/sino_reg')" class="handle-btn reg">注册新账号</view>
-							<view @click="handleGoto('/pages/my/money/sino_bind')" class="handle-btn">绑定已有账号</view>
-							<view class="exit-btn" @click="exitBtn">我要考虑一下</view>
+							<view @click="handleGoto('/pages/my/money/sino_reg')" class="handle-btn reg">开通资金账号</view>
+							<view @click="handleGoto('/pages/my/money/sino_bind')" class="handle-btn">绑定已有资金账号</view>
+							<view class="exit-btn" @click="exitBtn">暂不开通</view>
 						</view>
 					</view>
 				</view>
@@ -249,7 +249,8 @@
 		async onLoad() {
 			this.myCompany()
 			await this.getSinoAccount()
-			if(!this.sino.hasOwnProperty('id')) {
+			console.log(this.sino)
+			if(!this.sino.hasOwnProperty('id') || this.sino.state != 2) {
 				this.show = true
 			}else { 
 				this.getSinoFundAccount() 
@@ -391,7 +392,7 @@
 	.dx-popup-wrap {
 			// position: absolute;
 			width: 280px;
-			height: 380px;
+			height: 360px;
 			border-radius: 8px;
 			overflow: hidden;
 			// top: 0;
@@ -410,20 +411,20 @@
 				&.wrap-header-bg {
 					padding: 10px 0 30px;
 					color: #fff;
-					background-image: url("http://dingxiang.netsun.testwebsite.cn/mShop/img/bg2.png");
+					background-image: url("https://wx.rawmex.cn/Public/bg2.png");
 					background-size: 100%;
 					.bg {
-						height: 90px;
+						height: 40px;
 						img {
 							height: 100%;
 						}
 					}
 					.header-title {
-						padding-bottom: 0px;
+						padding-bottom: 30px;
 					}
 				}
 				.header-title {
-					font-size: 16px;
+					font-size: 18px;
 				}
 			}
 			.wrap-content {

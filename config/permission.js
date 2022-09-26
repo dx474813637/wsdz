@@ -134,14 +134,14 @@ export default async function(vm) {
 						}
 						
 					}
-					if(store.state.sinopay.sino.state != 2 || store.state.sinopay.sino.auth_state != 1) {
-						uni.redirectTo({
+					if(store.state.sinopay.sino.state != 2 ) {
+						uni.reLaunch({
 							url: '/pages/my/money/index',
 							success: () => { 
-								uni.showToast({
-									title: '资金账户权限不足',
-									icon: 'none'
-								})
+								// uni.showToast({
+								// 	title: '资金账户权限不足',
+								// 	icon: 'none'
+								// })
 							}
 						})
 						return false

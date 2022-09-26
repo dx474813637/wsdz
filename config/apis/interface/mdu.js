@@ -31,3 +31,6 @@ export const customer_mdu_detail_mdu = (data) => http.get('customer_mdu_detail_m
 // customer_mdu_change_mdu 
 	// 修改MDU（交易商）id pid mdu remark.  M-生产商 D-经销商 U-下游用户
 export const customer_mdu_change_mdu = (data) => http.get('customer_mdu_change_mdu', data)
+
+// mdu_broker   mdu客户选择列表
+export const mdu_broker = (data) => http.get('mdu_broker', data)

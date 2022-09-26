@@ -15,7 +15,7 @@
 							<view class="icon-acc u-flex u-flex-items-center u-flex-center">
 								<i class="custom-icon-my custom-icon"></i>
 							</view>
-							<span class="acc-name">{{sino.sinopay_poster ? sino.sinopay_poster : '--'}}</span>
+							<span class="acc-name">{{sino.sinopay_poster ? sino.sinopay_poster : '未开通或绑定资金账号'}}</span>
 						</view>
 					</view>
 				</view>
@@ -134,7 +134,7 @@
 <style lang="scss" scoped>
 	.header {
 		position: relative;
-		background-image: url("http://dingxiang.netsun.testwebsite.cn/mShop/img/bg1.png");
+		background-image: url("https://wx.rawmex.cn/Public/bg1.png");
 		background-size: 100% 80%;
 		background-position: top;
 		background-repeat: no-repeat;

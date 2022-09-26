@@ -133,7 +133,7 @@
 	}
 	.header {
 		position: relative;
-		background-image: url("http://dingxiang.netsun.testwebsite.cn/mShop/img/bg1.png");
+		background-image: url("https://wx.rawmex.cn/Public/bg1.png");
 		background-size: 100% 100%;
 		background-position: top;
 		background-repeat: no-repeat;

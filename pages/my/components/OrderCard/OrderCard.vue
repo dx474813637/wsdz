@@ -9,15 +9,15 @@
 		>
 		<view class="card-header u-flex u-flex-items-center u-flex-between  u-p-5">
 			<view class="u-flex u-flex-items-baseline">
-				<view class="u-font-28 text-base">
-					{{customData.id}}
+				<view class="u-font-28 text-base"> 
+					<u-tag :text="customData.id" plain size="mini" borderColor="#ccc" color="#777"></u-tag>
 				</view>
 				<!-- <u-tag :text="customData.id" size="mini" ></u-tag> -->
 				<view class="u-line-1 u-m-l-10">{{ordertype == 'S' ? customData.b_company : customData.s_company }}</view>
 			</view>
 			
 			<view class=" u-font-28" style=" flex: 0 0 auto;" >
-				<u-tag :text="customData.state | orderState2Str" size="mini" :type="(customData.state == '2' || customData.state == '3')? 'error': 'primary'"></u-tag>
+				<u-tag :text="customData.state | orderState2Str(customData.order_type)" size="mini" :type="(customData.state == '2' || customData.state == '3')? 'error': 'primary'"></u-tag>
 			</view>
 		</view>
 		<view class="card-main u-p-t-20">

@@ -60,11 +60,11 @@
 				<view class="item text-light item-label">下单日期</view>
 				<view class="item u-text-right">{{list.create_time}}</view>
 			</view>
-			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
+			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.order_type == '1'">
 				<view class="item text-light item-label">交付方式</view>
 				<view class="item u-text-right">{{list.settle_type | settleType2str}}</view>
 			</view>
-			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
+			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.order_type == '1'">
 				<view class="item text-light item-label">支付工具</view>
 				<view class="item u-text-right">{{list.pay_mode | paymode2str}}</view>
 			</view>
@@ -81,7 +81,7 @@
 			</view>
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
 				<view class="item text-light item-label">订单状态</view>
-				<view class="item u-text-right">{{list.state | orderState2Str}}</view>
+				<view class="item u-text-right">{{list.state | orderState2Str(list.order_type)}}</view>
 			</view>
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.remark">
 				<view class="item text-light item-label">备注</view>

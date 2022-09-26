@@ -58,8 +58,57 @@
 						<view>{{list.ctime}}</view>
 					</view>
 				</view>
+				<view class="u-p-t-40" v-if="list.state == '0'">
+					<view class="u-p-t-20">
+						<u-button type="primary" @click="codeInputShow = true">提现校验</u-button>
+					</view>
+					<view class="u-p-t-20">
+						<u-button type="error" @click="remove">取消提现</u-button>
+					</view>
+					
+				</view>
 			</view>
 		</view>
+		<u-modal :show="codeInputShow" negativeTop="220" title="支付密码校验"
+			closeOnClickOverlay
+			@close="codeInputShow = false" 
+			confirmText="返回"
+			@confirm="codeInputShow = false" 
+			>
+			<view class="slot-content u-p-t-10"> 
+				<u--form
+					:model="model_yanzheng_code"
+					:rules="rules_yanzheng_code"
+					ref="from_yanzheng_code"
+					labelWidth="100%"
+					labelPosition="top"
+					:labelStyle="{color: '#777'}"
+				>
+					<u-form-item
+						label="支付密码"
+						prop="paypwd"
+						ref="paypwd"
+						required 
+					> 
+						<view style="width: 220px;">
+							<u-input
+								v-model="model_yanzheng_code.paypwd" 
+								placeholder="支付密码"
+								clearable
+								password
+								type="password"
+							></u-input> 
+						</view>
+						
+					</u-form-item>
+				</u--form> 
+				<view class="u-m-t-40">
+					<u-button type="primary" @click="submit_yanzheng_code">提交表单</u-button>
+				</view> 
+				
+			</view>
+		</u-modal>
+		<u-toast ref="uToast"></u-toast>
 	</view>
 </template>
 
@@ -70,7 +119,11 @@
 				id: '',
 				list: {
 					Sino_fund_refund: {}
-				}
+				},
+				codeInputShow: false,
+				model_yanzheng_code: {  
+					paypwd: '',
+				},
 			};
 		}, 
 		onLoad(options) {
@@ -79,6 +132,21 @@
 			} 
 			uni.showLoading()
 			this.getData()
+		},
+		computed: { 
+			rules_yanzheng_code() {
+				return {
+					'paypwd': {
+						type: 'string',
+						required: true,
+						message: '支付密码不得为空',
+						trigger: ['blur', 'change']
+					}, 
+				}
+			},
+		},
+		onReady() { 
+			this.$refs.from_yanzheng_code.setRules(this.rules_yanzheng_code)
 		},
 		methods: {
 			async getData() {
@@ -89,6 +157,38 @@
 				})
 				if(res.code == 1) {
 					this.list = res.list
+				}
+			},
+			async remove() {
+				uni.showLoading({
+					title: '正在取消...'
+				})
+				const res = await this.$api.sino_fund_refund_cancel({
+					params: {
+						id: this.id, 
+					}
+				})
+				if(res.code == 1) {
+					uni.showToast({
+						title: res.msg
+					})
+					this.getData()
+				}
+			},
+			async submit_yanzheng_code() {
+				uni.showLoading( )
+				const res = await this.$api.sino_fund_refund_refund({
+					params: {
+						id: this.id, 
+						paypwd: this.model_yanzheng_code.paypwd, 
+					}
+				})
+				if(res.code == 1) {
+					uni.showToast({
+						title: res.msg
+					})
+					this.codeInputShow = false
+					this.getData()
 				}
 			}
 		}

@@ -60,15 +60,15 @@
 				<view class="item text-light item-label">下单日期</view>
 				<view class="item u-text-right">{{list.create_time}}</view>
 			</view>
-			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
+			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.order_type == '1'">
 				<view class="item text-light item-label">交付方式</view>
 				<view class="item u-text-right">{{list.settle_type | settleType2str}}</view>
 			</view>
-			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
+			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.order_type == '1'">
 				<view class="item text-light item-label">支付工具</view>
 				<view class="item u-text-right">{{list.pay_mode | paymode2str}}</view>
 			</view>
-			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.pay_state">
+			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.pay_state && list.order_type == '1'">
 				<view class="item text-light item-label">支付状态</view>
 				<view class="item u-text-right" v-if="list.pay_mode"> 
 					<template v-if="list.pay_mode.includes('FUNDPAY')">{{list.pay_state | payFundState2Str}}</template>
@@ -81,7 +81,7 @@
 			</view>
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
 				<view class="item text-light item-label">订单状态</view>
-				<view class="item u-text-right">{{list.state | orderState2Str}}</view>
+				<view class="item u-text-right">{{list.state | orderState2Str(list.order_type)}}</view>
 			</view>
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.remark">
 				<view class="item text-light item-label">备注</view>
@@ -195,6 +195,7 @@
 								<u--form
 									labelPosition="left" 
 									labelWidth="80"
+									v-if="list.order_type == '1'"
 									>
 									<u-form-item
 										label="交付方式" 
@@ -260,8 +261,7 @@
 									>
 										<u--input
 											:value="list.total_price2" 
-											readonly
-											:customStyle="{background: '#fff'}"
+											disabled 
 										></u--input>
 									</u-form-item>
 									<u-form-item
@@ -415,7 +415,7 @@
 									:model="form_confirm"
 									ref="form_confirm"
 									labelWidth="80"
-									v-if="formActive.isGRT"
+									v-if="formActive.isGRT && paylist.Sino_fund_order.paymode == '1'"
 									>
 									
 									<u-form-item
@@ -431,6 +431,9 @@
 										></u--input>
 									</u-form-item>
 								</u--form>
+								<view v-if="formActive.isGRT && paylist.Sino_fund_order.paymode == '2'" class="text-error">
+									请财务登录sinopay平台完成确认付款。
+								</view>
 							</template>
 						</view>
 					</u-list>
@@ -438,7 +441,7 @@
 				<view class="confirm-rows u-p-20" :style="{
 						backgroundColor: themeConfig.navBg,
 					}"
-					v-if="!paylist.hasOwnProperty('Sino_fund_order') || paylist.Sino_fund_order.paymode != '2' "
+					v-if="!paylist.hasOwnProperty('Sino_fund_order') || paylist.Sino_fund_order.paymode == '0' || paylist.Sino_fund_order.paymode == '1' "
 					>
 					<u-button :customStyle="{backgroundColor: themeConfig.badgeBg, color: '#fff', border: 'none'}" shape="circle" 
 					@click="handleConfirm">确认并提交</u-button>
@@ -590,6 +593,9 @@
 					}
 					
 				}
+				if(data.mode == 'confirm') {
+					this.get_pay_order()
+				} 
 				if(data.mode == 'audit') {
 					if(this.list.pay_mode.includes('BILLPAY')) {
 						this.form_audit.pyeeInfo = this.list.payeeAccNm
@@ -629,7 +635,7 @@
 				if(res.code == 1) {
 					this.showToast({
 						type: 'success',
-						message: '取消成功！', 
+						message: res.msg, 
 					})
 					uni.showLoading({
 						title: '获取最新数据中'
@@ -650,7 +656,7 @@
 				if(res.code == 1) {
 					this.showToast({
 						type: 'success',
-						message: '发货成功！', 
+						message: res.msg, 
 					})
 					uni.showLoading({
 						title: '获取最新数据中'
@@ -673,7 +679,7 @@
 				if(res.code == 1) {
 					this.showToast({
 						type: 'success',
-						message: '发送成功！', 
+						message: res.msg, 
 					})
 					uni.showLoading({
 						title: '获取最新数据中'
@@ -706,7 +712,7 @@
 				if(res.code == 1) { 
 					this.showToast({
 						type: 'success',
-						message: '发送成功！', 
+						message: res.msg, 
 					})
 					uni.showLoading({
 						title: '获取最新数据中'
@@ -727,7 +733,7 @@
 						pay_id: this.list.pay_id
 					}
 				}
-				if(params.hasOwnProperty('paypwd') && !params.paypwd ) {
+				if(params.paymode != '2' && params.hasOwnProperty('paypwd') && !params.paypwd ) {
 					uni.showToast({
 						title: '请输入支付密码',
 						icon: 'none'
@@ -735,18 +741,22 @@
 					throw new Error('请输入支付密码')
 				}
 				uni.showLoading({
-					title: '支付中...'
+					title: '操作中...'
 				}) 
 				const res = await this.$api[func]({ params })
 				if(res.code == 1) { 
 					this.showToast({
 						type: 'success',
-						message: '支付成功！', 
+						message: res.msg, 
 					})
 					uni.showLoading({
-						title: '获取最新数据中'
+						title: '刷新订单数据中'
 					})
 					await this.getData()
+					uni.showLoading({
+						title: '刷新支付数据中'
+					})
+					await this.get_pay_order()
 				} 
 				else { 
 					if(res.errcode == '6012') {
@@ -788,7 +798,7 @@
 				if(res.code == 1) { 
 					this.showToast({
 						type: 'success',
-						message: '审核成功！', 
+						message: res.msg, 
 					})
 					uni.showLoading({
 						title: '获取最新数据中'
@@ -803,11 +813,18 @@
 				let params = {
 					pay_id: this.list.pay_id
 				} 
+				console.log(this.formActive)
 				if(!this.formActive.isBill && this.formActive.isGRT) { 
 					func = 'sino_fund_order_confirm';
 					params = {
 						...params,
 						paypwd: this.form_confirm.paypwd
+					}
+					if(this.paylist.Sino_fund_order.paymode == '2') {
+						func = 'sino_fund_order_confirm_apply';
+						params = {
+							...params, 
+						} 
 					}
 				}
 				else if(this.formActive.isBill) {
@@ -819,6 +836,7 @@
 						paypwd: this.form_confirm.paypwd
 					}
 				}
+				console.log(func)
 				if(params.hasOwnProperty('paypwd') && !params.paypwd ) {
 					uni.showToast({
 						title: '请输入支付密码',
@@ -833,7 +851,7 @@
 				if(res.code == 1) { 
 					this.showToast({
 						type: 'success',
-						message: '收货成功！', 
+						message: res.msg, 
 					})
 					uni.showLoading({
 						title: '获取最新数据中'

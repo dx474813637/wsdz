@@ -2,7 +2,7 @@
 	import routingIntercept from '@/config/permission.js'
 	import store from '@/store'
 	
-	import {tim_online_login} from '@/utils/tims_login.js'
+	// import {tim_online_login} from '@/utils/tims_login.js'
 	export default {
 		onLaunch: async function() {
 			let e = uni.getSystemInfoSync();

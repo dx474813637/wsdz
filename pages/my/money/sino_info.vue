@@ -43,7 +43,7 @@
 							<view>状态</view>
 						</view>
 						<view class="item-right">
-							<view>{{sino.state == 2 ? '绑定成功' : '未认证'}}</view>
+							<view>{{sino.state | sinoState2str}}</view>
 						</view>
 					</view>
 					<view class="list-item">
@@ -52,9 +52,9 @@
 						</view>
 						<view class="item-right">
 							<view>
-								{{sino.auth_state == 1 ? '已认证' : '未认证'}}
+								{{sino.auth_state | sinoAuthState2str}}
 							</view>
-							<view class="text-primary u-m-l-10" v-if="sino.auth_state != 1" @click="handleGoto('/pages/my/money/index')">
+							<view class="text-primary u-m-l-10" v-if="sino.auth_state != 1" @click="handleGoto('/pages/my/money/card_add')">
 								 去认证
 							</view>
 						</view>

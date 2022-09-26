@@ -408,7 +408,7 @@
 					console.log(r)
 					if(r.code == 1) {
 						this.codeInputShow = true
-						this.model_yanzheng.id = r.list.id
+						this.model_yanzheng.id = r.id
 						uni.showToast({
 							title: r.msg,
 							icon: 'none'

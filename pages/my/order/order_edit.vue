@@ -176,8 +176,8 @@
 						ref="delivery_place"
 						:required="!qiehuan"
 					>
-						<view>
-							<uni-data-picker 
+						<view style="width: 255px;">
+							<uni-data-picker
 								v-if="!qiehuan"
 								placeholder="请选择所在地区" 
 								popup-title="请选择所在地区" 
@@ -185,12 +185,14 @@
 								v-model="form.delivery_place"
 							></uni-data-picker>
 							<view v-else>
-								<template v-if="type == 'add'">
+								{{panRes.list.delivery_place}}
+								<!-- <template v-if="type == 'add'">
 									{{panRes.list.delivery_place}}
 								</template>
 								<template v-else-if="order.Regionals">
 									{{order.Regionals.map(ele => ele.Particular.name).join('/')}}
-								</template>
+									{{panRes.list.delivery_place1}}
+								</template> -->
 								
 							</view>
 						</view>
@@ -210,12 +212,13 @@
 								clearable
 							></u--input>
 							<view v-else>
-								<template v-if="type == 'add'">
+								<rich-text :nodes="panRes.list.delivery_address"></rich-text> 
+								<!-- <template v-if="type == 'add'">
 									<rich-text :nodes="panRes.list.delivery_address"></rich-text> 
 								</template>
 								<template v-else>
 									<rich-text :nodes="order.settle_address"></rich-text>  
-								</template>
+								</template> -->
 							</view>
 						</view>
 					</u-form-item>
@@ -328,7 +331,7 @@
 						disabled: false,
 					},
 					{
-						name: '票据',
+						name: '票据-小程序端暂不支持',
 						value: 'BILLPAY',
 						disabled: true,
 					},
@@ -481,25 +484,48 @@
 				}
 			}, 
 			['form.settle_mode'](n, o) {
-				if(this.ordertype == 'B') {
-					if(n == 'S') {
-						this.form.delivery_place = ''
-						this.form.settle_address = ''
-						return
-					} 
-				}else {
-					if(n == 'B') {
-						this.form.delivery_place = ''
-						this.form.settle_address = ''
-						return
-					} 
-				}
+				console.log(this.type, this.ordertype, n, this.order.delivery_place)
+				 
+				
+					
 				if(this.type == 'add') {
+					if(this.ordertype == 'B') {
+						if(n == 'S') {
+							this.form.delivery_place = ''
+							this.form.settle_address = ''
+							return
+						} 
+					}else {
+						if(n == 'B') {
+							this.form.delivery_place = ''
+							this.form.settle_address = ''
+							return
+						} 
+					} 
 					this.form.delivery_place = this.panRes.list.delivery_place1
 					this.form.settle_address = this.panRes.list.delivery_address
-				}else {
-					this.form.delivery_place = this.panRes.list.delivery_place
-					this.form.settle_address = this.panRes.list.delivery_address
+				}else { 
+					if(this.order.delivery_place == this.panRes.list.delivery_place1
+						&& this.order.settle_address == this.panRes.list.delivery_address) {
+						if(this.ordertype == 'B') {
+							if(n == 'S') {
+								this.form.delivery_place = ''
+								this.form.settle_address = ''
+								return
+							} 
+						}else {
+							if(n == 'B') {
+								this.form.delivery_place = ''
+								this.form.settle_address = ''
+								return
+							} 
+						} 
+					}else {
+						
+						this.form.delivery_place = this.order.delivery_place
+						this.form.settle_address = this.order.settle_address 
+					}
+					
 				}
 			}, 
 			['form.amount'](n, o) {
@@ -562,14 +588,14 @@
 					await this.getOrder()
 				}
 				this.pageLoading = false
-				 if(!this.sinoBillAccount) {
-					 await this.getSinoBillAccount()
-					 if(this.sinoBillAccount) {
-						 await this.getSinoBillAccountList()
-					 }else {
-						 this.pay_option2_radios[1].name = '票据-您未开通票据账户'
-					 }
-				 }
+				 // if(!this.sinoBillAccount) {
+					//  await this.getSinoBillAccount()
+					//  if(this.sinoBillAccount) {
+					// 	 await this.getSinoBillAccountList()
+					//  }else {
+					// 	 this.pay_option2_radios[1].name = '票据-您未开通票据账户'
+					//  }
+				 // }
 				
 			},
 			async getPan() {
