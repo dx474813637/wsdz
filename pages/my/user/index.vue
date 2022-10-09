@@ -33,7 +33,12 @@
 						<view 
 							style="background: #f90;"
 							v-if="myCpy.state == 0" class="sub text-white u-font-24 u-flex u-flex-items-center u-p-4 u-p-l-10 u-p-r-16 u-m-l-20">
-							<text>审核中</text>
+							<text>{{myCpy.state | myCpyAuth2str}}</text>
+						</view>
+						<view 
+							style="background: #d43a3a;"
+							v-else-if="myCpy.state == 2" class="sub text-white u-font-24 u-flex u-flex-items-center u-p-4 u-p-l-10 u-p-r-16 u-m-l-20">
+							<text>{{myCpy.state | myCpyAuth2str}}</text>
 						</view>
 					</view>
 					<view class="item">

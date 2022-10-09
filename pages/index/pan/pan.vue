@@ -20,12 +20,12 @@
 					<view
 						class="u-flex u-flex-items-center"
 						:style="{
-							color: themeConfig.pan.pageText
+							color:  themeConfig.tabTextActive
 						}"
-						@click="show = true"
+						@click="handleGoto({url: '/pages/my/broker/edit', params: {pan}})"
 					>
-						<i class="custom-icon-filter2 custom-icon"></i>
-						<text class="u-p-l-8 u-font-30">分类筛选</text>
+						<i class="custom-icon-roundadd custom-icon"></i>
+						<text class="u-p-l-8 u-font-30">发布{{pan == 's'? '卖盘' : '买盘'}}</text>
 					</view>
 				</view>
 			</view>
@@ -44,12 +44,12 @@
 						slot="right"
 						class="u-p-r-20 u-flex u-flex-items-center"
 						:style="{
-							color:  themeConfig.tabTextActive
+							color: themeConfig.pan.pageText
 						}"
-						@click="handleGoto({url: '/pages/my/broker/edit', params: {pan}})"
+						@click="show = true"
 					>
-						<i class="custom-icon-roundadd custom-icon"></i>
-						<text class="u-p-l-8 u-font-30">发布{{pan == 's'? '卖盘' : '买盘'}}</text>
+						<i class="custom-icon-filter2 custom-icon"></i>
+						<text class="u-p-l-8 u-font-30">分类筛选</text>
 					</view>
 					
 				</u-tabs>

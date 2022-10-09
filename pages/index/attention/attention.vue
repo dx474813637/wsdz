@@ -48,9 +48,14 @@
 		<tabBar :customStyle="{
 			'boxShadow': '0 0 10rpx rgba(0,0,0,.1)'
 		}">
-			<view class=" u-flex u-flex-items-center u-flex-center u-p-20" @click="handleAdd">
-				<u-button type="primary" shape="circle" icon="plus-circle">新增关注</u-button>
-			</view>
+			<view class=" u-flex u-flex-items-center u-flex-around u-p-20">
+				<view class="item u-m-r-10 u-flex-1" v-if="save_btn.show" @click="saveBtnEvent">
+					<u-button type="error" shape="circle" icon="checkbox-mark">{{save_btn.name}}</u-button>
+				</view>
+				<view class="item u-m-l-10 u-flex-1" @click="handleAdd">
+					<u-button type="primary" shape="circle" icon="plus-circle">新增关注</u-button>
+				</view>
+			</view> 
 		</tabBar>
 		<menusPopup 
 			:show="show" 
@@ -81,6 +86,10 @@
 				itemTabsStyle: {
 					height: '44px',
 					padding: '0 13px'
+				},
+				save_btn: {
+					show: 0,
+					name: ''
 				},
 				tabs_list: [
 					{
@@ -156,6 +165,10 @@
 				})
 				return params
 			},
+			async saveBtnEvent() {
+				await this.setHomeConfig(this.tabs_list);
+				this.save_btn.show = 0
+			},
 			str2list(str) {
 				const list = JSON.parse(decodeURIComponent(str))
 				for(let k in list) {
@@ -183,6 +196,8 @@
 				const res = await this.$api.guanzhu()
 				if(res.code == 1) {
 					this.guanzhu = res.list
+					this.save_btn.show = res.home
+					this.save_btn.name = res.home_button
 				}
 			},
 			refreshList() {

@@ -120,6 +120,7 @@
 		computed: {
 			...mapState({
 				typeConfig: state => state.theme.typeConfig,
+				myCpy: state => state.user.myCpy,
 			}),
 			paramsObj() {
 				let base = {
@@ -144,6 +145,13 @@
 		},
 		methods: {
 			async addCustomer() {
+				if(this.myCpy.state == '2') {
+					uni.showToast({
+						title: '当前用户信息被平台灭活',
+						icon: 'none'
+					})
+					return
+				}
 				uni.showLoading()
 				const res = await this.$api.addCustomer();
 				if(res.code == 1) {

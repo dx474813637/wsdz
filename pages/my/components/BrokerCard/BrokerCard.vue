@@ -65,6 +65,7 @@
 </template>
 
 <script>
+	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
 	export default {
 		name: 'BrokerCard',
 		props: {
@@ -135,6 +136,9 @@
 			}
 		},
 		computed: {
+			...mapState({ 
+				myCpy: state => state.user.myCpy,
+			}),
 			doing() {
 				return this.loading
 			}
@@ -151,7 +155,13 @@
 		},
 		methods: {
 			switchInput(value) {
-				
+				if(this.myCpy.state == '2') {
+					uni.showToast({
+						title: '当前用户信息被平台灭活',
+						icon: 'none'
+					})
+					return
+				}
 				uni.showModal({
 					title: '提示',
 					content: `是否改变当前${this.name}的状态`,
@@ -185,7 +195,13 @@
 				
 			},
 			handleResubmit() {
-				
+				if(this.myCpy.state == '2') {
+					uni.showToast({
+						title: '当前用户信息被平台灭活',
+						icon: 'none'
+					})
+					return
+				}
 				uni.showModal({
 					title: '提示',
 					content: `是否重发${this.name}`,

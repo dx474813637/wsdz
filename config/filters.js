@@ -25,6 +25,12 @@ const paystate2str = v => {
 	else if(v == '1') return '1' 
 	else return v
 }
+const myCpyAuth2str = v => {
+	if(v == '0') return '审核中'
+	else if(v == '1') return '审核成功' 
+	else if(v == '2') return '平台灭活' 
+	else return v
+}
 const mdu2Str = v => {
 	if(v == 'M') return '生产商'
 	else if(v == 'D') return '经销商'
@@ -257,5 +263,6 @@ export default {
 	mdu2Str,
 	mduState2Str,
 	sinoAuthState2str,
-	sinoState2str
+	sinoState2str,
+	myCpyAuth2str
 }

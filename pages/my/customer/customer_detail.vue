@@ -287,7 +287,8 @@
 		},
 		computed: {
 			...mapState({
-				addressArea: state => state.user.addressArea
+				addressArea: state => state.user.addressArea,
+				myCpy: state => state.user.myCpy,
 			}),
 		},
 		onReady() {
@@ -297,6 +298,7 @@
 			state2Str:(v) => {
 				if(v == 1) return '已激活'
 				else if(v == 0) return '未激活'
+				else if(v == 2) return '平台灭活'
 				return v
 			}
 		},
@@ -381,6 +383,13 @@
 				
 			},
 			async submit() {
+				if(this.myCpy.state == '2') {
+					uni.showToast({
+						title: '当前用户信息被平台灭活',
+						icon: 'none'
+					})
+					return
+				}
 				// this.$refs.form.validate().then(async res => {
 				// 	console.log('submit 客户详情')
 					uni.showLoading()

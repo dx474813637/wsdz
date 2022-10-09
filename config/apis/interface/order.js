@@ -49,6 +49,8 @@ export const order_detail = (data) => http.get('order_detail', data)
 export const order_cancel = (data) => http.get('order_cancel', data)
 // order_submit 发送采购/销售订单 ordertype：订单类型 id：订单id
 export const order_submit = (data) => http.get('order_submit', data)
+// unsubmit_order 撤回采购/销售订单 ordertype：订单类型 id：订单id
+export const unsubmit_order = (data) => http.get('unsubmit_order', data)
 // order_pay 发起支付 id：订单id
 export const order_pay = (data) => http.get('order_pay', data)
 // order_audit  审核采购/销售订单

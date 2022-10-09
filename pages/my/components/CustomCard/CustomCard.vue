@@ -56,7 +56,8 @@
 							<view class="name">审核状态</view>
 							<view class="pp u-line-1 u-flex-1 u-text-right text"
 								:class="{
-									'text-error': originalData.Company.state == 1
+									'text-error': originalData.Company.state == 1,
+									'text-warn': originalData.Company.state == 2
 								}"
 							>{{originalData.Company.state | state2Str}}</view>
 						</view>
@@ -152,6 +153,7 @@
 			...mapState({
 				typeConfig: state => state.theme.typeConfig,
 				sh: state => state.user.sh,
+				myCpy: state => state.user.myCpy,
 			}),
 			...mapGetters({
 				sys: 'theme/sys'
@@ -164,6 +166,7 @@
 			state2Str:(v) => {
 				if(v == 1) return '已激活'
 				else if(v == 0) return '未激活'
+				else if(v == 2) return '平台灭活'
 				return v
 			}
 		},
@@ -183,6 +186,13 @@
 				});
 			},
 			makecall(data) {
+				if(this.myCpy.state == '2') {
+					uni.showToast({
+						title: '当前用户信息被平台灭活',
+						icon: 'none'
+					})
+					return
+				}
 				uni.makePhoneCall({
 					phoneNumber: data 
 				});

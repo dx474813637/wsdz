@@ -309,7 +309,7 @@
 			
 			
 		</view>
-		<view class="u-flex u-flex-items-center u-flex-between u-p-t-40 u-p-b-40">
+		<view class="u-flex u-flex-items-center u-flex-between u-p-t-40 u-p-b-40" v-if="myCpy.state == '1'">
 			<view class="u-p-r-20 u-flex-1">
 				<u-button type="primary" @click="submit('y')">审核通过</u-button>
 			</view>

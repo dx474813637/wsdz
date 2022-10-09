@@ -30,11 +30,8 @@
 							border="none"
 						></u--input>
 					</template>
-					<template v-else-if="myCpy.state == 1">
-						{{userType + '（审核成功）'}}
-					</template>
-					<template v-else-if="myCpy.state == 0">
-						{{userType + '（审核中）'}}
+					<template v-else >
+						{{userType}}（{{myCpy.state | myCpyAuth2str}}）
 					</template>
 				</view>
 				
@@ -162,6 +159,10 @@
 						:disabled="myCpy.state == 1"
 					></u--input>
 				</u-form-item>
+				<u-form-item label=" " >
+					<view class="text-error">认证成功的用户，企业名称不允许修改</view>
+				</u-form-item>
+				
 				<u-form-item
 					label="联系人"
 					prop="cpyInfo.contact"

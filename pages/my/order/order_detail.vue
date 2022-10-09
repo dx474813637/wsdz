@@ -114,6 +114,11 @@
 					<u-button type="primary" @click="order_submit">{{btnList.button3_title}}</u-button>
 				</view>
 				<view class="item u-p-6"
+						v-if="btnList.button20"
+					> <!-- 对发送订单的撤回按钮 -->
+					<u-button type="primary" @click="unsubmit_order">{{btnList.button20_title}}</u-button>
+				</view> 
+				<view class="item u-p-6"
 						v-if="btnList.button4"
 					> <!-- 审核 -->
 					<u-button type="primary" @click="handleShowPopup({mode:'audit'})">{{btnList.button4_title}}</u-button>
@@ -600,7 +605,7 @@
 					if(this.list.pay_mode.includes('BILLPAY')) {
 						this.form_audit.pyeeInfo = this.list.payeeAccNm
 					}
-				} 
+				}  
 				this.show = true
 			},
 			menusConfirm(data) {
@@ -620,6 +625,26 @@
 					if(this.list.settle_type == 'GRT') {
 						this.zfgj[1].disabled = false
 					}
+				}
+			},
+			async unsubmit_order() {
+				//撤回已发送的订单
+				uni.showLoading()
+				const res = await this.$api.unsubmit_order({
+					params: {
+						ordertype: this.ordertype,
+						id: this.id,
+					}
+				})
+				if(res.code == 1) {
+					this.showToast({
+						type: 'success',
+						message: res.msg, 
+					})
+					uni.showLoading({
+						title: '获取最新数据中'
+					})
+					await this.getData()
 				}
 			},
 			async order_cancel() {

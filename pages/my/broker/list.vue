@@ -86,7 +86,7 @@
 			'boxShadow': '0 0 10rpx rgba(0,0,0,.1)'
 		}">
 			<view class=" u-flex u-flex-items-center u-flex-around u-p-20">
-				<view class="item u-m-r-10 u-flex-1" @click="handleGoto({url: '/pages/my/broker/edit', params:{pan: pan}})">
+				<view class="item u-m-r-10 u-flex-1" @click="sendPan">
 					<u-button type="primary" icon="plus-circle">发布{{pan == 's'? '卖盘' :'买盘'}}</u-button>
 				</view>
 				<view class="item u-m-l-10 u-flex-1" @click="setShareList">
@@ -213,6 +213,16 @@
 			},
 			scrolltolower() {
 				this.getMoreData()
+			},
+			async sendPan() {
+				if(this.myCpy.state == '2') {
+					uni.showToast({
+						title: '当前用户信息被平台灭活',
+						icon: 'none'
+					})
+					return
+				}
+				this.handleGoto({url: '/pages/my/broker/edit', params:{pan: this.pan}})
 			},
 			async getData() {
 				if(this.loadstatus != 'loadmore') return
