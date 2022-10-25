@@ -56,12 +56,13 @@
 					>
 						<view class="u-flex u-flex-items-center">
 							<view class="u-flex-1">
-								<u--input
+								<u--input 
 									v-model="form.price"
 									clearable
+									:disabled="panRes.list.trade_mode == '2'"
 									type="digit"
 									@focus="tar = 'price'"
-								></u--input>
+								></u--input> 
 							</view>
 							<view class="u-p-l-10">元/{{type == 'edit' ? order.Source.unit : panRes.list.unit}}</view>
 						</view>
@@ -78,6 +79,7 @@
 								<u--input
 									v-model="form.total_price"
 									clearable
+									:disabled="panRes.list.trade_mode == '2'"
 									type="digit"
 									@focus="tar = 'total_price'"
 								></u--input>
@@ -533,6 +535,10 @@
 				this.form.total_price =  Number((this.form.price * n).toFixed(2))
 			}, 
 			['form.price'](n, o) {
+				if(this.panRes.list.trade_mode == '2') {
+					this.form.price = this.panRes.list.price1
+					return 
+				}
 				if(this.form.amount === '' || this.tar == 'total_price') return
 				this.form.total_price =  Number((this.form.amount * n).toFixed(2))
 			}, 
@@ -573,11 +579,12 @@
 					this.form.source = this.ordertype == 'S'? 'BUY' : 'SELL'
 					this.settle_mode_radios = this.settle_mode_radios.filter(ele => this.panRes.list.settle_mode.includes(ele.value) )
 					this.form.settle_mode = this.settle_mode_radios[1] ? this.settle_mode_radios[1].value : this.settle_mode_radios[0].value
-					 this.form.price = this.panRes.list.price1
-					 if(this.panRes.list.order_type == '1') {
-						 this.form.pay_option1 = 'GRT'
-						 this.form.pay_option2 = 'FUNDPAY'
-					 }
+					this.form.price = this.panRes.list.price1
+					
+					if(this.panRes.list.order_type == '1') {
+						this.form.pay_option1 = 'GRT'
+						this.form.pay_option2 = 'FUNDPAY'
+					}
 				}else {
 					uni.setNavigationBarTitle({
 						title: '修改订单'
@@ -586,7 +593,15 @@
 						title: '获取订单信息'
 					})
 					await this.getOrder()
+					
 				}
+				this.pay_option1_radios.some(ele => {
+					if(ele.value == 'COD') {
+						ele.disabled = this.panRes.list.settle_mode == 'B'? true : false
+						return true
+					}
+					return false
+				})
 				this.pageLoading = false
 				 // if(!this.sinoBillAccount) {
 					//  await this.getSinoBillAccount()
@@ -637,6 +652,7 @@
 					this.form.settle_address = res.list.Order.settle_address
 					this.form.intro = res.list.Order.intro
 					this.form.remark = res.list.Order.remark
+					
 				}
 			},
 			async submit() {

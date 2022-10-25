@@ -198,7 +198,7 @@
 			submit_yanzheng() {
 				this.$refs.from_yanzheng.validate().then(async res => {
 					uni.showLoading()
-					const r = await this.$api.sino_fund_account_check({...this.model_yanzheng})
+					const r = await this.$api.sino_fund_account_check({params: this.model_yanzheng})
 					console.log(r)
 					if(r.code == 1) { 
 						uni.showToast({

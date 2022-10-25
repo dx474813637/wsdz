@@ -28,31 +28,31 @@
 					</view>
 					<view class="item-center">
 						<view class="item-title">重置登录密码</view>
-						<view class="item-sub">忘记支付密码通过短信验证重置</view>
+						<view class="item-sub">忘记登录密码通过短信验证重置</view>
 					</view>
 					<view class="item-right">
 						<i class="custom-icon-right custom-icon"></i>
 					</view>
 				</view>
-				<view @click="handleGoto({url: '/pages/my/money/sino_paypw_set'})" class="main-item u-flex u-flex-items-center">
-					<view class="item-left u-flex u-flex-center u-flex-items-center">
-						<i class="custom-icon-moneybag custom-icon"></i>
-					</view>
-					<view class="item-center">
-						<view class="item-title">设置或修改支付密码</view>
-						<view class="item-sub">此密码需在注册开户后设置</view>
-					</view>
-					<view class="item-right">
-						<i class="custom-icon-right custom-icon"></i>
-					</view>
-				</view>
-				<view @click="handleGoto({url: '/pages/my/money/sino_paypw_forget'})" class="main-item u-flex u-flex-items-center">
+				<view @click="handleGoto({url: '/pages/my/money/sino_paypw_forget'})" class="main-item u-flex u-flex-items-center" v-if="sino.paypwd == '1'">
 					<view class="item-left u-flex u-flex-center u-flex-items-center">
 						<i class="custom-icon-question custom-icon"></i>
 					</view>
 					<view class="item-center">
 						<view class="item-title">重置支付密码</view>
 						<view class="item-sub">忘记支付密码通过短信验证重置</view>
+					</view>
+					<view class="item-right">
+						<i class="custom-icon-right custom-icon"></i>
+					</view>
+				</view>
+				<view @click="handleGoto({url: '/pages/my/money/sino_paypw_set'})" class="main-item u-flex u-flex-items-center" v-else>
+					<view class="item-left u-flex u-flex-center u-flex-items-center">
+						<i class="custom-icon-moneybag custom-icon"></i>
+					</view>
+					<view class="item-center">
+						<view class="item-title">设置支付密码</view>
+						<view class="item-sub">此密码需在注册开户后设置</view>
 					</view>
 					<view class="item-right">
 						<i class="custom-icon-right custom-icon"></i>
@@ -86,6 +86,12 @@
 			return {
 				show: false
 			};
+		},
+		computed: {
+			...mapState({
+				myCpy: state => state.user.myCpy,
+				sino: state => state.sinopay.sino,
+			}),
 		},
 		methods: {
 			...mapMutations({

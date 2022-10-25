@@ -592,7 +592,8 @@
 					//发起支付 如未发起过则先执行发起接口（仅1次），再弹窗；
 					if(this.list.state == '6') {
 						//state=6 为待支付
-						await this.order_pay()
+						const res = await this.order_pay()
+						if(!res) return
 					}else {
 						this.get_pay_order()
 					}
@@ -743,6 +744,13 @@
 						title: '获取最新数据中'
 					})
 					await this.getData()
+					return true
+				}else {
+					this.showToast({
+						type: 'error',
+						message: res.msg, 
+					})
+					return false
 				}
 			},
 			async order_paying() {

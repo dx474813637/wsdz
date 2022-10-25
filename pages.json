@@ -180,7 +180,16 @@
 			}
 
 		}
-	],
+	    ,{
+            "path" : "pages/index/zhinan/zhinan",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
 	"subPackages": [{
 		"root": "pages/baojia",
 		"pages": [{
@@ -704,7 +713,16 @@
 				}
 
 			}
-		]
+		    ,{
+                    "path" : "broker/busy_score",
+                    "style" :                                                                                    
+                {
+                    "navigationBarTitleText": "积分查询",
+                    "enablePullDownRefresh": false
+                }
+                
+                }
+            ]
 	}, {
 		"root": "pages/more",
 		"pages": [{

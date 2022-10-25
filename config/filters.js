@@ -74,6 +74,7 @@ const orderState2Str = (v, order_type) => {
 	else if(v == '7') return '支付中'
 	else if(v == '8') return '待发货'
 	else if(v == '9') return '待收货'
+	else if(v == '31') return '过期未支付取消'
 	else return v
 }
 //现金支付（pay  fund）状态：

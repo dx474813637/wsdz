@@ -117,12 +117,17 @@
 		<!-- 我的菜单列表 远程控制 -->
 		<template v-if="menus_wd && menus_wd.length > 0">
 			<view class="user-item-box u-p-t-30 u-p-b-20 bg-white u-m-b-26" v-for="(ele, i) in menus_wd" :key="i">
-				<view class="box-header u-border-bottom u-flex u-flex-items-end u-p-b-14 u-p-l-30 u-p-r-30">
-					<view class="u-font-34 u-flex u-flex-items-center">
-						<image v-if="ele.icon" class="u-m-r-5" style="width: 15px;height:15px;" :src="ele.icon" mode=""></image>
-						<text>{{ele.name}}</text>
+				<view class="box-header u-border-bottom u-flex u-flex-between u-p-b-14 u-p-l-30 u-p-r-30">
+					<view class=" u-flex u-flex-items-end u-flex-items-center">
+						<view class="u-font-34 u-flex u-flex-items-center">
+							<image v-if="ele.icon" class="u-m-r-5" style="width: 15px;height:15px;" :src="ele.icon" mode=""></image>
+							<text>{{ele.name}}</text>
+						</view>
+						<view class="text-light u-font-26 u-p-l-10" v-if="ele.title">{{ele.title}}</view>
 					</view>
-					<view class="text-light u-font-26 u-p-l-10" v-if="ele.title">{{ele.title}}</view>
+					<view class=" u-flex u-flex-items-center u-flex-items-center" v-if="ele.right_icon && ele.right_url">
+						<image style="width: 20px;height:20px;" :src="ele.right_icon" mode="" @click="handleGoto(ele.right_url)"></image>
+					</view>
 				</view>
 				<view class="box-row other-menus u-flex u-flex-wrap u-flex-items-center u-p-t-20 ">
 					<view 
@@ -274,7 +279,7 @@
 				this.loading = false
 			}else {
 				this.myCompany()
-			}
+			} 
 			// this.getSinoAccount()
 		},
 		methods: {

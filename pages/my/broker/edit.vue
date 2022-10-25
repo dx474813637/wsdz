@@ -51,25 +51,7 @@
 							clearable
 						></u--input>
 					</u-form-item>
-					<u-form-item
-						label="订单类型"
-						prop="order_type"
-						ref="order_type"
-					>
-						 <u-radio-group
-						    v-model="model.order_type"
-						    placement="row"
-						  >
-						    <u-radio
-						      :customStyle="{marginRight: '8px'}"
-						      v-for="(item, index) in radiolist_order_type"
-						      :key="item.value"
-						      :label="item.name"
-						      :name="item.value"
-						    >
-						    </u-radio>
-						  </u-radio-group>
-					</u-form-item>
+					
 					
 					<u-form-item
 						label="现货类型"
@@ -90,6 +72,53 @@
 						    </u-radio>
 						  </u-radio-group>
 					</u-form-item>
+					
+					<u-form-item
+						label="订单类型"
+						prop="order_type"
+						ref="order_type"
+						v-if="model.trade_type == '2'"
+					>
+						 <u-radio-group
+						    v-model="model.order_type"
+						    placement="row"
+						  >
+						    <u-radio
+						      :customStyle="{marginRight: '8px'}"
+						      v-for="(item, index) in radiolist_order_type"
+						      :key="item.value"
+							  :disabled="item.disabled"
+						      :label="item.name"
+						      :name="item.value"
+						    >
+						    </u-radio>
+						  </u-radio-group>
+					</u-form-item>
+					
+					
+					
+					<u-form-item
+						label="交易类型"
+						prop="trade_mode"
+						ref="trade_mode"
+						v-if="pan == 's' && model.trade_type == '2'"
+					>
+						 <u-radio-group
+						    v-model="model.trade_mode"
+						    placement="row"
+						  >
+						    <u-radio
+						      :customStyle="{marginRight: '8px'}"
+						      v-for="(item, index) in radiolist_trade_mode"
+						      :key="item.value"
+							  :disabled="item.disabled"
+						      :label="item.name"
+						      :name="item.value"
+						    >
+						    </u-radio>
+						  </u-radio-group>
+					</u-form-item>
+					
 					<u-form-item
 						label="交收期"
 						prop="settle_month"
@@ -148,11 +177,11 @@
 							type="digit"
 						></u--input>
 					</u-form-item>
-					<u-form-item label=" ">
+					<u-form-item label=" " v-if="model.trade_mode == '0'">
 						<view class="text-base">填0表示点价，请说明点价规则</view>
 					</u-form-item>
 					<u-form-item
-						v-if="model.price.length != 0 && model.price == 0"
+						v-if="model.price.length != 0 && model.price == 0 && model.trade_mode == '0'"
 						label="点价规则"
 						prop="dprice"
 						ref="dprice"
@@ -242,6 +271,7 @@
 						      v-for="(item, index) in radiolist_settle_mode_filter"
 						      :key="item.value"
 						      :label="item.name"
+						      :disabled="item.disabled"
 						      :name="item.value"
 						    >
 						    </u-radio>
@@ -454,6 +484,7 @@
 					name: '',
 					order_type: '2',
 					trade_type: '2',
+					trade_mode: '0',
 					settle_month_label: '',
 					settle_month: '',
 					settle_date_label: '',
@@ -498,6 +529,18 @@
 					},
 					{
 						name: '即期现货',
+						disabled: false,
+						value: "2"
+					},
+				],
+				radiolist_trade_mode: [
+					{
+						name: '议价交易',
+						disabled: false,
+						value: "0"
+					},
+					{
+						name: '一口价交易',
 						disabled: false,
 						value: "2"
 					},
@@ -803,6 +846,35 @@
 				this.$nextTick(() => {
 					this.$refs.from.validateField('express_time')
 				})
+			},
+			['model.order_type']: {
+				immediate: true, 
+				handler(n) {
+					this.radiolist_trade_mode.some(ele => {
+						if(ele.value == '2') {
+							ele.disabled = n == '2' ? true : false;
+							return true
+						}
+						return false
+					}) 
+				},
+			},
+			['model.trade_mode'](n) {
+				this.radiolist_order_type.some(ele => {
+					if(ele.value == '2') {
+						ele.disabled = n == '2' ? true : false;
+						return true
+					}
+					return false
+				})
+				this.radiolist_settle_mode.forEach(ele => {
+					if(ele.value != 'B') {
+						ele.disabled = n == '2' ? true : false;
+					}
+				})
+				if(n == '2') {
+					this.model.settle_mode = 'B'
+				}
 			},
 			['model.express_unit'](n) {
 				this.$nextTick(() => {

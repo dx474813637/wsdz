@@ -1,5 +1,9 @@
 import {tim_online_login} from '@/utils/tims_login.js'
 
+
+const sys = uni.getSystemInfoSync();
+const duration = sys.osName == 'ios' ? 2000 : 3000 
+
 export default function(vm) {
 	const http = uni.$u.http
 	// import md5Libs from "@/utils/md5";
@@ -143,7 +147,7 @@ export default function(vm) {
 						title: response.data.msg,
 						icon: 'none',
 						mask: true,
-						duration: 2000
+						duration: duration
 					})
 				}
 			}

@@ -62,7 +62,7 @@
 				required
 			>
 				<!-- 添加MDU模式 复选 -->
-				<u-checkbox-group
+				<!-- <u-checkbox-group
 					v-if="type == 'add'"
 					v-model="mdu_arr" 
 					@change="checkboxChange"
@@ -75,11 +75,11 @@
 						:name="item.value"
 					>
 					</u-checkbox>
-				</u-checkbox-group>
+				</u-checkbox-group> -->
 				
-				<!-- 编辑MDU模式 单选 -->
+				<!-- 编辑MDU模式 单选
+					v-if="type == 'edit'" -->
 				<u-radio-group
-					v-if="type == 'edit'"
 				    v-model="model.mdu" 
 				    @change="radioChange"
 				  >

@@ -138,3 +138,5 @@ export const guanzhu = (data) => http.get('guanzhu', data)
 
 // 积分 我的积分  参数p zt zt不传或0  全部  zt=1 获取积分记录 zt=2 使用积分记录
 export const my_score = (data) => http.get('my_score', data) 
+// 积分 我的积分  参数p zt zt不传或0  全部  zt=1 获取积分记录 zt=2 使用积分记录
+export const zhinan = (data) => http.get('zhinan', data) 

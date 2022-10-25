@@ -89,3 +89,7 @@ export const extension_msg_index = (data) => http.get('extension_msg_index', dat
 export const extension_msg_list = (data) => http.get('extension_msg_list', data)
 // extension_msg_send  推广推送 参数id  企业id
 export const extension_msg_send = (data) => http.get('extension_msg_send', data)
+
+
+// company_get_busy_score  查积分
+export const company_get_busy_score = (data) => http.get('company_get_busy_score', data)

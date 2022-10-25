@@ -21,11 +21,17 @@
 					<text class="u-font-36 u-p-r-20" :style="{
 						color: themeConfig.pan.headerText
 					}">{{list.name}}</text>
-					<text class="tag u-font-24" :style="{
+					<text class="tag u-font-24 u-m-r-10" :style="{
 						borderColor: themeConfig.pan.tagcolor,
 						color: themeConfig.pan.lightcolor,
 					}">{{pan == 's'?'供 应': '求购'}}</text>
-					<view class="u-m-l-20">
+					<text class="tag u-font-24 " :style="{
+						borderColor: themeConfig.pan.tagcolor,
+						color: themeConfig.pan.lightcolor,
+					}"
+						v-if="list.trade_mode == '2'"
+					>一口价</text>
+					<view >
 						<u-icon
 							name="photo" 
 							v-if="list.list_pics.length > 0" 
@@ -433,6 +439,10 @@
 						label: '备注',
 						content: ''
 					},
+					{
+						label: '说明',
+						content: ''
+					},
 				],
 				pageLoading: true,
 				orderBtnShow: 1,
@@ -482,6 +492,8 @@
 					this.cpy = res.company
 					this.tabs_desc[0].content = this.list.intro
 					this.tabs_desc[1].content = this.list.remark
+					this.tabs_desc[2].label =res.detail_title
+					this.tabs_desc[2].content =res.detail_info
 					this.orderBtnShow = res.button
 					this.orderBtnName = res.button_name
 					this.setOnlineControl(res)
@@ -597,7 +609,7 @@
 	}
 	.main-box-title .item {
 		height: 35px;
-		flex: 0 0 50%;
+		flex: 1 1 50%;
 		
 	}
 </style>

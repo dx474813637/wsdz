@@ -23,9 +23,17 @@
 						></u--input>
 					</u-form-item>
 					<u-form-item
+						label="解绑理由"
+						prop="remark"
+						ref="remark"
+					>
+						<u--textarea v-model="model.remark" placeholder="请输入内容" ></u--textarea>
+					</u-form-item>
+					<u-form-item
 						label="验证码"
 						prop="ocode"
 						ref="ocode"
+						required
 					>	
 						<u-input
 							v-model="model.ocode"
@@ -74,6 +82,7 @@
 				model: {
 					ophone: '',
 					ocode: '',
+					remark: '',
 				},
 				rules: {
 					ocode: {
@@ -132,6 +141,7 @@
 			}),
 			...mapActions({
 				myCompany: 'user/myCompany',
+				clearLogout: 'user/clearLogout',
 				// wode: 'user/wode',
 			}),
 			async handleLogout() {
@@ -167,29 +177,36 @@
 				}
 			},
 			async submit() {
-				uni.showLoading()
-				let params = {
-					flag: 2,
-					mobile_code: this.model.ocode
-				}
-				const res = await this.$api.jiebangMob({
-					params,
-				})
-				if(res.code == 1){
-					
-					await this.$api.logout()
-					uni.reLaunch({
-						url: '/pages/index/login/login',
-						success() {
-							uni.showToast({
-								title: res.msg,
-								icon: 'none'
-							})
-						}
+				this.$refs.from.validate().then(async () => {
+					uni.showLoading()
+					let params = {
+						flag: 2,
+						mobile_code: this.model.ocode,
+						unbind_remark: this.model.remark
+					}
+					const res = await this.$api.jiebangMob({
+						params,
 					})
-					
-					
-				}
+					if(res.code == 1){
+						
+						await this.$api.logout()
+						this.clearLogout()
+						uni.reLaunch({
+							url: '/pages/index/login/login',
+							success() {
+								uni.showToast({
+									title: res.msg,
+									icon: 'none'
+								})
+							}
+						})
+						
+						
+					}
+				}).catch(errors => {
+					uni.$u.toast('校验失败')
+				})
+				
 				
 			}
 		}
