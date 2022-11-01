@@ -30,6 +30,10 @@ export const create_order = (data, config={}) => http.post('create_order', data,
 // change_order 修改订单
 export const change_order = (data, config={}) => http.post('change_order', data, config)
 
+// order_query_amount_active 修改订单
+export const order_query_amount_active = (data ) => http.get('order_query_amount_active', data )
+
+
 // order_get_account  获取卖方票据账户
 // 订单类型： source *SELL-采购订单BUY-销售订单 
 // 订单ID: source_id

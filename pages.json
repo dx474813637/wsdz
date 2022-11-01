@@ -189,6 +189,15 @@
             }
             
         }
+	    ,{
+            "path" : "pages/index/subscribe/subscribe",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"subPackages": [{
 		"root": "pages/baojia",

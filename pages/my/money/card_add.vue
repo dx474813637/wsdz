@@ -407,12 +407,31 @@
 					})
 					console.log(r)
 					if(r.code == 1) {
-						this.codeInputShow = true
-						this.model_yanzheng.id = r.id
+						if(r.list.state == '1') {
+							uni.showToast({
+								title: r.msg,
+								icon: 'success',
+								success: () => {
+									setTimeout(() => {
+										uni.reLaunch({
+											url: '/pages/my/money/index'
+										})
+									}, 1500);
+									
+								}
+							})
+							
+							return
+						}else if(r.list.state == '0') {
+							this.codeInputShow = true
+							this.model_yanzheng.id = r.id
+							
+						} 
 						uni.showToast({
 							title: r.msg,
 							icon: 'none'
 						})
+						
 						// this.$nextTick(() => {
 						// 	this.focus = true
 						// 	this.$refs.uCode.start();

@@ -28,9 +28,14 @@
 					<text class="tag u-font-24 " :style="{
 						borderColor: themeConfig.pan.tagcolor,
 						color: themeConfig.pan.lightcolor,
-					}"
-						v-if="list.trade_mode == '2'"
-					>一口价</text>
+					}"  >
+						<template v-if="list.trade_mode == '2'">
+							一口价
+						</template>
+						<template v-else>
+							议价
+						</template>
+					</text>
 					<view >
 						<u-icon
 							name="photo" 

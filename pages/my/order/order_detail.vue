@@ -180,7 +180,7 @@
 						</view>
 						<view class="item u-flex-1 u-text-center">
 							<text class="u-font-34">
-								<template v-if="formActive.mode == 'send'">发货表单</template>
+								<template v-if="formActive.mode == 'send'">{{fahuo}}表单</template>
 								<template v-else-if="formActive.mode == 'audit'">审核表单</template>
 								<template v-else-if="formActive.mode == 'create_pay'">支付确认</template>
 								<template v-else-if="formActive.mode == 'confirm'">收货确认</template>
@@ -308,11 +308,11 @@
 									labelWidth="80"
 									>
 									<u-form-item
-										label="发货备注" 
+										:label="`${fahuo}备注`" 
 									>
 										<u--textarea
 											v-model="form_send.remark_send" 
-											placeholder="发货备注" 
+											:placeholder="`${fahuo}备注`" 
 											height="90"
 											maxlength="-1"
 										></u--textarea>
@@ -539,6 +539,7 @@
 						disabled: false,
 					},
 				],
+				fahuo: '发货'
 			};
 		},
 		onLoad(options) {
@@ -623,6 +624,7 @@
 				if(res.code == 1) {
 					this.list = res.list.Order
 					this.btnList = res.button
+					this.fahuo = res.fahuo
 					if(this.list.settle_type == 'GRT') {
 						this.zfgj[1].disabled = false
 					}

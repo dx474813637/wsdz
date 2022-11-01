@@ -41,26 +41,6 @@
 						></u--input>
 					</u-form-item>
 					<u-form-item
-						label="订单类型"
-						prop="order_type"
-						ref="order_type"
-					>
-						 <u-radio-group
-						    v-model="model.order_type"
-						    placement="row"
-						  >
-						    <u-radio
-						      :customStyle="{marginRight: '8px'}"
-						      v-for="(item, index) in radiolist_order_type"
-						      :key="item.value"
-						      :label="item.name"
-						      :name="item.value"
-						    >
-						    </u-radio>
-						  </u-radio-group>
-					</u-form-item>
-					
-					<u-form-item
 						label="现货类型"
 						prop="trade_type"
 						ref="trade_type"
@@ -74,10 +54,43 @@
 						      v-for="(item, index) in radiolist_trade_type"
 						      :key="item.value"
 						      :label="item.name"
+								:disabled="item.disabled"
 						      :name="item.value"
 						    >
 						    </u-radio>
 						  </u-radio-group>
+					</u-form-item>
+					<u-form-item
+						label="订单类型"
+						prop="order_type"
+						ref="order_type"
+						v-if="model.trade_type == '2'"
+					>
+						 <u-radio-group
+						    v-model="model.order_type"
+						    placement="row"
+						  >
+						    <u-radio
+						      :customStyle="{marginRight: '8px'}"
+						      v-for="(item, index) in radiolist_order_type"
+						      :key="item.value"
+						      :label="item.name"
+							  :disabled="item.disabled"
+						      :name="item.value"
+						    >
+						    </u-radio>
+						  </u-radio-group>
+					</u-form-item>
+					
+					<u-form-item
+						label="交易类型"
+						prop="trade_mode"
+						ref="trade_mode"
+						v-if="pan == 's'"
+					>
+						<view class="">
+							{{jiaoyi_str}}
+						</view>
 					</u-form-item>
 					<u-form-item
 						label="交收期"
@@ -134,20 +147,22 @@
 						<u--input
 							v-model="model.price"
 							clearable
+							:disabled="pan == 's'"
 							type="digit"
 						></u--input>
 					</u-form-item>
-					<u-form-item label=" ">
+					<u-form-item label=" " v-if="model.trade_mode == '0'">
 						<view class="text-base">填0表示点价，请说明点价规则</view>
 					</u-form-item>
 					<u-form-item
-						v-if="model.price.length != 0 && model.price == 0"
+						v-if="model.price.length != 0 && model.price == 0 && model.trade_mode == '0'"
 						label="点价规则"
 						prop="dprice"
 						ref="dprice"
 					>
 						<u--input
 							v-model="model.dprice"
+							:disabled="pan == 's'"
 							clearable
 						></u--input>
 					</u-form-item>
@@ -162,6 +177,7 @@
 								<u--input
 									v-model="model.amount"
 									clearable
+									:disabled="pan == 's'"
 									type="digit"
 								></u--input>
 							</view>
@@ -341,6 +357,7 @@
 					name: '',
 					order_type: '2',
 					trade_type: '2',
+					trade_mode: '0',
 					settle_month_label: '',
 					settle_month: '',
 					settle_date_label: '',
@@ -385,6 +402,18 @@
 					},
 					{
 						name: '即期现货',
+						disabled: false,
+						value: "2"
+					},
+				],
+				radiolist_trade_mode: [
+					{
+						name: '议价交易',
+						disabled: false,
+						value: "0"
+					},
+					{
+						name: '一口价交易',
 						disabled: false,
 						value: "2"
 					},
@@ -474,11 +503,55 @@
 			}
 		},
 		watch: {
-			
+			pan: {
+				immediate: true,
+				handler(n) {
+					if(n == 's') {
+						this.radiolist_trade_type.forEach(ele => {
+							ele.disabled = true
+						})
+						this.radiolist_order_type.forEach(ele => {
+							ele.disabled = true
+						})
+					}
+				}
+			},
 			['model.trade_type'](n) {
+				if(n == '1') this.radiolist_settle_mode.forEach(ele => {
+					ele.disabled = true;
+				})
 				this.$nextTick(() => {
 					this.$refs.from.validateField('express_time')
 				})
+			},
+			['model.order_type']: {
+				immediate: true, 
+				handler(n) {
+					this.radiolist_trade_mode.some(ele => {
+						if(ele.value == '2') {
+							ele.disabled = n == '2' ? true : false;
+							return true
+						}
+						return false
+					}) 
+				},
+			},
+			['model.trade_mode'](n) {
+				this.radiolist_order_type.some(ele => {
+					if(ele.value == '2') {
+						ele.disabled = n == '2' ? true : false;
+						return true
+					}
+					return false
+				})
+				this.radiolist_settle_mode.forEach(ele => {
+					if(ele.value != 'B') {
+						ele.disabled = n == '2' ? true : false;
+					}
+				})
+				if(n == '2') {
+					this.model.settle_mode = 'B'
+				}
 			},
 			['model.express_unit'](n) {
 				this.$nextTick(() => {
@@ -592,7 +665,9 @@
 				return {}
 				
 			},
-			
+			jiaoyi_str() {
+				return this.radiolist_trade_mode.filter(ele => ele.value == this.model.trade_mode)[0].name
+			},
 			tradeType2Label() {
 				if(this.pan == 's' ) {
 					if(this.model.settle_mode == 'B') {
@@ -635,6 +710,7 @@
 					this.model.name = data.name
 					this.model.order_type = data.order_type
 					this.model.trade_type = data.trade_type
+					this.model.trade_mode = data.trade_mode
 					this.model.price = data.price
 					this.model.dprice = data.dprice
 					this.model.amount = data.amount

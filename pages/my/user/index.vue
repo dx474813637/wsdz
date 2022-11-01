@@ -15,12 +15,12 @@
 				</view>
 			</view>
 		</u-navbar>
-		<view @click="handleGoto('/pages/my/user/info')" class="step3 user u-flex u-flex-items-center u-p-20 u-p-t-50 u-m-b-26">
+		<view class="step3 user u-flex u-flex-items-end u-p-20 u-p-t-50 u-m-b-26">
 			
-			<view class="user-img u-flex u-flex-items-center u-flex-center">
+			<view class="user-img u-flex u-flex-items-center u-flex-center" @click="handleGoto('/pages/my/user/info')">
 				<i class="custom-icon-myfill custom-icon"></i>
 			</view>
-			<view class="user-info">
+			<view class="user-info u-flex-1" @click="handleGoto('/pages/my/user/info')">
 				<template v-if="loading">
 					<u-loading-icon></u-loading-icon>
 				</template>
@@ -55,6 +55,9 @@
 					</view>
 				</template>
 				
+			</view>
+			<view class="dingyue-wrap " v-if="dingyue.zt == '1'">
+				<u-button type="primary" plain shape="circle" @click="dingyueEvent" size="mini">{{dingyue.title}}</u-button>
 			</view>
 			
 		</view>
@@ -253,6 +256,7 @@
 				myCpy: state => state.user.myCpy,
 				login: state => state.user.login,
 				auth: state => state.user.auth,
+				dingyue: state => state.user.dingyue,
 				sh: state => state.user.sh,
 				moreMenus: state => state.user.moreMenus,
 				moreMenusNew: state => state.user.moreMenusNew, 
@@ -280,7 +284,7 @@
 			}else {
 				this.myCompany()
 			} 
-			// this.getSinoAccount()
+			this.sendDingyue()
 		},
 		methods: {
 			...mapMutations({
@@ -289,7 +293,8 @@
 			...mapActions({
 				myCompany: 'user/myCompany',
 				wode: 'user/wode',
-				getSinoAccount: 'sinopay/getSinoAccount'
+				getSinoAccount: 'sinopay/getSinoAccount',
+				sendDingyue: 'user/sendDingyue',
 			}),
 			async handleTakeAccount() {
 				uni.showLoading()
@@ -300,6 +305,35 @@
 					})
 				}
 				
+			},
+			async dingyueEvent() {
+				uni.showLoading()
+				const res = await this.$api.tmp_id_list();
+				if(res.code == 1) {
+					// this.tmp_id_list = res.list ;
+					this.subApi(res.list)
+					
+				}
+			},
+			subApi(list) {
+				wx.requestSubscribeMessage({
+					tmplIds: list,
+					success: async (res)=>{
+						if(res.KIRbQmobnZlPo5OTgaMq6kHRI_zhpwVphn0mY42NeW8 == 'reject') return
+						uni.showLoading()
+						const res2 = await this.$api.tmp_id_back({
+							params: {
+								str: JSON.stringify(res)
+							}
+						})
+						if(res2.code == 1) {
+							uni.showToast({
+								title: res2.msg,
+								icon: 'none'
+							})
+						}
+					}
+				})
 			},
 			scrollListItemClick(item) {
 				if(item.hasOwnProperty('url')) {

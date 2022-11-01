@@ -133,7 +133,7 @@
 											</view>
 									 	</view>
 									 	<view class="item u-flex u-flex-items-center u-m-b-20">
-									 		<view class="u-font-28 text-base" style="flex: 0 0 60px">户名</view>
+									 		<view class="u-font-28 text-base" style="flex: 0 0 60px">开户行</view>
 									 		<view class="u-font-28 u-flex-1 u-text-right text-error">平安银行西湖支行</view>
 									 		<view class="u-m-l-20" >
 												<u-tag text="复制" size="mini" type="primary" @click="copy('平安银行西湖支行')"></u-tag>  

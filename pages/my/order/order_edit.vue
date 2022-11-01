@@ -27,7 +27,15 @@
 						label="数量" 
 					>
 						<view class=""> 
-							{{type == 'edit' ? order.Source.amount + order.Source.unit : panRes.list.amount + panRes.list.unit}}
+							{{panRes.list.amount}}{{panRes.list.unit}}
+						</view>
+					</u-form-item>
+					<u-form-item
+						label="可售量" 
+						v-if="ordertype=='B'"
+					>
+						<view class="">
+							{{left_amount}}{{panRes.list.unit}}
 						</view>
 					</u-form-item>
 					<u-form-item
@@ -87,6 +95,26 @@
 							<view class="u-p-l-10">元</view>
 						</view>
 						
+					</u-form-item>
+					<u-form-item
+						label="交收方式"
+						prop="settle_mode"
+						ref="settle_mode"
+					>
+						<u-radio-group
+							v-model="form.settle_mode"
+							placement="row"
+						  >
+							<u-radio
+							  :customStyle="{marginRight: '8px'}"
+							  v-for="(item, index) in settle_mode_radios"
+							  :key="index"
+							  :name="item.value"
+							  :label="item.name"
+							  :disabled="item.disabled"
+							>
+							</u-radio>
+						</u-radio-group>
 					</u-form-item>
 					<u-form-item
 						label="交付方式"
@@ -152,26 +180,6 @@
 						
 					</u-form-item>
 					
-					<u-form-item
-						label="交收方式"
-						prop="settle_mode"
-						ref="settle_mode"
-					>
-						<u-radio-group
-							v-model="form.settle_mode"
-							placement="row"
-						  >
-							<u-radio
-							  :customStyle="{marginRight: '8px'}"
-							  v-for="(item, index) in settle_mode_radios"
-							  :key="index"
-							  :name="item.value"
-							  :label="item.name"
-							  :disabled="item.disabled"
-							>
-							</u-radio>
-						</u-radio-group>
-					</u-form-item>
 					<u-form-item
 						:label="form.settle_mode == 'S' ? '收货区域' : '提货区域' "
 						prop="delivery_place"
@@ -279,7 +287,10 @@
 				type: 'add',
 				ordertype: '',
 				id: '',
-				panRes: {},
+				panRes: {
+					list: {}
+				},
+				left_amount: null,
 				order: {},
 				tar: '',
 				pageLoading: true,
@@ -405,9 +416,9 @@
 				}	 
 				if(this.panRes.list?.amount ) {
 					base.amount.validator = (rule, value, callback) => {
-						return uni.$u.test.number(value) && value > 0 && value <= +this.panRes.list.amount
+						return uni.$u.test.number(value) && value > 0 && value <= +(uni.$u.test.number(this.left_amount) ? this.left_amount :this.panRes.list.amount)
 					}
-					base.amount.message = `请填写0-${this.panRes.list.amount}范围内的数值` 
+					base.amount.message = `请填写0-${ uni.$u.test.number(this.left_amount) ? this.left_amount :this.panRes.list.amount}范围内的数值` 
 				}
 				if(this.panRes.list?.order_type == '1') {
 					base = {
@@ -485,30 +496,21 @@
 					}
 				}
 			}, 
-			['form.settle_mode'](n, o) {
-				console.log(this.type, this.ordertype, n, this.order.delivery_place)
-				 
-				
-					
-				if(this.type == 'add') {
-					if(this.ordertype == 'B') {
-						if(n == 'S') {
-							this.form.delivery_place = ''
-							this.form.settle_address = ''
-							return
-						} 
-					}else {
-						if(n == 'B') {
-							this.form.delivery_place = ''
-							this.form.settle_address = ''
-							return
-						} 
-					} 
-					this.form.delivery_place = this.panRes.list.delivery_place1
-					this.form.settle_address = this.panRes.list.delivery_address
-				}else { 
-					if(this.order.delivery_place == this.panRes.list.delivery_place1
-						&& this.order.settle_address == this.panRes.list.delivery_address) {
+			['form.settle_mode']: {
+				immediate: true,
+				handler(n, o) {
+					// console.log(this.type, this.ordertype, n, this.order.delivery_place)
+					  
+					this.pay_option1_radios.some(ele => {
+						if(ele.value == 'COD') {
+							ele.disabled = n == 'B'? true : false
+							return true
+						}
+						return false
+					})
+					if(this.form.pay_option1 == 'COD') this.form.pay_option1 = 'D_P'
+						
+					if(this.type == 'add') {
 						if(this.ordertype == 'B') {
 							if(n == 'S') {
 								this.form.delivery_place = ''
@@ -522,12 +524,31 @@
 								return
 							} 
 						} 
-					}else {
+						this.form.delivery_place = this.panRes.list.delivery_place1
+						this.form.settle_address = this.panRes.list.delivery_address
+					}else { 
+						if(this.order.delivery_place == this.panRes.list.delivery_place1
+							&& this.order.settle_address == this.panRes.list.delivery_address) {
+							if(this.ordertype == 'B') {
+								if(n == 'S') {
+									this.form.delivery_place = ''
+									this.form.settle_address = ''
+									return
+								} 
+							}else {
+								if(n == 'B') {
+									this.form.delivery_place = ''
+									this.form.settle_address = ''
+									return
+								} 
+							} 
+						}else {
+							
+							this.form.delivery_place = this.order.delivery_place
+							this.form.settle_address = this.order.settle_address 
+						}
 						
-						this.form.delivery_place = this.order.delivery_place
-						this.form.settle_address = this.order.settle_address 
 					}
-					
 				}
 			}, 
 			['form.amount'](n, o) {
@@ -563,6 +584,14 @@
 			}, 
 			async init() {
 				this.getAddressArea()
+				if(this.ordertype == 'B') {
+					const res = await this.$api.order_query_amount_active({
+						params: {
+							 source_id: this.id
+						}
+					})
+					this.left_amount = res.list?.left_amount
+				}
 				if(this.type == 'add') {
 					uni.setNavigationBarTitle({
 						title: '创建订单'
@@ -595,13 +624,7 @@
 					await this.getOrder()
 					
 				}
-				this.pay_option1_radios.some(ele => {
-					if(ele.value == 'COD') {
-						ele.disabled = this.panRes.list.settle_mode == 'B'? true : false
-						return true
-					}
-					return false
-				})
+				
 				this.pageLoading = false
 				 // if(!this.sinoBillAccount) {
 					//  await this.getSinoBillAccount()

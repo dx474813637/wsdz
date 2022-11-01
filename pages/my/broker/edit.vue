@@ -765,8 +765,11 @@
 				return this.radiolist_mdu.filter(ele => ele.show.includes(this.pan))
 			},
 			radiolist_settle_mode_filter() {
-				return this.radiolist_settle_mode.filter(ele => ele.show.includes(this.pan))
-			}
+				return this.radiolist_settle_mode.filter(ele => {
+					ele.disabled = ele.value != 'B' && this.model.trade_mode == '2' && this.model.trade_type == '2' ? true : false
+					return ele.show.includes(this.pan)
+				})
+			}, 
 		},
 		async onLoad(options) {
 			this.model.post_type = String(this.auth)
@@ -791,6 +794,7 @@
 					this.model.name = data.name
 					this.model.order_type = data.order_type
 					this.model.trade_type = data.trade_type
+					this.model.trade_mode = data.trade_mode
 					this.model.price = data.price
 					this.model.dprice = data.dprice
 					this.model.amount = data.amount
@@ -807,6 +811,7 @@
 					this.model.settle_month_label = this.settleMonth[0].filter(ele => ele.value == data.settle_month)[0]?.label
 					this.model.settle_date = data.settle_date
 					this.model.settle_date_label = this.settleDate[0].filter(ele => ele.value == data.settle_date)[0]?.label
+					this.model.settle_mode = data.settle_mode
 					this.model.delivery_place = data.delivery_place
 					if(this.pan == 's') {
 						this.model.remark = data.remark
@@ -842,7 +847,11 @@
 					}
 				})
 			},
-			['model.trade_type'](n) {
+			['model.trade_type'](n) { 
+				if(n == '1') {
+					this.model.order_type = '2'
+					this.model.trade_mode = '0'
+				}
 				this.$nextTick(() => {
 					this.$refs.from.validateField('express_time')
 				})

@@ -272,11 +272,21 @@
 				
 			},
 			async handleChangeStatus({state, id}) {
-				const res = await this.$api[this.pan == 's'? 'ableSell' : 'ableBuy']({params: {id, state}})
+				const res = await this.$api[this.pan == 's'? 'ableSell' : 'ableBuy']({params: {id, state}}) 
 				if(res.code == 1) {
 					const index = this.indexList.findIndex(ele => ele.id == id)
+					let yuan = this.indexList[index].state
 					this.indexList[index].state = state
-					
+					if(res.acode == 2) {
+						uni.showToast({
+							title: res.msg,
+							icon: 'none'
+						})
+						this.$nextTick(() => {
+							this.indexList[index].state = yuan
+						})
+						
+					}
 				}
 			},
 			async handleResubmit({data}) {

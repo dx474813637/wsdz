@@ -13,6 +13,7 @@ let state = {
 		wode: {},
 		login: 0,
 		auth: 0,
+		dingyue: {},
 		bd: 1,
 		sh: 1, //接口接收隐藏一些结构用
 		ppiCate: [],
@@ -59,6 +60,9 @@ let state = {
 		setAuth(state, data) {
 			state.auth = data;
 		},
+		setDingyue(state, data) {
+			state.dingyue = data;
+		},
 		setSh(state, data) {
 			state.sh = data;
 		},
@@ -102,6 +106,7 @@ let state = {
 			state.bd = 1
 			state.auth = 0
 			state.myCpy = {}
+			state.dingyue = {}
 			uni.setStorageSync('myCpy', {}) 
 			uni.setStorageSync('WebSocketInfo', {
 				...uni.getStorageSync('WebSocketInfo'),
@@ -111,7 +116,7 @@ let state = {
 			state.login = 0
 			state.myProduct = []
 			state.newMsg = 0
-		}
+		},
 	},
 	actions = {
 		async getCompanyProduct({commit, state}, data={}) {
@@ -216,7 +221,20 @@ let state = {
 					  }
 					});
 			  });
-		},
+		}, 
+		async sendDingyue() {
+			wx.getSetting({
+				withSubscriptions: true,
+				success: async res => {
+					console.log(res)
+					const r = await this._vm.$api.get_tmp_id_time({
+						params: {
+							str: JSON.stringify(res)
+						}
+					});
+				}
+			})
+		}
 	}
 export default {
 	namespaced: true,

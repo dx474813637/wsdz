@@ -138,5 +138,13 @@ export const guanzhu = (data) => http.get('guanzhu', data)
 
 // 积分 我的积分  参数p zt zt不传或0  全部  zt=1 获取积分记录 zt=2 使用积分记录
 export const my_score = (data) => http.get('my_score', data) 
-// 积分 我的积分  参数p zt zt不传或0  全部  zt=1 获取积分记录 zt=2 使用积分记录
+// 指南
 export const zhinan = (data) => http.get('zhinan', data) 
+
+
+//  订阅模板 type=0默认订阅  1订单状态订阅
+export const tmp_id_list = (data) => http.get('tmp_id_list', data) 
+//  订阅成功后把返回的TEMPLATE_ID 已json格式  提交到str
+export const tmp_id_back = (data) => http.get('tmp_id_back', data) 
+// wx.getSetting把始终订阅的数据 json格式 提交到str
+export const get_tmp_id_time = (data) => http.get('get_tmp_id_time', data) 

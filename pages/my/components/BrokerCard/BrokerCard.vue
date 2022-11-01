@@ -147,6 +147,7 @@
 			status: {
 				immediate: true,
 				handler(flag) {
+					console.log(flag)
 					if(flag == '1') this.switch_status = true;
 					else this.switch_status = false;
 					this.loading = false;
