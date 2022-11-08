@@ -65,7 +65,7 @@
 							></u--input>
 						</u-form-item>
 						<u-form-item
-							label="单位"
+							label="计量单位"
 							prop="unit"
 							ref="unit"
 							required

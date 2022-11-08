@@ -68,7 +68,7 @@ export const sino_fund_account_bank = (data) => http.get('sino_fund_account_bank
 // sino_fund_account_check 绑定银行卡-校验（认证）
 	// 绑定ID： id
 	// 鉴权验证金额： amt * 企业必填 鉴权有效时间是48小时
-	// 鉴权验证码： code * 如果未收到鉴权验证码，请取消该鉴权任务，重新发起绑定
+	// 鉴权序号： code * 如果未收到鉴权序号，请取消该鉴权任务，重新发起绑定
 export const sino_fund_account_check = (data) => http.get('sino_fund_account_check', data)
 
 // sino_fund_account_check_captcha 绑定银行卡-重新获取短信验证码（个人使用）绑定ID：id

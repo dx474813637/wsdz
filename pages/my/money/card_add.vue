@@ -101,7 +101,7 @@
 						placeholder="请输入该卡在银行预留的手机号"
 						clearable
 					></u--input>
-					<view class="u-p-t-20 text-light2">手机号码必须与银行预留手机号一致，绑定后您的资金账户手机号码也会变成该手机号码</view>
+					<!-- <view class="u-p-t-20 text-light2">手机号码必须与银行预留手机号一致，绑定后您的资金账户手机号码也会变成该手机号码</view> -->
 				</view>
 			</u-form-item>
 			
@@ -168,14 +168,14 @@
 						<view>
 							<u--input
 								v-model="model_yanzheng.amt" 
-								placeholder="鉴权验证金额"
+								placeholder="鉴权验证金额（银行卡内查询）"
 								clearable
 							></u--input>
 							<view class="u-font-28 u-info u-m-t-10">鉴权有效时间是48小时</view>
 						</view>
 					</u-form-item>
 					<u-form-item
-						label="鉴权验证码"
+						label="鉴权序号"
 						prop="code"
 						ref="code"
 						required 
@@ -183,11 +183,11 @@
 						<view>
 							<u--input
 								v-model="model_yanzheng.code" 
-								placeholder="鉴权验证码"
+								placeholder="鉴权序号（手机短信）"
 								clearable
 							></u--input>
 							<view class="u-font-28 u-m-t-10">
-								<text class="u-info">如长时间未收到鉴权验证码，可点击取消该鉴权任务，重新发起绑定</text>
+								<text class="u-info">如长时间未收到鉴权序号，可点击取消该鉴权任务，重新发起绑定</text>
 								<text class="text-error u-m-l-10" @click="check_cancel">点我取消鉴权</text>
 							</view>
 						</view>
@@ -286,7 +286,7 @@
 					code: {
 						type: 'string',
 						required: true,
-						message: '请填写鉴权验证码',
+						message: '请填写鉴权序号',
 						trigger: ['blur', 'change']
 					},
 				}

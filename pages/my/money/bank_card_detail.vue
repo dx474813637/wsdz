@@ -114,7 +114,7 @@
 						</view>
 					</u-form-item>
 					<u-form-item
-						label="鉴权验证码"
+						label="鉴权序号"
 						prop="code"
 						ref="code"
 						required 
@@ -122,11 +122,11 @@
 						<view>
 							<u--input
 								v-model="model_yanzheng.code" 
-								placeholder="鉴权验证码"
+								placeholder="鉴权序号"
 								clearable
 							></u--input>
 							<view class="u-font-28 u-m-t-10">
-								<text class="u-info">如长时间未收到鉴权验证码，可点击取消该鉴权任务，重新发起绑定</text>
+								<text class="u-info">如长时间未收到鉴权序号，可点击取消该鉴权任务，重新发起绑定</text>
 								<text class="text-error u-m-l-10" @click="check_cancel">点我取消鉴权</text>
 							</view>
 						</view>
@@ -163,7 +163,7 @@
 					code: {
 						type: 'string',
 						required: true,
-						message: '请填写鉴权验证码',
+						message: '请填写鉴权序号',
 						trigger: ['blur', 'change']
 					},
 				}
