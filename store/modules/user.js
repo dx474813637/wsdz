@@ -28,7 +28,11 @@ let state = {
 		newMsg: 0,
 		tips: {},
 		wode_guide: {},
-		maxSize: 1000000
+		maxSize: 1000000,
+		page: {
+			route: '/pages/index/index',
+			options: {}
+		}
 	},
 	getters = {
 	},
@@ -101,6 +105,10 @@ let state = {
 		},
 		setWode(state, data) {
 			state.wode = data;
+		},
+		setPage(state, data) { 
+			console.log('store', data)
+			state.page = data;
 		},
 		clearLogout(state, data) {
 			state.bd = 1

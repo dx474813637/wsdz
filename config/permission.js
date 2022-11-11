@@ -149,7 +149,14 @@ export default async function(vm) {
 				}
 			}
 		}
-        
+        let paramsObj = {}
+        e.url.split('?')[1]?.split('&').forEach(item => {
+        	paramsObj[item.split('=')[0]] = item.split('=')[1]
+        })
+        store.commit('user/setPage', {
+			route: uni.$u.page(),
+			options: paramsObj
+		})  
         return e
       },
       fail(err) { // 失败回调拦截

@@ -24,7 +24,7 @@
 					<template v-if="!myCpy.hasOwnProperty('state')">
 						<u--input
 							v-model="userType"
-							disabled
+							disabled 
 							disabledColor="#ffffff"
 							placeholder="请选择用户类型"
 							border="none"
