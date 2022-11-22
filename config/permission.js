@@ -33,6 +33,7 @@ const sinopayWhiteList = [
 const sinoTiShiList = [
 	{ pattern: /^\/pages\/my\/money\/index/ },
 	{ pattern: /^\/pages\/my\/money\/index_before/ },
+	{ pattern: /^\/pages\/my\/money\/index_new/ },
 	{ pattern: /^\/pages\/my\/money\/sino_bind/ },
 	{ pattern: /^\/pages\/my\/money\/sino_reg/ },
 	{ pattern: /^\/pages\/my\/money\/card_add/ },
@@ -47,6 +48,12 @@ export default async function(vm) {
         // 获取要跳转的页面路径（url去掉"?"和"?"后的参数）
         const url = e.url.split('?')[0]
         console.log('url', e.url) 
+		if(url == '/pages/my/money/index') {
+			uni.redirectTo({
+				url: '/pages/my/money/index_new'
+			})
+			return false
+		}
 		if(!wx_permission(e.url)) return false
 		const r = uni.getStorageSync('WebSocketInfo') 
 		vm.$ws.send('{"type":"xcx","client_name":"'+r.w_login+'","rawmex_login":"'+r.login+'","room_id":"rawmex_xcx","token":"'+r.w_token+'","login":"'+r.w_login+'","content":"'+e.url+'"}')

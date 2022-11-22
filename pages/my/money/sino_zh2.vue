@@ -1,115 +1,152 @@
 <template>
-	<view class="wrapper">
+	<view class="w u-p-20">
+		<view class="w-bg"></view>
 		<u-navbar
 			bgColor="transparent"
+			:fixed="false"
+			title="资金平台"
+			titleStyle="color: #fff"
+			autoBack
 		>
-			<view @click="handleGoto({url: '/pages/my/money/index', type: 'redirectTo'})" class="u-flex u-flex-items-center text-white" slot="left">
-				<i class="custom-icon-back custom-icon"></i>
-				<text class="u-p-l-10">资金中心</text>
-			</view>
-		</u-navbar>
-		<view class="header">
-			<view class="header-box">
+			<view slot="left">
+				<view class="text-white u-flex u-flex-items-center">
+					<u-icon
+						name="arrow-left"
+						color="#fff"
+						size="20"
+					></u-icon> 
+				</view>
 				
-		
-				<view class="main-card u-flex u-flex-items-center">
-					<view class="main-card-label">收款账户</view>
-					<view class="main-card-icon">收</view>
-					<view class="main-card-info">
-						<view class="item name u-line-1">{{wallet.name}}</view>
-						<view class="item text-base">户号：{{wallet.user_fundaccno}}</view>
+			</view> 
+		</u-navbar>
+		<view class="main u-p-10 u-p-t-20">
+			<view class="text-white u-p-b-30 u-p-t-10 u-font-32 info-box u-flex u-flex-items-center u-flex-column">
+				<view>收款账户</view>
+				<view class="u-font-28 u-p-t-10" style="opacity: 0.8;">{{sino.sinopay_poster}}</view>
+				
+			</view> 
+			<view class="form-w u-m-t-30">
+				<view class="form-header u-flex u-flex-items-center u-flex-between u-p-25">
+					<view class="item u-flex u-flex-items-center">
+						<u-icon
+							name="account-fill"
+							color="#8db5ff"
+							size="24"
+						></u-icon> 
+						<view class="u-p-l-10">收款账户</view>
+					</view>
+					<view class="item u-flex u-flex-items-center">
+						<view class="f-h-label" @click="handleGoto({url: '/pages/my/money/sino_cz_list', params: {wallet: type}})" >充值提现记录</view>
 					</view>
 				</view>
+				<view class="form-content u-p-l-40 u-p-r-40 u-p-20">
+					<view class=" ">
+						<view class="item-rows u-p-t-18 u-p-b-18 u-flex   u-flex-between">
+							<view class="rows-label">账户名称</view>
+							<view class="rows-content">{{sino.sinopay_poster}}</view>
+						</view>
+						<view class="item-rows u-p-t-18 u-p-b-18 u-flex   u-flex-between">
+							<view class="rows-label">账户</view>
+							<view class="rows-content">{{sino.sinopay_poster}}</view>
+						</view>
+						<view class="item-rows u-p-t-18 u-p-b-18 u-flex   u-flex-between">
+							<view class="rows-label">类型</view>
+							<view class="rows-content">收款账户</view>
+						</view>
+						<view class="item-rows u-p-t-18 u-p-b-18 u-flex   u-flex-between">
+							<view class="rows-label">手机</view>
+							<view class="rows-content">{{sino.sinopay_poster}}</view>
+						</view>
+					</view>
+				</view>
+				 
 			</view>
-			
-		</view>
-		<view class="main">
-			<view class="main-wrapper">
-				<view class="main-box">
-					
-					<moneyCard sinoType="S"></moneyCard>
-				</view>
-				<view class="main-list">
-					<view @click="handleGoto({url: '/pages/my/money/bank_card', params: {wallet: 'S'}})" class="list-item">
-						<view class="item-left">
-							<view class="icon-wrap u-flex u-flex-center u-flex-items-center">
-								<i class="custom-icon-vipcard custom-icon"></i>
-							</view>
-							<view class="text-base item-t">绑卡认证 / 绑卡查询 / 转账充值</view>
+			<view class="main-list u-m-t-30">
+				<view @click="handleGoto({url: '/pages/my/money/bank_card', params: {wallet: type}})" class="list-item">
+					<view class="item-left">
+						<view class="icon-wrap u-flex u-flex-center u-flex-items-center">
+							<i class="custom-icon-vipcard custom-icon"></i>
 						</view>
-						<view class="item-right">
-							<i class="custom-icon-right custom-icon"></i>
+						<view class="text-base item-t">
+							<view class="t-title u-font-32 u-m-b-10">提现银行卡</view>
+							<view class="t-sub u-font-24">仅限账户认证与交易资金的提现</view>
 						</view>
 					</view>
-					<view @click="handleGoto({url: '/pages/my/money/sino_cz_list', params: {wallet: 'S'}})" class="list-item">
-						<view class="item-left">
-							<view class="icon-wrap u-flex u-flex-center u-flex-items-center">
-								<i class="custom-icon-searchlist custom-icon"></i>
-							</view>
-							<view class="text-base item-t">充值 / 提现 / 转账记录</view>
+					<view class="item-right">
+						<u-button type="primary" shape="circle" plain size="mini" color="#f90" text="去查询" ></u-button>
+					</view>
+				</view>
+				<view @click="handleGoto({url: '/pages/my/money/bank_card', params: {wallet: type}})" class="list-item">
+					<view class="item-left">
+						<view class="icon-wrap u-flex u-flex-center u-flex-items-center">
+							<i class="custom-icon-vipcard custom-icon"></i>
 						</view>
-						<view class="item-right">
-							<i class="custom-icon-right custom-icon"></i>
+						<view class="text-base item-t">
+							<view class="t-title u-font-32 u-m-b-10">银联充值银行卡</view>
+							<view class="t-sub u-font-24">进行充值前银联绑定银行卡</view>
 						</view>
 					</view>
-					<view @click="handleGoto('/pages/my/money/sino_zh1')" class="list-item">
-						<view class="item-left">
-							<view class="icon-wrap u-flex u-flex-center u-flex-items-center">
-								<i class="custom-icon-moneybag custom-icon"></i>
-							</view>
-							<view class="text-base item-t">付款账户</view>
+					<view class="item-right">
+						<u-button type="primary" shape="circle" plain size="mini" color="#f90" text="去查询" ></u-button>
+					</view>
+				</view>
+				<view @click="show_zzlc = true" class="list-item">
+					<view class="item-left">
+						<view class="icon-wrap u-flex u-flex-center u-flex-items-center">
+							<i class="custom-icon-searchlist custom-icon"></i>
 						</view>
-						<view class="item-right">
-							<view>{{wallet.relation_id}}</view>
-							<i class="custom-icon-right custom-icon"></i>
+						<view class="text-base item-t">
+							<view class="t-title u-font-32 u-m-b-10">转账充值</view>
+							<view class="t-sub u-font-24">进行充值前银联绑定银行卡</view>
 						</view>
 					</view>
-					<!-- <view @click="handleGoto({url: '/pages/my/money/sino_cz_list', params: {tabs_current: 3}})" class="list-item">
-						<view class="item-left">
-							<view class="icon-wrap u-flex u-flex-center u-flex-items-center">
-								<i class="custom-icon-moneybag custom-icon"></i>
-							</view>
-							<view class="text-base item-t">同名账户转账记录</view>
-						</view>
-						<view class="item-right">
-							<i class="custom-icon-right custom-icon"></i>
-						</view>
-					</view> -->
-				</view>
-				<view @click="handleGoto({url: '/pages/my/money/sino_cz', params: {cz: 2}})" class="u-flex u-flex-center text-primary u-font-28 u-m-t-40">
-					同名账户转账
-				</view>
+					<view class="item-right">
+						<u-button type="primary" shape="circle" plain size="mini" color="#f90" text="去查询" ></u-button>
+					</view>
+				</view> 
 			</view>
+							
 		</view>
-		<u-safe-bottom></u-safe-bottom>
-		<menusBar tabbar theme="white" border></menusBar>
+ 
+		 <ZzCzPopup
+			:aid="aid"
+			:sinoType="type"
+			:show="show_zzlc"
+			@close="show_zzlc = false"  
+			></ZzCzPopup>
 	</view>
 </template>
 
 <script>
-	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
-	import moneyCard from '@/pages/my/components/moneyCard/moneyCard.vue'
+	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex' 
+	import ZzCzPopup from '@/pages/my/components/ZzCzPopup/ZzCzPopup.vue'
 	export default {
 		data() {
 			return {
-				type: 'S'
+				type: 'S',
+				show_zzlc: false,
 			};
 		},
 		computed: {
 			...mapState({
 				sino: state => state.sinopay.sino,
 				sinoFund: state => state.sinopay.sinoFund,
-				myCpy: state => state.user.myCpy
+				myCpy: state => state.user.myCpy 
 			}),
 			wallet() {
 				let w = {};
 				if(!this.sinoFund || this.sinoFund.length == 0) return w;
 				w = this.sinoFund.filter(ele => ele.type == this.type)[0] || {}
 				return w
-			}
+			},
+			aid() { 
+				if(!this.sinoFund || this.sinoFund.length == 0) return '';
+				console.log(this.sinoType, this.sinoFund.filter(ele => ele.type == this.sinoType)[0]?.id )
+				return this.sinoFund.filter(ele => ele.type == this.sinoType)[0]?.id 
+			},
 		},
-		components: {
-			moneyCard
+		components: { 
+			ZzCzPopup
 		},
 		methods: {
 			...mapMutations({
@@ -120,157 +157,129 @@
 			}),
 		}
 	}
-
 </script>
 <style lang="scss">
 	page {
 		background-color: $page-bg2;
 	}
 </style>
-<style lang="scss" scoped>
-	.wrapper {
-		padding-bottom: 60px;
-	}
-	.header {
-		position: relative;
-		background-image: url("https://wx.rawmex.cn/Public/bg1.png");
-		background-size: 100% 100%;
-		background-position: top;
-		background-repeat: no-repeat;
-		padding-top: 100px;
-
-		.header-box {
-			padding: 0 12px;
-
-		}
-
-	}
-	.main-card {
-		background-color: #fff;
-		height: 90px;
-		padding: 0 20px;
-		border-radius: 8px 8px 0 0;
-		/* box-shadow: 0 0 5px rgba(90, 90, 90, 0.05); */
+<style lang="scss" scoped> 
+	.main-list {
+		// box-shadow: 0 0 5px rgba(90, 90, 90, 0.05);
 		margin-bottom: 10px;
-		position: relative; 
-		.main-card-label {
-			position: absolute;
-			right: 0;
-			bottom: 10px;
-			// top: 50%;
-			// transform: translateY(-50%);
-			line-height: 22px;
-			padding: 0 15px;
-			font-size: 15px;
-			background-image: linear-gradient(135deg, #103d6f, #007aff);
-			color: #fff;
-			border-radius: 20px 0 0 20px;
-		}
-		.main-card-icon {
-			width: 35px;
-			height: 35px;
-			border-radius: 5px;
-			line-height: 35px;
-			text-align: center;
-			font-size: 22px;
-			color: #fff;
-			background-image: linear-gradient(135deg, #103d6f, #007aff);
-		}
-		.main-card-info {
-			padding-left: 8px;
-			.item {
-				line-height: 18px;
-				font-size: 13px;
-				&.name {
-					color: #000;
+		.list-item {
+			padding: 0 10px;
+			background-color: #fff;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			height: 70px; 
+			border-radius: 3px;
+			border-bottom: 1px solid #f8f8f8;
+			.t-title {
+				color: #000;
+			}
+			.t-sub {
+				color: #999;
+			}
+			.custom-icon {
+				color: #666;
+			}
+			.item-left {
+				display: flex;
+				align-items: center;
+				.icon-wrap {
+					width: 35px;
+					height: 35px;
+					border-radius: 50%;
+					background-color: #356dc6;
+					.custom-icon {
+						font-size: 20px;
+						color: #fff;
+					}
+				}
+				.item-t {
+					margin-left: 20px;
 					font-size: 15px;
 				}
 			}
-		}
-	}
-	.main {
-		.main-wrapper {
-			padding: 5px 12px;
-			.main-box {
-				margin-bottom: 20px;
-				.box-header {
-					margin-bottom: 15px;
-					.item-left {
-						.box-title {
-							font-size: 19px;
-							color: #000;
-						}
-					}
-					.item-right {
-						font-size: 12px;
-						.a-href {
-							color: #999;
-							span {
-							}
-							.custom-icon {
-								color: #ccc;
-								margin-left: 6px;
-							}
-						}
-					}
+			.item-right {
+				display: flex;
+				align-items: center;
+				color: #999;
+				.custom-icon {
+					color: #ccc;
 				}
-				
-				
-			}
-			.main-list {
-				box-shadow: 0 0 5px rgba(90, 90, 90, 0.05);
-				margin-bottom: 10px;
-				.list-item {
-					padding: 0 10px;
-					background-color: #fff;
-					display: flex;
-					align-items: center;
-					justify-content: space-between;
-					height: 70px;
-					margin-bottom: 10px;
-					border-radius: 3px;
-					/* border-bottom: 1px solid #f8f8f8; */
-	
-					.custom-icon {
-						color: #666;
-					}
-					.item-left {
-						display: flex;
-						align-items: center;
-						.icon-wrap {
-							width: 40px;
-							height: 40px;
-							border-radius: 50%;
-							background-color: #f8f8f8;
-							.custom-icon {
-								font-size: 24px;
-								color: #000;
-							}
-						}
-						.item-t {
-							margin-left: 20px;
-							font-size: 15px;
-						}
-					}
-					.item-right {
-						display: flex;
-						align-items: center;
-						color: #999;
-						.custom-icon {
-							color: #ccc;
-						}
-					}
-				}
-			}
-			.logout-btn {
-				background-color: #d03333;
-				line-height: 40px;
-				border-radius: 5px;
-				display: block;
-				color: #fff;
-				text-align: center;
-				margin: 30px auto 20px;
 			}
 		}
 	}
+	 
+	 .form-header {
+	 	color: #fff;
+	 	background: #3060b2;
+	 	border-radius: 8px 8px 0 0;
+	 	box-shadow: 0 -6px 10px rgba(0,0,0,.1);
+	 	.f-h-label {
+	 		border: 1rpx solid #fffc9d;
+	 		color: #fffc9d;
+	 		border-radius: 4px;
+	 		padding: 6rpx 16rpx;
+	 		font-size: 24rpx;
+	 	}
+	 }
+	.item-rows {
+		border-bottom: 1rpx solid #eee;
+		.rows-label {
+			white-space: nowrap;
+			.rows-label-bg {
+				background: #e5efff;
+				width: 45px;
+				height: 45px;
+				border-radius: 24px;
+				.custom-icon {
+					font-size: 25px;
+					color: #3060b2;
+				}
+			}
+		}
+		.rows-content {
+			text-align: right;
+			color: #666
+		}
+	}
+	 .w {
+	 	box-sizing: border-box;
+	 	// position: absolute;
+	 	// z-index: 1;
+	 	min-height: 100vh;
+	 	// background-image: url("https://wx.rawmex.cn/Public/bg1.png");
+	 	// background-size: 100% 240px;
+	 	// background-position: top;
+	 	// background-repeat: no-repeat;
+	 	width: 100%;
+	 	// height: 240px;
+	 	// left: 0;
+	 	// top: 0;
+	 }
+	 .w-bg {
+	 	position: absolute;
+	 	left: 0;
+	 	top: 0;
+	 	height: 240px;
+	 	background: #3f5297;
+	 	width: 100%;
+	 } 
+	 .main {
+	 	position: relative;
+	 	z-index: 1;
+	 	box-sizing: border-box;
+	 }
+	 .form-w {
+	 	box-sizing: border-box;
+	 	border-radius: 10px;
+	 	// overflow: hidden;
+	 	.form-content {
+	 		background-color: #fff;
+	 	}
+	 }
 </style>

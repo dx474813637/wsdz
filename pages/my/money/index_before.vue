@@ -163,13 +163,13 @@
 		.rows-label {
 			white-space: nowrap;
 			.rows-label-bg {
-				background: #f9f9f9;
+				background: #e5efff;
 				width: 45px;
 				height: 45px;
 				border-radius: 24px;
 				.custom-icon {
 					font-size: 25px;
-					color: #555;
+					color: #3060b2;
 				}
 			}
 		}

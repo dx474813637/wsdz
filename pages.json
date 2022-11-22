@@ -735,6 +735,15 @@
 					"enablePullDownRefresh": false
 				}
 
+			}, {
+				"path": "money/index_new",
+				"style": {
+					"navigationStyle": "custom",
+					"navigationBarTextStyle": "white",
+					"navigationBarTitleText": "",
+					"enablePullDownRefresh": false
+				}
+
 			}
 		]
 	}, {
