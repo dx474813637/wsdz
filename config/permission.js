@@ -30,6 +30,14 @@ const sinopayWhiteList = [
 	{ pattern: /^\/pages\/my\/money\/sino_info/ },
 ]
 
+const sinoTiShiList = [
+	{ pattern: /^\/pages\/my\/money\/index/ },
+	{ pattern: /^\/pages\/my\/money\/index_before/ },
+	{ pattern: /^\/pages\/my\/money\/sino_bind/ },
+	{ pattern: /^\/pages\/my\/money\/sino_reg/ },
+	{ pattern: /^\/pages\/my\/money\/card_add/ },
+]
+
 export default async function(vm) {
   const list = ['navigateTo', 'redirectTo', 'reLaunch', 'switchTab' ]
   // 用遍历的方式分别为,uni.navigateTo,uni.redirectTo,uni.reLaunch,uni.switchTab这4个路由方法添加拦截器
@@ -111,45 +119,82 @@ export default async function(vm) {
 			
         }
 		
-		if (sinopayWhiteList) {
-			//sinopay页面 
-			if(url.includes('/pages/my/money/')) { 
-				pass_sino = sinopayWhiteList.some((item) => {
-					if (typeof (item) === 'object' && item.pattern) {
-					  return item.pattern.test(url)
-					}
-					return url === item
-				  })
-				if (!pass_sino ) {
-					if(!store.state.sinopay.sino.hasOwnProperty('state')) {
-						uni.showLoading({
-							title: '正在获取资金账户'
-						})
-						try{
-							await store.dispatch('sinopay/getSinoAccount')
-						}catch(e){
-							uni.$u.toast(e)
-							console.error('getSinoAccount error: ', res)
-							return false
-						}
+		// if (sinopayWhiteList) {
+		// 	//sinopay页面 
+		// 	if(url.includes('/pages/my/money/')) { 
+		// 		pass_sino = sinopayWhiteList.some((item) => {
+		// 			if (typeof (item) === 'object' && item.pattern) {
+		// 			  return item.pattern.test(url)
+		// 			}
+		// 			return url === item
+		// 		  })
+		// 		if (!pass_sino ) {
+		// 			if(!store.state.sinopay.sino.hasOwnProperty('state')) {
+		// 				uni.showLoading({
+		// 					title: '正在获取资金账户'
+		// 				})
+		// 				try{
+		// 					await store.dispatch('sinopay/getSinoAccount')
+		// 				}catch(e){
+		// 					uni.$u.toast(e)
+		// 					console.error('getSinoAccount error: ', res)
+		// 					return false
+		// 				}
 						
-					}
-					if(store.state.sinopay.sino.state != 2 ) {
-						uni.reLaunch({
-							url: '/pages/my/money/index',
-							success: () => { 
-								// uni.showToast({
-								// 	title: '资金账户权限不足',
-								// 	icon: 'none'
-								// })
-							}
-						})
-						return false
-					}
-				}
+		// 			}
+		// 			if(store.state.sinopay.sino.state != 2 ) {
+		// 				uni.reLaunch({
+		// 					url: '/pages/my/money/index',
+		// 					success: () => { 
+		// 						// uni.showToast({
+		// 						// 	title: '资金账户权限不足',
+		// 						// 	icon: 'none'
+		// 						// })
+		// 					}
+		// 				})
+		// 				return false
+		// 			}
+		// 		}
+		// 	}
+		// }
+		
+        
+        if (sinoTiShiList) {
+        	//sinopay页面 
+        	if(url.includes('/pages/my/money/')) { 
+        		pass_sino = sinoTiShiList.some((item) => {
+        			if (typeof (item) === 'object' && item.pattern) {
+        			  return item.pattern.test(url)
+        			}
+        			return url === item
+        		  })
+        		if (pass_sino ) {
+        			try{
+        				await store.dispatch('sinopay/getSinoTishi')
+        			}catch(e){
+        				uni.$u.toast(e)
+        				console.error('getSinoTishi error: ', res)
+        				return false
+        			}
+        		}
+        	}
+        }
+		if(!store.state.sinopay.sino.hasOwnProperty('state')) {
+			uni.showLoading({
+				title: '正在获取资金账户'
+			})
+			try{
+				await store.dispatch('sinopay/getSinoAccount')
+			}catch(e){
+				uni.$u.toast(e)
+				console.error('getSinoAccount error: ', res)
+				return false
 			}
-		}
-        let paramsObj = {}
+			
+		} 
+		
+		//记录路径参数数据 底部菜单跳转判断买卖盘用
+		let paramsObj = {}
         e.url.split('?')[1]?.split('&').forEach(item => {
         	paramsObj[item.split('=')[0]] = item.split('=')[1]
         })

@@ -1,18 +1,28 @@
 
 let state = {
-		sino: uni.getStorageSync('sino') || {},
+		sino: uni.getStorageSync('sino') || {
+			sinopay_poster: 'ceshi'
+		},
 		sinoFund: [],
 		sinoFundLoading: false,
 		sinoBillAccount: false,
 		sinoBillLoading: false,
 		sinoBillAccountList: [],
 		sinoBillListLoading: false,
+		tishi: {
+			list: [],
+			other: {}
+		},
+		sinoAccOpenObj: uni.getStorageSync('sinoAccOpenObj') || {},
 	},
 	getters = {
-		
+		sinoAccOpen(state) { 
+			return state.sinoAccOpenObj[state.sino.sinopay_poster] || 0
+		}
 	},
 	mutations = {
 		setSinoAccount(state, data) {
+			console.log(data)
 			state.sino = data
 			uni.setStorageSync('sino', data)
 		},
@@ -34,6 +44,17 @@ let state = {
 		setSinoBillAccountList(state, data) {
 			state.sinoBillAccountList = data
 		},
+		setTishi(state, data) {
+			state.tishi.list = data.list
+			state.tishi.other = data.other
+		},
+		setSinoAccOpen(state, data) {
+			state.sinoAccOpenObj = {
+				...state.sinoAccOpenObj, 
+				[`${state.sino.sinopay_poster}`]: data,
+			} 
+			uni.setStorageSync('sinoAccOpenObj', state.sinoAccOpenObj)
+		},
 		clearSino(state, data) {
 			state.sinoFund = []
 			state.sino = {}
@@ -45,6 +66,12 @@ let state = {
 			const res = await this._vm.$api.sino_account();
 			if(res.code == 1) {
 				commit('setSinoAccount', res.list)
+			}
+		},
+		async getSinoTishi({commit, state}, data={}) {
+			const res = await this._vm.$api.sinopay_tishi();
+			if(res.code == 1) {
+				commit('setTishi', {list: res.list, other: res.other})
 			}
 		},
 		async getSinoFundAccount({commit, state}, data={}) {

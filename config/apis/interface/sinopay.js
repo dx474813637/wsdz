@@ -1,5 +1,7 @@
 const http = uni.$u.http
 
+// sino_account  当前支付账号
+export const sinopay_tishi = (data) => http.get('sinopay_tishi', data)
 
 // sino_account  当前支付账号
 export const sino_account = (data) => http.get('sino_account', data)

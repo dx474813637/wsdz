@@ -179,26 +179,22 @@
 				"enablePullDownRefresh": false
 			}
 
+		}, {
+			"path": "pages/index/zhinan/zhinan",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/index/subscribe/subscribe",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
 		}
-	    ,{
-            "path" : "pages/index/zhinan/zhinan",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-	    ,{
-            "path" : "pages/index/subscribe/subscribe",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+	],
 	"subPackages": [{
 		"root": "pages/baojia",
 		"pages": [{
@@ -519,6 +515,8 @@
 				"path": "money/card_add",
 				"style": {
 					"navigationBarTitleText": "银行卡绑定",
+					"navigationStyle": "custom",
+					"navigationBarTextStyle": "white",
 					"enablePullDownRefresh": false
 				}
 
@@ -721,17 +719,24 @@
 					"enablePullDownRefresh": false
 				}
 
+			}, {
+				"path": "broker/busy_score",
+				"style": {
+					"navigationBarTitleText": "积分查询",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "money/index_before",
+				"style": {
+					"navigationStyle": "custom",
+					"navigationBarTextStyle": "white",
+					"navigationBarTitleText": "",
+					"enablePullDownRefresh": false
+				}
+
 			}
-		    ,{
-                    "path" : "broker/busy_score",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "积分查询",
-                    "enablePullDownRefresh": false
-                }
-                
-                }
-            ]
+		]
 	}, {
 		"root": "pages/more",
 		"pages": [{

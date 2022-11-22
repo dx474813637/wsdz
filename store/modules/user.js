@@ -107,7 +107,7 @@ let state = {
 			state.wode = data;
 		},
 		setPage(state, data) { 
-			console.log('store', data)
+			// console.log('store', data)
 			state.page = data;
 		},
 		clearLogout(state, data) {

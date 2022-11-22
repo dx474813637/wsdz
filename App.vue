@@ -39,6 +39,7 @@
 			}
 			
 			store.dispatch('user/wode', {bd: 1})
+			store.dispatch('sinopay/getSinoTishi')
 			routingIntercept(this)
 			
 		},

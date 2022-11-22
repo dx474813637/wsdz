@@ -1,133 +1,163 @@
 <template>
-	<view class="u-p-20 u-p-l-40">
-		
-		<u--form
-			:model="model"
-			:rules="rules"
-			ref="from"
-			labelWidth="100%"
-			labelPosition="top"
-			:labelStyle="{color: '#777'}"
+	<view class="w u-p-20">
+		<view class="w-bg"></view>
+		<u-navbar
+			bgColor="transparent"
+			:fixed="false"
+			:title="tishi.list[3].title"
+			titleStyle="color: #fff"
+			autoBack
 		>
-			<u-form-item
-				label="账户名"
-				prop="name"
-				ref="name"
-			>
-				<u--input
-					:value="model.name"
-					readonly
-					border="none" 
-					clearable
-				></u--input>
-			</u-form-item>
-			<u-form-item
-				label="请输入卡号"
-				prop="bank_accno"
-				ref="bank_accno"
-				required
-			>
-				<!-- <view> -->
-					<u--input
-						v-model="model.bank_accno"
-						clearable
-						placeholder="请输入银行卡号"
-						border="bottom"
-					></u--input>
-					<!--
-						@change="$u.debounce(handleBankChange, 2500)" 
-					<view class="u-p-t-20 u-flex u-flex-items-center "
-						:class="{
-							'text-error': isbankInfo.status == 'error',
-							'text-light': isbankInfo.status != 'error'
-						}"
+			<view slot="left">
+				<view class="text-white u-flex u-flex-items-center">
+					<u-icon
+						name="arrow-left"
+						color="#fff"
+						size="20"
+					></u-icon> 
+				</view>
+				
+			</view> 
+		</u-navbar>
+		<view class="main u-p-10 u-p-t-20">
+			<view class="text-white u-p-b-30 u-p-t-10 u-font-32 info-box u-flex u-flex-items-center u-flex-column">
+				<view>{{tishi.list[3].info}}</view>
+				<view class="u-font-28 u-p-t-10" style="opacity: 0.8;">{{tishi.list[3].other}}</view>
+				
+			</view> 
+			<view class="form-w u-m-t-30"> 
+				<view class="form-content u-p-l-40 u-p-r-40 u-p-20">
+					<u--form
+						:model="model"
+						:rules="rules"
+						ref="from"
+						labelWidth="100%"
+						labelPosition="top"
+						:labelStyle="{color: '#777'}"
 					>
-						<image :src="isbankInfo.logo" mode="" style="width: 25px; height: 25px;"></image>
-						<text class="u-p-l-20" v-if="!bankLoading">{{isbankInfo.name}}</text>
-						<u-loading-icon mode="semicircle" size="20" v-else></u-loading-icon>
+						<u-form-item
+							label="账户名"
+							prop="name"
+							ref="name"
+						>
+							<u--input
+								:value="model.name"
+								readonly
+								border="none" 
+								clearable
+							></u--input>
+						</u-form-item>
+						<u-form-item
+							label="请输入卡号"
+							prop="bank_accno"
+							ref="bank_accno"
+							required
+						>
+							<!-- <view> -->
+								<u--input
+									v-model="model.bank_accno"
+									clearable
+									placeholder="请输入银行卡号"
+									border="bottom"
+								></u--input>
+								<!--
+									@change="$u.debounce(handleBankChange, 2500)" 
+								<view class="u-p-t-20 u-flex u-flex-items-center "
+									:class="{
+										'text-error': isbankInfo.status == 'error',
+										'text-light': isbankInfo.status != 'error'
+									}"
+								>
+									<image :src="isbankInfo.logo" mode="" style="width: 25px; height: 25px;"></image>
+									<text class="u-p-l-20" v-if="!bankLoading">{{isbankInfo.name}}</text>
+									<u-loading-icon mode="semicircle" size="20" v-else></u-loading-icon>
+								</view>
+							</view> -->
+							
+						</u-form-item>
+						<u-form-item
+							label="社会信用统一代码"
+							prop="card_id"
+							ref="card_id"
+							required
+						>
+							<u--input
+								v-model="model.card_id"
+								border="bottom"
+								placeholder="请输入社会信用统一代码"
+								clearable
+							></u--input>
+						</u-form-item>
+						<u-form-item
+							label="法人姓名"
+							prop="legal_name"
+							ref="legal_name"
+							required
+						>
+							<u--input
+								v-model="model.legal_name"
+								border="bottom"
+								placeholder="请输入法人姓名"
+								clearable
+							></u--input>
+						</u-form-item>
+						<u-form-item
+							label="法人身份证"
+							prop="lecerti_code"
+							ref="lecerti_code"
+							required
+						>
+							<u--input
+								v-model="model.lecerti_code"
+								border="bottom"
+								placeholder="请输入法人身份证"
+								clearable
+							></u--input>
+						</u-form-item>
+						<u-form-item
+							label="手机号"
+							prop="mobile"
+							ref="mobile"
+							required
+						>
+							<view class="">
+								<u--input
+									v-model="model.mobile"
+									border="bottom"
+									placeholder="请输入该卡在银行预留的手机号"
+									clearable
+								></u--input>
+								<!-- <view class="u-p-t-20 text-light2">手机号码必须与银行预留手机号一致，绑定后您的资金账户手机号码也会变成该手机号码</view> -->
+							</view>
+						</u-form-item>
+						
+						<u-form-item
+							label="开户行"
+							prop="bank_name"
+							ref="bank_name"
+							required
+						>
+							<view @click="show = true">
+								<u--input
+									:value="model.bank_name"
+									readonly
+									border="bottom"
+									suffixIcon="arrow-down"
+									suffixIconStyle="color: #909399"
+									placeholder="点击搜索开户行"
+									clearable
+								></u--input>
+							</view>
+							
+						</u-form-item>
+					</u--form>
+					
+					<view class="u-p-t-20 u-m-b-40">
+						<u-button type="primary" shape="circle" :customStyle="{backgroundImage: 'linear-gradient(to right,#6cb5fa, #4077f6)'}" @click="submit">{{tishi.list[3].button || '提交'}}</u-button>
 					</view>
-				</view> -->
-				
-			</u-form-item>
-			<u-form-item
-				label="社会信用统一代码"
-				prop="card_id"
-				ref="card_id"
-				required
-			>
-				<u--input
-					v-model="model.card_id"
-					border="bottom"
-					placeholder="请输入社会信用统一代码"
-					clearable
-				></u--input>
-			</u-form-item>
-			<u-form-item
-				label="法人姓名"
-				prop="legal_name"
-				ref="legal_name"
-				required
-			>
-				<u--input
-					v-model="model.legal_name"
-					border="bottom"
-					placeholder="请输入法人姓名"
-					clearable
-				></u--input>
-			</u-form-item>
-			<u-form-item
-				label="法人身份证"
-				prop="lecerti_code"
-				ref="lecerti_code"
-				required
-			>
-				<u--input
-					v-model="model.lecerti_code"
-					border="bottom"
-					placeholder="请输入法人身份证"
-					clearable
-				></u--input>
-			</u-form-item>
-			<u-form-item
-				label="手机号"
-				prop="mobile"
-				ref="mobile"
-				required
-			>
-				<view class="">
-					<u--input
-						v-model="model.mobile"
-						border="bottom"
-						placeholder="请输入该卡在银行预留的手机号"
-						clearable
-					></u--input>
-					<!-- <view class="u-p-t-20 text-light2">手机号码必须与银行预留手机号一致，绑定后您的资金账户手机号码也会变成该手机号码</view> -->
-				</view>
-			</u-form-item>
-			
-			<u-form-item
-				label="开户行"
-				prop="bank_name"
-				ref="bank_name"
-				required
-			>
-				<view @click="show = true">
-					<u--input
-						:value="model.bank_name"
-						readonly
-						border="bottom"
-						suffixIcon="arrow-down"
-						suffixIconStyle="color: #909399"
-						placeholder="点击搜索开户行"
-						clearable
-					></u--input>
 				</view>
 				
-			</u-form-item>
-		</u--form>
-		
-		<view class="u-p-t-20 u-m-b-40">
-			<u-button type="primary" @click="submit">提交表单</u-button>
+			</view>
 		</view>
 		
 		<menusPopupBank 
@@ -301,6 +331,7 @@
 				sino: state => state.sinopay.sino,
 				myCpy: state => state.user.myCpy,
 				sinoFund: state => state.sinopay.sinoFund,
+				tishi: state => state.sinopay.tishi,
 			}),
 			textObj() {
 				if(this.type == 'c') {
@@ -455,6 +486,49 @@
 			color: $u-primary;
 			font-size: 15px;
 			padding-top: 10px;
+		}
+	}
+	
+	page {
+		background-color: $page-bg2;
+	}
+</style>
+
+<style scoped lang="scss">
+	
+	.w {
+		box-sizing: border-box;
+		// position: absolute;
+		// z-index: 1;
+		min-height: 100vh;
+		// background-image: url("https://wx.rawmex.cn/Public/bg1.png");
+		// background-size: 100% 240px;
+		// background-position: top;
+		// background-repeat: no-repeat;
+		width: 100%;
+		// height: 240px;
+		// left: 0;
+		// top: 0;
+	}
+	.w-bg {
+		position: absolute;
+		left: 0;
+		top: 0;
+		height: 240px;
+		background: #3f5297;
+		width: 100%;
+	}
+	.main {
+		position: relative;
+		z-index: 1;
+		box-sizing: border-box;
+	}
+	.form-w {
+		box-sizing: border-box;
+		border-radius: 10px;
+		overflow: hidden;
+		.form-content {
+			background-color: #fff;
 		}
 	}
 </style>
