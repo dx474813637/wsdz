@@ -8,12 +8,12 @@
 			:fixed="false"
 		>
 			<view slot="left">
-				<view @click="handleGoto('/pages/my/money/index')" class="text-white u-flex u-flex-items-center">
+				<view @click="handleGoto('/pages/my/money/index_new')" class="text-white u-flex u-flex-items-center">
 					<u-icon
 						name="arrow-left"
 						color="#fff"
 					></u-icon>
-					<text class="u-p-l-20 ">资金中心</text>
+					<text class="u-p-l-20 ">资金平台</text>
 				</view>
 				
 			</view>
@@ -171,11 +171,14 @@
 					</u-form-item>
 					
 				</u--form>
-				<view class="u-p-t-50 u-m-b-40">
+				<view class="u-p-t-50 u-m-b-20">
 					<u-button type="primary" :customStyle="{
 						backgroundColor: configObj.themeColor,
 						borderColor: configObj.themeColor,
 					}" @click="submit">提交</u-button>
+				</view>
+				<view class="form-w u-font-28 u-m-b-20 text-base" v-if="tishi.other.tixing">
+					<u-parse :content="tishi.other.tixing"></u-parse>
 				</view>
 			</view>
 		</view>
@@ -258,7 +261,7 @@
 		</u-popup>
 		<u-modal :show="codeInputShow" negativeTop="220" title="输入支付密码"  
 			showCancelButton
-			cancelText="返回资金中心"
+			cancelText="返回资金平台"
 			cancelColor="#999"
 			@cancel="handleBack"
 			:confirmText="`当前${configObj.label}订单详情`" 
@@ -301,7 +304,7 @@
 			@close="codeInputShow_code = false" -->
 		<u-modal :show="codeInputShow_code" negativeTop="220" title="短信验证码校验" 
 			showCancelButton
-			cancelText="返回资金中心"
+			cancelText="返回资金平台"
 			cancelColor="#999"
 			@cancel="handleBack"
 			:confirmText="`账户${configObj.label}列表`" 
@@ -347,7 +350,7 @@
 						</u-input> 
 					</u-form-item>
 				</u--form> 
-				<view class="u-m-t-40">
+				<view class="u-m-t-40 ">
 					<u-button type="primary" @click="submit_yanzheng_code">提交验证码</u-button>
 				</view> 
 				
@@ -426,6 +429,7 @@
 				typeConfig: state => state.theme.typeConfig,
 				sinoFund: state => state.sinopay.sinoFund,
 				sinoFundLoading: state => state.sinopay.sinoFundLoading,
+				tishi: state => state.sinopay.tishi,
 			}),
 			columns_acc() {
 				if(!this.sinoFund || this.sinoFund.length == 0) return [];
@@ -662,7 +666,7 @@
 			},
 			handleBack() {
 				uni.redirectTo({
-					url: '/pages/my/money/index'
+					url: '/pages/my/money/index_new'
 				})
 			},
 			handleBackDetail() {
@@ -764,7 +768,7 @@
 										
 									} else if (res.cancel) {
 										uni.redirectTo({
-											url: '/pages/my/money/index'
+											url: '/pages/my/money/index_new'
 										})
 									}
 								}
@@ -814,7 +818,7 @@
 			},
 			handleBack() {
 				uni.redirectTo({
-					url: '/pages/my/money/index'
+					url: '/pages/my/money/index_new'
 				})
 			},
 			async handleSumbitCode() {
@@ -827,7 +831,7 @@
 					})
 					setTimeout(() => {
 						uni.redirectTo({
-							url: '/pages/my/money/index'
+							url: '/pages/my/money/index_new'
 						})
 					}, 1000)
 				}

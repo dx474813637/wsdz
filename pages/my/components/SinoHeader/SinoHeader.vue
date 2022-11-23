@@ -27,7 +27,7 @@
 				</view>
 				<view class="item-info" v-if="mode == '2'">
 					<view @click="handleGoto('/pages/my/money/index')" class="info-a u-flex u-flex-items-center">
-						<text class="u-font-28">资金中心</text>
+						<text class="u-font-28">资金平台</text>
 						<i class="custom-icon-right custom-icon"></i>
 					</view>
 				</view>

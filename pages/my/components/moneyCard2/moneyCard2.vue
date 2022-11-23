@@ -95,10 +95,8 @@
 				getSinoFundAccount: 'sinopay/getSinoFundAccount',
 				refreshSinoFundAccount: 'sinopay/refreshSinoFundAccount'
 			}),
-			async refreshBtn() {
-				this.setSinoFundLoading(true)
-				await this.refreshSinoFundAccount({id: this.wallet.id})
-				this.getSinoFundAccount()
+			async refreshBtn() { 
+				this.$emit('getData')
 			}
 		},
 	}
@@ -107,6 +105,8 @@
 <style lang="scss" scoped>
 	.wrapper {
 		position: relative;
+		width: 100%;
+		height: 100%;
 		.loading-w {
 			position: absolute;
 			top: 0;
@@ -115,6 +115,7 @@
 			height: 100%;
 			background-color: rgba(255,255,255,.85);
 			z-index: 10;
+			overflow: hidden;
 		}
 	}
 	.box-content {
@@ -159,7 +160,7 @@
 		.c-row {
 			height: 45px;
 			// border-bottom: 1px solid #eee;
-			padding: 8px 0;
+			// padding: 8px 0;
 			// padding-right: 12px;
 			.item-left {
 				view {

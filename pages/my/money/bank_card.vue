@@ -98,6 +98,8 @@
 		
 		
 		<ZzCzPopup
+			:aid="wallet.id"
+			:sinoType="wallet_type"
 			:show="show_zzlc"
 			@close="show_zzlc = false"  
 			></ZzCzPopup>

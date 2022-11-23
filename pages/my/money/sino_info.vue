@@ -128,7 +128,7 @@
 									icon: 'none',
 									success: () => {
 										this.clearSino()
-										this.handleGoto('/pages/my/money/index')
+										this.handleGoto('/pages/my/money/index_new')
 									}
 								})
 							}

@@ -4,7 +4,7 @@
 		<u-navbar
 			bgColor="transparent"
 			:fixed="false"
-			:title="tishi.list[3].title"
+			title="资金平台"
 			titleStyle="color: #fff"
 			autoBack
 		>
@@ -21,8 +21,8 @@
 		</u-navbar>
 		<view class="main u-p-10 u-p-t-20">
 			<view class="text-white u-p-b-30 u-p-t-10 u-font-32 info-box u-flex u-flex-items-center u-flex-column">
-				<view>{{tishi.list[3].info}}</view>
-				<view class="u-font-28 u-p-t-10" style="opacity: 0.8;">{{tishi.list[3].other}}</view>
+				<view class="u-font-40">{{tishi.list[3].title}}</view>
+				<view class="u-font-28 u-p-t-10" style="opacity: 0.8; font-weight: 300">{{tishi.list[3].info}}</view>
 				
 			</view> 
 			<view class="form-w u-m-t-30"> 
@@ -152,8 +152,11 @@
 						</u-form-item>
 					</u--form>
 					
-					<view class="u-p-t-20 u-m-b-40">
+					<view class="u-p-t-20 u-m-b-20">
 						<u-button type="primary" shape="circle" :customStyle="{backgroundImage: 'linear-gradient(to right,#6cb5fa, #4077f6)'}" @click="submit">{{tishi.list[3].button || '提交'}}</u-button>
+					</view>
+					<view class="form-w u-font-28 u-m-b-20 text-base u-text-center" v-if="tishi.list[2].other">
+						<u-parse :content="tishi.list[2].other"></u-parse>
 					</view>
 				</view>
 				
@@ -395,7 +398,7 @@
 									title: res.msg,
 									icon: 'none',
 									success: () => {
-										this.handleGoto('/pages/my/money/index')
+										this.handleGoto('/pages/my/money/index_new')
 									}
 								})
 							}
@@ -445,7 +448,7 @@
 								success: () => {
 									setTimeout(() => {
 										uni.reLaunch({
-											url: '/pages/my/money/index'
+											url: '/pages/my/money/index_new'
 										})
 									}, 1500);
 									

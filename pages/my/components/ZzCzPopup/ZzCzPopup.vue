@@ -173,7 +173,7 @@
 						sub: '后续，白名单确认完成后，可进行转账充值',
 					},
 				], 
-				deposit_white_list: [],
+				deposit_white_list: {},
 				loading: false
 			}
 		},
@@ -237,7 +237,7 @@
 					account_id: this.aid
 				}})
 				if(res.code == 1) {
-					this.deposit_white_list = res.list.result
+					this.deposit_white_list = res.list.result || {}
 				}
 			},
 		}

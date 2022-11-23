@@ -1,7 +1,7 @@
 
 let state = {
 		sino: uni.getStorageSync('sino') || {
-			sinopay_poster: 'ceshi'
+			sinopay_poster: ''
 		},
 		sinoFund: [],
 		sinoFundLoading: false,

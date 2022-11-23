@@ -186,19 +186,19 @@ export default async function(vm) {
         		}
         	}
         }
-		if(!store.state.sinopay.sino.hasOwnProperty('state')) {
-			uni.showLoading({
-				title: '正在获取资金账户'
-			})
-			try{
-				await store.dispatch('sinopay/getSinoAccount')
-			}catch(e){
-				uni.$u.toast(e)
-				console.error('getSinoAccount error: ', res)
-				return false
-			}
+		// if(!store.state.sinopay.sino.hasOwnProperty('state')) {
+		// 	uni.showLoading({
+		// 		title: '正在获取资金账户'
+		// 	})
+		// 	try{
+		// 		await store.dispatch('sinopay/getSinoAccount')
+		// 	}catch(e){
+		// 		uni.$u.toast(e)
+		// 		console.error('getSinoAccount error: ', res)
+		// 		return false
+		// 	}
 			
-		} 
+		// } 
 		
 		//记录路径参数数据 底部菜单跳转判断买卖盘用
 		let paramsObj = {}

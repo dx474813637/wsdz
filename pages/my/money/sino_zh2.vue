@@ -21,8 +21,8 @@
 		</u-navbar>
 		<view class="main u-p-10 u-p-t-20">
 			<view class="text-white u-p-b-30 u-p-t-10 u-font-32 info-box u-flex u-flex-items-center u-flex-column">
-				<view>收款账户</view>
-				<view class="u-font-28 u-p-t-10" style="opacity: 0.8;">{{sino.sinopay_poster}}</view>
+				<view class="u-font-40">收款账户</view>
+				<view class="u-font-28 u-p-t-10" style="opacity: 0.8; font-weight: 300">{{wallet.name}}</view>
 				
 			</view> 
 			<view class="form-w u-m-t-30">
@@ -43,11 +43,11 @@
 					<view class=" ">
 						<view class="item-rows u-p-t-18 u-p-b-18 u-flex   u-flex-between">
 							<view class="rows-label">账户名称</view>
-							<view class="rows-content">{{sino.sinopay_poster}}</view>
+							<view class="rows-content">{{wallet.name}}</view>
 						</view>
 						<view class="item-rows u-p-t-18 u-p-b-18 u-flex   u-flex-between">
 							<view class="rows-label">账户</view>
-							<view class="rows-content">{{sino.sinopay_poster}}</view>
+							<view class="rows-content">{{wallet.user_fundaccno}}</view>
 						</view>
 						<view class="item-rows u-p-t-18 u-p-b-18 u-flex   u-flex-between">
 							<view class="rows-label">类型</view>
@@ -55,7 +55,11 @@
 						</view>
 						<view class="item-rows u-p-t-18 u-p-b-18 u-flex   u-flex-between">
 							<view class="rows-label">手机</view>
-							<view class="rows-content">{{sino.sinopay_poster}}</view>
+							<view class="rows-content">{{wallet.mobile}}</view>
+						</view>
+						<view class="item-rows u-p-t-18 u-p-b-18 u-flex   u-flex-between">
+							<view class="rows-label">开通时间</view>
+							<view class="rows-content">{{wallet.ctime}}</view>
 						</view>
 					</view>
 				</view>
@@ -76,7 +80,7 @@
 						<u-button type="primary" shape="circle" plain size="mini" color="#f90" text="去查询" ></u-button>
 					</view>
 				</view>
-				<view @click="handleGoto({url: '/pages/my/money/bank_card', params: {wallet: type}})" class="list-item">
+				<!-- <view @click="handleGoto({url: '/pages/my/money/bank_card', params: {wallet: type}})" class="list-item">
 					<view class="item-left">
 						<view class="icon-wrap u-flex u-flex-center u-flex-items-center">
 							<i class="custom-icon-vipcard custom-icon"></i>
@@ -89,7 +93,7 @@
 					<view class="item-right">
 						<u-button type="primary" shape="circle" plain size="mini" color="#f90" text="去查询" ></u-button>
 					</view>
-				</view>
+				</view> -->
 				<view @click="show_zzlc = true" class="list-item">
 					<view class="item-left">
 						<view class="icon-wrap u-flex u-flex-center u-flex-items-center">
@@ -139,14 +143,16 @@
 				w = this.sinoFund.filter(ele => ele.type == this.type)[0] || {}
 				return w
 			},
-			aid() { 
-				if(!this.sinoFund || this.sinoFund.length == 0) return '';
-				console.log(this.sinoType, this.sinoFund.filter(ele => ele.type == this.sinoType)[0]?.id )
-				return this.sinoFund.filter(ele => ele.type == this.sinoType)[0]?.id 
+			aid() {  
+				return this.wallet.id 
 			},
 		},
 		components: { 
 			ZzCzPopup
+		},
+		async onLoad() {
+			uni.showLoading()
+			await this.getSinoFundAccount()
 		},
 		methods: {
 			...mapMutations({

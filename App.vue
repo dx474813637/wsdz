@@ -38,8 +38,7 @@
 				});
 			}
 			
-			store.dispatch('user/wode', {bd: 1})
-			store.dispatch('sinopay/getSinoTishi')
+			store.dispatch('user/wode', {bd: 1}) 
 			routingIntercept(this)
 			
 		},

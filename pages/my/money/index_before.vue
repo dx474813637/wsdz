@@ -4,7 +4,7 @@
 		<u-navbar
 			bgColor="transparent"
 			:fixed="false"
-			:title="tishi.list[sinoAccOpen == 1 ? 2 : 1].title"
+			title="资金平台"
 			titleStyle="color: #fff"
 			autoBack
 		>
@@ -21,8 +21,8 @@
 		</u-navbar>
 		<view class="main u-p-10 u-p-t-20">
 			<view class="text-white u-p-b-30 u-p-t-10 u-font-32 info-box u-flex u-flex-items-center u-flex-column">
-				<view>{{tishi.list[ sinoAccOpen == 1 ? 2 : 1].info}}</view>
-				<view class="u-font-28 u-p-t-10" style="opacity: 0.8;">{{tishi.list[sinoAccOpen == 1 ? 2 : 1].other}}</view>
+				<view class="u-font-40">{{tishi.list[ sinoAccOpen == 1 ? 2 : 1].title}}</view>
+				<view class="u-font-28 u-p-t-10" style="opacity: 0.8; font-weight: 300">{{tishi.list[sinoAccOpen == 1 ? 2 : 1].info}}</view>
 				
 			</view> 
 			<view class="form-w u-m-t-30">
@@ -33,7 +33,7 @@
 							color="#8db5ff"
 							size="24"
 						></u-icon> 
-						<view class="u-p-l-10">账号信息</view>
+						<view class="u-p-l-10">{{sinoAccOpen == 1 ? '账户信息' :'账号信息'}}</view>
 					</view>
 					<view class="item u-flex u-flex-items-center">
 						<view class="f-h-label">
@@ -43,24 +43,15 @@
 				</view>
 				<view class="form-content u-p-l-40 u-p-r-40 u-p-20">
 					<view class="u-p-20">
-						<template v-if="sinoAccOpen == 1">
-							<view class="item-rows u-p-t-30 u-p-b-30 u-flex u-flex-items-center u-flex-between">
+						<template v-if="sinoAccOpen == 1 "> 
+							<view class="item-rows u-p-t-30 u-p-b-30 u-flex u-flex-items-center u-flex-between" v-for="item in sinoFund" :key="item.id">
 								<view class="rows-label u-flex u-flex-items-center">
 									<view class="rows-label-bg u-flex u-flex-center u-flex-items-center">
 										<i class="custom-icon-card_fill custom-icon"></i>
 									</view>
-									<view class="u-p-l-30">付款账户</view>
+									<view class="u-p-l-30">{{item.type == 'S'? '收款账户' :'付款账户'}}</view>
 								</view>
-								<view class="rows-content">11000000011</view>
-							</view>
-							<view class="item-rows u-p-t-30 u-p-b-30 u-flex u-flex-items-center u-flex-between">
-								<view class="rows-label u-flex u-flex-items-center">
-									<view class="rows-label-bg u-flex u-flex-center u-flex-items-center">
-										<i class="custom-icon-card_fill custom-icon"></i>
-									</view> 
-									<view class="u-p-l-30">收款账户</view>
-								</view>
-								<view class="rows-content">11000000011</view>
+								<view class="rows-content">{{item.user_fundaccno}}</view>
 							</view>
 						</template>
 						<template v-else>
@@ -74,7 +65,7 @@
 							</view>
 							<view class="item-rows u-p-t-30 u-p-b-30 u-flex   u-flex-between">
 								<view class="rows-label">用户名称</view>
-								<view class="rows-content">{{myCpy.name}}</view>
+								<view class="rows-content">{{wallet.name}}</view>
 							</view>
 							<view class="item-rows u-p-t-30 u-p-b-30 u-flex   u-flex-between">
 								<view class="rows-label">绑定时间</view>
@@ -113,16 +104,19 @@
 						<u-button type="primary" shape="circle" :customStyle="{backgroundImage: 'linear-gradient(to right,#6cb5fa, #4077f6)'}" @click="kaitong" v-else>
 							{{tishi.list[1].button || '开通银行账户'}}
 						</u-button>
-						<view v-if="sinoAccOpen == 1" style="color: #999; padding: 10px; font-size: 14px">可用于交易资金提现</view>
-					</view>
+						<view style="color: #999; padding: 10px; font-size: 14px" v-if="tishi.list[sinoAccOpen == 1 ? 2 : 1].other && sinoAccOpen == 1">
+							<u-parse :content="tishi.list[sinoAccOpen == 1 ? 2 : 1].other"></u-parse>
+						</view>
+					</view> 
 				</view>
 			</view> 
+			
 		</view> 
 	</view>
 </template>
 
 <script>
-	import {mapState, mapGetters, mapMutations} from 'vuex'
+	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
 	export default {
 		data() {
 			return {
@@ -135,18 +129,38 @@
 				tishi: state => state.sinopay.tishi,
 				sino: state => state.sinopay.sino,
 				sinoAccOpenObj: state => state.sinopay.sinoAccOpenObj,
+				sinoFund: state => state.sinopay.sinoFund,
+				sinoFundLoading: state => state.sinopay.sinoFundLoading
 			}),
 			...mapGetters({ 
 				sinoAccOpen: 'sinopay/sinoAccOpen',
-			}),
+			}), 
+			wallet() {
+				let w = {};
+				if(!this.sinoFund || this.sinoFund.length == 0) return w;
+				w = this.sinoFund.filter(ele => ele.type == 'B')[0] || {}
+				return w
+			},
+		},
+		async onLoad() {
+			await this.getSinoAccount() 
+			this.getSinoFundAccount()
 		},
 		methods: {
 			...mapMutations({
 				handleGoto: 'user/handleGoto',
 				setSinoAccOpen: 'sinopay/setSinoAccOpen'
 			}),
+			...mapActions({
+				getSinoAccount: 'sinopay/getSinoAccount', 
+				getSinoFundAccount: 'sinopay/getSinoFundAccount', 
+				refreshSinoFundAccount: 'sinopay/refreshSinoFundAccount'
+			}),
 			kaitong() {
 				this.setSinoAccOpen(1)
+				uni.showToast({
+					title: '开通成功'
+				})
 			}, 
 		}
 	}
