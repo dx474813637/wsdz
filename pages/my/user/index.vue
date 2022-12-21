@@ -20,7 +20,7 @@
 			<view class="user-img u-flex u-flex-items-center u-flex-center" @click="handleGoto('/pages/my/user/info')">
 				<i class="custom-icon-myfill custom-icon"></i>
 			</view>
-			<view class="user-info u-flex-1" @click="handleGoto('/pages/my/money/index_before')">
+			<view class="user-info u-flex-1" @click="handleGoto('/pages/my/user/info')">
 				<template v-if="loading">
 					<u-loading-icon></u-loading-icon>
 				</template>

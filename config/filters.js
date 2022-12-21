@@ -237,6 +237,12 @@ const chatTimeFilter = (v, flag) => {
 
 }
 
+const tradeM2str = v => {
+	if(v == 'abs') return '指数监测'
+	else if(v == 'price')  return '价格监测'
+	else return v
+}
+
 export default {
 	type2str,
 	expressUnit,
@@ -265,5 +271,6 @@ export default {
 	mduState2Str,
 	sinoAuthState2str,
 	sinoState2str,
-	myCpyAuth2str
+	myCpyAuth2str,
+	tradeM2str
 }

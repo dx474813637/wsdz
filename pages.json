@@ -745,7 +745,25 @@
 				}
 
 			}
-		]
+		    ,{
+                    "path" : "trade_monitor/trade_monitor",
+                    "style" :                                                                                    
+                {
+                    "navigationBarTitleText": "行情监测",
+                    "enablePullDownRefresh": false
+                }
+                
+                }
+                ,{
+                    "path" : "trade_monitor/trade_monitor_detail",
+                    "style" :                                                                                    
+                {
+                    "navigationBarTitleText": "行情监测编辑",
+                    "enablePullDownRefresh": false
+                }
+                
+                }
+            ]
 	}, {
 		"root": "pages/more",
 		"pages": [{

@@ -44,4 +44,24 @@ export const blacklist = (data) => http.get('blacklist', data)
 export const sinoaaaIndex = (data) => http.get('sinoaaa_index', data)
 // 搜索 精准 参数name 企业名称
 export const sinoaaaSearch = (data) => http.get('sinoaaa_search', data)
+
+
+// =============行情监测
+ // trade_monitor_list_inquiry_standards  行情监测标准品列表
+export const trade_monitor_list_inquiry_standards = (data) => http.get('trade_monitor_list_inquiry_standards', data)
+ // trade_monitor_create_trade_monitor 添加行情监测
+export const trade_monitor_create_trade_monitor = (data) => http.get('trade_monitor_create_trade_monitor', data)
+ // pid商品id 
+ // type监测类型:abs-指数监测 price-价格监测 
+ // 警戒系数alert 单位：%
+ // 初始日期sdate
+ // 监测到期edate
+ // 初始价格price 监测类型为price-价格监测时必填
+ // 备注remark
  
+ // trade_monitor_change_trade_monitor 修改行情监测 比创建多一个id字段
+export const trade_monitor_change_trade_monitor = (data) => http.get('trade_monitor_change_trade_monitor', data)
+ // trade_monitor_delete_trade_monitor 删除行情监测 参数id
+export const trade_monitor_delete_trade_monitor = (data) => http.get('trade_monitor_delete_trade_monitor', data)
+ // trade_monitor_query_trade_monitor 行情监测列表 参数p
+export const trade_monitor_query_trade_monitor = (data) => http.get('trade_monitor_query_trade_monitor', data)

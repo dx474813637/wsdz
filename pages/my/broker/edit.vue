@@ -118,6 +118,249 @@
 						    </u-radio>
 						  </u-radio-group>
 					</u-form-item>
+					<!-- 竞拍 start -->
+					<template v-if="model.trade_mode == '1' && pan == 's'">
+						<u-form-item
+							label="竞拍方式"
+							prop="bid_is_part"
+							ref="bid_is_part" 
+							required
+						>
+							<u-radio-group
+							   v-model="model.bid_is_part"
+							   placement="row"
+							>
+							    <u-radio
+									:customStyle="{marginRight: '8px'}"
+									v-for="(item, index) in radiolist_bid_is_part"
+									:key="item.value"
+									:disabled="item.disabled"
+									:label="item.name"
+									:name="item.value"
+							    >
+							    </u-radio>
+							 </u-radio-group>
+						</u-form-item>
+						<template v-if="model.bid_is_part == '1'">
+							<u-form-item
+								label="每手尺寸"
+								prop="bid_step_amount"
+								ref="bid_step_amount" 
+								required
+							>
+								<u--input
+									v-model="model.bid_step_amount"
+									clearable 
+								></u--input>
+							</u-form-item>
+							<u-form-item
+								label="至少下单"
+								prop="bid_min_amount"
+								ref="bid_min_amount" 
+								required
+							>
+								<view class="u-flex u-flex-items-center">
+									<view class="u-flex-1">
+										<u--input
+											v-model="model.bid_min_amount"
+											clearable 
+										></u--input>
+									</view>
+									<view class="u-p-l-20">手</view>
+								</view>
+							</u-form-item>
+						</template>
+						
+						<u-form-item
+							label="起拍价"
+							prop="price"
+							ref="price" 
+							required
+						>
+							<view class="u-flex u-flex-items-center">
+								<view class="u-flex-1">
+									<u--input
+										v-model="model.price"
+										clearable
+										type="digit"
+									></u--input>
+								</view>
+								<view class="u-p-l-20">元</view>
+							</view>
+						</u-form-item>
+						<u-form-item
+							label="保留价"
+							prop="bid_re_price"
+							ref="bid_re_price" 
+							required
+						>
+							<view class="u-flex u-flex-items-center">
+								<view class="u-flex-1">
+									<u--input
+										v-model="model.bid_re_price"
+										clearable
+										type="digit"
+									></u--input>
+								</view>
+								<view class="u-p-l-20">元</view>
+							</view>
+						</u-form-item>
+						<u-form-item
+							label="加价幅度"
+							prop="bid_step"
+							ref="bid_step" 
+							required
+						>
+							<view class="u-flex u-flex-items-center">
+								<view class="u-flex-1">
+									<u--input
+										v-model="model.bid_step"
+										clearable
+										type="digit"
+									></u--input>
+								</view>
+								<view class="u-p-l-20">元</view>
+							</view> 
+						</u-form-item>
+						<u-form-item
+							label="多次竞拍"
+							prop="bid_is_repeat"
+							ref="bid_is_repeat" 
+							required
+						>
+							<view class="u-flex u-flex-items-center u-flex-start ">
+								<view class="u-info u-p-r-20 u-font-28" :class="{
+									'text-primary': model.bid_is_repeat == '0'
+								}">否</view>
+								<u-switch v-model="model.bid_is_repeat" activeValue="1" inactiveValue="0" ></u-switch>
+								<view class="u-info u-p-l-20 u-font-28" :class="{
+									'text-primary': model.bid_is_repeat == '1'
+								}">是</view>
+							</view>
+						</u-form-item>
+						<u-form-item
+							label="开始时间"
+							prop="bid_bdate"
+							ref="bid_bdate" 
+							required
+						>
+							<view class="u-flex u-flex-items-center">
+								<view class="u-flex-1" @click="showStartDate = true">
+									<u--input
+										:value="model.bid_bdate || '请选择'"
+										readonly 
+										suffixIcon="calendar"
+									></u--input>
+								</view> 
+								<view class="u-flex u-flex-items-center u-p-l-20" style="flex: 0 0 80px">
+									<view @click="showStartTime = true ">
+										<u--input
+											:value="model.bid_btime"
+											readonly 
+											suffixIcon="clock"
+										></u--input>
+									</view>
+									<!-- <view class="u-p-l-10">时</view> -->
+								</view> 
+							</view> 
+						</u-form-item>
+						<u-datetime-picker
+							:show="showStartDate"
+							v-model="model.bid_btimestamp"
+							mode="date"
+							closeOnClickOverlay 
+							@close="showStartDate = false"
+							@cancel="showStartDate = false"
+							@confirm="confirmStartDate"
+						></u-datetime-picker>
+						<u-picker
+							closeOnClickOverlay
+							:show="showStartTime" 
+							:columns="hoursList"
+							keyName="label"
+							@confirm="confirmStartTime" 
+							@close="showStartTime = false"
+							@cancel="showStartTime = false"
+						></u-picker>
+						<u-form-item
+							label="结束时间"
+							prop="bid_edate"
+							ref="bid_edate" 
+							required
+							v-if="model.bid_bdate"
+						>
+							<view class="u-flex u-flex-items-center">
+								<view class="u-flex-1" @click="showEndDate = true">
+									<u--input
+										:value="model.bid_edate || '请选择'"
+										readonly 
+										suffixIcon="calendar"
+									></u--input>
+								</view> 
+								<view class="u-flex u-flex-items-center u-p-l-20" style="flex: 0 0 80px">
+									<view @click="showEndTime = true">
+										<u--input
+											:value="model.bid_etime"
+											readonly 
+											suffixIcon="clock"
+										></u--input>
+									</view>
+									<!-- <view class="u-p-l-10">时</view> -->
+								</view> 
+							</view>
+						</u-form-item>
+						<u-datetime-picker
+							:show="showEndDate"
+							v-model="model.bid_etimestamp"
+							mode="date"
+							closeOnClickOverlay 
+							@close="showEndDate = false"
+							@cancel="showEndDate = false"
+							@confirm="confirmEndDate"
+						></u-datetime-picker>
+						<u-picker
+							closeOnClickOverlay
+							:show="showEndTime" 
+							:columns="hoursList"
+							keyName="label"
+							@confirm="confirmEndTime" 
+							@close="showEndTime = false"
+							@cancel="showEndTime = false"
+						></u-picker>
+						<u-form-item
+							label="匿名竞拍"
+							prop="bid_is_anonym"
+							ref="bid_is_anonym" 
+							required
+						>
+							<view class="u-flex u-flex-items-center u-flex-start ">
+								<view class="u-info u-p-r-20 u-font-28" :class="{
+									'text-primary': model.bid_is_anonym == '0'
+								}">否</view>
+								<u-switch v-model="model.bid_is_anonym" activeValue="1" inactiveValue="0" ></u-switch>
+								<view class="u-info u-p-l-20 u-font-28" :class="{
+									'text-primary': model.bid_is_anonym == '1'
+								}">是</view>
+							</view>
+						</u-form-item>
+						<u-form-item
+							label="是否暗标"
+							prop="bid_is_darkmark"
+							ref="bid_is_darkmark" 
+							required
+						>
+							<view class="u-flex u-flex-items-center u-flex-start ">
+								<view class="u-info u-p-r-20 u-font-28" :class="{
+									'text-primary': model.bid_is_darkmark == '0'
+								}">否</view>
+								<u-switch v-model="model.bid_is_darkmark" activeValue="1" inactiveValue="0" ></u-switch>
+								<view class="u-info u-p-l-20 u-font-28" :class="{
+									'text-primary': model.bid_is_darkmark == '1'
+								}">是</view>
+							</view>
+						</u-form-item>
+					</template>
+					<!-- 竞拍 end -->
 					
 					<u-form-item
 						label="交收期"
@@ -166,10 +409,11 @@
 					></u-picker>
 					
 					<u-form-item
-						:label="pan == 's'? '单价' : '意向单价'"
+						:label="priceStr"
 						prop="price"
 						ref="price"
-						required
+						v-if="model.trade_mode != '1'"
+						required 
 					>
 						<u--input
 							v-model="model.price"
@@ -506,7 +750,21 @@
 					intro: '',
 					settle_mode: '',
 					remark: '',
-					pics: []
+					pics: [],
+					bid_is_part: '1',
+					bid_step_amount: '',
+					bid_min_amount: '',
+					bid_re_price: '',
+					bid_step: '',
+					bid_is_repeat: '0',
+					bid_btimestamp: new Date().getTime(),
+					bid_bdate: '',
+					bid_btime: '0',
+					bid_etimestamp: new Date().getTime(),
+					bid_edate: '',
+					bid_etime: '0',
+					bid_is_anonym: '0',
+					bid_is_darkmark: '0',
 				},
 				fileList1: [],
 				radiolist_order_type: [
@@ -540,10 +798,27 @@
 						value: "0"
 					},
 					{
-						name: '一口价交易',
+						name: '竞拍交易',
+						disabled: false,
+						value: "1"
+					},
+					{
+						name: '一口价',
 						disabled: false,
 						value: "2"
 					},
+				],
+				radiolist_bid_is_part: [
+					{
+						name: '按手竞拍',
+						disabled: false,
+						value: "1"
+					},
+					{
+						name: '总量竞拍',
+						disabled: false,
+						value: "2"
+					}, 
 				],
 				radiolist_mdu: [
 					{
@@ -608,6 +883,10 @@
 				showSettleDate: false,
 				show: false,
 				show2: false,
+				showStartDate: false,
+				showStartTime: false,
+				showEndDate: false,
+				showEndTime: false,
 				expressUnit: [
 					[{label: '天', value: 'd'}, {label: '小时', value: 'h'}]
 				],
@@ -625,6 +904,34 @@
 						{label: '10月', value: '10'},
 						{label: '11月', value: '11'},
 						{label: '12月', value: '12'},
+					]
+				],
+				hoursList: [
+					[
+						{label: '0时', value: '0'},
+						{label: '1时', value: '1'},
+						{label: '2时', value: '2'},
+						{label: '3时', value: '3'},
+						{label: '4时', value: '4'},
+						{label: '5时', value: '5'},
+						{label: '6时', value: '6'},
+						{label: '7时', value: '7'},
+						{label: '8时', value: '8'},
+						{label: '9时', value: '9'},
+						{label: '10时', value: '10'},
+						{label: '11时', value: '11'},
+						{label: '12时', value: '12'},
+						{label: '13时', value: '13'},
+						{label: '14时', value: '14'},
+						{label: '15时', value: '15'},
+						{label: '16时', value: '16'},
+						{label: '17时', value: '17'},
+						{label: '18时', value: '18'},
+						{label: '19时', value: '19'},
+						{label: '20时', value: '20'},
+						{label: '21时', value: '21'},
+						{label: '22时', value: '22'},
+						{label: '23时', value: '23'},
 					]
 				],
 				settleDate: [
@@ -738,7 +1045,77 @@
 				}
 				let sRules = {
 				} 
-				
+				let jpRules = {
+					'bid_step_amount': {
+						type: 'string',
+						required: true,
+						message: '请填写每手尺寸',
+						trigger: ['blur', 'change']
+					},
+					'bid_min_amount': [{
+						type: 'string',
+						required: true,
+						message: '请填写至少下单量',
+						trigger: ['blur', 'change']
+					},{
+						type: 'string',
+						validator: (rule, value, callback) => {
+							return Number(value) >= 0
+						},
+						message: '请填写正确的数值',
+						trigger: ['blur', 'change']
+					}],
+					'bid_re_price': [{
+						type: 'string',
+						required: true,
+						message: '请填写金额',
+						trigger: ['blur', 'change']
+					},{
+						type: 'string',
+						validator: (rule, value, callback) => {
+							return Number(value) >= 0
+						},
+						message: '请填写正确的金额',
+						trigger: ['blur', 'change']
+					}],
+					'bid_step': [{
+						type: 'string',
+						required: true,
+						message: '请填写加价幅度',
+						trigger: ['blur', 'change']
+					},{
+						type: 'string',
+						validator: (rule, value, callback) => {
+							return Number(value) >= 0
+						},
+						message: '请填写正确的数值',
+						trigger: ['blur', 'change']
+					}],
+					'bid_bdate': [
+						{
+							type: 'string',
+							required: true,
+							message: '请填写开始日期',
+							trigger: ['blur', 'change']
+						}, 
+					], 
+					'bid_edate': [
+						{
+							required: true, 
+							message: '请输入结束日期',
+							trigger: ['change','blur'],
+						},
+						{
+							validator: (rule, value, callback) => {
+								if(value > this.model.bid_bdate) return true
+								if(value == this.model.bid_bdate && this.model.bid_etime > this.model.bid_btime) return true;
+								return false 
+							},
+							message: '结束时间必须大于开始时间',
+							trigger: ['blur', 'change']
+						}
+					]
+				}
 				if(this.pan == 'b') {
 					let obj = {
 						...baseRules,
@@ -752,6 +1129,12 @@
 					let obj = {
 						...baseRules,
 						...sRules
+					}
+					if(this.model.trade_mode == '1') {
+						obj = {
+							...obj,
+							...jpRules
+						}
 					}
 					if(this.$refs.from && this.$refs.from.setRules) {
 						this.$refs.from.setRules(obj)
@@ -770,6 +1153,10 @@
 					return ele.show.includes(this.pan)
 				})
 			}, 
+			 priceStr() {
+				 if(this.pan == 'b') return '意向单价'
+				 else return '单价'
+			 }, 
 		},
 		async onLoad(options) {
 			this.model.post_type = String(this.auth)
@@ -813,6 +1200,20 @@
 					this.model.settle_date_label = this.settleDate[0].filter(ele => ele.value == data.settle_date)[0]?.label
 					this.model.settle_mode = data.settle_mode
 					this.model.delivery_place = data.delivery_place
+					// 竞拍
+					this.model.bid_is_part = data.bid_is_part
+					this.model.bid_step_amount = data.bid_step_amount
+					this.model.bid_min_amount = data.bid_min_amount
+					this.model.bid_re_price = data.bid_re_price
+					this.model.bid_step = data.bid_step
+					this.model.bid_is_repeat = data.bid_is_repeat
+					this.model.bid_bdate = data.bid_bdate
+					this.model.bid_btime = data.bid_btime
+					this.model.bid_edate = data.bid_edate
+					this.model.bid_etime = data.bid_etime
+					this.model.bid_is_anonym = data.bid_is_anonym
+					this.model.bid_is_darkmark = data.bid_is_darkmark
+					
 					if(this.pan == 's') {
 						this.model.remark = data.remark
 						this.model.pics = data.list_pics.map(ele => {
@@ -889,12 +1290,25 @@
 				this.$nextTick(() => {
 					this.$refs.from.validateField('express_time')
 				})
-			}
+			}, 
+			['model.bid_bdate'](n) {
+				this.model.bid_btime = '0'
+			}, 
+			['model.bid_edate'](n) {
+				this.model.bid_etime = '0'
+				if(n == this.model.bid_bdate) {
+					if(+this.model.bid_btime < 23) this.model.bid_etime = +(this.model.bid_btime)+1
+					else {
+						this.model.bid_etime = '23'
+					}
+				}
+				
+			}, 
 			
 		},
 		onReady() {
 			this.$refs.from.setRules(this.rules)
-		},
+		}, 
 		methods: {
 			...mapMutations({
 				handleGoto: 'user/handleGoto'
@@ -908,11 +1322,11 @@
 					title: '建议上传2M以内的图片',
 					icon: 'none'
 				})
-			},
+			}, 
 			checkboxChange(v) {
 				console.log(v)
 				this.model.broker_login = v[0] ? v[0]: ''
-			},
+			}, 
 			async getCompanyProductDetail() {
 				const res = await this.$api.getCompanyProductDetail({params: {id: this.model.product_id}})
 				if(res.code == 1) {
@@ -976,6 +1390,48 @@
 				this.model.settle_month = e.value[0].value
 				this.showSettleMonth = false
 				this.$refs.from.validateField('settle_month')
+			},
+			confirmStartDate(e) {  
+				this.model.bid_btimestamp = e.value
+				this.model.bid_bdate = uni.$u.timeFormat(e.value, 'yyyy-mm-dd')
+				// this.model.bid_etime = '0'
+				this.showStartDate = false
+				this.$refs.from.validateField('bid_edate')
+			},
+			confirmEndDate(e) {   
+				let date = uni.$u.timeFormat(e.value, 'yyyy-mm-dd')
+				if(new Date(date).getTime() < new Date(this.model.bid_bdate).getTime()) {
+					uni.showToast({
+						title: '结束时间必须大于开始时间',
+						icon: 'none'
+					})
+					
+					return
+				}
+				this.model.bid_etimestamp = e.value
+				this.model.bid_edate = date
+				// this.model.bid_etime = '0'
+				this.showEndDate = false  
+				this.$refs.from.validateField('bid_edate')
+			},
+			confirmStartTime(e) {
+				console.log(e) 
+				this.model.bid_btime = e.value[0].value
+				this.showStartTime = false 
+				this.$refs.from.validateField('bid_edate')
+			},
+			confirmEndTime(e) {
+				console.log(e) 
+				if(this.model.bid_bdate == this.model.bid_edate && e.value[0].value <= this.model.bid_btime) {
+					uni.showToast({
+						title: '结束时间必须大于开始时间',
+						icon: 'none'
+					})
+					return
+				}
+				this.model.bid_etime = e.value[0].value
+				this.showEndTime = false
+				this.$refs.from.validateField('bid_edate')
 			},
 			confirmSettleDate(e) {
 				console.log(e)
