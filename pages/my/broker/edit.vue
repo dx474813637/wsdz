@@ -109,7 +109,7 @@
 						  >
 						    <u-radio
 						      :customStyle="{marginRight: '8px'}"
-						      v-for="(item, index) in radiolist_trade_mode"
+						      v-for="(item, index) in radiolist_trade_mode_filter"
 						      :key="item.value"
 							  :disabled="item.disabled"
 						      :label="item.name"
@@ -227,6 +227,7 @@
 							prop="bid_is_repeat"
 							ref="bid_is_repeat" 
 							required
+							v-if="model.bid_is_part == 1"
 						>
 							<view class="u-flex u-flex-items-center u-flex-start ">
 								<view class="u-info u-p-r-20 u-font-28" :class="{
@@ -265,6 +266,7 @@
 							</view> 
 						</u-form-item>
 						<u-datetime-picker
+							title="开始日期"
 							:show="showStartDate"
 							v-model="model.bid_btimestamp"
 							mode="date"
@@ -274,6 +276,7 @@
 							@confirm="confirmStartDate"
 						></u-datetime-picker>
 						<u-picker
+							title="开始时间"
 							closeOnClickOverlay
 							:show="showStartTime" 
 							:columns="hoursList"
@@ -310,6 +313,7 @@
 							</view>
 						</u-form-item>
 						<u-datetime-picker
+							title="结束日期"
 							:show="showEndDate"
 							v-model="model.bid_etimestamp"
 							mode="date"
@@ -319,6 +323,7 @@
 							@confirm="confirmEndDate"
 						></u-datetime-picker>
 						<u-picker
+							title="结束时间"
 							closeOnClickOverlay
 							:show="showEndTime" 
 							:columns="hoursList"
@@ -710,6 +715,8 @@
 </template>
 
 <script>
+	const INIT_START_TIME = new Date().getTime()+3600*24*1000;
+	const INIT_END_TIME = INIT_START_TIME + 3600*1000;
 	import {mapState, mapMutations, mapActions} from "vuex"
 	// import uniSection from '@/pages/my/components/uni-section/uni-section'
 	export default {
@@ -757,10 +764,10 @@
 					bid_re_price: '',
 					bid_step: '',
 					bid_is_repeat: '0',
-					bid_btimestamp: new Date().getTime(),
+					bid_btimestamp: INIT_START_TIME ,
 					bid_bdate: '',
 					bid_btime: '0',
-					bid_etimestamp: new Date().getTime(),
+					bid_etimestamp: INIT_END_TIME,
 					bid_edate: '',
 					bid_etime: '0',
 					bid_is_anonym: '0',
@@ -1046,12 +1053,18 @@
 				let sRules = {
 				} 
 				let jpRules = {
-					'bid_step_amount': {
+					'bid_step_amount': [{
 						type: 'string',
 						required: true,
 						message: '请填写每手尺寸',
 						trigger: ['blur', 'change']
-					},
+					},{ 
+						validator: (rule, value, callback) => {
+							return Number(value)*Number(this.model.bid_min_amount) <= Number(this.model.amount)
+						},
+						message: '每手尺寸*至少下单必须小于等于挂牌数量',
+						trigger: ['blur', 'change']
+					}],
 					'bid_min_amount': [{
 						type: 'string',
 						required: true,
@@ -1063,6 +1076,12 @@
 							return Number(value) >= 0
 						},
 						message: '请填写正确的数值',
+						trigger: ['blur', 'change']
+					},{ 
+						validator: (rule, value, callback) => {
+							return Number(value)*Number(this.model.bid_step_amount) <= Number(this.model.amount)
+						},
+						message: '每手尺寸*至少下单必须小于等于挂牌数量',
 						trigger: ['blur', 'change']
 					}],
 					'bid_re_price': [{
@@ -1076,6 +1095,12 @@
 							return Number(value) >= 0
 						},
 						message: '请填写正确的金额',
+						trigger: ['blur', 'change']
+					},{ 
+						validator: (rule, value, callback) => {
+							return +value >= +this.model.price
+						},
+						message: '保留价必须大于等于起拍价',
 						trigger: ['blur', 'change']
 					}],
 					'bid_step': [{
@@ -1098,6 +1123,18 @@
 							message: '请填写开始日期',
 							trigger: ['blur', 'change']
 						}, 
+						{
+							validator: (rule, value, callback) => {  
+								const time = (this.model.bid_btime || 0)*3600*1000;
+								console.log(value)
+								console.log(new Date(value.replace(/-/g, "/")).getTime(), time)
+								console.log(new Date(value.replace(/-/g, "/")).getTime()+time)
+								console.log(INIT_START_TIME)
+								return new Date(value.replace(/-/g, "/")).getTime()+time >= INIT_START_TIME 
+							},
+							message: '竞标开始时间必须大于等于当前时间24小时',
+							trigger: ['blur', 'change']
+						}
 					], 
 					'bid_edate': [
 						{
@@ -1112,6 +1149,15 @@
 								return false 
 							},
 							message: '结束时间必须大于开始时间',
+							trigger: ['blur', 'change']
+						},
+						{
+							validator: (rule, value, callback) => {
+								const btime = new Date(this.model.bid_bdate.replace(/-/g, "/")).getTime()+(this.model.bid_btime || 0)*3600*1000
+								const etime = new Date(value.replace(/-/g, "/")).getTime()+(this.model.bid_etime || 0)*3600*1000
+								return etime - btime <= 3600*1000*24
+							},
+							message: '竞标持续时间必须小于等于1天',
 							trigger: ['blur', 'change']
 						}
 					]
@@ -1143,6 +1189,10 @@
 				}
 				return {}
 				
+			},
+			radiolist_trade_mode_filter() {
+				if(this.myCpy.grade_2 == 1) return this.radiolist_trade_mode
+				else return this.radiolist_trade_mode.filter(ele => ele.value != 1)
 			},
 			radiolist_mdu_filter() {
 				return this.radiolist_mdu.filter(ele => ele.show.includes(this.pan))
@@ -1260,13 +1310,14 @@
 			['model.order_type']: {
 				immediate: true, 
 				handler(n) {
-					this.radiolist_trade_mode.some(ele => {
-						if(ele.value == '2') {
+					this.radiolist_trade_mode.forEach(ele => { 
+						if(ele.value == '2' || ele.value == '1') {
 							ele.disabled = n == '2' ? true : false;
-							return true
-						}
-						return false
+						} 
 					}) 
+					if(n == '2') {
+						this.model.trade_mode = '0'
+					}
 				},
 			},
 			['model.trade_mode'](n) {
@@ -1291,17 +1342,24 @@
 					this.$refs.from.validateField('express_time')
 				})
 			}, 
+			['model.bid_is_part'](n) {
+				if(n == 2) this.model.bid_is_repeat = 0
+			}, 
 			['model.bid_bdate'](n) {
-				this.model.bid_btime = '0'
+				// this.model.bid_btime = '0'
+				// console.log(new Date(`${n} 00:00:00`).getTime() - new Date().getTime())
+				// if(new Date(`${n} 00:00:00`).getTime() - new Date().getTime() <= 3600*24*1000) {
+				// 	this.model.bid_btime = new Date().getHours()+1
+				// }
 			}, 
 			['model.bid_edate'](n) {
-				this.model.bid_etime = '0'
-				if(n == this.model.bid_bdate) {
-					if(+this.model.bid_btime < 23) this.model.bid_etime = +(this.model.bid_btime)+1
-					else {
-						this.model.bid_etime = '23'
-					}
-				}
+				// this.model.bid_etime = '0'
+				// if(n == this.model.bid_bdate) {
+				// 	if(+this.model.bid_btime < 23) this.model.bid_etime = +(this.model.bid_btime)+1
+				// 	else {
+				// 		this.model.bid_etime = '23'
+				// 	}
+				// }
 				
 			}, 
 			
@@ -1391,16 +1449,19 @@
 				this.showSettleMonth = false
 				this.$refs.from.validateField('settle_month')
 			},
+			//确认 开始日期
 			confirmStartDate(e) {  
 				this.model.bid_btimestamp = e.value
 				this.model.bid_bdate = uni.$u.timeFormat(e.value, 'yyyy-mm-dd')
 				// this.model.bid_etime = '0'
 				this.showStartDate = false
+				this.$refs.from.validateField('bid_bdate')
 				this.$refs.from.validateField('bid_edate')
 			},
+			//确认 结束日期
 			confirmEndDate(e) {   
 				let date = uni.$u.timeFormat(e.value, 'yyyy-mm-dd')
-				if(new Date(date).getTime() < new Date(this.model.bid_bdate).getTime()) {
+				if(new Date(date.replace(/-/g, "/")).getTime() < new Date(this.model.bid_bdate.replace(/-/g, "/")).getTime()) {
 					uni.showToast({
 						title: '结束时间必须大于开始时间',
 						icon: 'none'
@@ -1414,12 +1475,15 @@
 				this.showEndDate = false  
 				this.$refs.from.validateField('bid_edate')
 			},
+			//确认 开始时间
 			confirmStartTime(e) {
 				console.log(e) 
 				this.model.bid_btime = e.value[0].value
 				this.showStartTime = false 
+				this.$refs.from.validateField('bid_bdate')
 				this.$refs.from.validateField('bid_edate')
 			},
+			//确认 结束时间
 			confirmEndTime(e) {
 				console.log(e) 
 				if(this.model.bid_bdate == this.model.bid_edate && e.value[0].value <= this.model.bid_btime) {

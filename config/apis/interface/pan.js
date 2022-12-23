@@ -124,18 +124,18 @@ export const deleteBuy = (data) => http.get('delete_buy', data)
 // ---交易类型为1-竞拍交易时必填---
 // 'bid_is_part' => '竞拍方式', 1-按手竞拍 2-总量竞拍  
 // 'bid_step_amount' => '每手尺寸',
-// 'bid_min_amount' => '至少下单',
+// 'bid_min_amount' => '至少下单', 每手尺寸*至少下单必须小于等于挂牌数量
 // 'price' => '起拍价', 这个价格跟原来的单价字段一样的
 // 'bid_re_price' => '保留价',优于保留价的才可能成交
 // 'bid_step' => '加价幅度',
 // 'bid_is_repeat' => '允许多次竞拍', 1-是 0-否
 // 'bid_bdate' => '开始时间（日）',
-// 'bid_btime' => '开始时间（点）',
-// 'bid_edate' => '结束时间（日）',
-// 'bid_etime' => '结束时间（点）',
+// 'bid_btime' => '开始时间（点）', 竞标开始时间必须大于等于当前时间24小时
+// 'bid_edate' => '结束时间（日）', 
+// 'bid_etime' => '结束时间（点）', 竞标持续时间必须小于等于1天
 // 'bid_is_anonym' => '匿名竞拍',1-是 0-否
 // 'bid_is_darkmark' => '是否暗标',1-是 0-否
-
+// 
 // 我的卖盘 参数p
 export const mySell = (data) => http.get('my_sell', data)
 // 修改卖盘状态 参数id 卖盘id state 1-激活 0-取消激活
