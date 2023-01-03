@@ -150,7 +150,10 @@
 								<u-button type="primary"  >竞 价</u-button>
 							</view> -->
 							<view class="u-m-l-10"> 
-								<u-button type="error"  >预 约</u-button>
+								<u-button type="error" :customStyle="{
+									backgroundColor: typeActive == 'white'? '#00adff' : '#fb4242', 
+									borderColor: typeActive == 'white'? '#00adff' : '#fb4242'
+									}" >预 约</u-button>
 							</view>
 						</view>
 					</view>
