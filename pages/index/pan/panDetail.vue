@@ -32,6 +32,9 @@
 						<template v-if="list.trade_mode == '2'">
 							一口价
 						</template>
+						<template v-else-if="list.trade_mode == '1'">
+							竞价
+						</template>
 						<template v-else>
 							议价
 						</template>
@@ -97,6 +100,120 @@
 		</view>
 		
 		<view class="pan-main">
+			<view class="main-box u-font-30 u-m-b-30"
+				:style="{
+					backgroundColor: themeConfig.pan.boxBgTop
+				}"
+				v-if="list.trade_mode == '1'"
+			>
+				<view class="main-box-title u-flex u-flex-items-center u-flex-between u-p-20 u-p-l-30 u-p-r-30"
+					
+				>
+					<view class="u-flex u-flex-items-center">
+						<i class="custom-icon-scoretop custom-icon u-m-r-10" :style="{color: themeConfig.pan.lightcolor}"></i>
+						<text :style="{color: themeConfig.pan.baseText}">竞拍信息</text>
+					</view>
+					<view class="u-flex u-flex-items-center" @click="jpListShow = true" >
+						<text :style="{color: themeConfig.pan.baseText}">竞拍记录</text>
+						<i class="custom-icon-fenlei custom-icon u-m-l-10" :style="{color: themeConfig.pan.lightcolor}"></i>
+					</view>
+				</view>
+				<view class="u-p-10 u-p-l-20 u-p-r-20">
+					<view class="jp-bar u-p-20 u-flex u-flex-items-center u-flex-between"
+						:style="{
+							backgroundColor: themeConfig.pan.headerBg,
+							color: themeConfig.pan.headerText
+						}" 
+					>
+						<view class="item u-flex u-flex-column ">
+							<view class="u-m-b-10">距竞拍开始还剩</view>
+							<view>
+								<u-count-down
+									:time="30 * 60 * 60 * 1000"
+									format="DD:HH:mm:ss"
+									autoStart
+									millisecond
+									@change="onJpTimeChange"
+								>
+									<view class="time">
+										<text class="time__item">{{ timeData.days }} 天</text>
+										<text class="time__item u-m-l-10">{{ timeData.hours>10?timeData.hours:'0'+timeData.hours}}&nbsp;时</text>
+										<text class="time__item u-m-l-10">{{ timeData.minutes }} 分</text>
+										<text class="time__item u-m-l-10">{{ timeData.seconds }} 秒</text>
+									</view>
+								</u-count-down>
+							</view>
+							
+						</view>
+						<view class="item u-flex u-flex-items-center">
+							<!-- <view class="u-m-l-10"> 
+								<u-button type="primary"  >竞 价</u-button>
+							</view> -->
+							<view class="u-m-l-10"> 
+								<u-button type="error"  >预 约</u-button>
+							</view>
+						</view>
+					</view>
+				</view>
+				<view  :class="{
+					'u-p-15': typeActive == 'white'
+				}" >
+					<view class="main-box-content "
+						:class="{
+							'u-p-15': typeActive == 'white',
+							'u-p-30': typeActive == 'dark'
+						}"
+						:style="{
+							backgroundColor: themeConfig.pan.boxBg,
+							borderRadius: typeActive == 'white'?'20rpx': '0',
+						}"
+					>
+						<view class="item u-flex u-flex-items-baseline u-m-b-20">
+							<view class="item-label" :style="{
+								color: themeConfig.pan.pageTextSub
+							}">起拍价</view>
+							<view class="item-content" :style="{
+								color: themeConfig.pan.baseText
+							}">2400 元/吨</view>
+						</view>
+						<view class="item u-flex u-flex-items-baseline u-m-b-20">
+							<view class="item-label" :style="{
+								color: themeConfig.pan.pageTextSub
+							}">当前叫价</view>
+							<view class="item-content" :style="{
+								color: themeConfig.pan.baseText
+							}">2400 元/吨</view>
+						</view>
+						<view class="item u-flex u-flex-items-baseline u-m-b-20">
+							<view class="item-label" :style="{
+								color: themeConfig.pan.pageTextSub
+							}">加价幅度</view>
+							<view class="item-content" :style="{
+								color: themeConfig.pan.baseText
+							}">100 元/吨</view>
+						</view>
+						<view class="item u-flex u-flex-items-baseline u-m-b-20">
+							<view class="item-label" :style="{
+								color: themeConfig.pan.pageTextSub
+							}">每手尺寸</view>
+							<view class="item-content" :style="{
+								color: themeConfig.pan.baseText
+							}">2 吨</view>
+						</view>
+						<view class="item u-flex u-flex-items-baseline u-m-b-20">
+							<view class="item-label" :style="{
+								color: themeConfig.pan.pageTextSub
+							}">至少下单</view>
+							<view class="item-content" :style="{
+								color: themeConfig.pan.baseText
+							}">1 手</view>
+						</view>
+					</view>
+				</view>
+				
+				
+			</view>
+			
 			<view class="main-box u-p-30 u-font-30 u-m-b-30"
 					:style="{
 						backgroundColor: themeConfig.pan.boxBg,
@@ -358,6 +475,38 @@
 				></u-swiper>
 			</view>
 		</u-popup>
+		<u-popup 
+			:show="jpListShow" 
+			@close="jpListShow = false" 
+			mode="bottom" 
+			bgColor="transparent"
+		>
+			<view class="u-p-20 jp-wrap" >
+				<view style="border-radius: 10px;overflow: hidden;">
+					<view
+						class="u-text-center u-p-20 u-font-28"
+						:style="{
+							color: themeConfig.tabText, 
+							backgroundColor: themeConfig.pan.pageBg,
+						}"
+						>竞拍记录</view>
+					<scroll-view class="jp-content u-p-20"
+						:style="{
+							color: themeConfig.tabText,
+							backgroundColor: themeConfig.pan.pageBg,
+						}"
+						scroll-y
+					> 
+						<view class="u-p-10" v-for="(item, index) in 5" :key="index">
+							<jpCard></jpCard>
+						</view>
+						
+					</scroll-view>
+				</view>
+				
+			</view>
+			
+		</u-popup>
 		<tabBar
 			:theme="typeActive"
 			:customStyle="{
@@ -429,10 +578,12 @@
 				id: '',
 				pan: '',
 				imgWrapShow: false,
+				jpListShow: false,
 				backBtn: true,
 				indexList: [],
 				list: {},
 				cpy: {},
+				timeData: {},
 				cpyInfo: true,
 				tabs_current: 0,
 				tabs_desc: [
@@ -481,6 +632,9 @@
 			...mapMutations({
 				handleGoto: 'user/handleGoto'
 			}),
+			onJpTimeChange(e) {
+                this.timeData = e
+            },
 			makePhone(mobile) {
 				uni.makePhoneCall({
 					phoneNumber: mobile 
@@ -572,8 +726,30 @@
 		}
 	}
 </script>
+<style lang="scss">
+.time {
+    @include flex;
+    align-items: center;
 
+    &__item {
+         color: #fff;
+         font-size: 14px;
+         text-align: center;
+     }
+}
+</style>
 <style lang="scss" scoped>
+	.jp-wrap {  
+		box-sizing: border-box;
+	}
+	.jp-bar {
+		border-radius: 10px;
+	}
+	.jp-content {
+		height: 400px;
+		width: 100%;
+		box-sizing: border-box;
+	}
 	.imgw {
 		width: 100vw;
 	}

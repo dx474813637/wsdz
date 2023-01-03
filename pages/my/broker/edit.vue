@@ -52,7 +52,24 @@
 						></u--input>
 					</u-form-item>
 					
-					
+					<u-form-item
+						label="数量"
+						prop="amount"
+						ref="amount"
+						required
+					>
+						<view class="u-flex u-flex-items-center">
+							<view class="u-flex-1">
+								<u--input
+									v-model="model.amount"
+									clearable
+									type="digit"
+								></u--input>
+							</view>
+							<view class="u-p-l-30 u-p-r-30" v-if="prodUnit">{{prodUnit}}</view>
+						</view>
+						
+					</u-form-item>
 					<u-form-item
 						label="现货类型"
 						prop="trade_type"
@@ -440,24 +457,7 @@
 							clearable
 						></u--input>
 					</u-form-item>
-					<u-form-item
-						label="数量"
-						prop="amount"
-						ref="amount"
-						required
-					>
-						<view class="u-flex u-flex-items-center">
-							<view class="u-flex-1">
-								<u--input
-									v-model="model.amount"
-									clearable
-									type="digit"
-								></u--input>
-							</view>
-							<view class="u-p-l-30 u-p-r-30" v-if="prodUnit">{{prodUnit}}</view>
-						</view>
-						
-					</u-form-item>
+					
 					<u-form-item
 						v-if="pan == 'b'"
 						label="主规格"
@@ -476,6 +476,7 @@
 						prop="express_time"
 						ref="express_time"
 						required
+						v-if="model.trade_mode != '1'"
 					>
 						<view class="u-flex u-flex-items-center">
 							<view class="u-flex-2">
@@ -574,7 +575,7 @@
 						</view>
 						
 					</u-form-item>
-					<template v-if="auth == 1">
+					<template v-if="auth == 1 && model.trade_mode != '1'">
 						<u-form-item
 							label="报盘企业"
 							prop="customer_id"
@@ -649,6 +650,7 @@
 						</u-form-item>
 						<u-form-item
 							label="委托撮合"
+							v-if="model.trade_mode != '1'"
 						>
 							<u-checkbox-group 
 							    v-model="checkbox_broker_login"
