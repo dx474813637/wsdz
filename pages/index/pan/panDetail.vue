@@ -145,15 +145,12 @@
 							</view>
 							
 						</view>
-						<view class="item u-flex u-flex-items-center">
-							<!-- <view class="u-m-l-10"> 
-								<u-button type="primary"  >竞 价</u-button>
-							</view> -->
+						<view class="item u-flex u-flex-items-center"> 
 							<view class="u-m-l-10"> 
 								<u-button type="error" :customStyle="{
 									backgroundColor: typeActive == 'white'? '#00adff' : '#fb4242', 
 									borderColor: typeActive == 'white'? '#00adff' : '#fb4242'
-									}" >预 约</u-button>
+									}" @click="jpBtnEvent">预 约</u-button>
 							</view>
 						</view>
 					</view>
@@ -478,6 +475,7 @@
 				></u-swiper>
 			</view>
 		</u-popup>
+		<!-- 竞拍记录 -->
 		<u-popup 
 			:show="jpListShow" 
 			@close="jpListShow = false" 
@@ -495,6 +493,7 @@
 						>竞拍记录</view>
 					<scroll-view class="jp-content u-p-20"
 						:style="{
+							height: '400px',
 							color: themeConfig.tabText,
 							backgroundColor: themeConfig.pan.pageBg,
 						}"
@@ -505,6 +504,80 @@
 						</view>
 						
 					</scroll-view>
+				</view>
+				
+			</view>
+			
+		</u-popup>
+		
+		<!-- 竞标表单 -->
+		<u-popup
+			:show="jpSubmitShow" 
+			@close="jpSubmitShow = false" 
+			mode="center" 
+			round="20"
+			bgColor="transparent"
+		>
+			<view class="u-p-20 jp-wrap" style="width: 80vw; ">
+				<view style="border-radius: 10px;overflow: hidden;">
+					<view
+						class="u-text-center u-p-20 u-font-28"
+						:style="{
+							color: themeConfig.tabText, 
+							backgroundColor: themeConfig.pan.pageBg,
+						}"
+						>竞标表单</view>
+					<view class="jp-content u-p-20 u-p-l-40"
+						:style="{
+							color: themeConfig.tabText,
+							backgroundColor: themeConfig.pan.pageBg,
+						}" 
+					> 
+						<u--form
+								labelPosition="left"
+								:model="jpData" 
+								ref="form1"
+								labelWidth="100"
+								:borderBottom="false"
+								:labelStyle="{
+									color: themeConfig.tabText,
+								}"
+							>
+							<u-form-item
+									label="竞标数量"
+									prop="num" 
+								>
+									<u-number-box 
+										v-model="jpData.num" 
+										:step="jpNumConfig.num.step" 
+										:min="jpNumConfig.num.min" 
+										:max="jpNumConfig.num.max" 
+										:color="themeConfig.pan.numboxColor"
+										:iconStyle="{color: themeConfig.pan.numboxColor}"
+										:bgColor="themeConfig.pan.numboxBg"
+										inputWidth="60"
+									></u-number-box>
+								</u-form-item>
+							<u-form-item
+									label="加价"
+									prop="add" 
+								>
+									<u-number-box 
+										v-model="jpData.add" 
+										:step="jpNumConfig.add.step" 
+										:min="jpNumConfig.add.min" 
+										:max="jpNumConfig.add.max" 
+										:color="themeConfig.pan.numboxColor"
+										:iconStyle="{color: themeConfig.pan.numboxColor}"
+										:bgColor="themeConfig.pan.numboxBg"
+										inputWidth="60"
+									></u-number-box>
+								</u-form-item>
+						</u--form> 
+						<view class="u-p-20">
+							<u-button type="primary">提 交</u-button>
+						</view>
+					</view>
 				</view>
 				
 			</view>
@@ -582,11 +655,16 @@
 				pan: '',
 				imgWrapShow: false,
 				jpListShow: false,
+				jpSubmitShow: false,
 				backBtn: true,
 				indexList: [],
 				list: {},
 				cpy: {},
 				timeData: {},
+				jpData: {
+					num: 0,
+					add: 0, 
+				},
 				cpyInfo: true,
 				tabs_current: 0,
 				tabs_desc: [
@@ -629,7 +707,22 @@
 			...mapGetters({
 				themeConfig: 'theme/themeConfig',
 				sys: 'theme/sys'
-			})
+			}),
+			jpNumConfig() {
+				//竞拍 步进器配置
+				return {
+					add: {
+						step: 2,
+						min: 0,
+						max: 100
+					},
+					num: {
+						step: 2,
+						min: 0,
+						max: 100
+					},
+				}
+			},
 		},
 		methods: {
 			...mapMutations({
@@ -725,6 +818,13 @@
 				// 		tims: '1'
 				// 	}
 				// })
+			},
+			jpBtnEvent() {
+				uni.showToast({
+					title: '预约成功',
+				})
+				
+				this.jpSubmitShow = true
 			}
 		}
 	}
@@ -748,8 +848,7 @@
 	.jp-bar {
 		border-radius: 10px;
 	}
-	.jp-content {
-		height: 400px;
+	.jp-content { 
 		width: 100%;
 		box-sizing: border-box;
 	}

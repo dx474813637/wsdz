@@ -93,6 +93,8 @@ export default {
 		headerText: '#fff',
 		headerSubText: '#d3e6ff',
 		border: '1rpx solid #eee',
+		numboxBg: '#cadcf9',
+		numboxColor: '#007aff',
 	},
 	search: {
 		tagBg: '#e8e8e8',
