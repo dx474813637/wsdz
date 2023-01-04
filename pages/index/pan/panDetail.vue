@@ -112,6 +112,10 @@
 					<view class="u-flex u-flex-items-center">
 						<i class="custom-icon-scoretop custom-icon u-m-r-10" :style="{color: themeConfig.pan.lightcolor}"></i>
 						<text :style="{color: themeConfig.pan.baseText}">竞拍信息</text>
+						<view class="u-m-l-16">
+							<u-icon name="reload" size="20px" :color="themeConfig.pan.lightcolor"></u-icon>
+						</view>
+						
 					</view>
 					<view class="u-flex u-flex-items-center" @click="jpListShow = true" >
 						<text :style="{color: themeConfig.pan.baseText}">竞拍记录</text>
