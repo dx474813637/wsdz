@@ -744,26 +744,50 @@
 					"enablePullDownRefresh": false
 				}
 
+			}, {
+				"path": "trade_monitor/trade_monitor",
+				"style": {
+					"navigationBarTitleText": "行情监测",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "trade_monitor/trade_monitor_detail",
+				"style": {
+					"navigationBarTitleText": "行情监测编辑",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "bid/bid_subscribe",
+				"style": {
+					"navigationBarTitleText": "竞价预约",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "bid/bid_join",
+				"style": {
+					"navigationBarTitleText": "竞价参与",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "bid/bid_join_detail",
+				"style": {
+					"navigationBarTitleText": "竞价参与明细",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "bid/bid_subscribe_detail",
+				"style": {
+					"navigationBarTitleText": "竞拍预约明细",
+					"enablePullDownRefresh": false
+				}
+
 			}
-		    ,{
-                    "path" : "trade_monitor/trade_monitor",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "行情监测",
-                    "enablePullDownRefresh": false
-                }
-                
-                }
-                ,{
-                    "path" : "trade_monitor/trade_monitor_detail",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "行情监测编辑",
-                    "enablePullDownRefresh": false
-                }
-                
-                }
-            ]
+		]
 	}, {
 		"root": "pages/more",
 		"pages": [{

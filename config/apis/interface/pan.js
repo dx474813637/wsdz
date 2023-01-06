@@ -136,7 +136,7 @@ export const deleteBuy = (data) => http.get('delete_buy', data)
 // 'bid_is_anonym' => '匿名竞拍',1-是 0-否
 // 'bid_is_darkmark' => '是否暗标',1-是 0-否
 // 
-// 我的卖盘 参数p
+// 我的卖盘 参数p trade_mode  0-议价交易 1-竞拍交易 2-一口价交易 不传全部
 export const mySell = (data) => http.get('my_sell', data)
 // 修改卖盘状态 参数id 卖盘id state 1-激活 0-取消激活
 export const ableSell = (data) => http.get('able_sell', data)
@@ -146,3 +146,33 @@ export const deleteSell = (data) => http.get('delete_sell', data)
 export const createSell = (data, config={}) => http.post('create_sell', data, config)
 //  修改卖盘 多一个参数卖盘id
 export const changeSell = (data, config={}) => http.post('change_sell', data, config)
+
+// 竞价
+// bid_subscribe_subscribe_sell 竞价预约 source:订单类型,SELL-采购订单 source_id:订单ID
+export const bid_subscribe_subscribe_sell = (data) => http.get('bid_subscribe_subscribe_sell', data)
+
+// bid_subscribe_list_bid_subscribe 预约列表 trade_name:关键词 p:页数
+export const bid_subscribe_list_bid_subscribe = (data) => http.get('bid_subscribe_list_bid_subscribe', data)
+
+// bid_subscribe_detail_bid_subscribe 预约明细 id:预约ID
+export const bid_subscribe_detail_bid_subscribe = (data) => http.get('bid_subscribe_detail_bid_subscribe', data)
+
+// bid_subscribe_cancel_bid_subscribe 取消预约 id:预约ID
+export const bid_subscribe_cancel_bid_subscribe = (data) => http.get('bid_subscribe_cancel_bid_subscribe', data)
+
+// bid_subscribe_list_bid 竞价参与列表 trade_name:关键词 p:页数
+export const bid_subscribe_list_bid = (data) => http.get('bid_subscribe_list_bid', data)
+
+// bid_subscribe_detail_bid 竞价参与明细 id:竞价参与ID
+export const bid_subscribe_detail_bid = (data) => http.get('bid_subscribe_detail_bid', data)
+
+// bid_subscribe_list_subscribe 我发布的竞价-预约列表（挂牌方）source:订单类型,SELL-采购订单 source_id:订单ID p:页数
+export const bid_subscribe_list_subscribe = (data) => http.get('bid_subscribe_list_subscribe', data)
+
+// bid_subscribe_bid_sell 竞价出价
+// source: 订单类型 SELL
+// source_id: 订单ID
+// curr_unit_price: 当前价
+// bid_price: 加价
+// bid_amount: 数量
+export const bid_subscribe_bid_sell = (data) => http.get('bid_subscribe_bid_sell', data)

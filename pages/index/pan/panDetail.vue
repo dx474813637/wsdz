@@ -110,10 +110,10 @@
 					
 				>
 					<view class="u-flex u-flex-items-center">
-						<i class="custom-icon-scoretop custom-icon u-m-r-10" :style="{color: themeConfig.pan.lightcolor}"></i>
+						<i class="custom-icon-paimai custom-icon u-m-r-10" :style="{color: themeConfig.pan.lightcolor}"></i>
 						<text :style="{color: themeConfig.pan.baseText}">竞拍信息</text>
 						<view class="u-m-l-16">
-							<u-icon name="reload" size="20px" :color="themeConfig.pan.lightcolor"></u-icon>
+							<u-icon name="reload" @click="refreshData" size="20px" :color="themeConfig.pan.lightcolor"></u-icon>
 						</view>
 						
 					</view>
@@ -130,11 +130,12 @@
 						}" 
 					>
 						<view class="item u-flex u-flex-column ">
-							<view class="u-m-b-10">距竞拍开始还剩</view>
+							<view class="u-m-b-10">{{countDownStr}}</view>
 							<view>
 								<u-count-down
-									:time="30 * 60 * 60 * 1000"
-									format="DD:HH:mm:ss"
+									ref="countDown"
+									:time="timeLeft"
+									format="DD:HH:mm:ss" 
 									autoStart
 									millisecond
 									@change="onJpTimeChange"
@@ -154,7 +155,7 @@
 								<u-button type="error" :customStyle="{
 									backgroundColor: typeActive == 'white'? '#00adff' : '#fb4242', 
 									borderColor: typeActive == 'white'? '#00adff' : '#fb4242'
-									}" @click="jpBtnEvent">预 约</u-button>
+									}" throttleTime="800" :disabled="jpBtnDisabled" @click="jpBtnEvent">{{jpBtnName}}</u-button>
 							</view>
 						</view>
 					</view>
@@ -579,7 +580,7 @@
 								</u-form-item>
 						</u--form> 
 						<view class="u-p-20">
-							<u-button type="primary">提 交</u-button>
+							<u-button type="primary" @click="bidPriceSubmit">提 交</u-button>
 						</view>
 					</view>
 				</view>
@@ -688,6 +689,8 @@
 				pageLoading: true,
 				orderBtnShow: 1,
 				orderBtnName: '立即下单',
+				jpBtnName: '预 约',
+				timeLeft: 0,
 			};
 		},
 		async onLoad(options) {
@@ -702,6 +705,11 @@
 			this.pageLoading = false
 			// await this.getCpyData()
 			await this.getDataList()
+		},
+		watch: {
+			timeLeft() {
+				// this.$refs.countDown.start()
+			}
 		},
 		computed: {
 			...mapState({
@@ -727,6 +735,19 @@
 					},
 				}
 			},
+			countDownStr() {
+				if(this.list.Bid_role.is_bid_begin == 1) return '距竞拍开始还剩'
+				else if(this.list.Bid_role.is_biding == 1) return '距竞拍结束还剩'
+				else if(this.list.Bid_role.is_bid_end == 1) return '竞拍已结束'
+				return ''
+			},
+			jpBtnDisabled() {
+				let state = this.list.hasOwnProperty('Bid_subscribe') && this.list.Bid_subscribe.state <= 2 
+				if(
+					state
+				) return true;
+				return false
+			}
 		},
 		methods: {
 			...mapMutations({
@@ -743,11 +764,27 @@
 			handleBackEvent() {
 				uni.navigateBack()
 			},
+			async refreshData() {
+				uni.showLoading()
+				await this.getData() 
+			},
 			async getData() {
 				const res = await this.$api[this.pan == 's'? 'getSellDetail' : 'getBuyDetail']({params: {id: this.id}})
 				// console.log(res)
 				if(res.code == 1) {
 					this.list = res.list
+					if(this.pan == 's' && this.list.trade_mode == '1') {
+						let now = new Date().getTime()
+						if(this.list.Bid_role.is_bid_begin == 1) {
+							//预约阶段
+							this.timeLeft = this.list.Bid_role.str_btime * 1000 - now
+						}
+						else if(this.list.Bid_role.is_biding == 1) {
+							//竞拍中
+							this.timeLeft = this.list.Bid_role.str_etime * 1000 - now
+						}
+						
+					}
 					this.cpy = res.company
 					this.tabs_desc[0].content = this.list.intro
 					this.tabs_desc[1].content = this.list.remark
@@ -755,7 +792,9 @@
 					this.tabs_desc[2].content =res.detail_info
 					this.orderBtnShow = res.button
 					this.orderBtnName = res.button_name
+					this.jpBtnName = res.button_name1
 					this.setOnlineControl(res)
+					
 				}
 			},
 			async getCpyData() {
@@ -823,12 +862,46 @@
 				// 	}
 				// })
 			},
-			jpBtnEvent() {
-				uni.showToast({
-					title: '预约成功',
-				})
+			async jpBtnEvent() {
+				
+				// await this.bid_subscribe()  
+				
 				
 				this.jpSubmitShow = true
+			},
+			async bid_subscribe() {
+				uni.showLoading()
+				const res = await this.$api.bid_subscribe_subscribe_sell({
+					params: {
+						source: 'SELL',
+						source_id: this.id
+					}
+				})
+				if(res.code == 1) {
+					uni.showToast({
+						title: '预约成功',
+					})
+				}
+			},
+			async bidPriceSubmit() {
+				uni.showLoading()
+				const res = await this.$api.bid_subscribe_bid_sell({
+					params: {
+						source: 'SELL',
+						source_id: this.id,
+						curr_unit_price: this.list.curr_unit_price,
+						bid_price: this.jpData.add,
+						bid_amount: this.jpData.num,
+					}
+				})
+				
+				if(res.code == 1) {
+					uni.showToast({
+						title: res.msg
+					})
+					this.jpSubmitShow = false
+					await this.refreshData()
+				}
 			}
 		}
 	}

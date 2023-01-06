@@ -52,6 +52,8 @@
 						:name="item.name"
 						:icon="item.icon"
 						:pan="item.pan"
+						:jpList="jpList"
+						@changeTimeData="changeTimeData"
 						@settingClick="handleSettingClick"
 					></panCard>
 				</view>
@@ -165,7 +167,29 @@
 				onlineControl: {
 					title: '首页'
 				},
-				attentionJSON: ''
+				attentionJSON: '',
+				jpList: [
+					{
+						id: '001',
+						name: '正丁醇',
+						price: '0.10',
+						unit: '吨',
+						num: '25',
+						state: 1,
+						time: 18.5 * 60 * 60 * 1000,
+						timeData: {}
+					},
+					{
+						id: '002',
+						name: '正丁醇2',
+						price: '0.20',
+						unit: '吨',
+						num: '35',
+						state: 0,
+						time: 30 * 60 * 60 * 1000,
+						timeData: {}
+					},
+				]
 			};
 		},
 		computed: {
@@ -193,6 +217,15 @@
 				this.handleGoto({
 					type: 'reLaunch',
 					url: `/pages/index/notice/notice`
+				})
+			},
+			changeTimeData({data, item}) {
+				this.jpList.some(ele => {
+					if(ele.id == item.id) {
+						ele.timeData = data
+						return true
+					}
+					return false
 				})
 			},
 			async getNotice() {

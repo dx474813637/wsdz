@@ -242,6 +242,51 @@ const tradeM2str = v => {
 	else if(v == 'price')  return '价格监测'
 	else return v
 }
+const bidTradeM2str = v => {
+	if(v == '0') return '议价'
+	else if(v == '1')  return '竞拍'
+	else if(v == '2')  return '一口价'
+	else return v
+}
+
+const bid_subscribe2Str = v => {
+	if(v == '0') return '待审核'
+	else if(v == '1')  return '预约成功'
+	else if(v == '2')  return '预约成功（有保证金）'
+	else if(v == '3')  return '已取消'
+	else if(v == '4')  return '审核拒绝'
+	else return v
+}
+const bid_join2Str = (v, data) => {
+	if(v == '0') return '待审核'
+	else if(v == '1')  {
+		if(data.hasOwnporperty('order_id')) return '竞拍成功'
+		else return '竞拍失败'
+	}
+	else if(v == '2')  return '审核拒绝'
+	else if(v == '3')  return '取消'
+	else if(v == '4')  {
+		if(data.Trade.Bid_role.is_bid_end == '1') return '竞拍结束'
+		if(data.Trade.Bid_role.is_biding == '1') return '竞拍中'
+		if(data.Trade.Bid_role.is_bid_begin == '1') return '竞拍中'
+		return '待竞拍'
+	}
+	else return v
+}
+// state=0  
+//    待审核
+// state=1 
+//    如果order_id存在：竞拍成功
+//    如果order_id为空：竞拍失败
+// state=2
+//    审核拒绝
+// state=3
+//    取消
+// state=4
+//    如果Trade数组里的Bid_role数组的is_bid_end=1：竞拍结束
+//    如果Trade数组里的Bid_role数组的is_biding=1：竞拍中
+//    如果Trade数组里的Bid_role数组的is_bid_begin=1：竞拍中
+//    否则：待竞拍
 
 export default {
 	type2str,
@@ -272,5 +317,8 @@ export default {
 	sinoAuthState2str,
 	sinoState2str,
 	myCpyAuth2str,
-	tradeM2str
+	tradeM2str,
+	bid_subscribe2Str,
+	bid_join2Str,
+	bidTradeM2str
 }

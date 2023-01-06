@@ -9,12 +9,19 @@
 		>
 		<view class="card-header u-flex u-flex-between u-flex-items-center u-p-10">
 			<view class="item u-flex-1 u-p-r-20" @click="handleGotoDetail">
-				<view class="item u-flex u-flex-items-center u-m-b-10">
-					<u-tag :text="type | tradeType2" size="mini" plain plainFill :custionStyle="{height: '18px', minHeight: '18px'}"></u-tag>
-					<text class="name u-line-1 u-p-l-10">{{name}}</text>
+				<view class="item u-flex u-flex-items-center u-m-b-10"> 
+					<text class="name u-line-1 ">{{name}}</text>
 					<text class="pp text-error">{{price | price2str(dprice)}} <template v-if="price>0">元/{{unit}}</template></text>
 				</view>
-				<view class="item item-sub u-line-1">{{sub}}</view>
+				<view class="item u-flex u-flex-items-center">
+					<view class="u-m-r-10">
+						<u-tag :text="origin.trade_mode | bidTradeM2str" plain plainFill size="mini" type="error" :custionStyle="{height: '18px', minHeight: '18px'}"></u-tag>
+					</view>
+					<view class="u-m-r-10">
+						<u-tag :text="type | tradeType2" size="mini" plain plainFill :custionStyle="{height: '18px', minHeight: '18px'}"></u-tag>
+					</view>
+					<text class=" item-sub u-line-1">{{sub}}</text>
+				</view>
 			</view>
 			<view class="item">
 				<u-switch 

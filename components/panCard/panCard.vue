@@ -106,6 +106,75 @@
 				</view>
 			</view>
 		</view>
+		
+		<template  v-if="pan == 's'">
+			<view class="card-title u-flex u-flex-items-center u-flex-between u-p-10 u-m-b-12 u-m-t-20">
+				<view class="item u-flex u-flex-items-center">
+					<i class="custom-icon u-font-40 custom-icon-paimai" :style="{color: themeConfig.followCard.iconText}"></i>
+					<text class="u-p-l-10" :style="{color: themeConfig.followCard.titleText}">竞拍中心</text>
+				</view>
+				<view class="item u-flex u-flex-items-center" :style="{color: themeConfig.followCard.subText}">
+					<!-- <i class="custom-icon custom-icon-shezhi1 u-font-28" ></i>
+					<text class="u-font-28 u-p-l-10">设置推荐</text> -->
+				</view>
+			</view>
+			
+			<view class="card-content u-m-b-12 u-m-t-12" :style="{
+				boxShadow: themeConfig.boxShadow,
+				backgroundColor: themeConfig.followCard.boxTopBg,
+			}">
+				<!-- <view class="u-p-20 u-p-l-40" :style="{
+						color: themeConfig.tabTextActive
+					}">
+					竞拍列表
+				</view> -->
+				<view class="u-p-20 jp-list"  :style="{color: themeConfig.followCard.baseText}" > 
+					<view class="u-flex u-flex-between u-flex-items-center u-m-t-20 u-m-b-20" v-for="(item, index) in jpList" :key="item.id">
+						<view class="item u-flex-1">
+							<view class="jp-title u-flex u-flex-items-center u-line-1">
+								<view class="item u-flex u-flex-items-center u-m-b-10 ">
+									<u-tag text="竞" size="mini" type="error"></u-tag>
+									<view class="u-font-28 u-m-l-10 u-line-1">{{item.name}}</view>
+								</view>
+								
+							</view>
+							<view class="jp-sub u-flex u-flex-items-center">
+								<view class="item">
+									<u-tag :text="`${item.price} 元/${item.unit}`" plain size="mini" type="error"></u-tag> 
+								</view>
+								<view class="item u-m-l-10">
+									<u-tag :text="`${item.num}${item.unit}`" plain size="mini" type="error"></u-tag> 
+								</view>
+							</view>
+						</view>
+						<view class="item u-p-12 u-p-l-20 u-p-r-20 u-font-28 jp-time-box u-flex u-flex-column u-flex-items-end" :style="{backgroundColor: themeConfig.followCard.boxCardBg}">
+							<view class="jp-time-label u-m-b-6" :style="{color: themeConfig.followCard.subText}">距竞拍{{item.state == 1? '结束' : '开始'}}还剩</view>
+							<view class="jp-time">
+								<u-count-down
+									:time="item.time"
+									format="DD:HH:mm:ss"
+									autoStart
+									millisecond 
+									@change="onChange($event, item)"
+								>
+									<view class="time" :style="{
+										color: item.state == 1? themeConfig.error : themeConfig.warn
+									}">
+										<text class="time__item u-m-r-10" v-if="item.timeData.days>0">{{ item.timeData.days }}天</text>
+										<text class="time__item u-m-r-10">{{ item.timeData.hours>10?item.timeData.hours:'0'+item.timeData.hours}}时</text>
+										<text class="time__item u-m-r-10">{{ item.timeData.minutes }}分</text>
+										<text class="time__item ">{{ item.timeData.seconds }}秒</text>
+									</view>
+								</u-count-down>
+							</view>
+						</view>
+					</view>
+				</view>
+			</view>	
+				 
+		</template>
+		
+	
 	</view>
 </template>
 
@@ -130,6 +199,10 @@
 				type: String,
 				default: 's'
 			},
+			jpList: {
+				type: Array,
+				default: () => []
+			}
 		},
 		data() {
 			return {
@@ -144,7 +217,7 @@
 					height: '44px',
 					padding: '0 13px'
 				},
-				loading: false
+				loading: false,
 			};
 		},
 		computed: {
@@ -211,6 +284,10 @@
 			},
 			handleClickSetting() {
 				this.$emit('settingClick', {pan: this.pan})
+			},
+			onChange(e, item) { 
+				this.$emit('changeTimeData', {data: e, item})
+				
 			}
 		}
 	}
@@ -226,6 +303,21 @@
 	
 </style>
 <style lang="scss" scoped>
+	.jp-list {
+		.jp-time-box {
+			border-radius: 10px;
+			
+		}
+	}
+	.time {
+	    @include flex;
+	    align-items: center;
+	
+	    &__item { 
+	         font-size: 15px;
+	         text-align: center;
+	     }
+	}
 	.u-s-l-wrap {
 		position: relative;
 		.s-l-label {

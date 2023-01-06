@@ -1,7 +1,7 @@
 <template>
-	<view class="w">
-		<view class="search-wrapper u-p-l-20 u-p-r-20">
-			<view class="item u-p-b-10" @click="show = true">
+	<view class="w"> 
+		<view class=" search-wrapper u-flex u-flex-items-center u-p-l-20 u-p-r-20 u-p-b-10">
+			<view class="item u-m-r-10" style="flex: 0 0 35%" @click="show = true">
 				<u-input
 					:value="product"
 					placeholder="点击选择商品" 
@@ -14,7 +14,7 @@
 					</template>
 				</u-input>
 			</view>
-			<view class="item u-flex-1 u-p-b-10 u-flex u-flex-items-center">
+			<view class="item u-flex-1  u-flex u-flex-items-center">
 				
 				<view class="u-p-r-10 u-flex-1">
 					<u--input 
@@ -25,15 +25,28 @@
 					></u--input>
 				</view>
 				<view class="u-p-r-10">
-					<u-button type="primary"  @click="handleSearch" :customStyle="{width: '80px', height: '35px', borderRadius: '14rpx'}" >搜索</u-button>
+					<u-button type="primary" icon="search"  @click="handleSearch" :customStyle="{width: '35px', height: '35px', borderRadius: '14rpx'}" ></u-button>
 				</view>
 				
-				<u-button type="warning" icon="reload" @click="resetSearch" :customStyle="{width: '80px', height: '35px', borderRadius: '14rpx'}" >重置</u-button>
+				<u-button type="warning" icon="trash" @click="resetSearch" :customStyle="{width: '35px', height: '35px', borderRadius: '14rpx'}" ></u-button>
 			</view>
 			
 		</view>
+		<view class="tabs-w u-p-l-10 u-p-r-10" v-if="pan == 's'">
+			<u-tabs
+				:list="tabs_list"
+				:current="tabs_current"
+				lineHeight="0"
+				:activeStyle="activeTabsStyle"
+				:itemStyle="itemTabsStyle"
+				@change="handleTabsChange"
+			>
+			</u-tabs>
+		</view>
 		
-		<view class="list u-p-l-20 u-p-r-20">
+		<view class="list u-p-l-20 u-p-r-20" :style="{
+			height: pan == 's'? 'calc(100% - 146px - env(safe-area-inset-bottom))' : 'calc(100% - 102px - env(safe-area-inset-bottom))'
+		}">
 			<u-list
 				height="100%"
 				enableBackToTop
@@ -120,11 +133,47 @@
 				curP: 1,
 				loadstatus: 'loadmore',
 				pan: 's',
+				
+				tabs_current: 0,
+				activeTabsStyle: {
+					fontSize: '34rpx',
+					fontWeight: 'bold',
+					color: '#007aff'
+				},
+				itemTabsStyle: {
+					height: '44px',
+					padding: '0 8px'
+				},
+				tabs_list: [
+					{
+						name: '全部',
+						value: '',
+						disabled: false,
+					},
+					{
+						name: '议价交易',
+						value: '0',
+						disabled: false,
+					},
+					{
+						name: '竞拍交易',
+						value: '1',
+						disabled: false,
+					},
+					{
+						name: '一口价交易',
+						value: '2',
+						disabled: false,
+					},
+				],
 			};
 		},
 		onLoad(options) {
 			if(options.hasOwnProperty('pan')) {
 				this.pan = options.pan
+			}
+			if(options.hasOwnProperty('trade_mode')) {
+				this.tabs_current = +this.tabs_list.findIndex(ele => ele.value === options.trade_mode)
 			}
 			uni.setNavigationBarTitle({
 				title: this.pan == 's'? '我的卖盘': '我的买盘'
@@ -139,6 +188,21 @@
 				auth: state => state.user.auth,
 				myCpy: state => state.user.myCpy,
 			}),
+			paramsObj() {
+				if(this.keyword || this.product_id) {
+					return {
+						p: this.curP,
+						login: this.login,
+						terms: this.keyword,
+						product_id: this.product_id,
+						trade_mode: this.tabs_list[this.tabs_current].value
+					}
+				}
+				return {
+					p: this.curP,
+					trade_mode: this.tabs_list[this.tabs_current].value
+				}
+			}, 
 		},
 		components: {
 			BrokerCard
@@ -189,7 +253,7 @@
 				if(!this.keyword && !this.product_id) return
 				uni.showLoading()
 				this.initParamas() 
-				await this.getSearchData()
+				await this.getData()
 			},
 			resetSearch() {
 				this.keyword = "";
@@ -203,8 +267,9 @@
 					ele[key] = value;
 					return ele
 				})
-			},
+			}, 
 			async handleTabsChange(value) {
+				this.tabs_current = value.index
 				this.changeTabsStatus('disabled', true)
 				this.initParamas();
 				uni.showLoading();
@@ -228,9 +293,7 @@
 				if(this.loadstatus != 'loadmore') return
 				this.loadstatus = 'loading'
 				const res = await this.$api[this.pan == 's'? 'mySell': 'myBuy']({
-					params: {
-						p: this.curP,
-					}
+					params: this.paramsObj
 				})
 				if(res.code == 1) {
 					this.indexList = [...this.indexList, ...res.list]
@@ -240,35 +303,12 @@
 						this.loadstatus = 'loadmore'
 					}
 				}
-			},
-			async getSearchData() {
-				if(this.loadstatus != 'loadmore') return
-				this.loadstatus = 'loading'
-				const res = await this.$api[this.pan == 's'? 'mySell' : 'myBuy']({
-					params: {
-						login: this.login,
-						p: this.curP,
-						terms: this.keyword,
-						product_id: this.product_id
-					}
-				})
-				if(res.code == 1) {
-					this.indexList = [...this.indexList, ...res.list]
-					if(this.indexList.length >= res.total) {
-						this.loadstatus = 'nomore'
-					}else {
-						this.loadstatus = 'loadmore'
-					}
-				}
-			},
+			}, 
 			async getMoreData() {
 				if(this.loadstatus != 'loadmore') return
 				this.curP ++
-				if(this.keyword || this.product_id) {
-					await this.getSearchData()
-				}else {
-					await this.getData()
-				}
+				await this.getData()
+				 
 				
 			},
 			async handleChangeStatus({state, id}) {
