@@ -262,7 +262,7 @@
 			handleOrderDetail({id}) {
 				
 				uni.navigateTo({
-					url: `/pages/my/order/order_detail?id=${id}&ordertype=${this.ordertype}`
+					url: `/pages/my/bid/bid_join_detail?id=${id}`
 				})
 			}
 		}

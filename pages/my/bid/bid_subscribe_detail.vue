@@ -35,7 +35,7 @@
 				<view class="item u-text-right">{{list.state | bid_subscribe2Str}}</view>
 			</view>
 			
-			<view class=" u-m-b-30 " v-if="list.state <= '2'">
+			<view class=" u-m-b-30 " v-if="list.state <= '2' && list.Trade.Bid_role.is_bid_end != 1 && list.Trade.Bid_role.is_biding != 1">
 				<u-button type="primary" @click="exitSubscribe" throttleTime="800">取消预约</u-button>
 			</view>
 		</view>

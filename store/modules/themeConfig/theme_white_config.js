@@ -95,6 +95,8 @@ export default {
 		border: '1rpx solid #eee',
 		numboxBg: '#cadcf9',
 		numboxColor: '#007aff',
+		countDownWarn: '#fff',
+		countDownError: '#fff',
 	},
 	search: {
 		tagBg: '#e8e8e8',

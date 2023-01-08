@@ -20,7 +20,7 @@
 					<u-tag :text="customData.state | bid_subscribe2Str" size="mini" :type="(customData.state == '2' || customData.state == '3')? 'error': 'primary'"></u-tag>
 				</template>
 				<template v-else-if="bidType == 'join'">
-					<u-tag :text="customData.state | bid_join2Str(customData)" size="mini" type="primary"></u-tag>
+					<u-tag :text="customData.Trade.Bid_role.state | bid_join2Str(customData)" size="mini" type="primary"></u-tag>
 				</template>
 				
 			</view>
@@ -30,14 +30,14 @@
 				
 				<view class="item u-text-right" style=" flex: 0 0 auto;">
 					<view class="">
-						<text class="">{{customData.Trade.price1}}</text>
+						<text class="">{{customData.Item_my.unit_price}}</text>
 						<text class="u-p-l-10 u-font-28 text-light">元/{{customData.Trade.unit}}</text>
 						<text class="u-p-l-10 u-font-28 text-light">x</text>
-						<text class="u-p-l-10">{{customData.Trade.amount}}</text>
+						<text class="u-p-l-10">{{customData.Item_my.amount}}</text>
 						<text class="u-p-l-10 u-font-28 text-light">{{customData.Trade.unit}}</text> 
 					</view> 
 				</view>
-				<view class="item">{{customData.bill_price2}} 元</view>
+				<view class="item">{{customData.Item_my.price1}} 元</view>
 			</view>
 			<!-- <view class="main-row u-flex u-flex-between u-flex-items-center u-m-t-20 u-p-5">
 				<view class="item text-light u-font-28">商品总额</view>

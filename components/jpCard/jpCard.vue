@@ -6,18 +6,18 @@
 		}"
 	>
 		<view class="u-flex u-flex-between u-flex-items-center u-p-20 u-p-t-10 u-p-b-10" >
-			<view>浙江网盛生意宝股份有限公司</view>
-			<view>state</view>
+			<view>{{item.Company.name}}</view>
+			<view>{{item.state}}</view>
 		</view>
 		<view class="u-flex u-flex-between u-flex-items-center u-p-20 u-p-t-10 u-p-b-10">
-			<view>单：2400 元/吨</view>
-			<view>量：1吨</view>
-			<view>总：2400 元</view>
+			<view>单：{{item.unit_price1}}元/{{unit}}</view>
+			<view>量：{{item.amount}}{{unit}}</view>
+			<view>总：{{item.price1}}元</view>
 		</view> 
 		<view class="u-flex u-flex-between u-flex-items-center u-p-20 u-p-t-10 u-p-b-10">
 			<view :style="{
 			color: themeConfig.pan.pageTextSub,  
-		}">2023年1月3日 13:50:30</view> 
+		}">{{item.ctime1}}</view> 
 		</view> 
 		
 	</view>
@@ -27,6 +27,18 @@
 	import {mapState, mapGetters, mapMutations} from 'vuex'
 	export default {
 		name:"jpCard",
+		props: {
+			item: {
+				type: Object,
+				default: () => {
+					return {}
+				}
+			},
+			unit: {
+				type: String,
+				default: 'unit'
+			}
+		},
 		data() {
 			return {
 				

@@ -70,6 +70,14 @@
 							color: themeConfig.pan.lightcolor,
 							fontSize: '26px'
 						}"
+						v-if="list.curr_unit_price>0"
+					>{{list.curr_unit_price}}</text> 
+					<text class="u-font-40"
+						:style="{
+							color: themeConfig.pan.lightcolor,
+							fontSize: '26px'
+						}"
+						v-else
 					>{{list.price | price2str(list.dprice)}}</text>
 					<text class="u-p-l-10 "
 					 v-if="list.price>0"
@@ -104,7 +112,7 @@
 				:style="{
 					backgroundColor: themeConfig.pan.boxBgTop
 				}"
-				v-if="list.trade_mode == '1'"
+				v-if="list.trade_mode == '1' &&  list.Bid_role"
 			>
 				<view class="main-box-title u-flex u-flex-items-center u-flex-between u-p-20 u-p-l-30 u-p-r-30"
 					
@@ -113,13 +121,22 @@
 						<i class="custom-icon-paimai custom-icon u-m-r-10" :style="{color: themeConfig.pan.lightcolor}"></i>
 						<text :style="{color: themeConfig.pan.baseText}">竞拍信息</text>
 						<view class="u-m-l-16">
-							<u-icon name="reload" @click="refreshData" size="20px" :color="themeConfig.pan.lightcolor"></u-icon>
+							<u-icon name="reload" @click="$u.throttle(refreshData, 500)" size="20px" :color="themeConfig.pan.lightcolor"></u-icon>
 						</view>
 						
 					</view>
 					<view class="u-flex u-flex-items-center" @click="jpListShow = true" >
 						<text :style="{color: themeConfig.pan.baseText}">竞拍记录</text>
-						<i class="custom-icon-fenlei custom-icon u-m-l-10" :style="{color: themeConfig.pan.lightcolor}"></i>
+						<view style="position: relative;">
+							<i class="custom-icon-fenlei custom-icon u-m-l-10" :style="{color: themeConfig.pan.lightcolor}"></i>
+							<u-badge  
+								bgColor="#fb4242" 
+								:value="list.list_bid_items.length"
+								absolute
+								:offset="[-5, -8]"
+							></u-badge>
+						</view>
+						
 					</view>
 				</view>
 				<view class="u-p-10 u-p-l-20 u-p-r-20">
@@ -130,8 +147,8 @@
 						}" 
 					>
 						<view class="item u-flex u-flex-column ">
-							<view class="u-m-b-10">{{countDownStr}}</view>
-							<view>
+							<view class="u-m-b-10" style="opacity: .8;">{{countDownStr}}</view>
+							<view v-if="list.Bid_role && list.Bid_role.is_bid_end != 1">
 								<u-count-down
 									ref="countDown"
 									:time="timeLeft"
@@ -139,19 +156,22 @@
 									autoStart
 									millisecond
 									@change="onJpTimeChange"
+									@finish="onJpTimeFinish"
 								>
-									<view class="time">
-										<text class="time__item">{{ timeData.days }} 天</text>
-										<text class="time__item u-m-l-10">{{ timeData.hours>10?timeData.hours:'0'+timeData.hours}}&nbsp;时</text>
-										<text class="time__item u-m-l-10">{{ timeData.minutes }} 分</text>
-										<text class="time__item u-m-l-10">{{ timeData.seconds }} 秒</text>
+									<view class="time" :style="{
+										color: list.Bid_role && list.Bid_role.is_bid_begin == 1? themeConfig.pan.countDownWarn : themeConfig.pan.countDownError 
+									}">
+										<text class="time__item u-m-r-10" v-if="timeData.days>0">{{ timeData.days }}天</text>
+										<text class="time__item u-m-r-10">{{ timeData.hours>10?timeData.hours:'0'+timeData.hours}}时</text>
+										<text class="time__item u-m-r-10">{{ timeData.minutes }}分</text>
+										<text class="time__item u-m-r-10">{{ timeData.seconds }}秒</text>
 									</view>
 								</u-count-down>
 							</view>
 							
 						</view>
 						<view class="item u-flex u-flex-items-center"> 
-							<view class="u-m-l-10"> 
+							<view class="u-m-l-10" v-if="list.Bid_role.is_bid_end != 1"> 
 								<u-button type="error" :customStyle="{
 									backgroundColor: typeActive == 'white'? '#00adff' : '#fb4242', 
 									borderColor: typeActive == 'white'? '#00adff' : '#fb4242'
@@ -179,7 +199,12 @@
 							}">起拍价</view>
 							<view class="item-content" :style="{
 								color: themeConfig.pan.baseText
-							}">2400 元/吨</view>
+							}">
+								{{list.price}}
+								<text class="u-p-l-10" :style="{ color: themeConfig.pan.pageTextSub }">
+									元/{{list.unit}}
+								</text>
+							</view>
 						</view>
 						<view class="item u-flex u-flex-items-baseline u-m-b-20">
 							<view class="item-label" :style="{
@@ -187,7 +212,12 @@
 							}">当前叫价</view>
 							<view class="item-content" :style="{
 								color: themeConfig.pan.baseText
-							}">2400 元/吨</view>
+							}">
+								{{list.curr_unit_price}} 
+								<text class="u-p-l-10" :style="{ color: themeConfig.pan.pageTextSub }">
+									元/{{list.unit}}
+								</text>
+							</view>
 						</view>
 						<view class="item u-flex u-flex-items-baseline u-m-b-20">
 							<view class="item-label" :style="{
@@ -195,24 +225,42 @@
 							}">加价幅度</view>
 							<view class="item-content" :style="{
 								color: themeConfig.pan.baseText
-							}">100 元/吨</view>
+							}">
+								{{list.Bid_role.step1}} 
+								<text class="u-p-l-10" :style="{ color: themeConfig.pan.pageTextSub }">
+									元/{{list.unit}}
+								</text>
+							</view>
 						</view>
-						<view class="item u-flex u-flex-items-baseline u-m-b-20">
-							<view class="item-label" :style="{
-								color: themeConfig.pan.pageTextSub
-							}">每手尺寸</view>
-							<view class="item-content" :style="{
-								color: themeConfig.pan.baseText
-							}">2 吨</view>
-						</view>
-						<view class="item u-flex u-flex-items-baseline u-m-b-20">
-							<view class="item-label" :style="{
-								color: themeConfig.pan.pageTextSub
-							}">至少下单</view>
-							<view class="item-content" :style="{
-								color: themeConfig.pan.baseText
-							}">1 手</view>
-						</view>
+						<template v-if="list.Bid_role && list.Bid_role.is_part == '1'">
+							<view class="item u-flex u-flex-items-baseline u-m-b-20">
+								<view class="item-label" :style="{
+									color: themeConfig.pan.pageTextSub
+								}">每手尺寸</view>
+								<view class="item-content" :style="{
+									color: themeConfig.pan.baseText
+								}">
+									{{list.Bid_role.step_amount}} 
+									<text class="u-p-l-10" :style="{ color: themeConfig.pan.pageTextSub }">
+										{{list.unit}}
+									</text>
+								</view>
+							</view>
+							<view class="item u-flex u-flex-items-baseline u-m-b-20">
+								<view class="item-label" :style="{
+									color: themeConfig.pan.pageTextSub
+								}">至少下单</view>
+								<view class="item-content" :style="{
+									color: themeConfig.pan.baseText
+								}">
+									{{list.Bid_role.min_amount}}
+									<text class="u-p-l-10" :style="{ color: themeConfig.pan.pageTextSub }">
+										手
+									</text>
+								</view>
+							</view>
+						</template>
+						
 					</view>
 				</view>
 				
@@ -504,10 +552,16 @@
 						}"
 						scroll-y
 					> 
-						<view class="u-p-10" v-for="(item, index) in 5" :key="index">
-							<jpCard></jpCard>
+						<view class="u-p-10" v-for="(item, index) in list_bid_items" :key="index">
+							<jpCard :item="item" :unit="list.unit"></jpCard>
 						</view>
-						
+						<template v-if="list.list_bid_items.length == 0">
+							<u-empty
+								mode="data"
+								:icon="themeConfig.empty"
+							>
+							</u-empty>
+						</template> 
 					</scroll-view>
 				</view>
 				
@@ -521,17 +575,18 @@
 			@close="jpSubmitShow = false" 
 			mode="center" 
 			round="20"
+			:safeAreaInsetBottom="false"
 			bgColor="transparent"
 		>
-			<view class="u-p-20 jp-wrap" style="width: 80vw; ">
-				<view style="border-radius: 10px;overflow: hidden;">
+			<view class="u-p-20 jp-wrap" style="width: 90vw; ">
+				<view style="border-radius: 10px;overflow: hidden;" v-if="list.Bid_role">
 					<view
 						class="u-text-center u-p-20 u-font-28"
 						:style="{
 							color: themeConfig.tabText, 
 							backgroundColor: themeConfig.pan.pageBg,
 						}"
-						>竞标表单</view>
+						>竞标表单 - {{ list.Bid_role.is_part == '1' ? '按手竞拍' : '总量竞拍'}}</view>
 					<view class="jp-content u-p-20 u-p-l-40"
 						:style="{
 							color: themeConfig.tabText,
@@ -542,7 +597,7 @@
 								labelPosition="left"
 								:model="jpData" 
 								ref="form1"
-								labelWidth="100"
+								labelWidth="80"
 								:borderBottom="false"
 								:labelStyle="{
 									color: themeConfig.tabText,
@@ -551,35 +606,46 @@
 							<u-form-item
 									label="竞标数量"
 									prop="num" 
+									v-if="list.Bid_role.is_part == '1'"
 								>
-									<u-number-box 
-										v-model="jpData.num" 
-										:step="jpNumConfig.num.step" 
-										:min="jpNumConfig.num.min" 
-										:max="jpNumConfig.num.max" 
-										:color="themeConfig.pan.numboxColor"
-										:iconStyle="{color: themeConfig.pan.numboxColor}"
-										:bgColor="themeConfig.pan.numboxBg"
-										inputWidth="60"
-									></u-number-box>
+									<view class="u-flex u-flex-items-center">
+										<u-number-box 
+											v-model="jpData.num" 
+											:step="jpNumConfig.num.step" 
+											:min="jpNumConfig.num.min" 
+											:max="jpNumConfig.num.max" 
+											:color="themeConfig.pan.numboxColor"
+											:iconStyle="{color: themeConfig.pan.numboxColor}"
+											:bgColor="themeConfig.pan.numboxBg"
+											inputWidth="60"
+										></u-number-box>
+										<view class="u-m-l-12" :style="{
+												color: themeConfig.tabText,
+											}">{{list.unit}}</view>
+									</view>
 								</u-form-item>
 							<u-form-item
 									label="加价"
 									prop="add" 
 								>
-									<u-number-box 
-										v-model="jpData.add" 
-										:step="jpNumConfig.add.step" 
-										:min="jpNumConfig.add.min" 
-										:max="jpNumConfig.add.max" 
-										:color="themeConfig.pan.numboxColor"
-										:iconStyle="{color: themeConfig.pan.numboxColor}"
-										:bgColor="themeConfig.pan.numboxBg"
-										inputWidth="60"
-									></u-number-box>
+									<view class="u-flex u-flex-items-center">
+										<u-number-box
+											v-model="jpData.add" 
+											:step="jpNumConfig.add.step" 
+											:min="jpNumConfig.add.min"  
+											:color="themeConfig.pan.numboxColor"
+											:iconStyle="{color: themeConfig.pan.numboxColor}"
+											:bgColor="themeConfig.pan.numboxBg"
+											inputWidth="60"
+										></u-number-box>
+										<view class="u-m-l-12" :style="{
+												color: themeConfig.tabText,
+											}">元/{{list.unit}}</view>
+									</view>
+									
 								</u-form-item>
 						</u--form> 
-						<view class="u-p-20">
+						<view class="u-p-t-20 u-p-b-20 u-m-t-60">
 							<u-button type="primary" @click="bidPriceSubmit">提 交</u-button>
 						</view>
 					</view>
@@ -646,6 +712,7 @@
 			:loading-color="themeConfig.loading"
 			:color="themeConfig.pageTextSub"
 		></u-loading-page>
+		<u-toast ref="uToast"></u-toast>
 	</view>
 </template>
 
@@ -708,7 +775,10 @@
 		},
 		watch: {
 			timeLeft() {
-				// this.$refs.countDown.start()
+				// this.$nextTick(() => {
+				// 	this.$refs.countDown.start()
+				// })
+				
 			}
 		},
 		computed: {
@@ -722,40 +792,73 @@
 			}),
 			jpNumConfig() {
 				//竞拍 步进器配置
-				return {
+				let initConfig = {
 					add: {
-						step: 2,
-						min: 0,
-						max: 100
+						step: 1,
+						min: 0, 
 					},
 					num: {
-						step: 2,
+						step: 1,
 						min: 0,
 						max: 100
 					},
 				}
+				if(this.list.hasOwnProperty('Bid_role')) {
+					initConfig.add.step = this.list.Bid_role.step1
+					initConfig.add.min = this.list.Bid_role.step1 
+					
+					initConfig.num.step = this.list.Bid_role.step_amount 
+					initConfig.num.min = this.list.Bid_role.step_amount *  this.list.Bid_role.min_amount
+					initConfig.num.max = this.list.amount
+				}
+				return initConfig
 			},
 			countDownStr() {
+				if(!this.list.Bid_role) return ''
 				if(this.list.Bid_role.is_bid_begin == 1) return '距竞拍开始还剩'
 				else if(this.list.Bid_role.is_biding == 1) return '距竞拍结束还剩'
 				else if(this.list.Bid_role.is_bid_end == 1) return '竞拍已结束'
 				return ''
 			},
 			jpBtnDisabled() {
-				let state = this.list.hasOwnProperty('Bid_subscribe') && this.list.Bid_subscribe.state <= 2 
+				//预约阶段按钮使用状态
+				let state = (this.list.hasOwnProperty('Bid_role') && this.list.Bid_role.is_bid_begin == 1)
+							&& (this.list.hasOwnProperty('Bid_subscribe') && this.list.Bid_subscribe.state >= 3 ) 
+				//竞价阶段按钮使用状态	
+				let state2 = (this.list.hasOwnProperty('Bid_role') && this.list.Bid_role.is_biding == 1)
+							
 				if(
-					state
-				) return true;
-				return false
+					state || state2
+				) return false;
+				return true
+			},
+			list_bid_items() {
+				if(!this.list.hasOwnProperty('list_bid_items') || this.list.list_bid_items.length == 0) return [];
+				let id = this.list.Bid_item.id
+				return this.list.list_bid_items.map(ele => {
+					if(ele.id == id) {
+						ele.mark = 1
+					}
+					return ele
+				})
 			}
 		},
 		methods: {
 			...mapMutations({
 				handleGoto: 'user/handleGoto'
 			}),
+			showToast(params) {
+				this.$refs.uToast.show({
+					position: 'bottom',
+					...params, 
+				})
+			},
 			onJpTimeChange(e) {
                 this.timeData = e
             },
+			onJpTimeFinish() {
+				this.refreshData()
+			},
 			makePhone(mobile) {
 				uni.makePhoneCall({
 					phoneNumber: mobile 
@@ -768,22 +871,32 @@
 				uni.showLoading()
 				await this.getData() 
 			},
+			initBidConfig() {
+				let now = new Date().getTime()
+				// 设置倒计时
+				if(this.list.Bid_role.is_bid_begin == 1) {
+					//预约阶段
+					this.timeLeft = this.list.Bid_role.str_btime * 1000 - now
+				}
+				else if(this.list.Bid_role.is_biding == 1) {
+					//竞拍中
+					this.timeLeft = this.list.Bid_role.str_etime * 1000 - now
+					// console.log(this.timeLeft)
+				}
+				 if(this.list.Bid_role.is_part == '1') {
+					 this.jpData.num = this.list.Bid_role.step_amount * this.list.Bid_role.min_amount
+				 }else {
+					 this.jpData.num = this.list.amount
+				 }
+				 this.jpData.add = this.list.Bid_role.step1
+			},
 			async getData() {
 				const res = await this.$api[this.pan == 's'? 'getSellDetail' : 'getBuyDetail']({params: {id: this.id}})
 				// console.log(res)
 				if(res.code == 1) {
 					this.list = res.list
 					if(this.pan == 's' && this.list.trade_mode == '1') {
-						let now = new Date().getTime()
-						if(this.list.Bid_role.is_bid_begin == 1) {
-							//预约阶段
-							this.timeLeft = this.list.Bid_role.str_btime * 1000 - now
-						}
-						else if(this.list.Bid_role.is_biding == 1) {
-							//竞拍中
-							this.timeLeft = this.list.Bid_role.str_etime * 1000 - now
-						}
-						
+						this.initBidConfig() 
 					}
 					this.cpy = res.company
 					this.tabs_desc[0].content = this.list.intro
@@ -863,11 +976,13 @@
 				// })
 			},
 			async jpBtnEvent() {
+				if(this.list.Bid_role.is_bid_begin == 1) {
+					await this.bid_subscribe()  
+				}
+				else if(this.list.Bid_role.is_biding == 1) {
+					this.jpSubmitShow = true
+				}
 				
-				// await this.bid_subscribe()  
-				
-				
-				this.jpSubmitShow = true
 			},
 			async bid_subscribe() {
 				uni.showLoading()
@@ -896,8 +1011,9 @@
 				})
 				
 				if(res.code == 1) {
-					uni.showToast({
-						title: res.msg
+					this.showToast({
+						type: 'success',
+						message: res.msg, 
 					})
 					this.jpSubmitShow = false
 					await this.refreshData()
@@ -912,8 +1028,8 @@
     align-items: center;
 
     &__item {
-         color: #fff;
-         font-size: 14px;
+         // color: #fff;
+         font-size: 15px;
          text-align: center;
      }
 }
@@ -927,7 +1043,7 @@
 	}
 	.jp-content { 
 		width: 100%;
-		box-sizing: border-box;
+		box-sizing: border-box; 
 	}
 	.imgw {
 		width: 100vw;

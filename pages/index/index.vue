@@ -168,28 +168,7 @@
 					title: '首页'
 				},
 				attentionJSON: '',
-				jpList: [
-					{
-						id: '001',
-						name: '正丁醇',
-						price: '0.10',
-						unit: '吨',
-						num: '25',
-						state: 1,
-						time: 18.5 * 60 * 60 * 1000,
-						timeData: {}
-					},
-					{
-						id: '002',
-						name: '正丁醇2',
-						price: '0.20',
-						unit: '吨',
-						num: '35',
-						state: 0,
-						time: 30 * 60 * 60 * 1000,
-						timeData: {}
-					},
-				]
+				jpList: []
 			};
 		},
 		computed: {
@@ -206,6 +185,7 @@
 			console.log(uni.$u.sys())
 			uni.showLoading()
 			this.getHome()
+			this.getBidData()
 			this.getMarketCard()
 			this.getNotice()
 		},
@@ -245,6 +225,7 @@
 			refreshList() {
 				this.initParamas()
 				this.getHome()
+				this.getBidData()
 				this.getMarketCard()
 			},
 			initParamas() {
@@ -254,6 +235,18 @@
 			},
 			handleSearch(v) {
 				console.log(v)
+			},
+			async getBidData() {
+				const res = await this.$api.getSell({
+					params: {
+						// expressed: 1,
+						trade_mode: 1,
+						p: 1,
+					}
+				})
+				if(res.code == 1) {
+					this.jpList = res.list
+				}
 			},
 			async getMarketCard() {
 				const res = await this.$api.getStandard({

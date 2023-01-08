@@ -129,7 +129,7 @@
 					竞拍列表
 				</view> -->
 				<view class="u-p-20 jp-list"  :style="{color: themeConfig.followCard.baseText}" > 
-					<view class="u-flex u-flex-between u-flex-items-center u-m-t-20 u-m-b-20" v-for="(item, index) in jpList" :key="item.id">
+					<view @click="handleGoto({url: '/pages/index/pan/panDetail', params: {pan: 's', id: item.id}})" class="u-flex u-flex-between u-flex-items-center u-m-t-20 u-m-b-20" v-for="(item, index) in jpList" :key="item.id">
 						<view class="item u-flex-1">
 							<view class="jp-title u-flex u-flex-items-center u-line-1">
 								<view class="item u-flex u-flex-items-center u-m-b-10 ">
@@ -143,7 +143,7 @@
 									<u-tag :text="`${item.price} 元/${item.unit}`" plain size="mini" type="error"></u-tag> 
 								</view>
 								<view class="item u-m-l-10">
-									<u-tag :text="`${item.num}${item.unit}`" plain size="mini" type="error"></u-tag> 
+									<u-tag :text="`${item.amount}${item.unit}`" plain size="mini" type="error"></u-tag> 
 								</view>
 							</view>
 						</view>

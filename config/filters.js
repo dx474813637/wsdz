@@ -260,7 +260,7 @@ const bid_subscribe2Str = v => {
 const bid_join2Str = (v, data) => {
 	if(v == '0') return '待审核'
 	else if(v == '1')  {
-		if(data.hasOwnporperty('order_id')) return '竞拍成功'
+		if(data.hasOwnProperty('order_id') && data.order_id) return '竞拍成功'
 		else return '竞拍失败'
 	}
 	else if(v == '2')  return '审核拒绝'

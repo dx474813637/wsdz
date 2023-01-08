@@ -15,6 +15,10 @@
 				</view>
 			</view>
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
+				<view class="item text-light item-label">竞拍方式</view>
+				<view class="item u-text-right">{{list.Trade.Bid_role.is_part == '1' ? '按手竞拍' : '总量竞拍'}}</view>
+			</view>
+			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
 				<view class="item text-light item-label">竞拍开始时间</view>
 				<view class="item u-text-right">{{list.Trade.Bid_role.btime}}</view>
 			</view>
@@ -23,16 +27,36 @@
 				<view class="item u-text-right">{{list.Trade.Bid_role.etime}}</view>
 			</view>
 			<!-- <view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
-				<view class="item text-light item-label">买家保证金比例</view>
-				<view class="item u-text-right">{{list.Trade.Bid_role.b_bond}}</view>
+				<view class="item text-light item-label">当前叫价</view>
+				<view class="item u-text-right">{{list.Trade.}} 元/{{list.Trade.unit}}</view>
 			</view> -->
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
-				<view class="item text-light item-label">买家保证金</view>
-				<view class="item u-text-right">{{list.Trade.Bid_role.b_bond}} 元</view>
+				<view class="item text-light item-label">我的出价（单价）</view>
+				<view class="item u-text-right">{{list.unit_price}} 元/{{list.Trade.unit}}</view>
+			</view>
+			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
+				<view class="item text-light item-label">数量</view>
+				<view class="item u-text-right">{{list.amount}} {{list.Trade.unit}}</view>
+			</view>
+			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
+				<view class="item text-light item-label">我的出价（总价）</view>
+				<view class="item u-text-right">{{list.price1}} 元</view>
+			</view>
+			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
+				<view class="item text-light item-label">出价时间</view>
+				<view class="item u-text-right">{{list.ctime}}</view>
 			</view>
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
 				<view class="item text-light item-label">状态</view>
-				<view class="item u-text-right">{{list.state | bid_subscribe2Str}}</view>
+				<view class="item u-text-right">{{list.Trade.Bid_role.state | bid_join2Str(list)}}</view>
+			</view>
+			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.order_id">
+				<view class="item text-light item-label">订单详情</view>
+				<view class="item u-text-right">
+					<view class="u-primary" @click="handleGoto({url: '/pages/my/order/order_detail', params: {id: list.order_id, ordertype: 'B' }})">
+						点击跳转
+					</view>
+				</view>
 			</view>
 		</view>
 	</view>
@@ -44,7 +68,13 @@
 		data() {
 			return {
 				id: '',
-				list: {}
+				list: {
+					Trade: {
+						Bid_role: {
+							
+						}
+					}
+				}
 			}
 		},
 		async onLoad(opt) {
@@ -59,7 +89,7 @@
 				handleGoto: 'user/handleGoto'
 			}),
 			async getData() {
-				const res = await this.$api.bid_subscribe_detail_bid_subscribe({params: {id: this.id}})
+				const res = await this.$api.bid_subscribe_detail_bid({params: {id: this.id}})
 				if(res.code == 1) {
 					this.list = res.list
 				}
