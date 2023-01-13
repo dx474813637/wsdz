@@ -1253,18 +1253,18 @@
 					this.model.settle_mode = data.settle_mode
 					this.model.delivery_place = data.delivery_place
 					// 竞拍
-					this.model.bid_is_part = data.bid_is_part
-					this.model.bid_step_amount = data.bid_step_amount
-					this.model.bid_min_amount = data.bid_min_amount
-					this.model.bid_re_price = data.bid_re_price
-					this.model.bid_step = data.bid_step
-					this.model.bid_is_repeat = data.bid_is_repeat
-					this.model.bid_bdate = data.bid_bdate
-					this.model.bid_btime = data.bid_btime
-					this.model.bid_edate = data.bid_edate
-					this.model.bid_etime = data.bid_etime
-					this.model.bid_is_anonym = data.bid_is_anonym
-					this.model.bid_is_darkmark = data.bid_is_darkmark
+					this.model.bid_is_part = data.Bid_role.is_part == '1'? '1' : '2'
+					this.model.bid_step_amount = data.Bid_role.step_amount
+					this.model.bid_min_amount = data.Bid_role.min_amount
+					this.model.bid_re_price = data.Bid_role.re_price1
+					this.model.bid_step = data.Bid_role.step1
+					this.model.bid_is_repeat = data.Bid_role.is_repeat
+					this.model.bid_bdate = data.Bid_role.bdate1
+					this.model.bid_btime = data.Bid_role.btime1
+					this.model.bid_edate = data.Bid_role.edate1
+					this.model.bid_etime = data.Bid_role.etime1
+					this.model.bid_is_anonym = data.Bid_role.is_anonym
+					this.model.bid_is_darkmark = data.Bid_role.is_darkmark
 					
 					if(this.pan == 's') {
 						this.model.remark = data.remark

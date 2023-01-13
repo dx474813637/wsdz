@@ -288,6 +288,16 @@ const bid_join2Str = (v, data) => {
 //    如果Trade数组里的Bid_role数组的is_bid_begin=1：竞拍中
 //    否则：待竞拍
 
+
+const bidState2Str = (v, data) => {
+	if(data.is_success == 1) return '成交'
+	else if(data.is_valid == 1) return '领先' 
+	else return '失效'
+}
+
+
+
+
 export default {
 	type2str,
 	expressUnit,
@@ -320,5 +330,6 @@ export default {
 	tradeM2str,
 	bid_subscribe2Str,
 	bid_join2Str,
-	bidTradeM2str
+	bidTradeM2str,
+	bidState2Str,
 }

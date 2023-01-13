@@ -12,7 +12,7 @@
 			></navBar>
 		</u-sticky>
 		<u-notice-bar bgColor="#ff2a2a" color="#fff" text="已下架" v-if="list.state != '1'"></u-notice-bar>
-		<u-notice-bar bgColor="#ff6a00" color="#fff" text="已过期" v-else-if="list.hasOwnProperty('expressed') && list.expressed <= 0"></u-notice-bar>
+		<u-notice-bar bgColor="#ff6a00" color="#fff" text="已过期" v-else-if="list.hasOwnProperty('expressed') && list.expressed <= 0 && list.trade_mode != '1'"></u-notice-bar>
 		<view class="pan-header u-p-10" :style="{
 			backgroundColor: themeConfig.pan.headerBg,
 		}">
@@ -42,7 +42,7 @@
 					<view >
 						<u-icon
 							name="photo" 
-							v-if="list.list_pics.length > 0" 
+							v-if="list.list_pics && list.list_pics.length > 0" 
 							@click="imgWrapShow = true"
 							:color="themeConfig.pan.imgBtn"
 							size="20"
@@ -131,7 +131,7 @@
 							<i class="custom-icon-fenlei custom-icon u-m-l-10" :style="{color: themeConfig.pan.lightcolor}"></i>
 							<u-badge  
 								bgColor="#fb4242" 
-								:value="list.list_bid_items.length"
+								:value="list2.list.length"
 								absolute
 								:offset="[-5, -8]"
 							></u-badge>
@@ -147,8 +147,8 @@
 						}" 
 					>
 						<view class="item u-flex u-flex-column ">
-							<view class="u-m-b-10" style="opacity: .8;">{{countDownStr}}</view>
-							<view v-if="list.Bid_role && list.Bid_role.is_bid_end != 1">
+							<view style="opacity: .8;">{{countDownStr}}</view>
+							<view class="u-m-t-10" v-if="list.Bid_role && list.Bid_role.is_bid_end != 1">
 								<u-count-down
 									ref="countDown"
 									:time="timeLeft"
@@ -552,10 +552,10 @@
 						}"
 						scroll-y
 					> 
-						<view class="u-p-10" v-for="(item, index) in list_bid_items" :key="index">
-							<jpCard :item="item" :unit="list.unit"></jpCard>
+						<view class="u-p-10" v-for="(item, index) in list2.list" :key="index">
+							<jpCard :item="item" :pw_curr_page="list2.pw_curr_page" :unit="list.unit"></jpCard>
 						</view>
-						<template v-if="list.list_bid_items.length == 0">
+						<template v-if="list2.list && list2.list.length == 0">
 							<u-empty
 								mode="data"
 								:icon="themeConfig.empty"
@@ -731,6 +731,7 @@
 				backBtn: true,
 				indexList: [],
 				list: {},
+				list2: {},
 				cpy: {},
 				timeData: {},
 				jpData: {
@@ -823,7 +824,7 @@
 			jpBtnDisabled() {
 				//预约阶段按钮使用状态
 				let state = (this.list.hasOwnProperty('Bid_role') && this.list.Bid_role.is_bid_begin == 1)
-							&& (this.list.hasOwnProperty('Bid_subscribe') && this.list.Bid_subscribe.state >= 3 ) 
+							&& this.list.is_bid == '0'
 				//竞价阶段按钮使用状态	
 				let state2 = (this.list.hasOwnProperty('Bid_role') && this.list.Bid_role.is_biding == 1)
 							
@@ -832,16 +833,16 @@
 				) return false;
 				return true
 			},
-			list_bid_items() {
-				if(!this.list.hasOwnProperty('list_bid_items') || this.list.list_bid_items.length == 0) return [];
-				let id = this.list.Bid_item.id
-				return this.list.list_bid_items.map(ele => {
-					if(ele.id == id) {
-						ele.mark = 1
-					}
-					return ele
-				})
-			}
+			// list_bid_items() {
+			// 	if(!this.list.hasOwnProperty('list_bid_items') || this.list.list_bid_items.length == 0) return [];
+			// 	let id = this.list.Bid_item.id
+			// 	return this.list.list_bid_items.map(ele => {
+			// 		if(ele.id == id) {
+			// 			ele.mark = 1
+			// 		}
+			// 		return ele
+			// 	})
+			// }
 		},
 		methods: {
 			...mapMutations({
@@ -895,6 +896,7 @@
 				// console.log(res)
 				if(res.code == 1) {
 					this.list = res.list
+					this.list2 = res.list2 || {}
 					if(this.pan == 's' && this.list.trade_mode == '1') {
 						this.initBidConfig() 
 					}
@@ -978,6 +980,7 @@
 			async jpBtnEvent() {
 				if(this.list.Bid_role.is_bid_begin == 1) {
 					await this.bid_subscribe()  
+					this.refreshData()
 				}
 				else if(this.list.Bid_role.is_biding == 1) {
 					this.jpSubmitShow = true
@@ -993,8 +996,9 @@
 					}
 				})
 				if(res.code == 1) {
-					uni.showToast({
-						title: '预约成功',
+					this.showToast({
+						type: 'success',
+						message: res.msg, 
 					})
 				}
 			},

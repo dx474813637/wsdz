@@ -74,6 +74,7 @@
 							@resubmit="handleResubmit"
 							@detail="handleProdDetail"
 							@front="handleProdFront"
+							@showPop="handleShowPop"
 						></BrokerCard>
 					</view>
 					
@@ -116,6 +117,59 @@
 			@close="show = false"
 			@confirm="menusConfirm"
 		></menusPopup>
+		
+		<!-- pop列表 -->
+		<u-popup 
+			:show="popshow" 
+			@close="popshow = false" 
+			mode="bottom" 
+			bgColor="transparent"
+		>
+			<view class="u-p-20 jp-wrap" >
+				<view style="border-radius: 10px;overflow: hidden;">
+					<view
+						class="u-text-center u-p-20 u-font-28"
+						:style="{
+							color: themeConfig.tabText, 
+							backgroundColor: themeConfig.pan.pageBg,
+						}"
+						>{{poptitle}}</view>
+					<scroll-view class="jp-content u-p-20"
+						:style="{
+							height: '400px',
+							color: themeConfig.tabText,
+							backgroundColor: themeConfig.pan.pageBg,
+						}"
+						scroll-y
+					> 
+						<view class="u-p-10" v-for="(item, index) in popList" :key="index">
+							
+							<jpCard 
+								v-if="showPopType == 'jp'"
+								theme="white" 
+								:item="item"  
+								:unit="poporigin.Sell.unit"
+								:pw_curr_page="poporigin.pw_curr_page"
+								></jpCard>
+							<yyCard 
+								v-else-if="showPopType == 'yy'"
+								theme="white" 
+								:item="item"  
+								></yyCard>
+						</view>
+						<template v-if="popList.length == 0">
+							<u-empty
+								mode="data"
+								:icon="themeConfig.empty"
+							>
+							</u-empty>
+						</template> 
+					</scroll-view>
+				</view>
+				
+			</view>
+			
+		</u-popup>
 	</view>
 </template>
 
@@ -132,8 +186,7 @@
 				indexList: [],
 				curP: 1,
 				loadstatus: 'loadmore',
-				pan: 's',
-				
+				pan: 's', 
 				tabs_current: 0,
 				activeTabsStyle: {
 					fontSize: '34rpx',
@@ -144,6 +197,13 @@
 					height: '44px',
 					padding: '0 8px'
 				},
+				showPopType: '',
+				showPopId: '',
+				popList: [],
+				poploading: false,
+				popshow: false,
+				poporigin: {},
+				popsourceData: {},
 				tabs_list: [
 					{
 						name: '全部',
@@ -188,6 +248,12 @@
 				auth: state => state.user.auth,
 				myCpy: state => state.user.myCpy,
 			}),
+			...mapState({
+				typeActive: state => state.theme.typeActive, 
+			}),
+			themeConfig() {
+				return this.typeConfig.white
+			},
 			paramsObj() {
 				if(this.keyword || this.product_id) {
 					return {
@@ -203,6 +269,34 @@
 					trade_mode: this.tabs_list[this.tabs_current].value
 				}
 			}, 
+			bidConfig() {
+				if(this.showPopType == 'jp') {
+					return {
+						apiName: 'list_sell_bid',
+						params: {
+							id: this.showPopId,
+							p: 1
+						}
+					}
+				}
+				if(this.showPopType == 'yy') {
+					return {
+						apiName: 'bid_subscribe_list_subscribe',
+						params: {
+							source_id: this.showPopId,
+							source: 'SELL',
+							p: 1
+						}
+					}
+				}
+				return {
+					
+				}
+			},
+			poptitle() {
+				return `${this.popsourceData.name} - ${this.showPopType == 'jp' ? '竞拍列表' : '预约列表'}`
+			},
+			
 		},
 		components: {
 			BrokerCard
@@ -214,6 +308,25 @@
 			...mapActions({
 				myCompany: 'user/myCompany'
 			}),
+			async handleShowPop({type, data}) {
+				this.showPopType = type
+				this.showPopId = data.id
+				this.popsourceData = data
+				uni.showLoading({
+					title: '获取数据中...',
+					mask: true,
+				})
+				await this.getPopData()
+				this.popshow = true
+			},
+			async getPopData() { 
+				this.poploading = true;
+				const res = await this.$api[this.bidConfig.apiName]({params: this.bidConfig.params})
+				if(res.code == 1) {
+					this.popList = this.showPopType == 'yy' ? res.list : res.list.list
+					this.poporigin = res.list
+				}
+			},
 			async setShareList() {
 				if(!this.myCpy.id) {
 					uni.showLoading()
@@ -386,6 +499,13 @@
 	}
 </style>
 <style lang="scss" scoped>
+	.jp-wrap {  
+		box-sizing: border-box;
+	}
+	.jp-content { 
+		width: 100%;
+		box-sizing: border-box; 
+	}
 	.w {
 		height: 100vh;
 	}

@@ -107,9 +107,9 @@
 			</view>
 		</view>
 		
-		<template  v-if="pan == 's'">
+		<template  v-if="pan == 's' && jpList.length > 0">
 			<view class="card-title u-flex u-flex-items-center u-flex-between u-p-10 u-m-b-12 u-m-t-20">
-				<view class="item u-flex u-flex-items-center">
+				<view class="item u-flex u-flex-items-center" @click="ceshi">
 					<i class="custom-icon u-font-40 custom-icon-paimai" :style="{color: themeConfig.followCard.iconText}"></i>
 					<text class="u-p-l-10" :style="{color: themeConfig.followCard.titleText}">竞拍中心</text>
 				</view>
@@ -129,7 +129,11 @@
 					竞拍列表
 				</view> -->
 				<view class="u-p-20 jp-list"  :style="{color: themeConfig.followCard.baseText}" > 
-					<view @click="handleGoto({url: '/pages/index/pan/panDetail', params: {pan: 's', id: item.id}})" class="u-flex u-flex-between u-flex-items-center u-m-t-20 u-m-b-20" v-for="(item, index) in jpList" :key="item.id">
+					<view @click="handleGoto({url: '/pages/index/pan/panDetail', params: {pan: 's', id: item.id}})" 
+						class="u-flex u-flex-between u-flex-items-center u-m-t-20 u-m-b-20" 
+						v-for="(item, index) in jpList" 
+						:key="item.id"
+						>
 						<view class="item u-flex-1">
 							<view class="jp-title u-flex u-flex-items-center u-line-1">
 								<view class="item u-flex u-flex-items-center u-m-b-10 ">
@@ -146,15 +150,17 @@
 									<u-tag :text="`${item.amount}${item.unit}`" plain size="mini" type="error"></u-tag> 
 								</view>
 							</view>
-						</view>
+						</view> 
 						<view class="item u-p-12 u-p-l-20 u-p-r-20 u-font-28 jp-time-box u-flex u-flex-column u-flex-items-end" :style="{backgroundColor: themeConfig.followCard.boxCardBg}">
-							<view class="jp-time-label u-m-b-6" :style="{color: themeConfig.followCard.subText}">距竞拍{{item.state == 1? '结束' : '开始'}}还剩</view>
-							<view class="jp-time">
+							<view class="jp-time-label u-m-b-6" :style="{color: themeConfig.followCard.subText}">{{item.countDownStr}}</view>
+							<view class="jp-time" v-if="item.Bid_role && item.Bid_role.is_bid_end != 1"> 
 								<u-count-down
+									:ref="`countDown${item.id}`"
 									:time="item.time"
 									format="DD:HH:mm:ss"
 									autoStart
 									millisecond 
+									@finish="onJpTimeFinish(item, `countDown${item.id}`)"
 									@change="onChange($event, item)"
 								>
 									<view class="time" :style="{
@@ -256,11 +262,14 @@
 				}
 			},
 			
-		},
+		}, 
 		methods: {
 			...mapMutations({
 				handleGoto: 'user/handleGoto'
 			}),
+			ceshi() {
+				console.log(this.$refs)
+			},
 			async getData() {
 				this.loading = true
 				const res = await this.$api[this.pan == 's'? 'getSell' : 'getBuy']({
@@ -288,7 +297,10 @@
 			onChange(e, item) { 
 				this.$emit('changeTimeData', {data: e, item})
 				
-			}
+			},
+			onJpTimeFinish(item, refs_name) {
+				this.$emit('finishTime', {data: item, refs_name}) 
+			},
 		}
 	}
 </script>

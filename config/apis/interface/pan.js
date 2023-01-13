@@ -166,8 +166,12 @@ export const bid_subscribe_list_bid = (data) => http.get('bid_subscribe_list_bid
 // bid_subscribe_detail_bid 竞价参与明细 id:竞价参与ID
 export const bid_subscribe_detail_bid = (data) => http.get('bid_subscribe_detail_bid', data)
 
-// bid_subscribe_list_subscribe 我发布的竞价-预约列表（挂牌方）source:订单类型,SELL-采购订单 source_id:订单ID p:页数
+// bid_subscribe_list_subscribe 我发布的竞价-预约列表（挂牌方）
+// source:订单类型,SELL-采购订单 source_id:订单ID p:页数
 export const bid_subscribe_list_subscribe = (data) => http.get('bid_subscribe_list_subscribe', data)
+
+// list_sell_bid 参数id p 我发布的竞价-竞拍列表（挂牌方） 
+export const list_sell_bid = (data) => http.get('list_sell_bid', data)
 
 // bid_subscribe_bid_sell 竞价出价
 // source: 订单类型 SELL
@@ -176,3 +180,7 @@ export const bid_subscribe_list_subscribe = (data) => http.get('bid_subscribe_li
 // bid_price: 加价
 // bid_amount: 数量
 export const bid_subscribe_bid_sell = (data) => http.get('bid_subscribe_bid_sell', data)
+
+//卖盘详情 竞价列表
+// is_success=1 并且pw_curr page = 1状态:成交
+// is _valid-1并且pw curr page=1 状态:领先

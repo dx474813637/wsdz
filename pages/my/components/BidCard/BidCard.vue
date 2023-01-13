@@ -11,8 +11,12 @@
 			<view class="u-flex u-flex-items-baseline">
 				<!-- <view class="u-font-28 text-base"> 
 					<u-tag :text="customData.id" plain size="mini" borderColor="#ccc" color="#777"></u-tag>
-				</view> --> 
-				<view class="u-line-1">{{customData.Trade.name}}</view>
+				</view> -->  
+				<view class="u-line-1" >
+					<template v-if="customData.Trade.name">{{customData.Trade.name}}</template>
+					<template v-else>报盘已删除</template>
+					</view>
+				
 			</view>
 			
 			<view class=" u-font-28" style=" flex: 0 0 auto;" >

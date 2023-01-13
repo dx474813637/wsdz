@@ -54,6 +54,7 @@
 						:pan="item.pan"
 						:jpList="jpList"
 						@changeTimeData="changeTimeData"
+						@finishTime="finishTime"
 						@settingClick="handleSettingClick"
 					></panCard>
 				</view>
@@ -199,6 +200,25 @@
 					url: `/pages/index/notice/notice`
 				})
 			},
+			finishTime({data, refs_name}) {
+				let id = data.id
+				let index = this.jpList.findIndex(ele => ele.id === id);
+				let now = new Date().getTime()
+				if(data.Bid_role.is_bid_begin == 1) {
+					//预约阶段倒计数结束
+					this.jpList[index].time = data.Bid_role.str_etime * 1000 - now
+					this.jpList[index].Bid_role.is_bid_begin = '0'
+					this.jpList[index].Bid_role.is_biding = '1'
+					this.jpList[index].countDownStr = '距竞拍结束还剩'
+				}
+				else if(data.Bid_role.is_biding == 1) {
+					//竞价阶段倒计数结束
+					this.jpList[index].time = 0 
+					this.jpList[index].Bid_role.is_biding = '0'
+					this.jpList[index].Bid_role.is_bid_end = '1'
+					this.jpList[index].countDownStr = '竞拍已结束'
+				}
+			},
 			changeTimeData({data, item}) {
 				this.jpList.some(ele => {
 					if(ele.id == item.id) {
@@ -239,13 +259,49 @@
 			async getBidData() {
 				const res = await this.$api.getSell({
 					params: {
-						// expressed: 1,
+						index: 1,
 						trade_mode: 1,
 						p: 1,
 					}
 				})
 				if(res.code == 1) {
-					this.jpList = res.list
+					let data = res.list
+					// 模拟测试
+					// let ceshiObj = uni.$u.deepClone(data[0])
+					// ceshiObj.Bid_role.str_btime = new Date('2023-1-9 09:53:10').getTime()/1000
+					// ceshiObj.Bid_role.str_etime = new Date('2023-1-9 09:54:20').getTime()/1000
+					// ceshiObj.Bid_role.is_bid_begin = 0
+					// ceshiObj.Bid_role.is_biding = 1
+					// ceshiObj.Bid_role.is_bid_end = 0
+					// ceshiObj.id = ceshiObj.id + 1
+					// data.push(ceshiObj)
+					data = data.map(ele => {
+						let time = 0;
+						let countDownStr = '';
+						let now = new Date().getTime()
+						// 设置倒计时
+						if(ele.Bid_role.is_bid_begin == 1) {
+							//预约阶段
+							time = ele.Bid_role.str_btime * 1000 - now
+						}
+						else if(ele.Bid_role.is_biding == 1) {
+							//竞拍中
+							time = ele.Bid_role.str_etime * 1000 - now
+							// console.log(time)
+						}
+						 
+						if(ele.Bid_role.is_bid_begin == 1) countDownStr = '距竞拍开始还剩'
+						else if(ele.Bid_role.is_biding == 1) countDownStr = '距竞拍结束还剩'
+						else if(ele.Bid_role.is_bid_end == 1) countDownStr = '竞拍已结束' 
+						return {
+							...ele, 
+							countDownStr,
+							time,
+							timeData: {}
+						}
+					})
+					console.log(data)
+					this.jpList = data
 				}
 			},
 			async getMarketCard() {

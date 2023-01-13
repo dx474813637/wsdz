@@ -14,10 +14,10 @@
 					<text class="pp text-error">{{price | price2str(dprice)}} <template v-if="price>0">元/{{unit}}</template></text>
 				</view>
 				<view class="item u-flex u-flex-items-center">
-					<view class="u-m-r-10">
+					<view class="u-m-r-10" style="white-space: nowrap;">
 						<u-tag :text="origin.trade_mode | bidTradeM2str" plain plainFill size="mini" type="error" :custionStyle="{height: '18px', minHeight: '18px'}"></u-tag>
 					</view>
-					<view class="u-m-r-10">
+					<view class="u-m-r-10" style="white-space: nowrap;">
 						<u-tag :text="type | tradeType2" size="mini" plain plainFill :custionStyle="{height: '18px', minHeight: '18px'}"></u-tag>
 					</view>
 					<text class=" item-sub u-line-1">{{sub}}</text>
@@ -31,6 +31,14 @@
 					@input.stop="switchInput"
 				></u-switch>
 			</view>
+		</view>
+		<view class="card-footer u-flex u-flex-between u-flex-items-center u-p-12" v-if="origin.trade_mode == '1'">
+			<view class="item text-primary u-font-30 u-flex u-flex-items-center">
+				<view class="u-m-r-40" @click="showPop('jp')">竞拍列表</view>
+				<view class="u-m-r-40" @click="showPop('yy')">预约列表</view>
+			</view>
+			<view class="item u-flex u-flex-items-center"></view>
+			
 		</view>
 		<view class="card-footer u-flex u-flex-between u-flex-items-center u-p-12">
 			<view class="item text-light u-font-28">更新于{{date | date2timestamp | timeFrom}}</view>
@@ -225,7 +233,10 @@
 			},
 			handleGotoDetail() {
 				this.$emit('detail', {pid: this.pid, data: this.origin})
-			}
+			},
+			showPop(type) {
+				this.$emit('showPop', {type, data: this.origin})
+			},
 		}
 	}
 </script>

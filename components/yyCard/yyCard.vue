@@ -1,26 +1,21 @@
 <template>
-	<view class="wrap u-p-20 u-p-t-10 u-p-b-10 u-font-28"
+	<view class="wrap u-p-10 u-p-l-20 u-p-r-20 u-font-28"
 		:style="{
 			backgroundColor: themeConfig.pan.boxBg, 
 			color: item.is_success == '1' ||  item.is_valid == '1'?themeConfig.pan.baseText : themeConfig.pan.pageTextSub
 		}"
 	>
-		<view class="u-flex u-flex-between u-flex-items-start u-p-20 u-p-t-10 u-p-b-10" >
+		<view class="u-flex u-flex-between u-flex-items-start u-p-10 u-p-l-20 u-p-r-20" >
 			<view>{{item.Company.name}} - {{item.Company.contact}}</view>
 			<view
 				class="u-m-l-10"
 				:style="{ 
-					color: item.is_success == '1' ||  item.is_valid == '1'? '#fb4242' : themeConfig.pan.baseText,
+					color: (item.state == '2' || item.state == '3')? '#fb4242' : themeConfig.pan.baseText,
 					'white-space': 'nowrap'
 				}"
-			>{{pw_curr_page | bidState2Str(item)}}</view>
-		</view>
-		<view class="u-flex u-flex-between u-flex-items-center u-p-20 u-p-t-10 u-p-b-10">
-			<view>单：{{item.unit_price1}}元/{{unit}}</view>
-			<view>量：{{item.amount}}{{unit}}</view>
-			<view>总：{{item.price1}}元</view>
+			>{{item.state | bid_subscribe2Str}}</view>
 		</view> 
-		<view class="u-flex u-flex-between u-flex-items-center u-p-20 u-p-t-10 u-p-b-10">
+		<view class="u-flex u-flex-between u-flex-items-center u-p-10 u-p-l-20 u-p-r-20">
 			<view :style="{
 			color: themeConfig.pan.pageTextSub,  
 		}">{{item.ctime}}</view> 
@@ -47,11 +42,7 @@
 			unit: {
 				type: String,
 				default: 'unit'
-			},
-			pw_curr_page: {
-				type: String,
-				default: ''
-			}
+			}, 
 		},
 		data() {
 			return {
@@ -62,10 +53,6 @@
 			...mapState({
 				typeActive: state => state.theme.typeActive,
 				typeConfig: state => state.theme.typeConfig,
-			}),
-			...mapGetters({ 
-				echartsConfig: 'theme/echartsConfig',
-				sys: 'theme/sys'
 			}), 
 			themeConfig() {
 				return this.typeConfig[this.theme || this.typeActive] 
