@@ -289,12 +289,54 @@ const bid_join2Str = (v, data) => {
 //    否则：待竞拍
 
 
-const bidState2Str = (v, data) => {
-	if(data.is_success == 1) return '成交'
-	else if(data.is_valid == 1) return '领先' 
-	else return '失效'
+const bidState2Str = (v, data, panData) => {
+	// if(data.is_success == 1) return '成交'
+	// else if(data.is_valid == 1) return '领先'; 
+	// else return '失效' 
+	if(v == 1) {
+		if(panData.Bid_role.is_darkmark) {
+			if(panData.Bid_role.left_etime < 0) {
+				if(data.order_id) return '成交' 
+				else return '失效' 
+			}
+			else return '竞价中'  
+		} 
+		else {
+			if(data.order_id) {
+				return '成交' 
+			}
+			else if(data.is_valid) {
+				return '领先' 
+			}
+			else return '失效' 
+		}
+	}
+	else return '失效' 
 }
 
+// <{if $pw_curr_page==1}>
+// 	<{if $Sell.Bid_role.is_darkmark}>
+// 	  <{if $Sell.Bid_role.left_etime<0}>
+// 		<{if $list_bid_items[sec].order_id}>
+// 		  <span class="tab-cj">成交</span>
+// 		<{else}>
+// 		  失效
+// 		<{/if}>
+// 	  <{else}>
+// 	  <span class="tab-lx">竞价中</span>
+// 	 <{/if}>
+// 	<{else}>
+// 	<{if $list_bid_items[sec].order_id}>
+// 	  <span class="tab-cj">成交</span>
+// 	<{else if $list_bid_items[sec].is_valid}>
+// 	  <span class="tab-lx">领先</span>
+// 	<{else}>
+// 		失效
+// 	<{/if}>
+// 	<{/if}>
+// <{else}>
+// 	失效
+// <{/if}>
 
 
 

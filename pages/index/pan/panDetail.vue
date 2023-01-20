@@ -131,7 +131,7 @@
 							<i class="custom-icon-fenlei custom-icon u-m-l-10" :style="{color: themeConfig.pan.lightcolor}"></i>
 							<u-badge  
 								bgColor="#fb4242" 
-								:value="list2.list.length"
+								:value="list2.total"
 								absolute
 								:offset="[-5, -8]"
 							></u-badge>
@@ -147,7 +147,7 @@
 						}" 
 					>
 						<view class="item u-flex u-flex-column ">
-							<view style="opacity: .8;">{{countDownStr}}</view>
+							<view style="opacity: .8;" @click="jpSubmitShow = true">{{countDownStr}}</view>
 							<view class="u-m-t-10" v-if="list.Bid_role && list.Bid_role.is_bid_end != 1">
 								<u-count-down
 									ref="countDown"
@@ -553,7 +553,7 @@
 						scroll-y
 					> 
 						<view class="u-p-10" v-for="(item, index) in list2.list" :key="index">
-							<jpCard :item="item" :pw_curr_page="list2.pw_curr_page" :unit="list.unit"></jpCard>
+							<jpCard :item="item" :panData="list2.Sell" :pw_curr_page="list2.pw_curr_page" :unit="list.unit"></jpCard>
 						</view>
 						<template v-if="list2.list && list2.list.length == 0">
 							<u-empty
@@ -812,6 +812,10 @@
 					initConfig.num.min = this.list.Bid_role.step_amount *  this.list.Bid_role.min_amount
 					initConfig.num.max = this.list.amount
 				}
+				if(this.list2.hasOwnProperty('list') && this.list2.list.length == 0) {
+					initConfig.add.min = 0 
+				}
+				
 				return initConfig
 			},
 			countDownStr() {
@@ -889,7 +893,13 @@
 				 }else {
 					 this.jpData.num = this.list.amount
 				 }
-				 this.jpData.add = this.list.Bid_role.step1
+				 
+				 if(this.list2.hasOwnProperty('list') && this.list2.list.length == 0) {
+				 	this.jpData.add = 0
+				 }else {
+					this.jpData.add = this.list.Bid_role.step1
+				 }
+				
 			},
 			async getData() {
 				const res = await this.$api[this.pan == 's'? 'getSellDetail' : 'getBuyDetail']({params: {id: this.id}})
