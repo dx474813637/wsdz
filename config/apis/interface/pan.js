@@ -184,3 +184,7 @@ export const bid_subscribe_bid_sell = (data) => http.get('bid_subscribe_bid_sell
 //卖盘详情 竞价列表
 // is_success=1 并且pw_curr page = 1状态:成交
 // is _valid-1并且pw curr page=1 状态:领先
+
+
+// sell_buy_share 参数id cate=b/s
+export const sell_buy_share = (data) => http.get('sell_buy_share', data)

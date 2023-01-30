@@ -76,6 +76,38 @@
 			</view>
 			
 		</view>
+		
+		<view class="card-footer u-flex u-flex-between u-flex-items-center u-p-12 u-m-t-20" v-if="mySend">
+			<view class="item text-light u-font-28">
+				<view v-if="shareBtnConfig.button1">
+					<u-button 
+					 open-type="share"
+					  id="share"
+						type="primary"  
+						shape="circle" 
+						plain
+						size="small"
+						icon="share-fill"
+						:disabled="doing"
+						@click.stop="handleShare"
+					>{{shareBtnConfig.button1}}</u-button>
+				</view>
+			</view>
+			<view class="item u-flex u-flex-items-center">
+				<view v-if="shareBtnConfig.button2">
+					<u-button 
+						type="primary"  
+						plain
+						size="small"
+						shape="circle" 
+						icon="photo-fill"
+						:disabled="doing"
+						@click.stop="handleBigPic"
+					>{{shareBtnConfig.button2}}</u-button>
+				</view> 
+			</view>
+			
+		</view>
 	</view>
 </template>
 
@@ -130,7 +162,20 @@
 					return {}
 				},
 			},
+			shareBtnConfig: {
+				type: Object,
+				default:() => {
+					return {
+						button1: '',
+						button2: '',
+					}
+				},
+			},
 			isAuth: {
+				type: Boolean,
+				default: false
+			},
+			mySend: {
 				type: Boolean,
 				default: false
 			},
@@ -237,6 +282,12 @@
 			showPop(type) {
 				this.$emit('showPop', {type, data: this.origin})
 			},
+			handleShare() {
+				this.$emit('handleShare', {data: this.origin})
+			},
+			handleBigPic() {
+				this.$emit('handleBigPic', {data: this.origin})
+			}
 		}
 	}
 </script>

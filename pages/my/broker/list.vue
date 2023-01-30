@@ -69,12 +69,16 @@
 							:dprice="item.dprice"
 							:unit="item.unit"
 							:origin="item"
+							:mySend="true" 
+							:shareBtnConfig="shareBtnConfig" 
 							@changeStatus="handleChangeStatus"
 							@delet="handleDelet"
 							@resubmit="handleResubmit"
 							@detail="handleProdDetail"
 							@front="handleProdFront"
 							@showPop="handleShowPop"
+							@handleShare="handleShare"
+							@handleBigPic="handleBigPic"
 						></BrokerCard>
 					</view>
 					
@@ -165,11 +169,33 @@
 							</u-empty>
 						</template> 
 					</scroll-view>
-				</view>
-				
-			</view>
-			
+				</view> 
+			</view> 
 		</u-popup>
+		
+		<!-- 海报确认 -->
+		<u-popup
+			:show="haibaoShow" 
+			@close="haibaoShow = false" 
+			mode="bottom" 
+			bgColor="#fff"
+		>
+			<view class="haibao-wrap">
+				<scroll-view scroll-y class="u-p-20 haibao" >
+					<u--image width="100%" height="auto" :src="shareTarget.haibao" mode="widthFix" radius="6"></u--image>
+				</scroll-view>
+				<view class="u-flex u-flex-between u-p-20">
+					<view class="item u-flex-1 u-p-r-10"> 
+						<u-button type="primary" open-type="share" >确认转发</u-button>
+					</view>
+					<view class="item u-flex-1 u-p-l-10">
+						<u-button type="primary" plain @click="savePic">保存图片</u-button>
+					</view>
+				</view>
+			</view>
+		</u-popup>
+	
+	
 	</view>
 </template>
 
@@ -226,6 +252,19 @@
 						disabled: false,
 					},
 				],
+				shareTarget: {
+					title: '',
+					path: '',
+					imageUrl: '',
+					type: '',
+					haibao: '',
+					data: {}
+				},
+				shareBtnConfig: {
+					button1: '',
+					button2: '',
+				},
+				haibaoShow: false,
 			};
 		},
 		onLoad(options) {
@@ -241,6 +280,7 @@
 			uni.showLoading()
 			this.getData()
 		},
+		
 		computed: {
 			...mapState({
 				typeConfig: state => state.theme.typeConfig,
@@ -409,7 +449,9 @@
 					params: this.paramsObj
 				})
 				if(res.code == 1) {
-					this.indexList = [...this.indexList, ...res.list]
+					this.indexList = [...this.indexList, ...res.list];
+					this.shareBtnConfig.button1 = res.button1
+					this.shareBtnConfig.button2 = res.button2
 					if(this.indexList.length >= res.total) {
 						this.loadstatus = 'nomore'
 					}else {
@@ -488,8 +530,78 @@
 						data: encodeURIComponent(JSON.stringify(data)),
 					}
 				})
+			},
+			handleShare({data}) {
+				this.shareTarget.data = data 
+				this.shareTarget.type = 'base' 
+			},
+			async handleBigPic({data}) {
+				this.shareTarget.data = data 
+				this.shareTarget.type = 'haibao' 
+				await this.getShareData(); 
+				this.haibaoShow = true
+			},
+			async getShareData(tongji) {
+				uni.showLoading()
+				const res = await this.$api.sell_buy_share({params: {
+					id: this.shareTarget.data.id,
+					cate: this.pan,
+					tongji: tongji? 1 : ''
+				}})
+				if(res.code == 1) {
+					this.shareTarget.title = res.list.share_title
+					this.shareTarget.imageUrl = this.shareTarget.type == 'haibao' ? res.list.share_img2 : res.list.share_img;
+					this.shareTarget.haibao = res.list.haibao
+					this.shareTarget.path = res.list.share_url
+					return {
+						title: this.shareTarget.title,
+						path: this.shareTarget.path,
+						imageUrl: this.shareTarget.imageUrl,
+					};
+				}else {
+					return {}
+				}
+				// console.log(this.shareTarget)
+			},
+			savePic(){
+				const that = this
+				uni.downloadFile({
+					url:this.shareTarget.haibao,//网络图片的地址
+					success:function(res){ 
+						uni.saveImageToPhotosAlbum({
+							filePath: res.tempFilePath, //临时文件地址
+							success(res) {
+								uni.showToast({
+									title:'保存成功',
+									icon:'success'
+								})
+							},
+							fail(err){
+								console.log(err);
+							}
+						})
+					},
+					fail:function(res){
+						console.log('保存错误',res);
+					},
+				})
+			}, 
+		},
+		
+		async onShareAppMessage(res) {
+			// console.log(res)
+			if(res.from == 'menu') {
+				
+			}else {
+				return await this.getShareData(true)
+				// {
+				// 	title: this.shareTarget.title,
+				// 	path: this.shareTarget.path,
+				// 	imageUrl: this.shareTarget.imageUrl,
+				// };
 			}
-		}
+			
+		},
 	}
 </script>
 <style lang="scss">
@@ -499,6 +611,14 @@
 	}
 </style>
 <style lang="scss" scoped>
+	.haibao-wrap { 
+		box-sizing: border-box;
+		& .haibao {
+			max-height: 70vh;
+			box-sizing: border-box;
+			overflow: hidden;
+		}
+	}
 	.jp-wrap {  
 		box-sizing: border-box;
 	}
