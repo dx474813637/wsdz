@@ -725,6 +725,7 @@
 			return {
 				id: '',
 				pan: '',
+				key: '',
 				imgWrapShow: false,
 				jpListShow: false,
 				jpSubmitShow: false,
@@ -765,6 +766,9 @@
 			if(uni.$u.pages().length == 1) this.backBtn = false
 			if(options.hasOwnProperty('id')) {
 				this.id = options.id
+			}
+			if(options.hasOwnProperty('key')) {
+				this.key = options.key
 			}
 			if(options.hasOwnProperty('pan')) {
 				this.pan = options.pan
@@ -902,7 +906,7 @@
 				
 			},
 			async getData() {
-				const res = await this.$api[this.pan == 's'? 'getSellDetail' : 'getBuyDetail']({params: {id: this.id}})
+				const res = await this.$api[this.pan == 's'? 'getSellDetail' : 'getBuyDetail']({params: {id: this.id, key: this.key}})
 				// console.log(res)
 				if(res.code == 1) {
 					this.list = res.list

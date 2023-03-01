@@ -1,13 +1,13 @@
 <script>
-	import routingIntercept from '@/config/permission.js'
+	import routingIntercept from '@/config/permission/index.js'
+	import { changeProject } from '@/utils/isProject.js'
 	import store from '@/store'
 	
 	// import {tim_online_login} from '@/utils/tims_login.js'
 	export default {
-		onLaunch: async function() {
-			let e = uni.getSystemInfoSync();
-			
-			
+		onLaunch: async function(opt) {
+			// console.log(1,opt)
+			// let e = uni.getSystemInfoSync();
 			if (uni.canIUse('getUpdateManager')) {
 				const updateManager = uni.getUpdateManager();
 				updateManager.onCheckForUpdate(function(res) {
@@ -42,8 +42,14 @@
 			routingIntercept(this)
 			
 		},
-		onShow: function() {
-			// console.log('App Show')
+		onShow: function(options) { 
+			console.log('opt.query', options.query)
+			if(options.query?.project) {
+				changeProject(options.query.project)
+			}
+			if(options.query?.share_other) { 
+				store.commit('user/setShareOther', options.query.share_other) 
+			}
 			const res = uni.getStorageSync('WebSocketInfo')
 			if(res) this.$ws.init()
 			// tim_online_login()

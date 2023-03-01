@@ -2,14 +2,16 @@
 // import * as apis from '@/config/api'
 import darkConfig from './themeConfig/theme_dark_config'
 import whiteConfig from './themeConfig/theme_white_config'
+import chemnetConfig from './themeConfig/theme_chemnet_config'
 import {darkSeries, darkBaseOptions} from './themeConfig/theme_dark_echarts'
 import {whiteSeries, whiteBaseOptions} from './themeConfig/theme_white_echarts'
-
+console.log(chemnetConfig)
 let state = {
 		typeActive: uni.getStorageSync('themeActive') || 'dark',
 		typeConfig: {
 			dark: darkConfig,
-			white: whiteConfig
+			white: whiteConfig,
+			chemnet: chemnetConfig
 		},
 		echarts: {
 			dark: {

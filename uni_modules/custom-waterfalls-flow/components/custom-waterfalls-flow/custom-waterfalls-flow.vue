@@ -15,7 +15,11 @@
 					<slot v-bind="item2"></slot>
 					<!-- #endif -->
 				</view>
-				<image :class="['img',{'img-hide':item2[hideImageKey]==true||item2[hideImageKey]==1},{'img-error':!item2[data.imageKey]}]" :src="item2[data.imageKey]" mode="widthFix" @load="imgLoad(item2,index+1)" @error="imgError(item2,index+1)" @click.stop="imageClick(item2)"></image>
+				<view :class="{
+					'img-mask': imgMask
+				}">
+					<image :class="['img',{'img-hide':item2[hideImageKey]==true||item2[hideImageKey]==1},{'img-error':!item2[data.imageKey]}]" :src="item2[data.imageKey]" mode="widthFix" @load="imgLoad(item2,index+1)" @error="imgError(item2,index+1)" @click.stop="imageClick(item2)"></image>
+				</view>
 				<view class="inner" v-if="data.seat==2">
 					<!-- #ifdef MP-WEIXIN -->
 					<!-- #ifdef VUE2 -->
@@ -63,7 +67,11 @@
 			},
 			listStyle: { // 单个展示项的样式：eg:{'background':'red'}
 				type: Object
-			}
+			},
+			imgMask: { 
+				type: Boolean,
+				default: false
+			}, 
 		},
 		data() {
 			return {
@@ -193,7 +201,7 @@
 					for (let i = 1; i <= this.data.column; i++) {
 						const query = uni.createSelectorQuery().in(this);
 						query.select(`#waterfalls_flow_column_${i}`).boundingClientRect(data => {
-							console.log(i, data.height)
+							// console.log(i, data.height)
 							heightArr.push({ column: i, height: data.height });
 						}).exec(() => {
 							if (this.data.column <= heightArr.length) {
@@ -262,6 +270,7 @@
 			value: {
 				deep: true,
 				handler(newValue, oldValue) {
+					console.log(newValue)
 					setTimeout(() => {
 						this.$nextTick(() => {
 							if (this.isRefresh) return false;
@@ -293,7 +302,20 @@
 			float: left;
 		}
 	}
-
+	.img-mask {
+		position: relative;
+		overflow: hidden;
+		z-index: 5;
+		&:after {
+			content: '';
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(90,90,90,.1);
+		}
+	}
 	.column-value {
 		width: 100%;
 		font-size: 0;

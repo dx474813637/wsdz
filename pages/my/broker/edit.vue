@@ -1,13 +1,16 @@
 <template>
 	<view class="">
-		<u-notice-bar text="请真实发布！若因信息不实而被投诉，将进入黑名单。"></u-notice-bar>
+		<u-notice-bar text="请真实发布！若因信息不实而被投诉，将进入黑名单。"></u-notice-bar> 
+		<view class="u-content u-p-10" v-if="pan == 's' && create_sell_info">
+			<u-parse :content="create_sell_info"></u-parse>
+		</view>
 		<view class="u-p-20 u-p-l-40 u-p-r-40">
 			<u--form
 				labelPosition="left"
 				:model="model"
 				ref="from"
 				labelWidth="80"
-				>
+				> 
 				
 					<u-form-item
 						label="商品"
@@ -951,7 +954,7 @@
 					]
 				],
 				checkbox_broker_login:[],
-				
+				create_sell_info: ``
 			}
 		},
 		computed: {
@@ -1289,6 +1292,7 @@
 				this.prodInfoLoading = false
 			}
 			this.setPageTitle()
+			this.getInitData()
 		},
 		watch: {
 			['model.pics'](n) {
@@ -1312,11 +1316,11 @@
 			['model.order_type']: {
 				immediate: true, 
 				handler(n) {
-					this.radiolist_trade_mode.forEach(ele => { 
-						if(ele.value == '2' || ele.value == '1') {
-							ele.disabled = n == '2' ? true : false;
-						} 
-					}) 
+					// this.radiolist_trade_mode.forEach(ele => { 
+					// 	if(ele.value == '2' || ele.value == '1') {
+					// 		ele.disabled = n == '2' ? true : false;
+					// 	} 
+					// }) 
 					if(n == '2') {
 						this.model.trade_mode = '0'
 					}
@@ -1383,6 +1387,12 @@
 					icon: 'none'
 				})
 			}, 
+			async getInitData() {
+				const res = await this.$api.create_sell_info()
+				if(res.code == 1) {
+					this.create_sell_info = res.list    
+				}
+			},
 			checkboxChange(v) {
 				console.log(v)
 				this.model.broker_login = v[0] ? v[0]: ''

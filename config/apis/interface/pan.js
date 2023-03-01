@@ -188,3 +188,5 @@ export const bid_subscribe_bid_sell = (data) => http.get('bid_subscribe_bid_sell
 
 // sell_buy_share 参数id cate=b/s
 export const sell_buy_share = (data) => http.get('sell_buy_share', data)
+// create_sell_info 
+export const create_sell_info = (data) => http.get('create_sell_info', data)

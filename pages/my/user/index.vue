@@ -15,7 +15,7 @@
 				</view>
 			</view>
 		</u-navbar>
-		<view class="step3 user u-flex u-flex-items-end u-p-20 u-p-t-50 u-m-b-26">
+		<view class="step3 user u-flex u-flex-items-start u-p-20 u-p-t-50 u-m-b-26">
 			
 			<view class="user-img u-flex u-flex-items-center u-flex-center" @click="handleGoto('/pages/my/user/info')">
 				<i class="custom-icon-myfill custom-icon"></i>
@@ -56,8 +56,14 @@
 				</template>
 				
 			</view>
-			<view class="dingyue-wrap " v-if="dingyue.zt == '1'">
-				<u-button type="primary" plain shape="circle" @click="dingyueEvent" size="mini">{{dingyue.title}}</u-button>
+			<view>
+				<view class="u-p-l-10 u-m-b-10 u-flex text-dark" @click="handleGoto('/pages/my/account/change_account')">
+					<view class="u-p-r-10 ">切换</view>
+					<u-icon name="arrow-right" color="#222" size="17"></u-icon>
+				</view>
+				<view class="dingyue-wrap " v-if="dingyue.zt == '1'">
+					<u-button type="primary" plain shape="circle" @click="dingyueEvent" size="mini">{{dingyue.title}}</u-button>
+				</view>
 			</view>
 			
 		</view>
@@ -108,6 +114,7 @@
 				<u-scroll-list> 
 					<view 
 						v-for="(item, index) in menus_broker.list"
+						:key="index"
 						@click="handleMenusClick(item)" 
 						class="item-broker u-p-10 u-p-l-20 u-p-r-20"
 						>

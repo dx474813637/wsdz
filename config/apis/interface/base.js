@@ -140,6 +140,10 @@ export const guanzhu = (data) => http.get('guanzhu', data)
 export const my_score = (data) => http.get('my_score', data) 
 // 指南
 export const zhinan = (data) => http.get('zhinan', data) 
+// 企业专区公司信息和商品接口  参数login=manmlt
+export const mancust_info_category = (data) => http.get('mancust_info_category', data) 
+// prefecture_list
+export const prefecture_list = (data) => http.get('prefecture_list', data) 
 
 
 //  订阅模板 type=0默认订阅  1订单状态订阅
@@ -148,3 +152,10 @@ export const tmp_id_list = (data) => http.get('tmp_id_list', data)
 export const tmp_id_back = (data) => http.get('tmp_id_back', data) 
 // wx.getSetting把始终订阅的数据 json格式 提交到str
 export const get_tmp_id_time = (data) => http.get('get_tmp_id_time', data) 
+
+// login_manage_list 身份切换列表
+export const login_manage_list = (data) => http.get('login_manage_list', data) 
+// login_manage_change 身份切换 参数id
+export const login_manage_change = (data) => http.get('login_manage_change', data) 
+// login_manage_del  删除身份 参数id
+export const login_manage_del = (data) => http.get('login_manage_del', data) 

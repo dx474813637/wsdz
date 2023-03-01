@@ -1,4 +1,5 @@
 import {tim_online_login} from '@/utils/tims_login.js'
+import store from '@/store'
 
 
 const sys = uni.getSystemInfoSync();
@@ -131,6 +132,11 @@ export default function(vm) {
 		// 	// 可以在此通过vm引用vuex中的变量，具体值在vm.$store.state中
 		// 	config.header.token = vm.$store.state.userInfo.token
 		// }
+		// console.log(store.state.user.share_other)
+		config.params = {
+			...config.params,
+			share_other: store.state.user.share_other
+		}
 		return config
 	}, config => { // 可使用async await 做异步操作
 		return Promise.reject(config)

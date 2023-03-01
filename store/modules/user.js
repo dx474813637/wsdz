@@ -32,13 +32,23 @@ let state = {
 		page: {
 			route: '/pages/index/index',
 			options: {}
-		}
+		},
+		share_other: ''
 	},
 	getters = {
 	},
 	mutations = {
 		setWdMenus(state, data) {
 			state.menus_wd = data;
+		},
+		setShareOther(state, data) {
+			// console.log(data)
+			// let otherArr = data.split('&')
+			// let obj = {}
+			// otherArr.forEach(ele => {
+			// 	obj[ele.split('=')[0]] = ele.split('=')[1]
+			// })
+			state.share_other = data;
 		},
 		setBrokerMenus(state, data) {
 			state.menus_broker = data;

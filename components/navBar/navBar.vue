@@ -25,6 +25,11 @@
 							:style="{color: typeActive == 'white'? '#007aff' :themeConfig.themeIconColor}"
 						></i>
 					</view>
+					<!-- <view v-if="projectBtn" @click="$emit('projectEvent')" class="btn u-m-l-20 u-font-28" :style="{
+						color: themeConfig.navText
+					}">
+						[切换]
+					</view> -->
 				</view>
 				
 			</template>
@@ -36,6 +41,20 @@
 				</slot>
 			</template>
 		</u-navbar>
+		
+		<view class="project-btn u-flex u-flex-column">
+			<view class="item u-flex u-flex-center u-flex-items-center" 
+				v-if="projectBtn"
+				@click="$emit('projectEvent')"
+				:style="{
+					background: typeActive == 'white'? '#007aff' :themeConfig.themeIconColor,
+					color: typeActive == 'white'? '#fff' :themeConfig.navText,
+				}">
+				<i class="custom-icon-jiaohuan custom-icon u-font-40" :style="{
+					color: typeActive == 'white'? '#fff' :themeConfig.navText,
+				}"></i>
+			</view>
+		</view>
 	</view>
 </template>
 
@@ -53,6 +72,10 @@
 				default: '',
 			},
 			backBtn: {
+				type: Boolean,
+				default: false
+			},
+			projectBtn: {
 				type: Boolean,
 				default: false
 			},
@@ -92,6 +115,18 @@
 	}
 </script>
 
-<style lang="scss">
-
+<style lang="scss" scoped>
+	.project-btn {
+		position: fixed;
+		right: 20px;
+		bottom: 80px;  
+		bottom: calc(80px + constant(safe-area-inset-bottom));  
+		bottom: calc(80px + env(safe-area-inset-bottom));
+		  z-index: 20;
+		.item {
+			width: 45px;
+			height: 45px;
+			border-radius: 30px;
+		}
+	}
 </style>

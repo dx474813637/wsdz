@@ -194,7 +194,26 @@
 			}
 
 		}
-	],
+	    ,{
+            "path" : "pages/index/prefecture/prefecture",
+            "style": {
+            	"navigationStyle": "custom",
+            	"navigationBarTextStyle": "white"
+            }
+            
+        }
+        ,{
+            "path" : "pages/index/prefectureList/prefectureList",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+            	"navigationStyle": "custom",
+            	"navigationBarTextStyle": "white",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
 	"subPackages": [{
 		"root": "pages/baojia",
 		"pages": [{
@@ -786,7 +805,14 @@
 					"enablePullDownRefresh": false
 				}
 
+			}, {
+			"path": "account/change_account",
+			"style": {
+				"navigationBarTitleText": "账号切换",
+				"enablePullDownRefresh": false
 			}
+
+		}
 		]
 	}, {
 		"root": "pages/more",
@@ -840,6 +866,55 @@
 				"enablePullDownRefresh": false
 			}
 
+		}]
+	}, {
+		"root": "pages/chemnet",
+		"pages": [{
+			"path": "index",
+			"style": {
+				"navigationBarTitleText": "化工网商城", 
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white",
+				"enablePullDownRefresh": false
+			}
+		}, {
+			"path": "classify/classify",
+			"style": {
+				"navigationBarTitleText": "类别导航",
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "product/product",
+			"style": {
+				"navigationBarTitleText": "列表",
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white"
+			} 
+		}, {
+			"path": "product/productDetail",
+			"style": {
+				"navigationBarTitleText": "详情",
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white",
+				"enablePullDownRefresh": false
+			} 
+		}, {
+			"path": "search/search",
+			"style": {
+				"navigationBarTitleText": "搜索",
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white",
+				"enablePullDownRefresh": false
+			} 
+		}, {
+			"path": "user/inquiry/inquiry",
+			"style": {
+				"navigationBarTitleText": "询盘编辑", 
+				"enablePullDownRefresh": false 
+			} 
 		}]
 	}],
 	"globalStyle": {
