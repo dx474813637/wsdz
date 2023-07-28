@@ -10,9 +10,32 @@
 				"navigationStyle": "custom",
 				"navigationBarTextStyle": "white"
 			}
-		}
+		}, {
+			"path": "pages/index/group/groupList",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false,
+				"onReachBottomDistance": 50
+			}
 
-		, {
+		}, {
+			"path": "pages/index/group/group",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": true,
+				"onReachBottomDistance": 50
+			}
+
+		}, {
+			"path": "pages/index/frontCard/frontCard",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false,
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#306dbe"
+			}
+
+		}, {
 			"path": "pages/index/notice/notice",
 			"style": {
 				"navigationBarTitleText": "最新公告",
@@ -193,27 +216,41 @@
 				"enablePullDownRefresh": false
 			}
 
+		}, {
+			"path": "pages/index/prefecture/prefecture",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white"
+			}
+
+		}, {
+			"path": "pages/index/prefectureList/prefectureList",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/index/pan/panBasis",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white"
+			}
+
+		}, {
+			"path": "pages/index/frontCard/frontCpyCard",
+			"style": {
+				"navigationBarTitleText": "",
+				"navigationBarBackgroundColor": "#306dbe",
+				"navigationBarTextStyle": "white",
+				"onReachBottomDistance": 50,
+				"enablePullDownRefresh": false
+			}
+
 		}
-	    ,{
-            "path" : "pages/index/prefecture/prefecture",
-            "style": {
-            	"navigationStyle": "custom",
-            	"navigationBarTextStyle": "white"
-            }
-            
-        }
-        ,{
-            "path" : "pages/index/prefectureList/prefectureList",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-            	"navigationStyle": "custom",
-            	"navigationBarTextStyle": "white",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+	],
 	"subPackages": [{
 		"root": "pages/baojia",
 		"pages": [{
@@ -265,6 +302,39 @@
 				"style": {
 					"navigationBarTitleText": "用户信息"
 				}
+			},{
+				"path": "haibao/haibao",
+				"style": {
+					"navigationBarTitleText": "海报"
+				}
+			}, {
+				"path": "user/setCard2Group",
+				"style": {
+					"navigationBarTitleText": "设置名片页关联群",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "user/my_card",
+				"style": {
+					"navigationBarTitleText": "我的名片",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "FollowMe/FollowMe",
+				"style": {
+					"navigationBarTitleText": "关注我的",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "myFollow/myFollow",
+				"style": {
+					"navigationBarTitleText": "我的关注",
+					"enablePullDownRefresh": false
+				}
+
 			}, {
 				"path": "address/address",
 				"style": {
@@ -806,13 +876,76 @@
 				}
 
 			}, {
-			"path": "account/change_account",
-			"style": {
-				"navigationBarTitleText": "账号切换",
-				"enablePullDownRefresh": false
-			}
+				"path": "account/change_account",
+				"style": {
+					"navigationBarTitleText": "账号切换",
+					"enablePullDownRefresh": false
+				}
 
-		}
+			}, {
+				"path": "order/order_inquiry",
+				"style": {
+					"navigationBarTitleText": "询价列表",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "order/order_inquiry_detail",
+				"style": {
+					"navigationBarTitleText": "详情",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "order/order_inquiry_edit",
+				"style": {
+					"navigationBarTitleText": "询盘报价",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "fx/jyfw",
+				"style": {
+					"navigationBarTitleText": "经营范围详情",
+					"enablePullDownRefresh": false
+				} 
+			}, {
+				"path": "fx/jyfw_list",
+				"style": {
+					"navigationBarTitleText": "经营范围",
+					"enablePullDownRefresh": false
+				} 
+			}, {
+				"path": "fx/fxgx",
+				"style": {
+					"navigationBarTitleText": "分销商品关系信息",
+					"enablePullDownRefresh": false
+				} 
+			}, {
+				"path": "fx/fxgx_list",
+				"style": {
+					"navigationBarTitleText": "我的分销",
+					"enablePullDownRefresh": false
+				} 
+			}, {
+				"path": "fx/fxgx_add",
+				"style": {
+					"navigationBarTitleText": "添加分销关系",
+					"enablePullDownRefresh": false
+				} 
+			}, {
+				"path": "fx/fxmp_list",
+				"style": {
+					"navigationBarTitleText": "分销卖盘列表",
+					"enablePullDownRefresh": false
+				} 
+			}, {
+				"path": "fx/fxcjjl_list",
+				"style": {
+					"navigationBarTitleText": "分销成交记录列表",
+					"enablePullDownRefresh": false
+				} 
+			}
 		]
 	}, {
 		"root": "pages/more",
@@ -872,7 +1005,7 @@
 		"pages": [{
 			"path": "index",
 			"style": {
-				"navigationBarTitleText": "化工网商城", 
+				"navigationBarTitleText": "化工网商城",
 				"navigationStyle": "custom",
 				"navigationBarTextStyle": "white",
 				"enablePullDownRefresh": false
@@ -892,7 +1025,7 @@
 				"navigationBarTitleText": "列表",
 				"navigationStyle": "custom",
 				"navigationBarTextStyle": "white"
-			} 
+			}
 		}, {
 			"path": "product/productDetail",
 			"style": {
@@ -900,7 +1033,7 @@
 				"navigationStyle": "custom",
 				"navigationBarTextStyle": "white",
 				"enablePullDownRefresh": false
-			} 
+			}
 		}, {
 			"path": "search/search",
 			"style": {
@@ -908,13 +1041,13 @@
 				"navigationStyle": "custom",
 				"navigationBarTextStyle": "white",
 				"enablePullDownRefresh": false
-			} 
+			}
 		}, {
 			"path": "user/inquiry/inquiry",
 			"style": {
-				"navigationBarTitleText": "询盘编辑", 
-				"enablePullDownRefresh": false 
-			} 
+				"navigationBarTitleText": "询盘编辑",
+				"enablePullDownRefresh": false
+			}
 		}]
 	}],
 	"globalStyle": {

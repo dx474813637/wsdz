@@ -4,7 +4,7 @@
 		<view class="main u-p-30">
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
 				<view class="item text-light item-label">类型</view>
-				<view class="item u-text-right">竞买</view>
+				<view class="item u-text-right">{{list.source == 'SELL' ? '竞卖' : '竞买'}}</view>
 			</view>
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
 				<view class="item text-light item-label">报盘</view>

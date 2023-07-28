@@ -1,9 +1,9 @@
 <template>
-	<view class="card-wrapper">
+	<view class="card-wrapper" v-if="show == 1">
 		<view class="card-title u-flex u-flex-items-center u-flex-between u-p-10 u-m-b-12">
 			<view class="item u-flex u-flex-items-center">
 				<i class="custom-icon u-font-40" :class="[icon]" :style="{color: themeConfig.followCard.iconText}"></i>
-				<text class="u-p-l-10" :style="{color: themeConfig.followCard.titleText}">{{name}}</text>
+				<text class="u-p-l-10" :style="{color: themeConfig.followCard.titleText}">{{textConfig.name1}}</text>
 			</view>
 			<view @click="handleClickSetting"  class="item u-flex u-flex-items-center" :style="{color: themeConfig.followCard.subText}">
 				<i class="custom-icon custom-icon-shezhi1 u-font-28" ></i>
@@ -66,8 +66,19 @@
 									<text class="u-font-26 u-p-l-10" :style="{color: themeConfig.followCard.subText, whiteSpace: 'nowrap'}">{{item.trade_type | tradeType2}}</text>
 								</view>
 								<view class="u-font-32 u-m-b-10 u-line-1" :style="{color: pan == 's'? themeConfig.warn: themeConfig.error}">
-									<text>{{item.price | price2str(item.dprice)}}</text>
-									<text class="u-font-28 u-p-l-10" v-if="item.price>0">元/{{item.unit}}</text>
+									<template v-if="item.trade_mode == '3'">
+										{{item.base_contract}}
+										<template v-if="item.price >= 0">+</template>
+										{{item.price}}
+									</template>
+									<template v-else-if="item.trade_mode == '5'">
+										询价
+									</template>
+									<template v-else> 
+										<text>{{item.price | price2str(item.dprice)}}</text>
+										<text class="u-font-28 u-p-l-10" v-if="item.price>0">元/{{item.unit}}</text>
+									</template>
+									
 								</view>
 								<view class="u-p-4 u-p-r-16 u-p-l-16 u-font-22" :style="{
 									color: themeConfig.followCard.btnText,
@@ -102,7 +113,7 @@
 					}"
 				>
 					<i class="custom-icon-roundadd custom-icon u-font-28"></i>
-					<text class="u-font-28 u-p-l-10">发布{{pan == 's'? '卖': '买'}}盘</text>
+					<text class="u-font-28 u-p-l-10">{{textConfig.name2}}</text>
 				</view>
 			</view>
 		</view>
@@ -205,9 +216,17 @@
 				type: String,
 				default: 's'
 			},
+			show: {
+				type: Boolean,
+				default: 0
+			},
 			jpList: {
 				type: Array,
 				default: () => []
+			}, 
+			textConfig: {
+				type: Object,
+				default: () => ({})
 			}
 		},
 		data() {

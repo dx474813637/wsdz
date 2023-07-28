@@ -32,7 +32,7 @@
 			</view>
 			
 		</view>
-		<view class="tabs-w u-p-l-10 u-p-r-10" v-if="pan == 's'">
+		<view class="tabs-w u-p-l-10 u-p-r-10" >
 			<u-tabs
 				:list="tabs_list"
 				:current="tabs_current"
@@ -45,7 +45,7 @@
 		</view>
 		
 		<view class="list u-p-l-20 u-p-r-20" :style="{
-			height: pan == 's'? 'calc(100% - 146px - env(safe-area-inset-bottom))' : 'calc(100% - 102px - env(safe-area-inset-bottom))'
+			height: 'calc(100% - 146px - env(safe-area-inset-bottom))'
 		}">
 			<u-list
 				height="100%"
@@ -230,25 +230,35 @@
 				popshow: false,
 				poporigin: {},
 				popsourceData: {},
-				tabs_list: [
+				tabs_list_origin: [
 					{
 						name: '全部',
 						value: '',
 						disabled: false,
 					},
 					{
-						name: '议价交易',
+						name: '议价',
 						value: '0',
 						disabled: false,
 					},
 					{
-						name: '竞拍交易',
+						name: '竞拍',
 						value: '1',
 						disabled: false,
 					},
 					{
-						name: '一口价交易',
+						name: '一口价',
 						value: '2',
+						disabled: false,
+					},
+					{
+						name: '基差',
+						value: '3',
+						disabled: false,
+					},
+					{
+						name: '询价',
+						value: '5',
 						disabled: false,
 					},
 				],
@@ -336,6 +346,13 @@
 			poptitle() {
 				return `${this.popsourceData.name} - ${this.showPopType == 'jp' ? '竞拍列表' : '预约列表'}`
 			},
+			tabs_list() {
+				if(this.pan == 'b') {
+					//买盘排除一口价
+					return this.tabs_list_origin.filter(ele => ele.value != 2)
+				}
+				return this.tabs_list_origin
+			}
 			
 		},
 		components: {

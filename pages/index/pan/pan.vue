@@ -54,9 +54,45 @@
 					
 				</u-tabs>
 			</view>
+			<view class="addr-w u-p-10 u-p-l-20 u-p-r-20 u-font-30"
+				:style="{
+					backgroundColor: themeConfig.pageBg
+				}"
+				v-if="area_show == 1"
+			>
+				<view class="u-p-10 u-p-l-20 u-radius-5 u-flex u-flex-items-center" 
+					:style="{
+						backgroundColor: themeConfig.boxBgBottom,
+						height: '100%',
+						boxSizing: 'border-box'
+					}"
+				>
+					<view class="item u-flex u-flex-items-center" :style="{
+							color: themeConfig.pan.pageText,
+							whiteSpace: 'nowrap'
+						}">
+						<i class="custom-icon-weizhi custom-icon u-font-30"></i>
+						<view class="u-m-l-5 u-m-r-20 u-font-28" >交货地</view>
+					</view>
+					<view class="item u-flex u-flex-items-center u-line-1"
+						:style="{
+							color: themeConfig.dataText,
+						}"
+					>
+						<uni-data-picker
+							placeholder="点击进行地区筛选" 
+							popup-title="请选择所在地区" 
+							:border="false"
+							:localdata="addressAreaFilter" 
+							v-model="dplace"
+							@change="handleValArea"
+						></uni-data-picker>
+					</view>
+				</view>
+			</view>
 		</view>
 		<view class="list" :style="{
-			height: `calc(100% - 182px - ${sys.statusBarHeight}px - ${sys.safeAreaInsets.bottom}px)`
+			height: `calc(100% - 182px - ${sys.statusBarHeight}px - ${sys.safeAreaInsets.bottom}px - ${area_show==1? '50' : '0'}px)`
 		}">
 			<template v-if="skeletonLoading">
 				<view class="u-p-20 animation" v-for="item in 4" :key="item">
@@ -128,7 +164,7 @@
 </template>
 
 <script>
-	import {mapState, mapGetters, mapMutations} from 'vuex'
+	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
 	import mixShareInfo from '@/config/mixShareInfo'
 	export default {
 		mixins: [mixShareInfo],
@@ -167,29 +203,43 @@
 				],
 				indexList: [],
 				curP: 1,
-				loadstatus: 'loadmore'
+				loadstatus: 'loadmore',
+				addr: [],
+				dplace: '',
+				area_show: 0,
 			};
 		},
 		computed: {
 			...mapState({
 				typeActive: state => state.theme.typeActive,
+				addressArea: state => state.user.addressArea,
 			}),
 			...mapGetters({
 				themeConfig: 'theme/themeConfig',
 				sys: 'theme/sys'
 			}),
+			addressAreaFilter() {
+				if(this.addressArea.length == 0) return []
+				const originData = uni.$u.deepClone(this.addressArea) 
+				return this.initAddressData(originData, '')
+			},
 			paramsObj() {
 				return {
 					standard: this.tabs_list[this.tabs_current].standard,
 					terms: this.tabs_list[this.tabs_current].keyword,
 					p: this.curP,
+					dplace: this.dplace
 				}
 			}
 		},
 		onLoad(options) {
+			this.getAddressArea()
 			// console.log(options)
 			if(options.hasOwnProperty('pan')) {
 				this.pan = options.pan
+			}
+			if(options.hasOwnProperty('dplace')) {
+				this.dplace = options.dplace
 			}
 			if(options.hasOwnProperty('data')) {
 				const data = JSON.parse(decodeURIComponent(options.data))
@@ -216,6 +266,32 @@
 			...mapMutations({
 				handleGoto: 'user/handleGoto'
 			}),
+			...mapActions({
+				getAddressArea: 'user/getAddressArea'
+			}),
+			async handleValArea(e) {
+				// this.addr = e.detail.value
+				if(e.detail.value.length == 0) {
+					this.dplace = ''
+				}else {
+					this.dplace = e.detail.value[e.detail.value.length - 1].value 
+					this.customShareParams.dplace = this.dplace
+				} 
+				console.log('c', e, this.dplace)
+				await this.refreshList()
+			},
+			initAddressData(data, preValue) { 
+				data.unshift({
+					text: "全部",
+					value: preValue + '00'
+				})
+				data.forEach(ele => {
+					if(ele.children && ele.children.length > 0) {
+						ele.children = this.initAddressData(ele.children, ele.value)
+					}
+				}) 
+				return data
+			},
 			async menusConfirm(data) {
 				console.log(data)
 				this.tabs_list.push({
@@ -268,6 +344,7 @@
 				// const res = await this.$api.getPanList()
 				// console.log(res)
 				if(res.code == 1) {
+					this.area_show = res.area_show
 					this.setOnlineControl(res)
 					this.indexList = [...this.indexList, ...res.list]
 					if(this.curP == res.total) {
@@ -315,6 +392,11 @@
 <style lang="scss">
 	page {
 		height: 100vh;
+		/deep/ {
+			.uni-data-tree-dialog {
+				color: #333!important;
+			}
+		}
 		.dark /deep/ {
 			.u-skeleton {
 				&__wrapper {
@@ -352,6 +434,9 @@
 	}
 </style>
 <style lang="scss" scoped>
+	.addr-w {
+		height: 40px;
+	}
 	.w {
 		height: 100vh;
 	}

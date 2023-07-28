@@ -75,6 +75,12 @@ const orderState2Str = (v, order_type) => {
 	else if(v == '8') return '待发货'
 	else if(v == '9') return '待收货'
 	else if(v == '31') return '过期未支付取消'
+	else if(v == '40') return '签约协商中'
+	else if(v == '41') return '待签约'
+	else if(v == '42') return '签约中'
+	else if(v == '49') return '基差待审核'
+	else if(v == '48') return '基差审核拒绝'
+	else if(v == '47') return '基差待发送' 
 	else return v
 }
 //现金支付（pay  fund）状态：
@@ -217,7 +223,7 @@ const auth2str = v => {
 const price2str = (price, dprice) => {
 	if(price != 0) return price;
 	if(!dprice) return '议价'
-	else return '点价'
+	else return '公式价'
 }
 
 const chatTimeFilter = (v, flag) => {
@@ -246,6 +252,8 @@ const bidTradeM2str = v => {
 	if(v == '0') return '议价'
 	else if(v == '1')  return '竞拍'
 	else if(v == '2')  return '一口价'
+	else if(v == '3')  return '基差'
+	else if(v == '5')  return '询价'
 	else return v
 }
 

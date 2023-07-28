@@ -1,7 +1,7 @@
 <template>
 	<view class="w">
 		<view class="search-wrapper u-flex u-flex-items-center u-p-l-20 u-p-r-20 u-p-b-10">
-			<view class="item" @click="searchCateShow = true" style="flex: 0 0 100px">
+			<!-- <view class="item u-m-r-20" @click="searchCateShow = true" style="flex: 0 0 100px">
 				<u--input 
 					:value="searchCate"
 					readonly
@@ -11,8 +11,8 @@
 					fontSize="14"
 					:customStyle="{paddingTop: '4px', paddingBottom: '4px', background: '#e8e8e8', border: 'none'}"
 				></u--input>
-			</view>
-			<view class="item u-flex-1 u-m-l-20">
+			</view> -->
+			<view class="item u-flex-1 ">
 				<u-search 
 					:placeholder="searchplaceholder" 
 					v-model="keyword"

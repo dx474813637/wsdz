@@ -16,17 +16,29 @@
 						:style="{
 							color: themeConfig.baseText,
 							whiteSpace: 'nowrap',
-							width: '90px'
+							width: '90px',
+							flex: '0 0 70px'
 						}"
 					>
 						{{name}}
 					</view>
-					<view class="u-text-center u-p-20 text-yellow u-font-38" :style="{
-						color: themeConfig.dataText,
-						whiteSpace: 'nowrap'
-					}">
-						{{price | price2str(dprice)}}
-						<template v-if="price>0">元/{{unit}}</template>
+					<view class="u-text-center u-p-20 text-yellow u-font-38 u-line-1"  
+						:style="{
+							color: themeConfig.dataText,
+							whiteSpace: 'nowrap', 
+						}">
+						<template v-if="origin.trade_mode == '3'">
+							{{origin.base_contract}}合约
+							<template v-if="origin.price >= 0">+</template>
+							{{origin.price}} 元/{{origin.unit}}
+						</template>
+						<template v-else-if="origin.trade_mode == '5'">
+							询价
+						</template>
+						<template v-else> 
+							{{price | price2str(dprice)}}
+							<template v-if="price>0">元/{{unit}}</template>
+						</template>
 					</view>
 					<view class="u-flex u-flex-items-center u-flex-end u-p-20"
 					:style="{
@@ -60,7 +72,12 @@
 						{{amount}}{{unit}}
 					</view>
 					<view class="u-text-right">
-						{{express_time}}{{express_unit | expressUnit}}有效期
+						<template v-if="origin.trade_mode == '3'">
+							截止{{express_time}} {{express_unit}}:00
+						</template>
+						<template v-else>
+							{{express_time}}{{express_unit | expressUnit}}有效期
+						</template> 
 					</view>
 				</view>
 			</view>

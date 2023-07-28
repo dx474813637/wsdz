@@ -17,7 +17,7 @@
 				<view class="rows u-flex u-flex-between u-flex-items-center" :style="{
 					boxShadow: themeConfig.boxShadow
 					}">
-					<view class="item u-flex u-flex-items-center market-label"
+					<view class="item u-flex u-flex-items-center market-label "
 						:style="{
 							backgroundColor: themeConfig.marketCard.label_bg,
 						}"
@@ -38,13 +38,23 @@
 						>卖</view>
 						<view class="u-p-4 u-p-l-20 u-p-r-20">{{trade_type | tradeType2}}</view>
 					</view>
-					<view class="item u-line-1">
-						{{price | price2str(dprice)}}
+					<view class="item u-line-1 u-flex-2">
+						<template v-if="origin.trade_mode == '3'">
+							{{origin.base_contract}}
+							<template v-if="origin.price >= 0">+</template>
+							{{origin.price}}
+						</template>
+						<template v-else-if="origin.trade_mode == '5'">
+							询价
+						</template>
+						<template v-else>
+							{{price | price2str(dprice)}}
+						</template> 
 					</view>
-					<view class="item u-line-1">
+					<view class="item u-line-1 u-flex-1">
 						{{delivery_place}}
 					</view>
-					<view class="item u-line-1">
+					<view class="item u-line-1 u-flex-1">
 						{{num}}{{unit}}
 					</view>
 				</view>
@@ -171,7 +181,7 @@
 		color: #6fd2a3;
 	}
 	.rows .item {
-		flex: 0 0 25%;
+		// flex: 0 0 25%;
 		text-align: center;
 		&:first-child {
 			text-align: left;

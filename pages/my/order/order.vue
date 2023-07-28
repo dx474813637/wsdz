@@ -29,7 +29,7 @@
 			</view>
 			
 		</view>
-		<view class="tabs-w">
+		<!-- <view class="tabs-w">
 			<u-tabs
 				:list="tabs_list"
 				:current="tabs_current"
@@ -39,7 +39,7 @@
 				@change="handleTabsChange"
 			>
 			</u-tabs>
-		</view>
+		</view> -->
 		
 		<view class="list">
 			<u-list
@@ -287,7 +287,7 @@
 		height: 100%;
 	}
 	.list {
-		height: calc(100% - 83px);
+		height: calc(100% - 39px);
 		
 	}
 </style>

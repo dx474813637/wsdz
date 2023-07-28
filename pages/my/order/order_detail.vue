@@ -60,6 +60,28 @@
 				<view class="item text-light item-label">下单日期</view>
 				<view class="item u-text-right">{{list.create_time}}</view>
 			</view>
+			<template v-if="list.trade_mode == '3'">
+				<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
+					<view class="item text-light item-label">基准合约</view>
+					<view class="item u-text-right">{{list.Source.Base_role.contract}}</view>
+				</view> 
+				<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
+					<view class="item text-light item-label">基差</view>
+					<view class="item u-text-right">
+						<template v-if="list.Source.price1 >= 0">+</template>
+						{{list.Source.price1}} 元/{{list.Source.unit}}
+					</view>
+				</view>
+				<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
+					<view class="item text-light item-label">点价开始日</view>
+					<view class="item u-text-right">{{list.Base_item.base_btime1}}</view>
+				</view>
+				<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
+					<view class="item text-light item-label">点价截止日</view>
+					<view class="item u-text-right">{{list.Base_item.base_etime1}}</view>
+				</view>
+			</template>
+			
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.order_type == '1'">
 				<view class="item text-light item-label">交付方式</view>
 				<view class="item u-text-right">{{list.settle_type | settleType2str}}</view>
@@ -81,7 +103,14 @@
 			</view>
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
 				<view class="item text-light item-label">订单状态</view>
-				<view class="item u-text-right">{{list.state | orderState2Str(list.order_type)}}</view>
+				<view class="item u-text-right">
+					<template v-if="list.hasOwnProperty('toState') && list.toState">
+						{{list.toState}}
+					</template>
+					<template v-else>
+						{{list.state | orderState2Str(list.order_type)}}
+					</template>
+				</view>
 			</view>
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.remark">
 				<view class="item text-light item-label">备注</view>
@@ -114,6 +143,11 @@
 					<u-button type="primary" @click="order_submit">{{btnList.button3_title}}</u-button>
 				</view>
 				<view class="item u-p-6"
+						v-if="btnList.button21"
+					> <!-- 基差待发送 -->
+					<u-button type="primary" @click="base_submit">{{btnList.button21_title}}</u-button>
+				</view> 
+				<view class="item u-p-6"
 						v-if="btnList.button20"
 					> <!-- 对发送订单的撤回按钮 -->
 					<u-button type="primary" @click="unsubmit_order">{{btnList.button20_title}}</u-button>
@@ -122,6 +156,11 @@
 						v-if="btnList.button4"
 					> <!-- 审核 -->
 					<u-button type="primary" @click="handleShowPopup({mode:'audit'})">{{btnList.button4_title}}</u-button>
+				</view>
+				<view class="item u-p-6"
+						v-if="btnList.button22"
+					> <!-- 基差审核 -->
+					<u-button type="primary" @click="handleShowPopup({mode:'audit_base'})">{{btnList.button22_title}}</u-button>
 				</view>
 				<view class="item u-p-6"
 						v-if="btnList.button5"
@@ -291,6 +330,67 @@
 									>
 										<u--textarea
 											v-model="form_audit.remark_audit" 
+											placeholder="审核备注" 
+											height="90"
+											maxlength="-1"
+										></u--textarea>
+									</u-form-item>
+									 
+								</u--form>
+							</template>
+							<template v-if="formActive.mode == 'audit_base'">
+								<u--form
+									labelPosition="left" 
+									labelWidth="80"
+									v-if="list.order_type == '1'"
+									>
+									<u-form-item
+										label="交付方式" 
+										>
+										<view>{{list.settle_type | settleType2str}}</view>
+									</u-form-item>
+									<u-form-item
+										label="支付工具" 
+										>
+										<view>{{list.pay_mode | paymode2str}}</view>
+									</u-form-item>
+								</u--form>
+								<u--form
+									labelPosition="left"
+									:model="form_audit_base"
+									ref="form_audit_base"
+									labelWidth="80"
+									> 
+									<u-form-item
+										label="审核意见" 
+									>
+										<u-radio-group
+										    v-model="form_audit_base.audit"
+										    placement="row"
+										  >
+										    <u-radio
+										      :customStyle="{marginRight: '8px'}"
+										      v-for="(item, index) in shyj_base"
+										      :key="index"
+										      :name="item.value"
+										      :label="item.name"
+										    >
+										    </u-radio>
+										  </u-radio-group>
+									</u-form-item>
+									<u-form-item
+										label="总额" 
+									>
+										<u--input
+											:value="list.total_price2" 
+											disabled 
+										></u--input>
+									</u-form-item> 
+									<u-form-item
+										label="审核备注" 
+									>
+										<u--textarea
+											v-model="form_audit_base.remark_audit" 
 											placeholder="审核备注" 
 											height="90"
 											maxlength="-1"
@@ -486,6 +586,10 @@
 					pyeeInfo: '',
 					remark_audit: '',
 				},
+				form_audit_base: {
+					audit: '1', 
+					remark_audit: '',
+				},
 				form_send: {
 					remark_send: '',
 				},
@@ -510,6 +614,18 @@
 					},
 					{
 						name: '废止订单',
+						value: '2',
+						disabled: false,
+					},
+				],
+				shyj_base: [ 
+					{
+						name: '通过',
+						value: '1',
+						disabled: false,
+					},
+					{
+						name: '拒绝',
 						value: '2',
 						disabled: false,
 					},
@@ -694,6 +810,25 @@
 					throw new Error(res.msg)
 				}
 			},
+			async base_submit() {
+				uni.showLoading()
+				const res = await this.$api.base_submit({
+					params: {
+						ordertype: this.ordertype == 'S' ? 'BUY' : 'SELL',
+						id: this.id,
+					}
+				})
+				if(res.code == 1) {
+					this.showToast({
+						type: 'success',
+						message: res.msg, 
+					})
+					uni.showLoading({
+						title: '获取最新数据中'
+					})
+					await this.getData()
+				}
+			},
 			async order_submit() {
 				uni.showLoading({
 					title: '发送对方议价...'
@@ -843,6 +978,30 @@
 					throw new Error(res.msg)
 				}
 			},
+			async order_audit_base() {
+				uni.showLoading({
+					title: '提交审核中...'
+				})  
+				const res = await this.$api.base_audit({
+					params: { 
+						...this.form_audit,
+						id: this.id,
+						ordertype: this.ordertype == 'S' ? 'BUY' : 'SELL',
+					}
+				})
+				if(res.code == 1) { 
+					this.showToast({
+						type: 'success',
+						message: res.msg, 
+					})
+					uni.showLoading({
+						title: '获取最新数据中'
+					})
+					await this.getData()
+				}else {
+					throw new Error(res.msg)
+				}
+			},
 			async confirm_shouhuo() {
 				let func = 'sino_fund_order_order_confirm'
 				let params = {
@@ -899,6 +1058,9 @@
 			async handleConfirm() { 
 				if(this.formActive.mode == 'audit') {
 					await this.order_audit()
+				}
+				else if(this.formActive.mode == 'audit_base') {
+					await this.order_audit_base()
 				}
 				else if(this.formActive.mode == 'send') {
 					await this.order_send()

@@ -11,6 +11,24 @@
 					:list="tabs_list"
 					:current="tabs_current"
 					lineHeight="0"
+					:activeStyle="{
+						...activeTabsStyle, 
+						color: themeConfig.tabTextActive, 
+						border: `1px solid ${themeConfig.tabTextActive}`,
+						padding: '0 4px',
+						borderRadius: '3px'
+					}"
+					:inactiveStyle="{ color: themeConfig.tabTextInactive}"
+					:itemStyle="itemTabsStyle" 
+					@click="handleTabsChildrenClick"
+				>
+				</u-tabs>
+			</view>
+			<view class="tabs-w" v-if="tabs_list2.length > 0">
+				<u-tabs
+					:list="tabs_list2"
+					:current="tabs_current2"
+					lineHeight="0"
 					:activeStyle="{...activeTabsStyle, color: themeConfig.tabTextActive}"
 					:inactiveStyle="{ color: themeConfig.tabTextInactive}"
 					:itemStyle="itemTabsStyle"
@@ -20,7 +38,7 @@
 			</view>
 		</view>
 		<view class="list" :style="{
-			height: `calc(100% - 138px - ${sys.statusBarHeight}px - ${sys.safeAreaInsets.bottom}px)`
+			height: `calc(100% - 182px - ${sys.statusBarHeight}px - ${sys.safeAreaInsets.bottom}px)`
 		}">
 			
 			<template v-if="skeletonLoading">
@@ -55,7 +73,11 @@
 													backgroundColor: themeConfig.marketCard.tBg,
 													color: themeConfig.marketCard.jiaoColor,
 												}"
-											><text :style="{color: themeConfig.tabTextActive}">{{tabs_list[tabs_current].name}}商品市场</text></view>
+											>
+												<text :style="{color: themeConfig.tabTextActive}">
+													{{tabs_list2[tabs_current2].name + tabs_list[tabs_current].name}} 
+												</text>
+											</view>
 										</view>
 										<view class="title-bottom u-p-20 u-flex u-flex-between u-flex-items-center"
 											:style="{
@@ -63,10 +85,10 @@
 												color: themeConfig.marketCard.subText
 											}"
 										>
-											<view class="item">类型</view>
-											<view class="item">价格</view>
-											<view class="item">交货地</view>
-											<view class="item">数量</view>
+											<view class="item u-flex-1">类型</view>
+											<view class="item u-flex-2">价格</view>
+											<view class="item u-flex-1">交货地</view>
+											<view class="item u-flex-1">数量</view>
 										</view>
 									</view>
 								</view>
@@ -120,24 +142,25 @@
 		data() {
 			return {
 				onlineControl: {
-					share_title: '商品市场',
-					title: '商品市场'
+					share_title: '',
+					title: ''
 				},
 				skeletonLoading: true,
 				show: false,
-				pan: 's',
-				pageConfig: {
-					's': {
-						navtitle: '卖盘中心',
-						menuIndex: 0
-					},
-					'b': {
-						navtitle: '买盘中心',
-						menuIndex: 1
-					},
-				},
-				keyword: '',
+				// pan: 's',
+				// pageConfig: {
+				// 	's': {
+				// 		navtitle: '卖盘中心',
+				// 		menuIndex: 0
+				// 	},
+				// 	'b': {
+				// 		navtitle: '买盘中心',
+				// 		menuIndex: 1
+				// 	},
+				// },
+				keyword: '', 
 				tabs_current: 0,
+				tabs_current2: 0,
 				activeTabsStyle: {
 					fontSize: '17px',
 					color: '#fff'
@@ -148,6 +171,7 @@
 					padding: '0 13px'
 				},
 				tabs_list: [],
+				tabs_list2: [],
 				indexList: [],
 				curP: 1,
 				loadstatus: 'loadmore'
@@ -161,17 +185,21 @@
 				themeConfig: 'theme/themeConfig',
 				sys: 'theme/sys'
 			}),
-			paramsObj() {
+			paramsObj() { 
 				return {
-					pid: this.tabs_list[this.tabs_current]?.pid,
+					pid: this.tabs_list2[this.tabs_current2]?.pid,
 					p: this.curP,
+					jg: this.tabs_list[this.tabs_current]?.id == 2 ? '1' : ''
 				}
 			}
 		},
 		async onLoad(options) {
-			console.log(options)
+			// console.log(options) 
 			if(options.hasOwnProperty('current')) {
-				this.tabs_current = Number(options.current)
+				this.tabs_current2 = Number(options.current) 
+			}
+			if(options.hasOwnProperty('cate')) {
+				this.tabs_current = Number(options.cate)
 			}
 			uni.showLoading()
 			await this.getTabs()
@@ -179,13 +207,27 @@
 		},
 		methods: {
 			async getTabs() {
-				const res = await this.$api.getStandard({params: {is_market: 1}})
+				// const res = await this.$api.getStandard({params: {is_market: 1}})
+				const res = await this.$api.future_basis_cate()
 				if(res.code == 1) {
 					this.tabs_list = res.list.map(ele => {
+						ele.disabled = false 
+						return ele
+					})
+					if(this.tabs_list[this.tabs_current].id == 3) {
+						uni.reLaunch({
+							url: '/pages/index/pan/panBasis'
+						})
+						return 
+					}
+					this.renderTabsChildren()
+				}
+			},
+			renderTabsChildren() {
+				this.tabs_list2 = this.tabs_list[this.tabs_current].list.map(ele => {
 						ele.disabled = false
 						return ele
 					})
-				}
 			},
 			refreshList() {
 				this.initParamas()
@@ -196,20 +238,32 @@
 				this.indexList = [];
 				this.loadstatus = 'loadmore'
 			},
-			changeTabsStatus(key, value) {
-				this.tabs_list = this.tabs_list.map(ele => {
+			changeTabsStatus(listname, key, value) {
+				this[listname] = this[listname].map(ele => {
 					ele[key] = value;
 					return ele
 				})
 			},
-			async handleTabsChange(obj) {
+			handleTabsChildrenClick(obj) {
+				// console.log(obj) 
+				if(this.tabs_list[obj.index].id == 3) {
+					uni.reLaunch({
+						url: '/pages/index/pan/panBasis'
+					})
+					return
+				}
 				this.tabs_current = obj.index
+				this.customShareParams.cate = obj.index 
+				this.handleTabsChange({index: 0})
+			},
+			async handleTabsChange(obj) {
+				this.tabs_current2 = obj.index 
 				this.customShareParams.current = obj.index
-				this.changeTabsStatus('disabled', true)
+				this.changeTabsStatus( 'tabs_list2', 'disabled', true)
 				this.initParamas();
 				uni.showLoading();
 				await this.getData()
-				this.changeTabsStatus('disabled', false)
+				this.changeTabsStatus( 'tabs_list2', 'disabled', false)
 			},
 			scrolltolower() {
 				this.getMoreData()
@@ -217,7 +271,7 @@
 			async getData() {
 				if(this.loadstatus != 'loadmore') return
 				this.loadstatus = 'loading'
-				const res = await this.$api.getPidTrade({params: this.paramsObj})
+				const res = await this.$api.future_trade({params: this.paramsObj})
 				if(res.code == 1) {
 					this.setOnlineControl(res)
 					this.indexList = [...this.indexList, ...res.list]
@@ -335,7 +389,7 @@
 			border-radius: 0 0 20rpx 20rpx;
 			overflow: hidden;
 			.item {
-				flex: 0 0 25%;
+				// flex: 0 0 25%;
 				text-align: center;
 				&:first-child {
 					text-align: left;

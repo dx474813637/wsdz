@@ -44,7 +44,7 @@
 					<view class="item">
 						<view class="sub2 u-font-28 step9 text-light u-flex u-flex-items-center">
 							<text v-if="myCpy.name">{{myCpy.name}}</text>
-							<text v-else>点击完善用户信息，解锁更多功能</text>
+							<text v-else>点击完善用户信息</text>
 							<i class="custom-icon-edit custom-icon u-font-28 text-light u-m-l-10"></i>
 						</view>
 					</view>
@@ -68,7 +68,7 @@
 			
 		</view>
 		
-		<view class="user-item-box u-p-28 u-p-b-38 bg-white u-m-b-26 step4">
+		<view class="user-item-box u-p-28 u-p-b-38 bg-white u-m-b-26 step4" v-if="menusAllData.role == 1">
 			<view class="set-sub u-flex u-flex-items-center u-m-b-30 step10">
 				<view class="sub-title u-flex u-flex-items-center u-p-l-16 u-p-r-16 bg-primary">
 					<i class="text-white custom-icon-warn custom-icon"></i>
@@ -260,11 +260,13 @@
 		},
 		computed: {
 			...mapState({
+				menusAllData: state => state.user.menusAllData, 
 				myCpy: state => state.user.myCpy,
 				login: state => state.user.login,
 				auth: state => state.user.auth,
 				dingyue: state => state.user.dingyue,
 				sh: state => state.user.sh,
+				sell_buy_show: state => state.user.sell_buy_show,
 				moreMenus: state => state.user.moreMenus,
 				moreMenusNew: state => state.user.moreMenusNew, 
 				menus_broker: state => state.user.menus_broker, 

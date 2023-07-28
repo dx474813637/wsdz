@@ -1,5 +1,8 @@
 
 const http = uni.$u.http
+// https://api.rawmex.cn/gw/demo/
+// all_api token=1需要login token
+export const all_api = (data) => http.request({url: 'all_api', method: 'GET', ...data})
 
 //授权获取用户信息 ？
 export const login = (data, config = {}) => http.post('login', data, config)
@@ -159,3 +162,11 @@ export const login_manage_list = (data) => http.get('login_manage_list', data)
 export const login_manage_change = (data) => http.get('login_manage_change', data) 
 // login_manage_del  删除身份 参数id
 export const login_manage_del = (data) => http.get('login_manage_del', data) 
+
+ // future_trade 期货商品 参数pid 期货id p页
+export const future_trade = (data) => http.get('future_trade', data) 
+
+// haibao_list
+export const haibao_list = (data) => http.get('haibao_list', data)
+// haibao_sc 参数id
+export const haibao_sc = (data) => http.get('haibao_sc', data)

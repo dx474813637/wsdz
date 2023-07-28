@@ -17,7 +17,11 @@
 			</view>
 			
 			<view class=" u-font-28" style=" flex: 0 0 auto;" >
-				<u-tag :text="customData.state | orderState2Str(customData.order_type)" size="mini" :type="(customData.state == '2' || customData.state == '3')? 'error': 'primary'"></u-tag>
+				<u-tag 
+				:text="customData.state | orderState2Str(customData.order_type)" 
+				size="mini" 
+				:type="(customData.state == '2' || customData.state == '3')? 'error': 'primary'"
+				></u-tag>
 			</view>
 		</view>
 		<view class="card-main u-p-t-20">

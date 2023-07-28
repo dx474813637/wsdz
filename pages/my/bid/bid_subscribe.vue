@@ -55,7 +55,7 @@
 					<view class="u-p-10 u-p-l-20 u-p-r-20">
 						<BidCard
 							:customData="item"
-							:ordertype="ordertype"
+							:ordertype="source == 'SELL' ? 'S' : 'B'"
 							bidType="subscribe"
 							@detail="handleBidDetail"
 						></BidCard>
@@ -96,6 +96,7 @@
 		data() {
 			return {
 				ordertype: 'B',
+				source: 'SELL',
 				searchCateShow: false,
 				searchCateIndex: 0,
 				keyword: '',
@@ -132,12 +133,14 @@
 			};
 		},
 		async onLoad(options) {
-			if(options.hasOwnProperty('ordertype')) {
-				this.ordertype = options.ordertype
+			// if(options.hasOwnProperty('ordertype')) {
+			// 	this.ordertype = options.ordertype
+			// } 
+			if(options.hasOwnProperty('source')) {
+				this.source = options.source
+				this.searchCateIndex = +this.searchCateList.findIndex(ele => ele.value == this.source)
 			} 
-			// uni.setNavigationBarTitle({
-			// 	title: this.ordertype == 'B' ? '我的采购订单' : '我的销售订单'
-			// })
+			
 			uni.showLoading()
 			await this.getData()
 		},
@@ -156,12 +159,12 @@
 			searchCateList() {
 				return [
 					{
-						name: '卖盘',
-						value: 's'
+						name: '竞卖',
+						value: 'SELL'
 					},
 					{
-						name: '买盘',
-						value: 'b'
+						name: '竞买',
+						value: 'BUY'
 					},
 				]
 			},
@@ -176,7 +179,8 @@
 					// company,
 					// title,
 					trade_name: this.keyword,
-					p: this.curP
+					p: this.curP,
+					source: this.searchCateList[this.searchCateIndex].value
 				}
 			},
 			searchplaceholder() {
@@ -234,6 +238,9 @@
 				const res = await this.$api.bid_subscribe_list_bid_subscribe({params: this.paramsObj})
 				if(res.code == 1) {
 					this.indexList = [...this.indexList, ...res.list]
+					uni.setNavigationBarTitle({
+						title: res.title
+					})
 					if(this.indexList.length >= res.total) {
 						this.loadstatus = 'nomore'
 					}else {

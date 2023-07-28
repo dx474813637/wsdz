@@ -12,7 +12,12 @@
 				<view class="item u-flex u-flex-items-center u-m-b-10">
 					<u-tag :text="type | tradeType2" size="mini" plain plainFill :custionStyle="{height: '18px', minHeight: '18px'}"></u-tag>
 					<text class="name u-line-1 u-p-l-10">{{name}}</text>
-					<text class="pp text-error">{{price | price2str(dprice)}} <template v-if="price>0">元/{{unit}}</template></text>
+					<text class="pp text-error">
+						<template v-if="origin.trade_mode == '3'">基差</template>
+						<template v-else>
+							{{price | price2str(dprice)}} <template v-if="price>0">元/{{unit}}</template>
+						</template>
+					</text>
 				</view>
 				<view class="item item-sub u-line-1">{{sub}}</view>
 			</view>

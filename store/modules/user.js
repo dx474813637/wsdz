@@ -17,15 +17,18 @@ let state = {
 		bd: 1,
 		sh: 1, //接口接收隐藏一些结构用
 		ppiCate: [],
+		sell_buy_show: 0,
 		myCpy: uni.getStorageSync('myCpy') || {},
 		myAllCpy: [],
 		mduCpy: [],
 		myProduct: [],
+		fxStandard: [],
 		moreMenus: {},
 		moreMenusNew: [],
 		menus_broker: {},
 		menus_wd: [],
 		newMsg: 0,
+		menusAllData: {},
 		tips: {},
 		wode_guide: {},
 		maxSize: 1000000,
@@ -80,12 +83,18 @@ let state = {
 		setSh(state, data) {
 			state.sh = data;
 		},
-		setMyCpy(state, data) {
+		setMyCpy(state, data={}) {
 			state.myCpy = data;
 			uni.setStorageSync('myCpy', data)
 		},
 		setAllCpy(state, data) {
 			state.myAllCpy = data;
+		},
+		setFxStandard(state, data) {
+			state.fxStandard = data;
+		},
+		setBuySellShow(state, data) {
+			state.sell_buy_show = data;
 		},
 		setMduCpy(state, data) {
 			state.mduCpy = data;
@@ -116,6 +125,9 @@ let state = {
 		setWode(state, data) {
 			state.wode = data;
 		},
+		setMenusAllData(state, data) {
+			state.menusAllData = data;
+		},
 		setPage(state, data) { 
 			// console.log('store', data)
 			state.page = data;
@@ -141,6 +153,12 @@ let state = {
 			const res = await this._vm.$api.getCompanyProduct({params: {login: state.login, p: 1, ...data}});
 			if(res.code == 1) {
 				commit('setMyProduct', res.list)
+			}
+		},
+		async getFxStandard({commit, state}) {
+			const res = await this._vm.$api.getFxStandard();
+			if(res.code == 1) {
+				commit('setFxStandard', res.list.list_standard)
 			}
 		},
 		async getAllCompany({commit, state}) {

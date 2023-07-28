@@ -252,7 +252,7 @@
 					}, 800)
 				}).catch(errors => {
 					console.log(errors)
-					uni.$u.toast('校验失败')
+					uni.$u.toast('请检查表单内容')
 				})
 				
 				//this.$utils.prePage()获取上一页实例，可直接调用上页所有数据和方法，在App.vue定义

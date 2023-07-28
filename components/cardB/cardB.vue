@@ -19,12 +19,19 @@
 						}"
 					>
 						{{name}}
-					</view>
-					<view class=" u-text-center u-p-20 text-yellow u-font-38" :style="{
-						color: themeConfig.dataText,
-						whiteSpace: 'nowrap'
-					}">
-						{{price | price2str(dprice)}}<template v-if="price>0">{{unit}}</template>
+					</view> 
+					<view class="u-text-center u-p-20 text-yellow u-font-38"  
+						:style="{
+							color: themeConfig.dataText,
+							whiteSpace: 'nowrap', 
+						}">
+						<template v-if="origin.trade_mode == '3'">
+							基差
+						</template>
+						<template v-else> 
+							{{price | price2str(dprice)}}
+							<template v-if="price>0">元/{{unit}}</template>
+						</template>
 					</view>
 					<view class="u-flex u-flex-items-center u-flex-end u-p-20" :class="color"
 					:style="{
@@ -94,6 +101,12 @@
 	export default {
 		name:"cardB",
 		props: {
+			origin: {
+				type: Object,
+				default: () => {
+					return {}
+				}
+			},
 			cid: {
 				type: String,
 				default: ''

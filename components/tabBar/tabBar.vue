@@ -65,6 +65,7 @@
 		width: 100%;
 		box-sizing: border-box;
 		background-color: #fff;
+		z-index: 20;
 	}
 	.c-w {
 		height: 60px;

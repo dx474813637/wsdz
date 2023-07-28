@@ -26,6 +26,8 @@ const http = uni.$u.http
 // 				交收方式为买家自提时必填
 // 商品详情：intro
 // 备注 remark
+// 基差点价开始日base_btime 
+// 基差点价截止日base_etime  格式：2023-02-24 04:00:00  
 export const create_order = (data, config={}) => http.post('create_order', data, config)
 // change_order 修改订单
 export const change_order = (data, config={}) => http.post('change_order', data, config)
@@ -68,6 +70,18 @@ export const order_audit = (data) => http.get('order_audit', data)
 // order_send 销售订单-发货 id：订单id remark_send：发货备注
 export const order_send = (data) => http.get('order_send', data)
 
+// base_submit 基差待发送 -> 基差待审核
+// 订单类型：ordertype SELL-采购订单 BUY-销售订单
+// 订单ID：id
+export const base_submit = (data) => http.get('base_submit', data)
+// base_audit 基差审核
+// 订单类型：ordertype SELL-采购订单 BUY-销售订单
+// 订单ID：id
+// 审核状态：audit  1-通过 2-拒绝
+// 审核说明：remark_audit
+export const base_audit = (data) => http.get('base_audit', data)
+
+
 // broker_order  broker客户采购/销售订单列表 
 // 订单类型： ordertype *B-客户采购订单S-客户销售订单
 // 支付工具： paymode FUND:现金BILL:票据
@@ -104,4 +118,3 @@ export const sino_bill_order_pay = (data) => http.get('sino_bill_order_pay', dat
 export const sino_bill_order_order_confirm = (data) => http.get('sino_bill_order_order_confirm', data)
 // sino_bill_order_confirm 票据担保支付-确认收货-解冻转账 支付ID： pay_id 支付密码：paypwd
 export const sino_bill_order_confirm = (data) => http.get('sino_bill_order_confirm', data)
-

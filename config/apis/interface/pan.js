@@ -120,8 +120,10 @@ export const deleteBuy = (data) => http.get('delete_buy', data)
 // 报盘企业名：customer_name   brokert填写调用报盘企业列表-broker 
 // 企业角色： mdu   broker填写D-经销商U-下游用户 
 // 报盘类型： post_type  brokert填写1-替报0-自报
-
+ 
 // ---交易类型为1-竞拍交易时必填---
+// 'bid_settle_date' => 交货日：T +
+
 // 'bid_is_part' => '竞拍方式', 1-按手竞拍 2-总量竞拍  
 // 'bid_step_amount' => '每手尺寸',
 // 'bid_min_amount' => '至少下单', 每手尺寸*至少下单必须小于等于挂牌数量
@@ -136,7 +138,18 @@ export const deleteBuy = (data) => http.get('delete_buy', data)
 // 'bid_is_anonym' => '匿名竞拍',1-是 0-否
 // 'bid_is_darkmark' => '是否暗标',1-是 0-否
 // 
-// 我的卖盘 参数p trade_mode  0-议价交易 1-竞拍交易 2-一口价交易 不传全部
+// ---交易类型为3-基差点价---
+// base_contract 基准期货合约 
+// base_afterday 点价后最迟交收天数  移除
+// 卖盘发布和修改时增加这两个字段
+// 1.商品  'is_market' => '1', 时，可以选 trade_mode=3 基差点价
+// 2.交易类型  增加 3-基差点价
+// 3.增加两个参数：基准期货合约，点价后最迟交收天数  交易类型-基差点价可填
+//   交易类型-基差点价时，单价（price）参数名改成基差（price）
+//   交易类型-基差点价时，有效时间（express_time）参数名改成截止日（express_time）
+// 4.交易类型-基差点价时，交收方式为买家自提
+// 
+// 我的卖盘 参数p trade_mode  0-议价交易 1-竞拍交易 2-一口价交易   3-基差点价 不传全部
 export const mySell = (data) => http.get('my_sell', data)
 // 修改卖盘状态 参数id 卖盘id state 1-激活 0-取消激活
 export const ableSell = (data) => http.get('able_sell', data)
@@ -151,7 +164,7 @@ export const changeSell = (data, config={}) => http.post('change_sell', data, co
 // bid_subscribe_subscribe_sell 竞价预约 source:订单类型,SELL-采购订单 source_id:订单ID
 export const bid_subscribe_subscribe_sell = (data) => http.get('bid_subscribe_subscribe_sell', data)
 
-// bid_subscribe_list_bid_subscribe 预约列表 trade_name:关键词 p:页数
+// bid_subscribe_list_bid_subscribe 预约列表 trade_name:关键词 p:页数 ; source SELL-竞卖 BUY-竞买
 export const bid_subscribe_list_bid_subscribe = (data) => http.get('bid_subscribe_list_bid_subscribe', data)
 
 // bid_subscribe_detail_bid_subscribe 预约明细 id:预约ID
@@ -173,13 +186,13 @@ export const bid_subscribe_list_subscribe = (data) => http.get('bid_subscribe_li
 // list_sell_bid 参数id p 我发布的竞价-竞拍列表（挂牌方） 
 export const list_sell_bid = (data) => http.get('list_sell_bid', data)
 
-// bid_subscribe_bid_sell 竞价出价
+// bid_subscribe_bid_trade 竞价出价
 // source: 订单类型 SELL
 // source_id: 订单ID
 // curr_unit_price: 当前价
 // bid_price: 加价
 // bid_amount: 数量
-export const bid_subscribe_bid_sell = (data) => http.get('bid_subscribe_bid_sell', data)
+export const bid_subscribe_bid_trade = (data) => http.get('bid_subscribe_bid_trade', data)
 
 //卖盘详情 竞价列表
 // is_success=1 并且pw_curr page = 1状态:成交
@@ -190,3 +203,17 @@ export const bid_subscribe_bid_sell = (data) => http.get('bid_subscribe_bid_sell
 export const sell_buy_share = (data) => http.get('sell_buy_share', data)
 // create_sell_info 
 export const create_sell_info = (data) => http.get('create_sell_info', data)
+
+// list_basis  基差列表 参数p standard
+export const list_basis = (data) => http.get('list_basis', data)
+// future_basis_cate 
+export const future_basis_cate = (data) => http.get('future_basis_cate', data)
+
+// list_order_inquiry 询价订单列表
+export const list_order_inquiry = (data) => http.get('list_order_inquiry', data)
+// list_buy_inquiry  采购询价列表 terms p role B-买家 S-卖家
+export const list_buy_inquiry = (data) => http.get('list_buy_inquiry', data)
+// detail_order_inquiry 询价订单信息 id 询价ID role 角色 B-买家 S-卖家
+export const detail_order_inquiry = (data) => http.get('detail_order_inquiry', data)
+// order_inquiry_create 我要报价-询价
+export const order_inquiry_create = (data) => http.get('order_inquiry_create', data)

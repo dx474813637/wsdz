@@ -12,7 +12,7 @@
 			></navBar>
 		</u-sticky>
 		<u-notice-bar bgColor="#ff2a2a" color="#fff" text="已下架" v-if="list.state != '1'"></u-notice-bar>
-		<u-notice-bar bgColor="#ff6a00" color="#fff" text="已过期" v-else-if="list.hasOwnProperty('expressed') && list.expressed <= 0 && list.trade_mode != '1'"></u-notice-bar>
+		<u-notice-bar bgColor="#ff6a00" color="#fff" text="已过期" v-else-if="list.hasOwnProperty('expressed') && list.expressed <= 0 && list.trade_mode != '1' && list.trade_mode != '3'"></u-notice-bar>
 		<view class="pan-header u-p-10" :style="{
 			backgroundColor: themeConfig.pan.headerBg,
 		}">
@@ -34,6 +34,12 @@
 						</template>
 						<template v-else-if="list.trade_mode == '1'">
 							竞价
+						</template>
+						<template v-else-if="list.trade_mode == '3'">
+							基差
+						</template>
+						<template v-else-if="list.trade_mode == '5'">
+							询价
 						</template>
 						<template v-else>
 							议价
@@ -65,25 +71,48 @@
 			
 			<view class="u-p-10 u-p-l-30 u-p-r-30 u-flex u-flex-items-center u-flex-between u-flex-wrap">
 				<view class="price u-flex u-flex-items-center">
-					<text class="u-font-40"
-						:style="{
-							color: themeConfig.pan.lightcolor,
-							fontSize: '26px'
-						}"
-						v-if="list.curr_unit_price>0"
-					>{{list.curr_unit_price}}</text> 
-					<text class="u-font-40"
-						:style="{
-							color: themeConfig.pan.lightcolor,
-							fontSize: '26px'
-						}"
-						v-else
-					>{{list.price | price2str(list.dprice)}}</text>
-					<text class="u-p-l-10 "
-					 v-if="list.price>0"
-					 :style="{
-						color: themeConfig.pan.headerSubText
-					}">元/{{list.unit}}</text>
+					<template v-if="list.trade_mode == '3'">
+						<text class="u-font-40"
+							:style="{
+								color: themeConfig.pan.lightcolor,
+								fontSize: '26px'
+							}" 
+						>
+							{{list.base_contract}}合约
+							<template v-if="list.price >= 0">+</template>
+							{{list.price}} 元/{{list.unit}}
+						</text> 
+					</template>
+					<template v-else-if="list.trade_mode == '5'">
+						<text class="u-font-40"
+							:style="{
+								color: themeConfig.pan.lightcolor,
+								fontSize: '26px'
+							}" 
+						>询价</text>
+					</template>
+					<template v-else>
+						<text class="u-font-40"
+							:style="{
+								color: themeConfig.pan.lightcolor,
+								fontSize: '26px'
+							}"
+							v-if="list.curr_unit_price>0"
+						>{{list.curr_unit_price}}</text> 
+						<text class="u-font-40"
+							:style="{
+								color: themeConfig.pan.lightcolor,
+								fontSize: '26px'
+							}"
+							v-else
+						>{{list.price | price2str(list.dprice)}}</text>
+						<text class="u-p-l-10 "
+						 v-if="list.price>0"
+						 :style="{
+							color: themeConfig.pan.headerSubText
+						}">元/{{list.unit}}</text>
+					</template>
+					
 				</view>
 				<view class="u-flex">
 					<text class="tag u-font-30 u-p-5 u-p-l-20 u-p-r-20" :style="{
@@ -299,7 +328,7 @@
 				<view class="item u-flex u-flex-items-baseline u-m-b-20" v-if="list.dprice">
 					<view class="item-label" :style="{
 						color: themeConfig.pan.pageTextSub
-					}">点价规则</view>
+					}">公式价规则</view>
 					<view class="item-content" :style="{
 						color: themeConfig.pan.baseText
 					}">{{list.dprice}}</view>
@@ -314,16 +343,30 @@
 						{{list.post_time | date2timestamp | timeFrom}} 
 						<text :style="{color: themeConfig.pan.pageTextSub}">({{list.post_time}})</text>	
 					</view>
-				</view>
-				<view class="item u-flex u-flex-items-baseline">
+				</view> 
+				<!-- <view class="item u-flex u-flex-items-baseline u-m-b-20" v-if="list.base_afterday">
 					<view class="item-label" :style="{
 						color: themeConfig.pan.pageTextSub
-					}">有效时间</view>
+					}">最迟交收</view>
 					<view class="item-content" :style="{
 						color: themeConfig.pan.baseText
 					}">
-						{{list.express_time}}{{list.express_unit | expressUnit}}
-						<text :style="{color: themeConfig.pan.pageTextSub}"></text>	
+						点价后最迟 {{list.base_afterday}} 天
+					</view>
+				</view> -->
+				<view class="item u-flex u-flex-items-baseline">
+					<view class="item-label" :style="{
+						color: themeConfig.pan.pageTextSub
+					}">
+						<template v-if="list.trade_mode == '3'">最迟点价</template>
+						<template v-else>有效时间</template>
+					</view>
+					<view class="item-content" :style="{
+						color: themeConfig.pan.baseText
+					}">
+						<template v-if="list.trade_mode == '3'">{{list.express_time}} {{list.express_unit}}:00</template>
+						<template v-else>{{list.express_time}} {{list.express_unit | expressUnit}} </template>
+						
 					</view>
 				</view>
 			</view>
@@ -342,7 +385,7 @@
 						<i class="custom-icon-friend custom-icon u-m-r-10" :style="{color: themeConfig.pan.lightcolor}"></i>
 						<text :style="{color: themeConfig.pan.baseText}">{{cpy.name}}</text>
 					</view>
-					<view class="u-flex u-flex-items-center" @click="handleGoto({url: '/pages/index/pan/cardList', params: {pan: 's', id:cpy.id}})">
+					<view class="u-flex u-flex-items-center" @click="handleGoto({url: '/pages/index/frontCard/frontCpyCard', params: {login:cpy.id}})">
 						<i class="custom-icon-card_fill custom-icon" :style="{color: themeConfig.pan.lightcolor}"></i>
 					</view>
 				</view>
@@ -680,7 +723,7 @@
 						:style="{
 							color: themeConfig.tabTextActive
 						}"
-						@click="handleGoto({url: '/pages/my/order/order_edit', params: {ordertype: pan == 's'? 'B' : 'S', id: id, type: 'add'}})"
+						@click="handleOrderBtn"
 					>
 						<i class="custom-icon-add-product custom-icon"></i>
 						<text class="u-p-l-10">{{orderBtnName}}</text>
@@ -1018,11 +1061,11 @@
 			},
 			async bidPriceSubmit() {
 				uni.showLoading()
-				const res = await this.$api.bid_subscribe_bid_sell({
+				const res = await this.$api.bid_subscribe_bid_trade({
 					params: {
-						source: 'SELL',
+						source: pan == 's' ?  'SELL' : 'BUY' ,
 						source_id: this.id,
-						curr_unit_price: this.list.curr_unit_price,
+						curr_unit_price: this.list.curr_unit_price2,
 						bid_price: this.jpData.add,
 						bid_amount: this.jpData.num,
 					}
@@ -1036,7 +1079,24 @@
 					this.jpSubmitShow = false
 					await this.refreshData()
 				}
-			}
+			},
+			handleOrderBtn() {
+				let obj = {
+					url: '/pages/my/order/order_inquiry_edit', 
+					params: { 
+						id: this.id,  
+					},
+				}
+				if(this.list.trade_mode != '5') {
+					obj.url = '/pages/my/order/order_edit'
+					obj.params = {
+						ordertype: this.pan == 's'? 'B' : 'S', 
+						id: this.id, 
+						type: 'add',
+					}
+				}
+				this.handleGoto(obj)
+			},
 		}
 	}
 </script>

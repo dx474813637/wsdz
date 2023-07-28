@@ -77,6 +77,10 @@ export default function(vm) {
 			// 'shareid': vm.$store.state.user.shareid,
 			'userid': token
 		}
+		config.params = {
+			...config.params,
+			share_other: store.state.user.share_other
+		}
 		
 		// 登录接口和刷新token接口绕过
 		if (config.url.indexOf('login_cancel') >= 0) {
@@ -133,10 +137,6 @@ export default function(vm) {
 		// 	config.header.token = vm.$store.state.userInfo.token
 		// }
 		// console.log(store.state.user.share_other)
-		config.params = {
-			...config.params,
-			share_other: store.state.user.share_other
-		}
 		return config
 	}, config => { // 可使用async await 做异步操作
 		return Promise.reject(config)

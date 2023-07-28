@@ -101,7 +101,9 @@
 				setBrokerMenus: 'user/setBrokerMenus',
 				setDingyue: 'user/setDingyue',
 				setNewMsg: 'user/setNewMsg',
-				setPage: 'user/setPage'
+				setPage: 'user/setPage',
+				setBuySellShow: 'user/setBuySellShow',
+				setMenusAllData: 'user/setMenusAllData',
 			}),
 			async getData() {
 				const res = await this.$api.getMenus();
@@ -118,6 +120,7 @@
 							options: paramsObj
 						}
 					})
+					this.setMenusAllData(res)
 					this.setNewMsg(res.news)
 					this.setDingyue(res.dingyue)
 					this.setBrokerMenus(res.broker_memu)
@@ -128,6 +131,7 @@
 						menusTitle: res.wd_memu_name,
 						menusShow: res.wd_memu_show,
 					})
+					this.setBuySellShow(res.sell_buy_show)
 				}
 			},
 			handleClick(index) {
@@ -146,6 +150,17 @@
 					uni.navigateTo({
 						url: item.url
 					})
+				}
+				else if (item.type == 4) {
+					uni.navigateToMiniProgram({
+						appId: item.url,
+						success(res) {
+							// 打开成功
+						},
+						complete(res1) {
+							console.log(res1);
+						}
+					});
 				}
 				
 				

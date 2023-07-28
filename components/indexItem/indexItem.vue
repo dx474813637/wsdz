@@ -85,19 +85,31 @@
 						:name="item.name"
 						:icon="item.icon"
 						:pan="item.pan"
+						:show="item.show"
 						:jpList="jpList"
+						:textConfig="item.textConfig"
 						@changeTimeData="changeTimeData"
 						@finishTime="finishTime"
 						@settingClick="handleSettingClick"
 					></panCard>
 				</view>
+				<view class="card-item u-m-b-20"  >
+					<panBaseCard
+						:list="basePan.list"
+						:name="basePan.name"
+						:icon="basePan.icon"
+						:pan="basePan.pan"
+						:show="basePan.show" 
+						:textConfig="basePan.textConfig"  
+					></panBaseCard>
+				</view>
 			</view>
 			
-			<view class="card-w u-m-b-20" v-if="marketCardList && marketCardList.length > 0">
+			<!-- <view class="card-w u-m-b-20" v-if="marketCardList && marketCardList.length > 0">
 				<view class="card-title u-flex u-flex-items-center u-flex-between u-p-10 u-m-b-12">
 					<view class="item u-flex u-flex-items-center">
 						<i class="custom-icon custom-icon-shop u-font-40" :style="{color: themeConfig.followCard.iconText}"></i>
-						<text class="u-p-l-10" :style="{color: themeConfig.followCard.titleText}">商品市场</text>
+						<text class="u-p-l-10" :style="{color: themeConfig.followCard.titleText}">期货商品</text>
 					</view>
 				</view>
 				<u-scroll-list :indicator="false">
@@ -119,7 +131,7 @@
 						</view>
 					</view>
 				</u-scroll-list>
-			</view>
+			</view> -->
 			
 			<view class="hq-card-w u-p-20" :style="{backgroundColor: themeConfig.hqCard.hqBg}">
 				<view class="card-title u-flex u-flex-items-center u-flex-between u-p-10 u-m-b-12">
@@ -205,15 +217,30 @@
 						pan: 's',
 						name: '卖盘关注',
 						icon: 'custom-icon-guanzhu',
-						list: []
+						list: [],
+						textConfig: {},
+						show: 0,
 					},
 					{
 						pan: 'b',
 						name: '买盘关注',
 						icon: 'custom-icon-guanzhu1',
-						list: []
+						list: [],
+						textConfig: {},
+						show: 0,
 					},
-				],
+					
+				], 
+				basePan: { 
+					name: '基差点价',
+					icon: 'custom-icon-all',
+					list: [],
+					textConfig: {
+						name1: '基差点价',
+						name2: ''
+					},
+					show: 0,
+				},
 				onlineControl: {
 					title: '首页'
 				},
@@ -388,11 +415,12 @@
 			async getMarketCard() {
 				const res = await this.$api.getStandard({
 					params: {
-						is_market: 1
+						is_market: 2
 					}
 				})
 				if(res.code == 1) {
 					this.marketCardList = res.list
+					this.basePan.list = [{name: '全部', id: ''}, ...res.list]
 				}
 			},
 			async getHome() {
@@ -400,8 +428,14 @@
 				if(res.code == 1) {
 					this.$emit('setOnlineControl', res)
 					this.setOnlineControl(res)
+					this.panList[0].show = res.sell_show 
+					this.panList[1].show = res.buy_show
 					this.panList[0].list = this.str2list(res.config.plate1)
 					this.panList[1].list = this.str2list(res.config.plate2)
+					this.panList[0].textConfig = res.button_name[0]
+					this.panList[1].textConfig = res.button_name[1]
+					this.basePan.show = res.basis_show
+					this.basePan.textConfig = res.button_name[2]
 					this.hqList = res.list.quotation
 					this.prefecture = res.prefecture
 					this.ad = res.ad?.list

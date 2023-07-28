@@ -11,7 +11,20 @@
 			<view class="item u-flex-1 u-p-r-20" @click="handleGotoDetail">
 				<view class="item u-flex u-flex-items-center u-m-b-10"> 
 					<text class="name u-line-1 ">{{name}}</text>
-					<text class="pp text-error">{{price | price2str(dprice)}} <template v-if="price>0">元/{{unit}}</template></text>
+					<text class="pp text-error">
+						<template v-if="origin.trade_mode == '3'">
+							{{origin.base_contract}}合约
+							<template v-if="origin.price >= 0"> + </template>
+							{{origin.price}} 元/{{origin.unit}}
+						</template>
+						<template v-else-if="origin.trade_mode == '5'">
+							{{origin.amount}} {{origin.unit}}
+						</template>
+						<template v-else> 
+							{{price | price2str(dprice)}}
+							<template v-if="price>0">元/{{unit}}</template>
+						</template>
+					</text>
 				</view>
 				<view class="item u-flex u-flex-items-center">
 					<view class="u-m-r-10" style="white-space: nowrap;">
@@ -20,7 +33,7 @@
 					<view class="u-m-r-10" style="white-space: nowrap;">
 						<u-tag :text="type | tradeType2" size="mini" plain plainFill :custionStyle="{height: '18px', minHeight: '18px'}"></u-tag>
 					</view>
-					<text class=" item-sub u-line-1">{{sub}}</text>
+					<text class=" item-sub u-line-1 u-flex-1">{{sub}}</text>
 				</view>
 			</view>
 			<view class="item">
@@ -94,7 +107,17 @@
 				</view>
 			</view>
 			<view class="item u-flex u-flex-items-center">
-				<view v-if="shareBtnConfig.button2">
+				<view style="position: relative;" v-if="inquiry">
+					<u-button
+						type="primary"   
+						size="small"
+						shape="circle"  
+						:disabled="doing"
+						@click.stop="guanlianbtn"
+					>{{shareBtnConfig.button3}}</u-button>
+					<u-badge type="error" max="99" :value="origin.total_orders" absolute :offset="[-2, -5]"></u-badge>
+				</view>
+				<view class="u-m-l-30" v-if="shareBtnConfig.button2">
 					<u-button 
 						type="primary"  
 						plain
@@ -176,6 +199,10 @@
 				default: false
 			},
 			mySend: {
+				type: Boolean,
+				default: false
+			},
+			inquiry: {
 				type: Boolean,
 				default: false
 			},
@@ -287,7 +314,10 @@
 			},
 			handleBigPic() {
 				this.$emit('handleBigPic', {data: this.origin})
-			}
+			},
+			guanlianbtn() {
+				this.$emit('guanlian', this.origin)
+			},
 		}
 	}
 </script>

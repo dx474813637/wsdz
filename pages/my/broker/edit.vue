@@ -120,15 +120,14 @@
 					<u-form-item
 						label="交易类型"
 						prop="trade_mode"
-						ref="trade_mode"
-						v-if="pan == 's' && model.trade_type == '2'"
+						ref="trade_mode" 
 					>
 						 <u-radio-group
 						    v-model="model.trade_mode"
-						    placement="row"
+						    placement="column"
 						  >
 						    <u-radio
-						      :customStyle="{marginRight: '8px'}"
+						      :customStyle="{marginTop: '15px'}"
 						      v-for="(item, index) in radiolist_trade_mode_filter"
 						      :key="item.value"
 							  :disabled="item.disabled"
@@ -139,9 +138,9 @@
 						  </u-radio-group>
 					</u-form-item>
 					<!-- 竞拍 start -->
-					<template v-if="model.trade_mode == '1' && pan == 's'">
+					<template v-if="model.trade_mode == '1'">
 						<u-form-item
-							label="竞拍方式"
+							label="竞价方式"
 							prop="bid_is_part"
 							ref="bid_is_part" 
 							required
@@ -243,7 +242,7 @@
 							</view> 
 						</u-form-item>
 						<u-form-item
-							label="多次竞拍"
+							label="多次竞价"
 							prop="bid_is_repeat"
 							ref="bid_is_repeat" 
 							required
@@ -353,7 +352,7 @@
 							@cancel="showEndTime = false"
 						></u-picker>
 						<u-form-item
-							label="匿名竞拍"
+							label="匿名竞价"
 							prop="bid_is_anonym"
 							ref="bid_is_anonym" 
 							required
@@ -383,6 +382,23 @@
 									'text-primary': model.bid_is_darkmark == '1'
 								}">是</view>
 							</view>
+						</u-form-item>
+						<u-form-item
+							label="交货日"
+							prop="bid_settle_date"
+							ref="bid_settle_date" 
+							required
+						>
+							<view class="u-flex u-flex-items-center">
+								<view class="u-p-r-20">T + </view>
+								<view class="u-flex-1">
+									<u--input
+										v-model="model.bid_settle_date"
+										clearable 
+									></u--input>
+								</view>
+								
+							</view> 
 						</u-form-item>
 					</template>
 					<!-- 竞拍 end -->
@@ -437,29 +453,148 @@
 						:label="priceStr"
 						prop="price"
 						ref="price"
-						v-if="model.trade_mode != '1'"
+						v-if="model.trade_mode != '1' && model.trade_mode != '5'"
 						required 
 					>
-						<u--input
-							v-model="model.price"
-							clearable
-							type="digit"
-						></u--input>
+						<view class="u-flex u-flex-items-center">
+							<view class="u-flex-1">
+								<u--input
+									v-model="model.price"
+									clearable
+									:type="model.trade_mode == '3'? 'text' :'digit'"
+								></u--input>
+							</view>
+							<view class="u-p-l-30 u-p-r-30" v-if="prodUnit">元/{{prodUnit}}</view>
+						</view>
+						
 					</u-form-item>
 					<u-form-item label=" " v-if="model.trade_mode == '0'">
-						<view class="text-base">填0表示点价，请说明点价规则</view>
+						<view class="text-base">填0表示公式价，请说明公式价规则</view>
 					</u-form-item>
 					<u-form-item
-						v-if="model.price.length != 0 && model.price == 0 && model.trade_mode == '0'"
-						label="点价规则"
+						label="公式价规则"
 						prop="dprice"
 						ref="dprice"
+						v-if="model.price == '0' && model.trade_mode == '0'" 
 					>
 						<u--input
 							v-model="model.dprice"
-							clearable
+							clearable 
 						></u--input>
 					</u-form-item>
+					<template v-if="model.trade_mode == '3'">
+						<u-form-item
+							label="基准期货合约"
+							prop="base_contract"
+							ref="base_contract"
+							placeholder="如：2305"
+							required 
+						>
+							<view class="u-flex u-flex-items-center">
+								<view class="u-flex-1">
+									<u--input
+										v-model="model.base_contract"
+										clearable
+									></u--input>
+								</view>
+								<view class="u-p-l-30 u-p-r-30 text-primary">如：2305</view>
+							</view>
+						</u-form-item>
+						<!-- <u-form-item 
+							label="点价后最迟交收天数"
+							prop="base_afterday"
+							ref="base_afterday"
+						>
+							<u--input
+								v-model="model.base_afterday"
+								clearable
+							></u--input>
+						</u-form-item> -->
+					</template>
+					 
+					<u-form-item
+						label="有效时间"
+						prop="express_time"
+						ref="express_time"
+						required
+						v-if="model.trade_mode == '3'"
+					>
+							<view class="u-flex u-flex-items-center">
+								<view class="u-flex-1" @click="express_time_show = true">
+									<u--input
+										:value="model.express_time || '请选择'"
+										readonly 
+										suffixIcon="calendar"
+									></u--input>
+								</view> 
+								<view class="u-flex u-flex-items-center u-p-l-20" style="flex: 0 0 80px">
+									<view @click="express_unit_show = true ">
+										<u--input
+											:value="model.express_unit"
+											readonly 
+											suffixIcon="clock"
+										></u--input>
+									</view>
+									<view class="u-p-l-10">时</view>
+								</view> 
+							</view> 
+					</u-form-item>
+					<u-form-item
+						label="有效时间"
+						prop="express_time"
+						ref="express_time"
+						required
+						v-else-if="model.trade_mode != '1'"
+					>
+						<view class="u-flex u-flex-items-center">
+							<view class="u-flex-2">
+								<u--input
+									v-model="model.express_time"
+									clearable
+									type="digit"
+								></u--input>
+							</view>
+							
+							<view @click="showExpressUnit = true" class="u-flex-1 u-p-l-20">
+								<u--input
+									:value="model.express_unit_label"
+									suffixIcon="arrow-down"
+									readonly
+									clearable
+								></u--input>
+							</view>
+						</view>
+					</u-form-item>
+					<u-datetime-picker
+						title="截止日期"
+						:show="express_time_show"
+						v-model="model.express_timestamp"
+						:minDate="new Date().getTime()"
+						mode="date"
+						closeOnClickOverlay 
+						@close="express_time_show = false"
+						@cancel="express_time_show = false"
+						@confirm="confirmExpressDate"
+					></u-datetime-picker>
+					<u-picker
+						title="截止时间"
+						closeOnClickOverlay
+						:show="express_unit_show" 
+						:columns="hoursList"
+						keyName="label"
+						@close="express_unit_show = false"
+						@cancel="express_unit_show = false"
+						@confirm="confirmExpressTime" 
+					></u-picker>
+					<u-picker 
+						closeOnClickOverlay
+						:show="showExpressUnit" 
+						:columns="expressUnit"
+						keyName="label"
+						@confirm="confirmExpressUnit"
+						@close="showExpressUnit = false"
+						@cancel="showExpressUnit = false"
+					></u-picker>
 					
 					<u-form-item
 						v-if="pan == 'b'"
@@ -474,42 +609,6 @@
 							height="90"
 						></u--textarea>
 					</u-form-item>
-					<u-form-item
-						label="有效时间"
-						prop="express_time"
-						ref="express_time"
-						required
-						v-if="model.trade_mode != '1'"
-					>
-						<view class="u-flex u-flex-items-center">
-							<view class="u-flex-2">
-								<u--input
-									v-model="model.express_time"
-									clearable
-									type="number"
-								></u--input>
-							</view>
-							
-							<view @click="showExpressUnit = true" class="u-flex-1 u-p-l-20">
-								<u--input
-									:value="model.express_unit_label"
-									suffixIcon="arrow-down"
-									readonly
-									clearable
-								></u--input>
-							</view>
-						</view>
-					</u-form-item>
-					<u-picker 
-						closeOnClickOverlay
-						:show="showExpressUnit" 
-						:columns="expressUnit"
-						keyName="label"
-						@confirm="confirmExpressUnit"
-						@close="showExpressUnit = false"
-						@cancel="showExpressUnit = false"
-					></u-picker>
-					
 					<u-form-item
 						label="交收方式"
 						prop="settle_mode"
@@ -636,7 +735,7 @@
 							  </u-radio-group>
 						</u-form-item>
 					</template>
-					<template v-if="myCpy.hasOwnProperty('Broker')">
+					<template v-if="myCpy.hasOwnProperty('Broker') && model.trade_mode != '3'">
 						<u-form-item
 							label="撮合员"
 						>
@@ -720,7 +819,8 @@
 </template>
 
 <script>
-	const INIT_START_TIME = new Date().getTime()+3600*24*1000;
+	const TODAY = new Date().getTime()
+	const INIT_START_TIME = TODAY+3600*24*1000;
 	const INIT_END_TIME = INIT_START_TIME + 3600*1000;
 	import {mapState, mapMutations, mapActions} from "vuex"
 	// import uniSection from '@/pages/my/components/uni-section/uni-section'
@@ -734,6 +834,7 @@
 				product: '',
 				prodInfo: '',
 				prodUnit: '',
+				productData: {},
 				prodInfoLoading: false,
 				model: {
 					product_id: '',
@@ -750,6 +851,7 @@
 					dprice: '',
 					amount: '',
 					express_time: '',
+					express_timestamp: '',
 					express_unit_label: '天',
 					express_unit: 'd',
 					delivery_place: '',
@@ -777,6 +879,9 @@
 					bid_etime: '0',
 					bid_is_anonym: '0',
 					bid_is_darkmark: '0',
+					bid_settle_date: '',
+					base_contract: '',
+					base_afterday: '',
 				},
 				fileList1: [],
 				radiolist_order_type: [
@@ -807,27 +912,42 @@
 					{
 						name: '议价交易',
 						disabled: false,
-						value: "0"
+						value: "0",
+						show: 'bs',
 					},
 					{
-						name: '竞拍交易',
+						name: '竞价交易',
 						disabled: false,
-						value: "1"
+						value: "1",
+						show: 'bs',
 					},
 					{
 						name: '一口价',
 						disabled: false,
-						value: "2"
+						value: "2",
+						show: 's',
+					},
+					{
+						name: '基差点价',
+						disabled: false,
+						value: "3",
+						show: 'bs',
+					},
+					{
+						name: '询价交易',
+						disabled: false,
+						value: "5",
+						show: 'b',
 					},
 				],
 				radiolist_bid_is_part: [
 					{
-						name: '按手竞拍',
+						name: '按手竞价',
 						disabled: false,
 						value: "1"
 					},
 					{
-						name: '总量竞拍',
+						name: '总量竞价',
 						disabled: false,
 						value: "2"
 					}, 
@@ -874,7 +994,7 @@
 					{
 						name: '买家自提',
 						disabled: false,
-						show: 's',
+						show: 'bs',
 						value: "B"
 					},
 					{
@@ -899,6 +1019,8 @@
 				showStartTime: false,
 				showEndDate: false,
 				showEndTime: false,
+				express_time_show: false,
+				express_unit_show: false,
 				expressUnit: [
 					[{label: '天', value: 'd'}, {label: '小时', value: 'h'}]
 				],
@@ -954,7 +1076,8 @@
 					]
 				],
 				checkbox_broker_login:[],
-				create_sell_info: ``
+				create_sell_info: ``,
+				origin: {}
 			}
 		},
 		computed: {
@@ -981,7 +1104,43 @@
 				}
 			},
 			rules() {
-				let max_express_time = this.model.trade_type == '1'? 360 : 10 
+				let max_express_time = this.model.trade_type == '1'? 360 : 10  
+				let expressTimeRules 
+				if(this.model.trade_mode == '3') {
+					expressTimeRules = [{
+						type: 'string',
+						message: '截止日期不能空',
+						trigger: ['blur', 'change']
+					},{
+						type: 'string',
+						validator: (rule, value, callback) => { 
+							console.log(`${value} ${this.model.express_unit}:00:00`)
+							return new Date(`${value} ${this.model.express_unit}:00:00`).getTime() > new Date().getTime()
+						},
+						message: '截止时间不得早于当前时间',
+						trigger: ['blur', 'change']
+					}]
+				}else {
+					expressTimeRules = [{
+						type: 'string',
+						validator: (rule, value, callback) => { 
+							return Number(value) > 0 && Number(value) % 0.5 == 0
+						},
+						message: '请填写有效时间，必须为0.5的倍数',
+						trigger: ['blur', 'change']
+					},{
+						type: 'string',
+						validator: (rule, value, callback) => { 
+							if(this.model.express_unit == 'd') { 
+								return Number(value) > 0 && value <= max_express_time && Number(value) % 0.5 == 0
+							}else {
+								return Number(value) > 0 && Number(value) % 0.5 == 0
+							} 
+						},
+						message: this.model.express_unit == 'd' ? `请填写有效时间，当前现货类型不得超过${max_express_time}天` : '请填写有效时间',
+						trigger: ['blur', 'change']
+					}]
+				}
 				let baseRules = {
 					'product_id': {
 						type: 'string',
@@ -1003,23 +1162,16 @@
 					},{
 						type: 'string',
 						validator: (rule, value, callback) => {
-							return Number(value) >= 0
+							if(this.model.trade_mode == '3') {
+								return uni.$u.test.number(value)
+							}else {
+								return Number(value) >= 0
+							} 
 						},
 						message: '请填写正确的金额',
 						trigger: ['blur', 'change']
 					}],
-					'express_time': {
-						type: 'string',
-						validator: (rule, value, callback) => { 
-							if(this.model.express_unit == 'd') { 
-								return Number(value) > 0 && value <= max_express_time
-							}else {
-								return Number(value) > 0
-							} 
-						},
-						message: this.model.express_unit == 'd' ? `请填写有效时间，当前现货类型不得超过${max_express_time}天` : '请填写有效时间',
-						trigger: ['blur', 'change']
-					},
+					'express_time': expressTimeRules,
 					'delivery_place': {
 						type: 'string',
 						required: true,
@@ -1058,6 +1210,12 @@
 				let sRules = {
 				} 
 				let jpRules = {
+					'bid_settle_date': {
+						type: 'string',
+						required: true,
+						message: '请填写正确的交货日',
+						trigger: ['blur', 'change']
+					},
 					'bid_step_amount': [{
 						type: 'string',
 						required: true,
@@ -1167,50 +1325,96 @@
 						}
 					]
 				}
+				
+				let jichaRules = {
+					'base_contract': {
+						required: true, 
+						message: '不能为空',
+						trigger: ['change','blur'],
+					}
+				}
+				let obj = {}
 				if(this.pan == 'b') {
-					let obj = {
+					obj = {
 						...baseRules,
 						...bRules
-					}
-					if(this.$refs.from && this.$refs.from.setRules) {
-						this.$refs.from.setRules(obj)
-					} 
-					return obj
+					}  
 				}else if(this.pan == 's') {
-					let obj = {
+					obj = {
 						...baseRules,
 						...sRules
 					}
-					if(this.model.trade_mode == '1') {
-						obj = {
-							...obj,
-							...jpRules
-						}
-					}
-					if(this.$refs.from && this.$refs.from.setRules) {
-						this.$refs.from.setRules(obj)
-					} 
-					return obj
 				}
-				return {}
+				if(this.model.trade_mode == '1') {
+					obj = {
+						...obj,
+						...jpRules
+					}
+				}
+				if(this.model.trade_mode == '3') {
+					obj = {
+						...obj,
+						...jichaRules
+					}
+				}
+				if(this.$refs.from && this.$refs.from.setRules) {
+					this.$refs.from.setRules(obj)
+				} 
+				return obj
 				
 			},
 			radiolist_trade_mode_filter() {
-				if(this.myCpy.grade_2 == 1) return this.radiolist_trade_mode
-				else return this.radiolist_trade_mode.filter(ele => ele.value != 1)
+				let data = uni.$u.deepClone(this.radiolist_trade_mode.filter(ele => ele.show.includes(this.pan)) )
+				if(this.productData?.standard?.is_market != 1) { 
+					data = data.filter(ele => ele.value != 3)
+				}
+				if(this.myCpy.grade_2 == 1) return data
+				else return data.filter(ele => ele.value != 1)
 			},
 			radiolist_mdu_filter() {
 				return this.radiolist_mdu.filter(ele => ele.show.includes(this.pan))
 			},
 			radiolist_settle_mode_filter() {
+				// let data = uni.$u.deepClone(this.radiolist_settle_mode.filter(ele => ele.show.includes(this.pan)) )
+				// return data 
+				if((this.model.trade_mode == '2' || this.model.trade_mode == '3')) {
+					return this.radiolist_settle_mode.filter(ele => { 
+						ele.disabled = ele.value != 'B'? true : false 
+						return ele.show.includes(this.pan)
+					})
+				}
+				if((this.model.trade_mode == '1' || this.model.trade_mode == '3')) {
+					return this.radiolist_settle_mode.filter(ele => {
+						ele.disabled = ele.value != 'S'? true : false 
+						return ele.show.includes(this.pan)
+					})
+				}
+				if((this.model.trade_mode == '5')) {
+					return this.radiolist_settle_mode.filter(ele => {
+						ele.disabled = ele.value != 'B'? true : false 
+						return ele.show.includes(this.pan)
+					})
+				}
+				
 				return this.radiolist_settle_mode.filter(ele => {
-					ele.disabled = ele.value != 'B' && this.model.trade_mode == '2' && this.model.trade_type == '2' ? true : false
+					ele.disabled = false 
 					return ele.show.includes(this.pan)
 				})
+				// return this.radiolist_settle_mode.filter(ele => {
+				// 	if(ele.value != 'B') {
+				// 		ele.disabled =  (this.model.trade_mode == '2' || this.model.trade_mode == '3') ? true : false
+				// 	}
+				// 	if(ele.value != 'S') {
+				// 		ele.disabled =  (this.model.trade_mode == '1' || this.model.trade_mode == '3') ? true : false
+				// 	}
+					
+				// 	return ele.show.includes(this.pan)
+				// })
 			}, 
 			 priceStr() {
-				 if(this.pan == 'b') return '意向单价'
-				 else return '单价'
+				 if(this.model.trade_mode == '3') return '基差'
+				 if(this.pan == 'b') return '意向单价'  
+				 return '单价'
 			 }, 
 		},
 		async onLoad(options) {
@@ -1230,6 +1434,7 @@
 				if(options.hasOwnProperty('data')) {
 					const data = JSON.parse(decodeURIComponent(options.data))
 					console.log(data)
+					this.origin = data
 					this.model.delivery_place = data.delivery_place
 					this.model.delivery_address = data.delivery_address
 					this.model.product_id = data.product_id
@@ -1256,18 +1461,25 @@
 					this.model.settle_mode = data.settle_mode
 					this.model.delivery_place = data.delivery_place
 					// 竞拍
-					this.model.bid_is_part = data.Bid_role.is_part == '1'? '1' : '2'
-					this.model.bid_step_amount = data.Bid_role.step_amount
-					this.model.bid_min_amount = data.Bid_role.min_amount
-					this.model.bid_re_price = data.Bid_role.re_price1
-					this.model.bid_step = data.Bid_role.step1
-					this.model.bid_is_repeat = data.Bid_role.is_repeat
-					this.model.bid_bdate = data.Bid_role.bdate1
-					this.model.bid_btime = data.Bid_role.btime1
-					this.model.bid_edate = data.Bid_role.edate1
-					this.model.bid_etime = data.Bid_role.etime1
-					this.model.bid_is_anonym = data.Bid_role.is_anonym
-					this.model.bid_is_darkmark = data.Bid_role.is_darkmark
+					if(data.Bid_role) {
+						
+						this.model.bid_is_part = data.Bid_role.is_part == '1'? '1' : '2'
+						this.model.bid_step_amount = data.Bid_role.step_amount
+						this.model.bid_min_amount = data.Bid_role.min_amount
+						this.model.bid_re_price = data.Bid_role.re_price1
+						this.model.bid_step = data.Bid_role.step1
+						this.model.bid_is_repeat = data.Bid_role.is_repeat
+						this.model.bid_bdate = data.Bid_role.bdate1
+						this.model.bid_btime = data.Bid_role.btime1
+						this.model.bid_edate = data.Bid_role.edate1
+						this.model.bid_etime = data.Bid_role.etime1
+						this.model.bid_is_anonym = data.Bid_role.is_anonym
+						this.model.bid_is_darkmark = data.Bid_role.is_darkmark
+						this.bid_settle_date = data.Bid_role.settle_date
+					}
+					//基差
+					this.model.base_contract = data.base_contract
+					this.model.base_afterday = data.base_afterday
 					
 					if(this.pan == 's') {
 						this.model.remark = data.remark
@@ -1305,13 +1517,13 @@
 				})
 			},
 			['model.trade_type'](n) { 
-				if(n == '1') {
-					this.model.order_type = '2'
-					this.model.trade_mode = '0'
-				}
-				this.$nextTick(() => {
-					this.$refs.from.validateField('express_time')
-				})
+				// if(n == '1') {
+				// 	this.model.order_type = '2'
+				// 	this.model.trade_mode = '0'
+				// }
+				// this.$nextTick(() => {
+				// 	this.$refs.from.validateField('express_time')
+				// })
 			},
 			['model.order_type']: {
 				immediate: true, 
@@ -1327,20 +1539,32 @@
 				},
 			},
 			['model.trade_mode'](n) {
-				this.radiolist_order_type.some(ele => {
-					if(ele.value == '2') {
-						ele.disabled = n == '2' ? true : false;
-						return true
-					}
-					return false
-				})
-				this.radiolist_settle_mode.forEach(ele => {
-					if(ele.value != 'B') {
-						ele.disabled = n == '2' ? true : false;
-					}
-				})
-				if(n == '2') {
+				// console.log(n)
+				// this.radiolist_order_type.some(ele => {
+				// 	if(ele.value == '2') {
+				// 		ele.disabled = n == '2' ? true : false;
+				// 		return true
+				// 	}
+				// 	return false
+				// })
+				// this.radiolist_settle_mode.forEach(ele => {
+				// 	if(ele.value != 'B') {
+				// 		ele.disabled = (n == '2' || n == '3') ? true : false;
+				// 	}
+				// })
+				if(n == '2' || n == '3' || n == '5') {
 					this.model.settle_mode = 'B'
+				} 
+				if(n == '1') {
+					this.model.settle_mode = 'S'
+				}  
+				if(n == '3') {
+					this.model.express_unit = this.origin.express_unit ? this.origin.express_unit : '23'
+					this.model.express_time = this.origin.express_time ? this.origin.express_time : uni.$u.timeFormat(TODAY, 'yyyy-mm-dd')
+					this.model.express_timestamp = TODAY
+				}else  {
+					this.model.express_unit = 'd'
+					this.model.express_time = ''
 				}
 			},
 			['model.express_unit'](n) {
@@ -1401,6 +1625,7 @@
 				const res = await this.$api.getCompanyProductDetail({params: {id: this.model.product_id}})
 				if(res.code == 1) {
 					this.product = res.list.name
+					this.productData = res.list
 					this.model.name = res.list.name
 					this.prodUnit = res.list.unit
 					this.prodInfo = res.list.list_product_attrs.reduce((pre, cur) => {
@@ -1431,6 +1656,7 @@
 			async menusConfirm1(data) {
 				console.log(data)
 				this.product = data.name
+				this.product_select = data
 				this.model.product_id = data.id
 				if(!this.model.name) this.model.name = data.name
 				this.show = false;
@@ -1508,6 +1734,19 @@
 				this.model.bid_etime = e.value[0].value
 				this.showEndTime = false
 				this.$refs.from.validateField('bid_edate')
+			},
+			confirmExpressDate(e) {
+				console.log(e) 
+				let date = uni.$u.timeFormat(e.value, 'yyyy-mm-dd')
+				this.model.express_timestamp = e.value 
+				this.model.express_time = date
+				this.express_time_show = false 
+				this.$refs.from.validateField('express_time')
+			},
+			confirmExpressTime(e) {
+				console.log(e) 
+				this.model.express_unit = e.value[0].value
+				this.express_unit_show = false 
 			},
 			confirmSettleDate(e) {
 				console.log(e)
@@ -1613,7 +1852,7 @@
 					}
 				}).catch(errors => {
 					console.log(errors)
-					uni.$u.toast('校验失败')
+					uni.$u.toast('请检查表单内容')
 				})
 			},
 			

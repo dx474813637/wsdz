@@ -30,6 +30,7 @@
 							{{panRes.list.amount}}{{panRes.list.unit}}
 						</view>
 					</u-form-item>
+					
 					<u-form-item
 						label="可售量" 
 						v-if="ordertype=='B'"
@@ -38,6 +39,29 @@
 							{{left_amount}}{{panRes.list.unit}}
 						</view>
 					</u-form-item>
+					<template v-if="panRes.list.trade_mode == '3'">
+						<u-form-item
+							label="基差合约" 
+						>
+							<view class=""> 
+								{{panRes.list.base_contract}} 
+							</view>
+						</u-form-item>
+						<u-form-item
+							label="基差" 
+						>
+							<view class=""> 
+								{{panRes.list.price}} 元/{{panRes.list.unit}}
+							</view>
+						</u-form-item>
+						<!-- <u-form-item
+							label="点价后最迟交收天数" 
+						>
+							<view class=""> 
+								{{panRes.list.base_afterday}} 天
+							</view>
+						</u-form-item>	 -->
+					</template>
 					<u-form-item
 						:label="ordertype == 'S' ? '供应量' : '采购量'"
 						prop="amount"
@@ -57,7 +81,7 @@
 						
 					</u-form-item>
 					<u-form-item
-						label="单价"
+						:label="panRes.list.trade_mode == '3'? '现货成交单价(一口价)' : '单价'"
 						prop="price"
 						ref="price"
 						required
@@ -96,6 +120,93 @@
 						</view>
 						
 					</u-form-item>
+					<template v-if="panRes.list.trade_mode == '3'">
+						<!-- 基差交易方式下 -->
+						
+						<u-form-item
+							label="点价开始"
+							prop="base_btime"
+							ref="base_btime" 
+						>
+							<view @click="showStartDate = true">
+								<u--input
+									:value="form.base_btime || '请选择开始时间'"
+									readonly 
+									suffixIcon="calendar"
+								></u--input>
+							</view>
+							
+						</u-form-item>
+						
+						<u-datetime-picker
+							title="开始日期"
+							:show="showStartDate"
+							v-model="form.base_btimestamp"
+							mode="datetime"
+							:minDate="new Date().getTime()"
+							closeOnClickOverlay 
+							@close="showStartDate = false"
+							@cancel="showStartDate = false"
+							@confirm="confirmStartDate"
+						></u-datetime-picker>
+						
+						<u-form-item
+							label="点价截至"
+							prop="base_etime"
+							ref="base_etime" 
+						>
+							<view @click="showEndDate = true">
+								<u--input
+									:value="form.base_etime || '请选择截至时间'"
+									readonly 
+									suffixIcon="calendar"
+								></u--input>
+							</view>
+							
+						</u-form-item>
+						<u-form-item
+							label="挂牌截至" 
+							v-if="panRes.hasOwnProperty('list')"
+						>
+							<view>
+								{{panRes.list.express_time}} {{panRes.list.express_unit}}:00
+							</view>
+							
+						</u-form-item>
+						<u-datetime-picker
+							title="结束日期"
+							:show="showEndDate"
+							v-model="form.base_etimestamp"
+							mode="datetime"
+							:minDate="new Date().getTime()"
+							closeOnClickOverlay 
+							@close="showEndDate = false"
+							@cancel="showEndDate = false"
+							@confirm="confirmEndDate"
+						></u-datetime-picker>
+						<u-form-item
+							label="价格类型"
+							prop="base_price_type"
+							ref="base_price_type"
+							required
+						>
+							<u-radio-group
+								v-model="form.base_price_type"
+								placement="row"
+							  >
+								<u-radio
+								  :customStyle="{marginRight: '8px'}"
+								  v-for="(item, index) in base_price_type_radios"
+								  :key="index"
+								  :name="item.value"
+								  :label="item.name"
+								  :disabled="item.disabled"
+								>
+								</u-radio>
+							</u-radio-group>
+						</u-form-item>
+					</template>
+					
 					<u-form-item
 						label="交收方式"
 						prop="settle_mode"
@@ -184,7 +295,7 @@
 						:label="form.settle_mode == 'S' ? '收货区域' : '提货区域' "
 						prop="delivery_place"
 						ref="delivery_place"
-						:required="!qiehuan"
+						required
 					>
 						<view style="width: 255px;">
 							<uni-data-picker
@@ -212,11 +323,11 @@
 						:label="form.settle_mode == 'S' ? '收货地址' : '提货地址' "
 						prop="settle_address"
 						ref="settle_address"
-						:required="!qiehuan"
+						required
 					>
 						<view>
 							<u--input
-								v-if="!qiehuan"
+								v-if="!qiehuan ||  panRes.list.trade_mode == '3'"
 								v-model="form.settle_address"
 								placeholder="填写地址" 
 								clearable
@@ -280,6 +391,8 @@
 </template>
 
 <script>
+	const INIT_START_TIME = new Date().getTime()+3600*24*1000;
+	const INIT_END_TIME = INIT_START_TIME + 3600*1000;
 	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
 	export default {
 		data() {
@@ -295,6 +408,8 @@
 				tar: '',
 				pageLoading: true,
 				show_billacc: false,
+				showStartDate: false,
+				showEndDate: false,
 				form: { 
 					source: '',
 					source_id: '',
@@ -309,7 +424,22 @@
 					settle_address: '',
 					intro: '',
 					remark: '', 
+					base_btime: '',
+					base_btimestamp: '',
+					base_etime: '',
+					base_etimestamp: '',
+					base_price_type: '',
 				},
+				base_price_type_radios: [
+					{
+						name: '现货价',
+						value: '1'
+					},
+					{
+						name: '期货价',
+						value: '2'
+					},
+				],
 				settle_mode_radios: [
 					{
 						name: '买家自提',
@@ -372,19 +502,29 @@
 			},
 			qiehuan() {
 				let qiehuan
-				if(this.ordertype == 'S') {
-					if(this.form.settle_mode == 'S') {
+				if(this.panRes?.list?.trade_mode == '3') {
+					console.log('ddd')
+					if(this.ordertype == 'S') {
 						qiehuan = true
 					}else {
 						qiehuan = false
 					}
 				}else {
-					if(this.form.settle_mode == 'S') {
-						qiehuan = false
+					if(this.ordertype == 'S') {
+						if(this.form.settle_mode == 'S') {
+							qiehuan = true
+						}else {
+							qiehuan = false
+						}
 					}else {
-						qiehuan = true
+						if(this.form.settle_mode == 'S') {
+							qiehuan = false
+						}else {
+							qiehuan = true
+						}
 					}
 				}
+				
 				return qiehuan
 			},
 			rules() {
@@ -418,7 +558,12 @@
 					base.amount.validator = (rule, value, callback) => {
 						return uni.$u.test.number(value) && value > 0 && value <= +(uni.$u.test.number(this.left_amount) ? this.left_amount :this.panRes.list.amount)
 					}
-					base.amount.message = `请填写0-${ uni.$u.test.number(this.left_amount) ? this.left_amount :this.panRes.list.amount}范围内的数值` 
+					if(this.ordertype == 'B') {
+						base.amount.message = '采购量不能大于可售量'
+					}else {
+						base.amount.message = `请填写0-${ uni.$u.test.number(this.left_amount) ? this.left_amount :this.panRes.list.amount}范围内的数值` 
+						
+					}
 				}
 				if(this.panRes.list?.order_type == '1') {
 					base = {
@@ -445,7 +590,7 @@
 						},
 					}
 				} 
-				if(!this.qiehuan) {
+				// if(!this.qiehuan) {
 					base = {
 						...base,
 						delivery_place: {
@@ -459,7 +604,33 @@
 							trigger: ['blur', 'change']
 						},
 					}
+				// } 
+				if(this.panRes?.list?.trade_mode != '3') {
+					base = {
+						...base,
+						base_btime: {
+							required: true,
+							message: '请选择开始时间',
+							trigger: ['blur', 'change']
+						},
+						base_etime: {
+							required: true,
+							message: '请选择结束时间',
+							trigger: ['blur', 'change']
+						},
+					}
 				}
+				if(this.panRes.list.trade_mode == '3') {
+					base = {
+						...base,
+						base_price_type: {
+							required: true,
+							message: '请选择价格类型',
+							trigger: ['blur', 'change']
+						}, 
+					}
+				}
+				
 				if(this.$refs.form && this.$refs.form.setRules) {
 					this.$refs.form.setRules(base)	 
 				}
@@ -510,21 +681,25 @@
 					})
 					if(this.form.pay_option1 == 'COD') this.form.pay_option1 = 'D_P'
 						
-					if(this.type == 'add') {
-						if(this.ordertype == 'B') {
+					if(this.type == 'add') { 
+						if(this.panRes.list.trade_mode == '3') {
+							this.form.delivery_place = this.panRes.list.delivery_place1 
+							return
+						}
+						if(this.ordertype == 'B') { 
 							if(n == 'S') {
 								this.form.delivery_place = ''
-								this.form.settle_address = ''
+								this.form.settle_address = '' 
 								return
 							} 
 						}else {
-							if(n == 'B') {
+							if(n == 'B') { 
 								this.form.delivery_place = ''
 								this.form.settle_address = ''
 								return
 							} 
 						} 
-						this.form.delivery_place = this.panRes.list.delivery_place1
+						this.form.delivery_place = this.panRes.list.delivery_place1 
 						this.form.settle_address = this.panRes.list.delivery_address
 					}else { 
 						if(this.order.delivery_place == this.panRes.list.delivery_place1
@@ -601,15 +776,16 @@
 					})
 					await this.getPan()
 					
-					this.form.delivery_place = this.panRes.list.delivery_place1
+					 
 					this.form.settle_address = this.panRes.list.delivery_address
 					//订单类型为销售订单时，settle_mode直接从买盘信息里读取 BS
 					this.form.source_id = this.id
 					this.form.source = this.ordertype == 'S'? 'BUY' : 'SELL'
 					this.settle_mode_radios = this.settle_mode_radios.filter(ele => this.panRes.list.settle_mode.includes(ele.value) )
 					this.form.settle_mode = this.settle_mode_radios[1] ? this.settle_mode_radios[1].value : this.settle_mode_radios[0].value
-					this.form.price = this.panRes.list.price1
+					if(this.panRes.list.trade_mode != '3') this.form.price = this.panRes.list.price1
 					
+					this.form.delivery_place = this.panRes.list.delivery_place1
 					if(this.panRes.list.order_type == '1') {
 						this.form.pay_option1 = 'GRT'
 						this.form.pay_option2 = 'FUNDPAY'
@@ -678,6 +854,32 @@
 					
 				}
 			},
+			//确认 开始日期
+			confirmStartDate(e) {  
+				this.form.base_btimestamp = e.value
+				this.form.base_btime = uni.$u.timeFormat(e.value, 'yyyy-mm-dd hh:MM:ss')
+				// this.form.base_etime = '0'
+				this.showStartDate = false 
+				this.$refs.form.validateField('base_btime')
+				this.$refs.form.validateField('base_etime')
+			},
+			//确认 结束日期
+			confirmEndDate(e) {   
+				let date = uni.$u.timeFormat(e.value, 'yyyy-mm-dd hh:MM:ss')
+				if(new Date(date.replace(/-/g, "/")).getTime() < new Date(this.form.base_btime.replace(/-/g, "/")).getTime()) {
+					uni.showToast({
+						title: '结束时间必须大于开始时间',
+						icon: 'none'
+					})
+					
+					return
+				}
+				this.form.base_etimestamp = e.value
+				this.form.base_etime = date
+				// this.form.base_etime = '0'
+				this.showEndDate = false   
+				this.$refs.form.validateField('base_etime')
+			},
 			async submit() {
 				this.$refs.form.validate().then(async r => {
 					console.log(r)
@@ -685,6 +887,7 @@
 						uni.showLoading()
 						let func = this.type == 'add' ? 'create_order' : 'change_order'; 
 						const res = await this.$api[func]({
+							title: this.panRes.list.name,
 							...this.form
 						})
 						if(res.code == 1) {
@@ -715,7 +918,7 @@
 					
 				}).catch(errors => {
 					console.log(errors)
-					uni.$u.toast('校验失败')
+					uni.$u.toast('请检查表单内容')
 				})
 			},
 			

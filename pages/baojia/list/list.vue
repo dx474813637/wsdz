@@ -748,7 +748,7 @@
 						this.ck_list = res.list
 					}
 				}).catch(errors => {
-					uni.$u.toast('校验失败')
+					uni.$u.toast('请检查表单内容')
 				})
 			}
 		}
