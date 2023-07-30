@@ -4,11 +4,10 @@
 			<view class="item u-flex-1 u-p-b-10" @click="show = true">
 				<u-input 
 					placeholder="请选择" 
-					v-model="keyword" 
+					v-model="pid_name" 
 					:showAction="false"
 					readonly
-					bgColor="#fff"
-					@search="handleSearch"
+					bgColor="#fff" 
 					suffixIcon="arrow-down-fill"
 					suffixIconStyle="color: #909399"
 				>
@@ -42,6 +41,7 @@
 						<FxmpCard
 							:detailData="item" 
 							@detail="handleDetail"
+							@delete="handleDelet"
 						></FxmpCard>
 					</view>
 					
@@ -73,13 +73,12 @@
 </template>
 
 <script>
-	import {mapState, mapGetters, mapMutations} from 'vuex'
+	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
 	import FxmpCard from '@/pages/my/components/FxmpCard/FxmpCard.vue'
 	import menusPopupStandard from '@/components/menusPopup/menusPopupStandard.vue'
 	export default {
 		data() {
 			return {
-				keyword: '',
 				show: false,
 				tabs_current: 0,
 				activeTabsStyle: {
@@ -93,42 +92,29 @@
 				},
 				tabs_list: [
 					{
-						name: '按时间',
-						value: 'post_time',
+						name: '全部',
+						value: '',
 						disabled: false,
-					},
-					{
-						name: '按千分比',
-						value: 'pay_type1',
-						disabled: false,
-					},
-					{
-						name: '按每单位费率',
-						value: 'pay_type2',
-						disabled: false,
-					},
-					// {
-					// 	name: '买盘',
-					// 	trade_type: 'b',
-					// 	disabled: false,
-					// },
-					// {
-					// 	name: '卖盘',
-					// 	trade_type: 's',
-					// 	disabled: false,
-					// },
+					}, 
 				],
-				indexList: [{}],
+				indexList: [],
 				curP: 1,
+				pid: '',
+				pid_name: '',
 				loadstatus: 'loadmore'
 			};
 		},
-		async onLoad() {
+		async onLoad(opt) {
+			if(opt.hasOwnProperty('pid')) {
+				this.pid = opt.pid 
+				this.initNameByPid()
+			} 
 			uni.showLoading()
 			await this.getData()
 		},
 		computed: {
-			...mapState({
+			...mapState({ 
+				fxStandard: state => state.user.fxStandard, 
 				typeConfig: state => state.theme.typeConfig,
 			}),
 		},
@@ -140,14 +126,27 @@
 			...mapMutations({
 				handleGoto: 'user/handleGoto'
 			}),
+			...mapActions({ 
+				getFxStandard: 'user/getFxStandard', 
+			}), 
+			async initNameByPid() {
+				if(this.fxStandard.length == 0) {
+					uni.showLoading()
+					await this.getFxStandard() 
+				}
+				this.pid_name = this.fxStandard.filter(ele => ele.pid == this.pid)[0].name 
+			},
 			async refreshList() {
 				this.initParamas()
 				await this.getData()
 			},
 			async menusConfirm(data) {
 				console.log(data)
-				 
+				this.pid_name = data.name
+				this.pid = data.pid  
 				this.show = false;
+				uni.showLoading()
+				this.refreshList()
 			}, 
 			initParamas() {
 				this.curP = 1;
@@ -164,7 +163,8 @@
 				})
 			},
 			async handleTabsChange(value) {
-				this.keyword = ''
+				this.pid = ''
+				this.pid_name = ''
 				this.tabs_current = value.index
 				this.changeTabsStatus('disabled', true)
 				this.initParamas();
@@ -178,17 +178,13 @@
 			async getData() {
 				if(this.loadstatus != 'loadmore') return
 				this.loadstatus = 'loading'
-				const res = await this.$api.all_api({params:{
-					API: 'DA_ALLIANCE_DA_PRODUCT_TO_MEMBER',
-					Action: 'PAGE_LIST_DA_PRODUCT',
-					token: 1,
+				const res = await this.$api.fx_sell_list({params:{ 
 					p: this.curP,
-					pid: this.keyword,
-					orderby: this.tabs_list[this.tabs_current].value
+					pid: this.pid, 
 				}})
 				if(res.code == 1) {
-					this.indexList = [...this.indexList, ...res.list ]
-					if(!res.list || res.list.length == 0) {
+					this.indexList = [...this.indexList, ...res.list.list ]
+					if(this.indexList.length >= +res.list.total ) {
 						this.loadstatus = 'nomore'
 					}else {
 						this.loadstatus = 'loadmore'
@@ -200,13 +196,11 @@
 				this.curP ++
 				await this.getData()
 			},  
+			
 			async handleDelet({id}) {
 				uni.showLoading()
-				const res = await this.$api.all_api({
-					params: {
-						API: 'DA_ALLIANCE_DA_PRODUCT_TO_MEMBER',
-						Action: 'DELETE',
-						token: 1,
+				const res = await this.$api.fx_sell_del({
+					params: {  
 						id
 					}
 				})
@@ -223,13 +217,13 @@
 			handleDetail(data) {
 				
 				this.handleGoto({
-					url: '/pages/my/fx/fxgx',
+					url: '/pages/index/pan/panDetail',
 					params: {
 						id: data.id, 
-						data: encodeURIComponent(JSON.stringify(data)),
+						pan:'s',
 					}
-				})
-			}
+				}) 
+			}, 
 		}
 	}
 </script>

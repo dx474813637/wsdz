@@ -1,7 +1,7 @@
 <template>
 	<view class="u-p-20" >
 		
-		<view class="main u-p-30">
+		<view class="main u-p-30" v-if="list.id">
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
 				<view class="item text-light item-label">商品</view>
 				<view class="item u-text-right">{{list.da_product.Product.name}}</view>
@@ -28,22 +28,22 @@
 			</view>  
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
 				<view class="item text-light item-label">状态</view>
-				<view class="item u-text-right u-flex">
-					<u--text>激活</u--text>
-					<u-switch v-model="value13" asyncChange @change="asyncChange" ></u-switch>
+				<view class="item u-text-right u-flex u-flex-items-start" :class="{'text-primary': list.state == 1}">
+					<text class="u-m-r-30">{{list.state == 1? '激活' : '未激活'}}</text>
+					<u-switch v-model="state" asyncChange @change="asyncChange" ></u-switch>
 				</view>
 			</view>  
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
 				<view class="item text-light item-label">店铺审核状态</view>
-				<view class="item u-text-right">激活</view>
+				<view class="item u-text-right" :class="{'text-primary': list.auth_state == 1}">{{list.auth_state == 1? '激活' : '未激活'}}</view>
 			</view>  
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
 				<view class="item text-light item-label">店铺经营状态</view>
-				<view class="item u-text-right">激活</view>
+				<view class="item u-text-right" :class="{'text-primary': list.da_company.state == 1}">{{list.da_company.state == 1? '激活' : '未激活'}}</view>
 			</view>  
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
 				<view class="item text-light item-label">店铺分销商品状态</view>
-				<view class="item u-text-right">激活</view>
+				<view class="item u-text-right" :class="{'text-primary': list.da_product.state == 1}">{{list.da_product.state == 1? '激活' : '未激活'}}</view>
 			</view>  
 		</view>
 	</view>
@@ -59,12 +59,12 @@
 			}
 		},
 		computed: {
-			status: {
+			state: {
 				get() {
-					return this.list.status == '1'? true:false
+					return this.list.state == '1'? true:false
 				},
 				set(e) {
-					this.list.status = e ? '1' : '0'
+					this.list.state = e ? '1' : '0'
 				}
 			}
 		},
@@ -86,21 +86,24 @@
 					success: async (res) => {
 						
 						if (res.confirm) {
-							await this.changeStatus()
-							this.status = e
+							await this.changeStatus(e)
+							
 						}
 					}
 				})
 			},
-			async changeStatus() {
-				const res = await this.$api.all_api({
-					params: {
-						API: 'DA_ALLIANCE_DA_PRODUCT_TO_MEMBER',
-						Action: 'ABLE',
-						token: 1,
+			async changeStatus(e) {
+				const res = await this.$api.fxgx_status_change({
+					params: { 
 						id: this.id
 					}
 				})
+				if(res.code == 1) {
+					this.state = e
+					uni.showToast({
+						title: res.msg
+					})
+				}
 			}
 		}
 	}

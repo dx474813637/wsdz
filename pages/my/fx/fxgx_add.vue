@@ -77,8 +77,7 @@
 	import menusPopupStandard from '@/components/menusPopup/menusPopupStandard.vue'
 	export default {
 		data() {
-			return {
-				keyword: '',
+			return { 
 				show: false,
 				tabs_current: 0,
 				activeTabsStyle: {
@@ -184,7 +183,8 @@
 				})
 			},
 			async handleTabsChange(value) {
-				this.keyword = ''
+				this.pid = ''
+				this.pid_name = ''
 				this.tabs_current = value.index
 				this.changeTabsStatus('disabled', true)
 				this.initParamas();
@@ -200,7 +200,7 @@
 				this.loadstatus = 'loading'
 				const res = await this.$api.fxgx_wait_list({params:{ 
 					p: this.curP,
-					pid: this.keyword,
+					pid: this.pid,
 					orderby: this.tabs_list[this.tabs_current].value
 				}})
 				if(res.code == 1) {

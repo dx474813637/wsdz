@@ -14,20 +14,40 @@
 					排序：{{detailData.rank}}
 				</view>
 				<view class="item  u-flex u-flex-items-center" > 
-					<view class="u-m-l-15" @click.stop="handleDelete"  >
+					<view class="u-m-l-15" @click.stop="handleGoto({
+						url: '/pages/my/fx/fxgx_add',
+						params: {
+							pid: detailData.pid
+						}
+					})"  >
 						<u-button type="primary" size="small" plain shape="circle">查看待分销</u-button>
 					</view>
-					<view class="u-m-l-15" @click.stop="handleAudit"  >
+					<view class="u-m-l-15" @click.stop="handleGoto({
+						url: '/pages/my/fx/fxgx_list',
+						params: {
+							pid: detailData.pid
+						}
+					})"  >
 						<u-button type="primary" size="small" plain shape="circle">我的分销</u-button>
 					</view>
 				</view>
 			</view>
 			<view class="rows u-flex u-flex-items-center u-flex-between u-m-t-10">
 				<view class="item u-flex u-flex-items-center"> 
-					<view class="u-m-r-15" @click.stop="handleAudit"  >
+					<view class="u-m-r-15" @click.stop="handleGoto({
+						url: '/pages/my/fx/fxmp_list',
+						params: {
+							pid: detailData.pid
+						}
+					})"  >
 						<u-button type="primary" size="small" plain shape="circle">分销卖盘</u-button>
 					</view>
-					<view class="u-m-r-15" @click.stop="handleAudit"  >
+					<view class="u-m-r-15" @click.stop="handleGoto({
+						url: '/pages/my/fx/fxcjjl_list',
+						params: {
+							pid: detailData.pid
+						}
+					})" >
 						<u-button type="primary" size="small" plain shape="circle">已分销订单</u-button>
 					</view>
 				</view>

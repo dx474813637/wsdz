@@ -158,7 +158,7 @@ let state = {
 		async getFxStandard({commit, state}) {
 			const res = await this._vm.$api.getFxStandard();
 			if(res.code == 1) {
-				commit('setFxStandard', res.list.list_standard)
+				commit('setFxStandard', [{name: '全部', id: -1, pid: ''}, ...res.list.list_standard])
 			}
 		},
 		async getAllCompany({commit, state}) {
