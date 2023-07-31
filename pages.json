@@ -302,7 +302,7 @@
 				"style": {
 					"navigationBarTitleText": "用户信息"
 				}
-			},{
+			}, {
 				"path": "haibao/haibao",
 				"style": {
 					"navigationBarTitleText": "海报"
@@ -908,43 +908,66 @@
 				"style": {
 					"navigationBarTitleText": "经营范围详情",
 					"enablePullDownRefresh": false
-				} 
+				}
 			}, {
 				"path": "fx/jyfw_list",
 				"style": {
 					"navigationBarTitleText": "经营范围",
 					"enablePullDownRefresh": false
-				} 
+				}
 			}, {
 				"path": "fx/fxgx",
 				"style": {
 					"navigationBarTitleText": "分销商品关系信息",
 					"enablePullDownRefresh": false
-				} 
+				}
 			}, {
 				"path": "fx/fxgx_list",
 				"style": {
 					"navigationBarTitleText": "我的分销",
 					"enablePullDownRefresh": false
-				} 
+				}
 			}, {
 				"path": "fx/fxgx_add",
 				"style": {
 					"navigationBarTitleText": "添加分销关系",
 					"enablePullDownRefresh": false
-				} 
+				}
 			}, {
 				"path": "fx/fxmp_list",
 				"style": {
 					"navigationBarTitleText": "分销卖盘列表",
 					"enablePullDownRefresh": false
-				} 
+				}
 			}, {
 				"path": "fx/fxcjjl_list",
 				"style": {
 					"navigationBarTitleText": "分销成交记录列表",
 					"enablePullDownRefresh": false
-				} 
+				}
+			}, {
+				"path": "myFriend/myFriend",
+				"style": {
+					"navigationBarTitleText": "",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "home/home",
+				"style": {
+					"navigationBarTitleText": "",
+					"navigationBarBackgroundColor": "#ffffff",
+					"enablePullDownRefresh": false,
+					"onReachBottomDistance": 80
+				}
+
+			}, {
+				"path": "home/home_edit",
+				"style": {
+					"navigationBarTitleText": "主页信息编辑",
+					"enablePullDownRefresh": false
+				}
+
 			}
 		]
 	}, {

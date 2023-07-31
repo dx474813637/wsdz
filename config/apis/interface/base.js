@@ -170,3 +170,6 @@ export const future_trade = (data) => http.get('future_trade', data)
 export const haibao_list = (data) => http.get('haibao_list', data)
 // haibao_sc 参数id
 export const haibao_sc = (data) => http.get('haibao_sc', data)
+
+// homepage 我的主页 参数login
+export const homepage = (data) => http.get('homepage', data)

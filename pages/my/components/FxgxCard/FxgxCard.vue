@@ -4,7 +4,7 @@
 			<view class="item">
 				{{detailData.da_product.Product.name}}
 			</view>
-			<view class="item u-font-24 u-primary" >
+			<view class="item u-primary" >
 				<template v-if="detailData.state == 1 && detailData.auth_state == 1">有效</template>
 				<template v-if="detailData.state == 1 && detailData.auth_state == 0">待店铺审核</template>
 				<template v-if="detailData.state == 0 && detailData.auth_state == 1">达人放弃</template>

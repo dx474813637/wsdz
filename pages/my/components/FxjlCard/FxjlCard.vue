@@ -27,6 +27,14 @@
 			</view>
 			<view class="rows u-flex u-flex-items-start u-flex-between u-m-b-20">
 				<view class="item" > 
+					交易数量
+				</view>
+				<view class="item u-text-right" > 
+					{{detailData.amount}} {{detailData.da_product.unit}}
+				</view>
+			</view>
+			<view class="rows u-flex u-flex-items-start u-flex-between u-m-b-20">
+				<view class="item" > 
 					分销费点数
 				</view>
 				<view class="item u-text-right" > 
@@ -38,7 +46,7 @@
 					分销分成
 				</view>
 				<view class="item u-text-right" > 
-					{{detailData.amount}} 元
+					{{detailData.price1_sum1}} 元
 				</view>
 			</view>
 			<view class="rows u-flex u-flex-items-center u-flex-between u-m-t-10">

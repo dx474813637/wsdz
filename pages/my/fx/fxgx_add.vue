@@ -183,8 +183,8 @@
 				})
 			},
 			async handleTabsChange(value) {
-				this.pid = ''
-				this.pid_name = ''
+				// this.pid = ''
+				// this.pid_name = ''
 				this.tabs_current = value.index
 				this.changeTabsStatus('disabled', true)
 				this.initParamas();

@@ -10,6 +10,7 @@ import wx_permission from '@/config/permission/wx.js'
 const whiteList = [
   '/', 
   '/pages/my/user/index',
+  '/pages/my/home/home',
   { pattern: /^\/pages\/list.*/ },
   // { pattern: /^\/pages\/index\/login*/ },
   { pattern: /^\/pages\/baojia*/ },

@@ -47,6 +47,8 @@ export const follow = (data) => http.get('follow', data)
 export const follow_list = (data) => http.get('follow_list', data)
 // follow_me 关注我的列表 没参数 不分页
 export const follow_me = (data) => http.get('follow_me', data)
+// friend 朋友列表
+export const friend = (data) => http.get('friend', data)
 
 // dynamiclist 参数 群id：id p
 export const dynamiclist = (data) => http.get('dynamiclist', data)
