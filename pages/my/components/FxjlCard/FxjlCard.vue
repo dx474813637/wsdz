@@ -35,7 +35,7 @@
 			</view>
 			<view class="rows u-flex u-flex-items-start u-flex-between u-m-b-20">
 				<view class="item" > 
-					分销费点数
+					分销佣金
 				</view>
 				<view class="item u-text-right" > 
 					{{detailData.da_product.price1}} 元/{{detailData.da_product.unit}}

@@ -19,12 +19,19 @@
 				<view class="item u-text-right">{{list.Company.mobile}}</view>
 			</view>  
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
-				<view class="item text-light item-label">手续费类型</view>
-				<view class="item u-text-right">元/{{list.da_product.Product.unit}}</view>
+				<view class="item text-light item-label">费用类型</view>
+				<view class="item u-text-right"> 
+					<template v-if="list.da_product.pay_type == 1">‰</template>
+					<template v-else-if="list.da_product.pay_type == 2"> 元/{{list.da_product.unit}}</template>
+				</view>
 			</view>  
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
-				<view class="item text-light item-label">分销费点数</view>
-				<view class="item u-text-right">{{list.da_product.price1}} 元/{{list.da_product.Product.unit}}</view>
+				<view class="item text-light item-label">分销佣金</view>
+				<view class="item u-text-right">
+					{{list.da_product.price1}}
+					<template v-if="list.da_product.pay_type == 1">‰</template>
+					<template v-else-if="list.da_product.pay_type == 2"> 元/{{list.da_product.unit}}</template>
+				</view>
 			</view>  
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
 				<view class="item text-light item-label">状态</view>

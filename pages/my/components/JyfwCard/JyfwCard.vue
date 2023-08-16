@@ -1,17 +1,17 @@
 <template>
 	<view class="wrapper u-radius-10 uni-shadow-base bg-white u-p-15" @click="handleDetail">
-		<view class="card u-flex u-flex-items-center u-flex-between u-p-10 u-p-l-20 u-p-r-20 u-border-bottom">
-			<view class="item">
+		<view class="card u-flex u-flex-items-center u-flex-between u-p-20 u-border-bottom">
+			<view class="item u-font-36">
 				{{detailData.name}}
 			</view>
-			<view class="item u-font-24" >
+			<view class="item u-font-26" >
 				{{detailData.ctime}}
 			</view>
 		</view>
-		<view class="main u-p-10 u-p-l-20 u-p-r-20 u-font-30 text-base">
-			<view class="rows u-flex u-flex-items-center u-flex-between u-m-b-20">
+		<view class="main u-font-30 text-base">
+			<view class="rows u-flex u-flex-items-center u-flex-between u-p-30 u-m-b-10">
 				<view class="item" style="flex: 0 0 80px"> 
-					排序：{{detailData.rank}}
+					<!-- 排序：{{detailData.rank}} -->
 				</view>
 				<view class="item  u-flex u-flex-items-center" > 
 					<view class="u-m-l-15" @click.stop="handleGoto({
@@ -32,7 +32,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="rows u-flex u-flex-items-center u-flex-between u-m-t-10">
+			<view class="rows u-flex u-flex-items-center u-flex-between u-p-30 u-border-top" style="border-top-style: dashed;">
 				<view class="item u-flex u-flex-items-center"> 
 					<view class="u-m-r-15" @click.stop="handleGoto({
 						url: '/pages/my/fx/fxmp_list',

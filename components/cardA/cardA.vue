@@ -1,6 +1,6 @@
 <template>
-	<view>
-		<view class="d-bk radius text-gray u-font-30" @click.stop="handleGotoDetail"
+	<view >
+		<view class="d-bk radius text-gray u-font-30 card-w" @click.stop="handleGotoDetail"
 			:style="{
 				backgroundColor: themeConfig.boxBg,
 				color: themeConfig.pageTextSub,
@@ -218,7 +218,7 @@
 				handleGoto: 'user/handleGoto'
 			}),
 			handleGotoDetail() {
-				this.$emit('detail', {id: this.pid})
+				this.$emit('detail', {id: this.pid, origin: this.origin})
 				
 			},
 			handleTimesBtn() {

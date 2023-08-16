@@ -5,7 +5,7 @@
 				{{detailData.Sell.name}}
 			</view>
 			<view class="item u-font-24" >
-				状态
+				<!-- 状态 -->
 			</view>
 		</view>
 		<view class="main u-p-10 u-p-l-20 u-p-r-20 u-font-30 text-base">
@@ -27,15 +27,18 @@
 			</view>
 			<view class="rows u-flex u-flex-items-start u-flex-between u-m-b-20">
 				<view class="item" > 
-					分销费点数
+					分销佣金
 				</view>
 				<view class="item u-text-right" > 
-					{{detailData.da_product.price1}} 元/{{detailData.da_product.unit}}
+					{{detailData.da_product.price1}}
+					<template v-if="detailData.da_product.pay_type == 1">‰</template>
+					<template v-else-if="detailData.da_product.pay_type == 2"> 元/{{detailData.da_product.unit}}</template>
+					<!-- {{detailData.da_product.price1}} 元/{{detailData.da_product.unit}} -->
 				</view>
 			</view>
 			<view class="rows u-flex u-flex-items-center u-flex-between u-m-t-10">
 				<view class="item u-flex u-flex-items-center u-info"> 
-					{{detailData.post_time}}
+					{{detailData.Sell.cdate}}
 				</view>
 				<view class="item u-flex u-flex-items-center">
 					<view class="u-m-l-15" @click.stop="handleDelete"  >

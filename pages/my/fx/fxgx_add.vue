@@ -1,21 +1,30 @@
 <template>
 	<view class="w">
-		<view class="search-wrapper u-flex u-p-l-20 u-p-r-20">
-			<view class="item u-flex-1 u-p-b-10" @click="show = true">
+		<view class="search-wrapper u-flex u-p-l-20 u-p-r-20 u-p-b-10">
+			<view class="item u-flex-1 u-p-r-10" @click="show = true">
 				<u-input 
-					placeholder="请选择" 
+					placeholder="请选择品类" 
 					v-model="pid_name" 
 					:showAction="false"
 					readonly
 					bgColor="#fff" 
-					suffixIcon="arrow-down-fill"
-					suffixIconStyle="color: #909399"
+					suffixIcon="arrow-down"
+					suffixIconStyle="color: #909399; font-size: 14px"
 				>
 				</u-input>
 			</view>
+			<view class="item u-flex-1 u-p-l-10" > 
+				<uni-data-picker
+					placeholder="筛选所在地区" 
+					popup-title="请选择所在地区" 
+					:localdata="addressCity" 
+					v-model="addressData.regional" 
+					@change="handleValArea"
+				></uni-data-picker>
+			</view>
 			
 		</view>
-		<view class="tabs-w">
+		<!-- <view class="tabs-w">
 			<u-tabs
 				:list="tabs_list"
 				:current="tabs_current"
@@ -24,7 +33,7 @@
 				:itemStyle="itemTabsStyle"
 				@change="handleTabsChange"
 			> </u-tabs>
-		</view>
+		</view> -->
 		
 		<view class="list">
 			<u-list
@@ -62,19 +71,19 @@
 				</template>
 			</u-list>
 		</view>
-		<menusPopupStandard
+		<menusPopupMyStandard
 			:show="show"
 			theme="white"
 			@close="show = false"
 			@confirm="menusConfirm"
-		></menusPopupStandard>
+		></menusPopupMyStandard>
 	</view>
 </template>
 
 <script>
 	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
 	import FxgxCardAdd from '@/pages/my/components/FxgxCard/FxgxCardAdd.vue'
-	import menusPopupStandard from '@/components/menusPopup/menusPopupStandard.vue'
+	import menusPopupMyStandard from '@/components/menusPopup/menusPopupMyStandard.vue'
 	export default {
 		data() {
 			return { 
@@ -89,6 +98,7 @@
 					height: '44px',
 					padding: '0 13px'
 				},
+				addressData: {},
 				tabs_list: [
 					{
 						name: '按时间',
@@ -124,6 +134,7 @@
 			};
 		},
 		async onLoad(opt) {
+			this.getAddressArea()
 			if(opt.hasOwnProperty('pid')) {
 				this.pid = opt.pid 
 				this.initNameByPid()
@@ -133,13 +144,15 @@
 		},
 		computed: {
 			...mapState({ 
+				addressArea: state => state.user.addressArea, 
+				addressCity: state => state.user.addressCity, 
 				fxStandard: state => state.user.fxStandard, 
 				typeConfig: state => state.theme.typeConfig,
 			}),
 		},
 		components: {
 			FxgxCardAdd,
-			menusPopupStandard
+			menusPopupMyStandard
 		},
 		methods: {
 			...mapMutations({
@@ -147,6 +160,7 @@
 			}),
 			...mapActions({ 
 				getFxStandard: 'user/getFxStandard', 
+				getAddressArea: 'user/getAddressArea', 
 			}), 
 			async refreshList() {
 				this.initParamas()
@@ -201,7 +215,8 @@
 				const res = await this.$api.fxgx_wait_list({params:{ 
 					p: this.curP,
 					pid: this.pid,
-					orderby: this.tabs_list[this.tabs_current].value
+					orderby: this.tabs_list[this.tabs_current].value,
+					regional: this.addressData.regional,
 				}})
 				if(res.code == 1) {
 					this.indexList = [...this.indexList, ...res.list.list ]
@@ -217,11 +232,15 @@
 				this.curP ++
 				await this.getData()
 			},  
-			async handleAdd({id}) {
+			handleValArea() {
+				this.refreshList()
+			},
+			async handleAdd({id, sign}) {
 				uni.showLoading()
 				const res = await this.$api.fxgx_add({
 					params: {  
-						id
+						id,
+						sign
 					}
 				})
 				if(res.code == 1) {

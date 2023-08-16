@@ -9,6 +9,7 @@ let state = {
 			'appsecret': '5406NzMVC6CCMYaDwHzN9pg/fhFF6uaeKwVTbMmNFqHA29dLE78VFJU',
 		},
 		addressArea: [],
+		addressCity: [],
 		menusList: [],
 		wode: {},
 		login: 0,
@@ -61,6 +62,9 @@ let state = {
 		},
 		setAddressArea(state, data) {
 			state.addressArea = data
+		},
+		setAddressCity(state, data) {
+			state.addressCity = data
 		},
 		setMenusList(state, data) {
 			state.menusList = data
@@ -212,6 +216,9 @@ let state = {
 			// const list = listMethods(resList)
 			// console.log(res)
 			commit('setAddressArea', res.list)
+			let arr = uni.$u.deepClone(res.list) 
+			let data2 = filterQuYuData(arr) 
+			commit('setAddressCity', data2)
 		
 		},
 		async getMenusList({commit, state}) {
@@ -278,4 +285,25 @@ export default {
 	getters,
 	mutations,
 	actions
+}
+
+function filterQuYuData(data) {
+	let arr = []; 
+	data.forEach(ele => {
+		let obj = {
+			...ele
+		} 
+		if(obj.hasOwnProperty('children')) {
+			if(!obj.children[0].hasOwnProperty('children')) {
+				delete obj.children
+			}
+			else {
+				obj.children = filterQuYuData(obj.children)
+			} 
+			
+		}
+		arr.push(obj)
+	}) 
+	return arr
+	
 }

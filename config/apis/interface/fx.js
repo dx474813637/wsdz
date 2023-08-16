@@ -13,13 +13,13 @@ export const all_api = (data, methods = 'GET', config = {}) => {
 // getFxStandard 标准品列表
 export const getFxStandard = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'DA_ALLIANCE_DA_PID_TO_MEMBER', Action: 'LIST_STANDARD'}}, data))
 
-// jyfw_edit 添加/修改 经营范围
+// jyfw_edit 添加/修改 分销范围
 export const jyfw_edit = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'DA_ALLIANCE_DA_PID_TO_MEMBER', Action: 'CHANGE', token: 1}}, data))
 // jyfw_list 翻页列表
 export const jyfw_list = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'DA_ALLIANCE_DA_PID_TO_MEMBER', Action: 'PAGE_LIST', token: 1}}, data))
 // jyfw_list_all 完整列表
 export const jyfw_list_all = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'DA_ALLIANCE_DA_PID_TO_MEMBER', Action: 'LIST', token: 1}}, data))
-// jyfw_del 删除经营范围
+// jyfw_del 删除分销范围
 export const jyfw_del = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'DA_ALLIANCE_DA_PID_TO_MEMBER', Action: 'DELETE', token: 1}}, data))
 
 // fxgx_list 分销关系
@@ -42,3 +42,8 @@ export const fx_sell_del = (data = {}) => all_api(uni.$u.deepMerge({params: {API
 
 // fx_sell_suc 分销卖盘成交记录翻页 列表
 export const fx_sell_suc = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'DA_ALLIANCE_DA_SELL_LOG', Action: 'PAGE_LIST', token: 1}}, data))
+
+// homepage_info 信息查询
+export const homepage_info = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'DA_ALLIANCE_DA_COMPANY_FX', Action: 'DETAIL', token: 1}}, data))
+// homepage_info_change 修改 达人信息
+export const homepage_info_change = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'DA_ALLIANCE_DA_COMPANY_FX', Action: 'CHANGE'}}, data))

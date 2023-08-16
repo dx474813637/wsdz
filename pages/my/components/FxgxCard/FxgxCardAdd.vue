@@ -9,12 +9,15 @@
 			</view>
 		</view>
 		<view class="main u-p-10 u-p-l-20 u-p-r-20 u-font-30 text-base">
-			<view class="rows u-flex u-flex-items-start u-flex-between u-m-b-20">
+			<!-- <view class="rows u-flex u-flex-items-start u-flex-between u-m-b-20">
 				<view class="item" > 
 					{{detailData.Company.name}}
 				</view>
 				<view class="item u-text-right" > 
-					{{detailData.price1}} 元/{{detailData.unit}}
+					{{detailData.price1}}
+					<template v-if="detailData.pay_type == 1">‰</template>
+					<template v-else-if="detailData.pay_type == 2"> 元/{{detailData.unit}}</template>
+					
 				</view>
 			</view>
 			<view class="rows u-flex u-flex-items-start u-flex-between u-m-b-20">
@@ -23,6 +26,32 @@
 				</view>
 				<view class="item u-text-right" > 
 					{{detailData.Company.mobile}}
+				</view>
+			</view> -->
+			<view class="rows u-flex u-flex-items-start u-flex-between u-m-b-20">
+				<view class="item" > 
+					{{detailData.Company.name}}
+				</view>
+				<view class="item u-text-right" > 
+					{{detailData.Company.contact}} 
+				</view>
+			</view>
+			<view class="rows u-flex u-flex-items-start u-flex-between u-m-b-20">
+				<view class="item" > 
+					联系方式
+				</view>
+				<view class="item u-text-right" > 
+					{{detailData.Company.mobile}}
+				</view>
+			</view>
+			<view class="rows u-flex u-flex-items-start u-flex-between u-m-b-20">
+				<view class="item" > 
+					分销佣金
+				</view>
+				<view class="item u-text-right" > 
+					{{detailData.price1}}
+					<template v-if="detailData.pay_type == 1">‰</template>
+					<template v-else-if="detailData.pay_type == 2"> 元/{{detailData.unit}}</template>
 				</view>
 			</view>
 			<view class="rows u-flex u-flex-items-center u-flex-between u-m-t-10">

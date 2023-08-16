@@ -54,6 +54,27 @@
 								{{panRes.list.price}} 元/{{panRes.list.unit}}
 							</view>
 						</u-form-item>
+						<u-form-item
+							label="价格类型"
+							prop="base_price_type"
+							ref="base_price_type"
+							required
+						>
+							<u-radio-group
+								v-model="form.base_price_type"
+								placement="row"
+							  >
+								<u-radio
+								  :customStyle="{marginRight: '8px'}"
+								  v-for="(item, index) in base_price_type_radios"
+								  :key="index"
+								  :name="item.value"
+								  :label="item.name"
+								  :disabled="item.disabled"
+								>
+								</u-radio>
+							</u-radio-group>
+						</u-form-item>
 						<!-- <u-form-item
 							label="点价后最迟交收天数" 
 						>
@@ -81,7 +102,7 @@
 						
 					</u-form-item>
 					<u-form-item
-						:label="panRes.list.trade_mode == '3'? '现货成交单价(一口价)' : '单价'"
+						:label="priceLabelStr"
 						prop="price"
 						ref="price"
 						required
@@ -184,27 +205,7 @@
 							@cancel="showEndDate = false"
 							@confirm="confirmEndDate"
 						></u-datetime-picker>
-						<u-form-item
-							label="价格类型"
-							prop="base_price_type"
-							ref="base_price_type"
-							required
-						>
-							<u-radio-group
-								v-model="form.base_price_type"
-								placement="row"
-							  >
-								<u-radio
-								  :customStyle="{marginRight: '8px'}"
-								  v-for="(item, index) in base_price_type_radios"
-								  :key="index"
-								  :name="item.value"
-								  :label="item.name"
-								  :disabled="item.disabled"
-								>
-								</u-radio>
-							</u-radio-group>
-						</u-form-item>
+						
 					</template>
 					
 					<u-form-item
@@ -400,6 +401,7 @@
 				type: 'add',
 				ordertype: '',
 				id: '',
+				fxid: '',
 				panRes: {
 					list: {}
 				},
@@ -499,6 +501,19 @@
 					company = this.panRes?.login_company?.name
 				} 
 				return company 
+			},
+			priceLabelStr() {
+				let str = '单价'
+				if(this.panRes.list.trade_mode == '3') {
+					str = '现货成交单价(一口价)'
+					if(this.model.base_price_type == '1') {
+						str = '现货价'
+					}
+					else if(this.model.base_price_type == '1') {
+						str = '期货价'
+					}
+				} 
+				return str
 			},
 			qiehuan() {
 				let qiehuan
@@ -643,6 +658,9 @@
 			}
 			if(options.hasOwnProperty('id')) {
 				this.id = options.id
+			}
+			if(options.hasOwnProperty('fxid')) {
+				this.fxid = options.fxid
 			}
 			if(options.hasOwnProperty('ordertype')) {
 				this.ordertype = options.ordertype
@@ -818,7 +836,8 @@
 				else func = 'getBuyDetail'
 				const res = await this.$api[func]({
 					params: { 
-						id: this.id
+						id: this.id,
+						fxid: this.fxid
 					}
 				})
 				if(res.code == 1) {
@@ -888,6 +907,7 @@
 						let func = this.type == 'add' ? 'create_order' : 'change_order'; 
 						const res = await this.$api[func]({
 							title: this.panRes.list.name,
+							fxid: this.fxid,
 							...this.form
 						})
 						if(res.code == 1) {

@@ -31,7 +31,7 @@
 						name="plus-circle"
 						size="16"
 					></u-icon>
-					<text class="u-p-l-8 u-font-30">添加经营范围</text>
+					<text class="u-p-l-8 u-font-30">添加分销商品</text>
 				</view>
 			</u-tabs>
 		</view>

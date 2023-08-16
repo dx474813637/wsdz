@@ -62,19 +62,19 @@
 				</template>
 			</u-list>
 		</view>
-		<menusPopupStandard
+		<menusPopupMyStandard
 			:show="show"
 			theme="white"
 			@close="show = false"
 			@confirm="menusConfirm"
-		></menusPopupStandard>
+		></menusPopupMyStandard>
 	</view>
 </template>
 
 <script>
 	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
 	import FxjlCard from '@/pages/my/components/FxjlCard/FxjlCard.vue'
-	import menusPopupStandard from '@/components/menusPopup/menusPopupStandard.vue'
+	import menusPopupMyStandard from '@/components/menusPopup/menusPopupMyStandard.vue'
 	export default {
 		data() {
 			return {
@@ -112,7 +112,7 @@
 		},
 		components: {
 			FxjlCard,
-			menusPopupStandard
+			menusPopupMyStandard
 		},
 		methods: {
 			...mapMutations({

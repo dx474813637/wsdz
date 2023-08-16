@@ -7,310 +7,81 @@
 			labelWidth="80"
 			>
 			<u-form-item
-				label="您的撮合员"
-				v-if="myCpy.hasOwnProperty('Broker')"
+				label="联系人"
+				prop="contact"
+				ref="contact" 
 			>
-				<view class="u-flex u-flex-items-center ">
-					<text>{{myCpy.Broker.contact}} ({{myCpy.Broker.mobile}})</text>
-					<i @click="handleTimesBtn" class="text-primary u-m-l-10 custom-icon-tims custom-icon u-font-28"></i>
+				<u--input
+					v-model="model.contact" 
+					clearable
+				></u--input>
+			</u-form-item>
+			<u-form-item
+				label="昵称"
+				prop="da_name"
+				ref="da_name"
+				required
+			>
+				<u--input
+					v-model="model.da_name" 
+					clearable
+				></u--input>
+			</u-form-item>
+			<u-form-item
+				label="手机"
+				prop="mobile"
+				ref="mobile" 
+			>
+				<u--input
+					v-model="model.mobile" 
+					clearable
+				></u--input>
+			</u-form-item>
+			<u-form-item
+				label="电话"
+				prop="tel"
+				ref="tel" 
+			>
+				<u--input
+					v-model="model.tel" 
+					clearable
+				></u--input>
+			</u-form-item>
+			<u-form-item
+				label="头像"
+				prop="da_pic"
+				ref="da_pic" 
+			> 
+				<view>
+					<u-upload
+						:fileList="fileList1"
+						@afterRead="afterRead"
+						@delete="deletePic"
+						name="1"
+						:maxCount="1"
+						:maxSize="2048000"
+						@oversize="handleoversize"
+					></u-upload>
+					<view class="u-info u-font-28">建议上传2M以内的图片</view>
 				</view>
 			</u-form-item>
 			<u-form-item
-				label="用户类型"
-				@click="showActions"
-				ref="item1"
-			>	
-				<view>
-					<template v-if="!myCpy.hasOwnProperty('state')">
-						<u--input
-							v-model="userType"
-							disabled 
-							disabledColor="#ffffff"
-							placeholder="请选择用户类型"
-							border="none"
-						></u--input>
-					</template>
-					<template v-else >
-						{{userType}}（{{myCpy.state | myCpyAuth2str}}）
-					</template>
-				</view>
-				
-				<view slot="right">
-					<u-icon
-						 v-if="myCpy.state != 1"
-						name="arrow-right"
-					></u-icon>
-				</view>
-				
-				
-				
-			</u-form-item>
-			<u-action-sheet
-				:show="showUserType"
-				:actions="userActions"
-				title="请选择用户类型"
-				@close="showUserType = false"
-				@select="userTypeSelect"
+				label="头像名称"
+				prop="da_pic_name"
+				ref="da_pic_name" 
 			>
-			</u-action-sheet>
-			
-			<template v-if="userType == '个人用户'">
-				<u-form-item
-					label="姓名"
-					prop="userInfo.name"
-					ref="userInfo_name"
-					required
-				>
-					<u--input
-						v-model="model.userInfo.name"
-						:disabled="myCpy.state == 1"
-						clearable
-					></u--input>
-				</u-form-item>
-				<u-form-item
-					label="邮编"
-					prop="userInfo.zip"
-					ref="userInfo_zip"
-				>
-					<u--input
-						v-model="model.userInfo.zip"
-						clearable
-					></u--input>
-				</u-form-item>
-				<u-form-item
-					label="邮箱"
-					prop="userInfo.email"
-					ref="userInfo_email"
-				>
-					<u--input
-						v-model="model.userInfo.email"
-						clearable
-					></u--input>
-				</u-form-item>
-				<u-form-item
-					label="联系手机"
-					prop="userInfo.mobile"
-					ref="userInfo_mobile"
-				>
-					<u--input
-						v-model="model.userInfo.mobile"
-						disabled
-						disabledColor="#f8f8f8"
-					></u--input>
-				</u-form-item>
-				<u-form-item
-					label="展示手机"
-				>
-					<u-checkbox-group
-						v-model="checkbox_show_mobile1"
-						@change="checkboxChange1">
-						<view style="width: 100%;">
-							<u-checkbox name="show" label="联系手机在前台完整展示"></u-checkbox>
-						</view>
-					</u-checkbox-group>
-				</u-form-item>
-				<u-form-item
-					label="所在地"
-					prop="userInfo.regional"
-					ref="userInfo_regional"
-				>
-					<uni-data-picker 
-						placeholder="所在地" 
-						popup-title="请选择所在地区" 
-						:localdata="addressArea" 
-						v-model="model.userInfo.regional"
-						@change="handleValAreaUser"
-					></uni-data-picker>
-				</u-form-item>
-				<u-form-item
-					label="详细地址"
-					prop="userInfo.address"
-					ref="userInfo_address"
-				>
-					<u--textarea
-						v-model="model.userInfo.address" 
-						placeholder="详细地址" 
-						height="90"
-					></u--textarea>
-				</u-form-item>
-				<u-form-item
-					label="身份证"
-					prop="userInfo.credit_code"
-					ref="userInfo_credit_code"
-					required
-				>
-					<u--input
-						v-model="model.userInfo.credit_code"
-						:disabled="myCpy.state == 1"
-						clearable
-					></u--input>
-				</u-form-item>
-			</template>
-			<template v-else-if="userType == '企业用户'">
-				<u-form-item
-					label="名称"
-					prop="cpyInfo.name"
-					ref="cpyInfo_name"
-					required
-				>
-					<u--input
-						v-model="model.cpyInfo.name"
-						clearable
-						:disabled="myCpy.state == 1"
-					></u--input>
-				</u-form-item>
-				<u-form-item label=" " >
-					<view class="text-error">认证成功的用户，企业名称不允许修改</view>
-				</u-form-item>
-				
-				<u-form-item
-					label="联系人"
-					prop="cpyInfo.contact"
-					ref="cpyInfo_contact"
-					required
-				>
-					<u--input
-						v-model="model.cpyInfo.contact"
-						clearable
-					></u--input>
-				</u-form-item>
-				<u-form-item
-					label="电话"
-					prop="cpyInfo.tel"
-					ref="cpyInfo_tel"
-				>
-					<u--input
-						v-model="model.cpyInfo.tel"
-						clearable
-					></u--input>
-				</u-form-item>
-				<!-- <u-form-item
-					label="传真"
-					prop="cpyInfo.fax"
-					ref="cpyInfo_fax"
-				>
-					<u--input
-						v-model="model.cpyInfo.fax"
-						clearable
-					></u--input>
-				</u-form-item>
-				<u-form-item
-					label="邮编"
-					prop="cpyInfo.zip"
-					ref="cpyInfo_zip"
-				>
-					<u--input
-						v-model="model.cpyInfo.zip"
-						clearable
-					></u--input>
-				</u-form-item> -->
-				<u-form-item
-					label="邮箱"
-					prop="cpyInfo.email"
-					ref="cpyInfo_email"
-				>
-					<u--input
-						v-model="model.cpyInfo.email"
-						clearable
-					></u--input>
-				</u-form-item>
-				<u-form-item
-					label="联系手机"
-					prop="cpyInfo.mobile"
-					ref="cpyInfo_mobile"
-					required
-				>
-					<u--input
-						v-model="model.cpyInfo.mobile"
-						type="number"
-						disabledColor="#f8f8f8"
-					></u--input>
-				</u-form-item>
-				<u-form-item
-					label="业务范围"
-					prop="cpyInfo.intro"
-					ref="cpyInfo_intro"
-				>
-					<u--textarea
-						v-model="model.cpyInfo.intro" 
-						placeholder="业务范围" 
-						height="90"
-					></u--textarea>
-				</u-form-item>
-				<!-- <u-form-item
-					label="展示手机"
-					
-				>
-					<u-checkbox-group
-					    v-model="checkbox_show_mobile2"
-						@change="checkboxChange2">
-						<view style="width: 100%;">
-							<u-checkbox name="show" label="联系手机在前台完整展示"></u-checkbox>
-						</view>
-						
-					</u-checkbox-group>
-				</u-form-item> -->
-				<view class="u-p-t-30 u-p-b-30" v-if="!moreShow">
-					<u-divider text="点击展开更多" :hairline="true" @click="moreShow = true"></u-divider>
-				</view>
-				<u-transition :show="moreShow" mode="fade-up">
-					<u-form-item
-						label="所在地"
-						prop="cpyInfo.regional"
-						ref="cpyInfo_regional"
-					>
-						<uni-data-picker 
-							placeholder="所在地" 
-							popup-title="请选择所在地区" 
-							:localdata="addressArea" 
-							v-model="model.cpyInfo.regional"
-							@change="handleValAreaCpy"
-						></uni-data-picker>
-					</u-form-item>
-					<u-form-item
-						label="详细地址"
-						prop="cpyInfo.address"
-						ref="cpyInfo_address"
-					>
-						<u--textarea
-							v-model="model.cpyInfo.address" 
-							placeholder="详细地址" 
-							height="90"
-						></u--textarea>
-					</u-form-item>
-					<template v-if="myCpy.state == 1">
-						<u-form-item
-							label="信用代码"
-							prop="cpyInfo.credit_code"
-							ref="cpyInfo_credit_code"
-						>
-							<u--input
-								v-model="model.cpyInfo.credit_code"
-								placeholder="统一社会信用代码"
-								disabled
-								clearable
-							></u--input>
-						</u-form-item>
-						<u-form-item
-							label="营业执照"
-							prop="cpyInfo.img"
-							ref="cpyInfo_img"
-							v-if="myCpy.pic1"
-						>
-							<u-image width="150px" height="150px" :src="myCpy.pic1" radius="8"></u-image>
-							<!-- <u-upload
-								:fileList="fileList1"
-								@afterRead="afterRead"
-								@delete="deletePic"
-								name="1"
-								:maxCount="1"
-							></u-upload> -->
-						</u-form-item>
-					</template>
-					
-				</u-transition>
-				
-			</template>
+				<u--input
+					v-model="model.da_pic_name" 
+					clearable
+				></u--input>
+			</u-form-item>
+			<u-form-item
+				label="达人简介"
+				prop="da_intro"
+				ref="da_intro" 
+			>
+				<rich-text :nodes="model.da_intro"></rich-text> 
+			</u-form-item>
 			
 			
 		</u--form>
@@ -324,246 +95,142 @@
 	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
 	export default {
 		data() {
-			return {
-				userType: '企业用户',
-				showUserType: false,
-				userActions: [
-					// {
-					// 	name: '个人用户',
-					// 	type: 'C'
-					// },
-					{
-						name: '企业用户',
-						type: 'B'
-					},
-				],
-				checkbox_show_mobile1: ['show'],
-				checkbox_show_mobile2: ['show'],
-				model: {
-					userInfo: {
-						type: 'C',
-						name: '',
-						zip: '',
-						email: '',
-						mobile: '',
-						mobile_show: '1',
-						address: '',
-						credit_code: '',
-						regional: '',
-					},
-					cpyInfo: {
-						type: 'B',
-						name: '',
-						contact: '',
-						tel: '',
-						fax: '',
-						zip: '',
-						email: '',
-						mobile: '',
-						mobile_show: '1',
-						regional: '',
-						address: '',
-						credit_code: '',
-						pic1: '',
-						pic1_base64: '',
-						pic1_name: '',
-						intro: ''
-					}
+			return { 
+				model: { 
+					contact: '',
+					da_name: '', 
+					mobile: '', 
+					tel: '', 
+					da_inro: '', 
+					da_pic: '', 
+					da_pic_base64: '', 
+					da_pic_name: '头像.jpg',  
 				},
-				fileList1: [],
-				moreShow: false,
+				fileList1: [], 
+				fxImg: 'https://img-album.rawmex.cn/200-200/',
 			}
 		},
 		computed: {
 			...mapState({
-				wode: state => state.user.wode,
-				myCpy: state => state.user.myCpy,
-				addressArea: state => state.user.addressArea
+				wode: state => state.user.wode, 
+				configHeader: state => state.user.configHeader,
+				configBaseURL: state => state.user.configBaseURL,
 			}),
 			rules() {
-				if(this.userType == '个人用户') {
-					return {
-						'userInfo.name': {
-							type: 'string',
-							required: true,
-							message: '请填写姓名',
-							trigger: ['blur', 'change']
-						},
-						'userInfo.credit_code': {
-							type: 'string',
-							validator: (rule, value, callback) => {
-								return uni.$u.test.idCard(value)
-							},
-							message: '请填写正确的身份证',
-							trigger: ['blur', 'change']
-						},
-					}
-				}
-				else {
-					return {
-						'cpyInfo.name': {
-							type: 'string',
-							required: true,
-							message: '请填写名称',
-							trigger: ['blur', 'change']
-						},
-						'cpyInfo.contact': {
-							type: 'string',
-							required: true,
-							message: '请填写联系人',
-							trigger: ['blur', 'change']
-						},
-						'cpyInfo.credit_code': {
-							type: 'string',
-							validator: (rule, value, callback) => {
-								if(!value) return true
-								return uni.$u.test.enOrNum(value)
-							},
-							message: '请填写正确的统一社会信用代码',
-							trigger: ['blur', 'change']
-						},
-						'cpyInfo.mobile': {
-							type: 'number',
-							validator: (rule, value, callback) => {
-								return uni.$u.test.mobile(value)
-							},
-							message: '请填写正确的手机号',
-							trigger: ['blur', 'change']
-						},
-					}
+				return {
+					'da_name': {
+						type: 'string',
+						required: true,
+						message: '请填写昵称',
+						trigger: ['blur', 'change']
+					},
 				}
 						
 			}
 		},
-		async onLoad() {
-			this.model.cpyInfo.mobile = this.wode.mobile
-			this.getAddressArea()
-			await this.myCompany()
+		async onLoad() { 
+			await this.myHomeInfo()
 		},
 		onReady() {
 			this.$refs.userform.setRules(this.rules)
 		},
-		watch: {
-			['model.userInfo.mobile_show'](n) {
-				if(n == '1') {
-					this.checkbox_show_mobile1 = ['show']
-				}else {
-					this.checkbox_show_mobile1 = []
-				}
-			},
-			['model.cpyInfo.mobile_show'](n) {
-				console.log(n)
-				if(n == '1') {
-					this.checkbox_show_mobile2 = ['show']
-				}else {
-					this.checkbox_show_mobile2 = []
-				}
-			},
-			myCpy: {
-				deep: true,
-				handler(n) {
-					console.log(n)
-					if(n.type == 'C') {
-						// this.userType = '个人用户'
-						// this.model.userInfo = uni.$u.deepClone(n)
-					}
-					this.userType = '企业用户'
-					this.model.cpyInfo = uni.$u.deepClone(n)
-				}
-			},
-			['model.cpyInfo.pic1'](n) {
-				if(n) {
-					this.fileList1 = [{
-						url: n
-					}]
-				}
+		watch: { 
+			['model.da_pic'](n) { 
+				this.fileList1 = n ? [{url: n}] : []
 			}
 		},
 		methods: {
-			...mapMutations({
-				setMyCpy: 'user/setMyCpy',
+			...mapMutations({ 
 				handleGoto: 'user/handleGoto'
-			}),
-			...mapActions({
-				myCompany: 'user/myCompany',
-				getAddressArea: 'user/getAddressArea',
+			}),  
+			...mapActions({ 
 				getImageBase64_readFile: 'user/getImageBase64_readFile'
-			}),
-			handleValAreaUser() {
-				// this.$refs.userform.validateField('userInfo.regional')
-			},
-			handleValAreaCpy() {
-				// this.$refs.userform.validateField('cpyInfo.regional')
-			},
-			userTypeSelect(e) {
-				this.userType = e.name;
-				this.$refs.userform.setRules(this.rules)
-				// this.$refs.form1.validateField('userInfo.sex')
-			},
-			showActions() {
-				if(this.myCpy.state == 1) return
-				this.showUserType = true; 
-				uni.hideKeyboard()
-			},
-			checkboxChange1(v) {
-				this.model.userInfo.mobile_show = v[0] ? '1': '0'
-			},
-			checkboxChange2(v) {
-				this.model.cpyInfo.mobile_show = v[0] ? '1': '0'
+			}),  
+			async myHomeInfo() {
+				const res = await this.$api.homepage_info();
+				if(res.code == 1) {
+					this.fxImg = res.list.detail.url_img
+					res.list.detail.da_pic = this.fxImg + res.list.detail.da_pic
+					this.model = {
+						...this.model,
+						...res.list.detail
+					}
+				}
 			},
 			async submit() {
-				this.$refs.userform.validate().then(async res => {
-					let type = this.userType
-					const data = this.model[this.userType == '个人用户'? 'userInfo' : 'cpyInfo']
-					const list = await this.$api.editCompany({
-						...data,
+				this.$refs.userform.validate().then(async res => { 
+					const list = await this.$api.save_page_info({
+						...this.model,
 					})
-					if(list.code == 1) {
-						this.setMyCpy(data)
+					if(list.code == 1) { 
+						this.$utils.prePage()?.hasOwnProperty('getHomeData') && this.$utils.prePage().getHomeData();
 						uni.showToast({
 							title: list.msg
 						})
+						setTimeout(() => {
+							uni.navigateBack()
+						}, 800)
+						
 					}
 				}).catch(errors => {
 					console.log(errors)
 					uni.$u.toast('请检查表单内容')
 				})
-			},
-			handleTimesBtn() {
-				this.handleGoto({
-					url: '/pages/my/msg/msgDetail',
-					params: {
-						login: this.myCpy.Broker.login,
-						content: ``
-					}
-				})
-			},
+			}, 
 			// 删除图片
 			deletePic(event) {
-				this[`fileList${event.name}`].splice(event.index, 1)
-				this.model.cpyInfo.pic1 = ''
-				this.model.cpyInfo.pic1_base64 = ''
-				this.model.cpyInfo.pic1_name = ''
-				
-			},
-			// 新增图片
-			async afterRead(event) {
 				console.log(event)
-				this.fileList1 = [{
-					url:  event.file.thumb,
-					status: 'uploading',
-					message: '上传中'
-				}]
-				const base64 = await this.getImageBase64_readFile(event.file.thumb)
-				
-				this.fileList1 = [{
-					url: event.file.thumb,
-					status: 'success'
-				}]
-				this.model.cpyInfo.pic1_base64 = base64
-				this.model.cpyInfo.pic1_name = event.file.thumb.split('//tmp/')[1]
-				
+				this[`fileList${event.name}`].splice(event.index, 1)
+				this.model.da_pic = ''
+				this.model.da_pic_base64 = ''
+				 
 			},
+			handleoversize() {
+				uni.showToast({
+					title: '建议上传2M以内的图片',
+					icon: 'none'
+				})
+			},
+			async afterRead(event) {
+				// 当设置 multiple 为 true 时, file 为数组格式，否则为对象格式
+				let lists = [].concat(event.file)
+				let fileListLen = this[`fileList${event.name}`].length
+				lists.map((item) => {
+					this[`fileList${event.name}`].push({
+						...item,
+						status: 'uploading',
+						message: '上传中'
+					})
+				})
+				for (let i = 0; i < lists.length; i++) {
+					const result = await this.getImageBase64_readFile(lists[i].url)
+					console.log(result)
+					this.model.da_pic_base64 = result.list[0].url
+					let item = this[`fileList${event.name}`][fileListLen]
+					this[`fileList${event.name}`].splice(fileListLen, 1, Object.assign(item, {
+						status: 'success',
+						message: '',
+						url: result.list
+					}))
+					fileListLen++
+				} 
+			},
+			// uploadFilePromise(url) {
+			// 	return new Promise((resolve, reject) => {
+			// 		let a = uni.uploadFile({
+			// 			url: `${this.configBaseURL}upimg`, 
+			// 			filePath: url,
+			// 			name: 'file',
+			// 			header: {
+			// 				...this.configHeader,
+			// 				userid: uni.getStorageSync('userid'),
+			// 			},
+			// 			success: (res) => {
+			// 				resolve(JSON.parse(res.data))
+			// 			}
+			// 		});
+			// 	})
+			// },
 			
 			
 		}

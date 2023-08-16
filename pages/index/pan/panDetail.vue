@@ -385,7 +385,7 @@
 						<i class="custom-icon-friend custom-icon u-m-r-10" :style="{color: themeConfig.pan.lightcolor}"></i>
 						<text :style="{color: themeConfig.pan.baseText}">{{cpy.name}}</text>
 					</view>
-					<view class="u-flex u-flex-items-center" @click="handleGoto({url: '/pages/index/frontCard/frontCpyCard', params: {login:cpy.id}})">
+					<view class="u-flex u-flex-items-center" @click="handleGoto({url: '/pages/my/home/home', params: {login:cpy.id}})">
 						<i class="custom-icon-card_fill custom-icon" :style="{color: themeConfig.pan.lightcolor}"></i>
 					</view>
 				</view>
@@ -767,6 +767,7 @@
 		data() {
 			return {
 				id: '',
+				fxid: '',
 				pan: '',
 				key: '',
 				imgWrapShow: false,
@@ -809,6 +810,9 @@
 			if(uni.$u.pages().length == 1) this.backBtn = false
 			if(options.hasOwnProperty('id')) {
 				this.id = options.id
+			}
+			if(options.hasOwnProperty('fxid')) {
+				this.fxid = options.fxid
 			}
 			if(options.hasOwnProperty('key')) {
 				this.key = options.key
@@ -949,7 +953,7 @@
 				
 			},
 			async getData() {
-				const res = await this.$api[this.pan == 's'? 'getSellDetail' : 'getBuyDetail']({params: {id: this.id, key: this.key}})
+				const res = await this.$api[this.pan == 's'? 'getSellDetail' : 'getBuyDetail']({params: {id: this.id, fxid: this.fxid, key: this.key}})
 				// console.log(res)
 				if(res.code == 1) {
 					this.list = res.list
@@ -1085,6 +1089,7 @@
 					url: '/pages/my/order/order_inquiry_edit', 
 					params: { 
 						id: this.id,  
+						fxid: this.fxid, 
 					},
 				}
 				if(this.list.trade_mode != '5') {
@@ -1092,6 +1097,7 @@
 					obj.params = {
 						ordertype: this.pan == 's'? 'B' : 'S', 
 						id: this.id, 
+						fxid: this.fxid, 
 						type: 'add',
 					}
 				}

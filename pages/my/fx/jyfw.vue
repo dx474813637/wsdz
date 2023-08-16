@@ -31,13 +31,13 @@
 				</view>
 				
 			</u-form-item> 
-			<u-form-item
+			<!-- <u-form-item
 				label="排序"
 				prop="rank"
 				ref="rank" 
 			>
 				<u--input v-model="model.rank" placeholder="排序" /> 
-			</u-form-item>  
+			</u-form-item>  -->
 			<u-form-item
 				label="添加时间" 
 				v-if="list.ctime"

@@ -7,6 +7,7 @@ export const PROJECT = {
 			whiteList: [
 				'/',
 				'/pages/my/user/index',
+				'/pages/my/home/home',
 				{
 					pattern: /^\/pages\/list.*/
 				},

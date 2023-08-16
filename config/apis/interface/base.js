@@ -173,3 +173,8 @@ export const haibao_sc = (data) => http.get('haibao_sc', data)
 
 // homepage 我的主页 参数login
 export const homepage = (data) => http.get('homepage', data)
+// page_info 我的信息接口
+export const page_info = (data) => http.get('page_info', data)
+// save_page_info 保存我的信息接口 参数pic 完整图片地址 name昵称  attestation认证信息 rz=0未认证 1认证 info个人介绍
+// 		rz=0未认证 1认证 这个只是字段说明，不接受参数的。这个是管理员审核的。
+export const save_page_info = (data, config={}) => http.post('save_page_info', data, config)

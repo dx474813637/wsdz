@@ -17,15 +17,25 @@
 					{{detailData.Company.name}}
 				</view>
 				<view class="item u-text-right" > 
-					{{detailData.da_product.price1}} 元/{{detailData.da_product.unit}}
+					{{detailData.Company.contact}} 
 				</view>
 			</view>
 			<view class="rows u-flex u-flex-items-start u-flex-between u-m-b-20">
 				<view class="item" > 
-					{{detailData.Company.contact}}
+					联系方式
 				</view>
 				<view class="item u-text-right" > 
 					{{detailData.Company.mobile}}
+				</view>
+			</view>
+			<view class="rows u-flex u-flex-items-start u-flex-between u-m-b-20">
+				<view class="item" > 
+					分销佣金
+				</view>
+				<view class="item u-text-right" > 
+					{{detailData.da_product.price1}}
+					<template v-if="detailData.da_product.pay_type == 1">‰</template>
+					<template v-else-if="detailData.da_product.pay_type == 2"> 元/{{detailData.da_product.unit}}</template>
 				</view>
 			</view>
 			<view class="rows u-flex u-flex-items-center u-flex-between u-m-t-10">

@@ -3,13 +3,13 @@
 		<view class="search-wrapper u-flex u-p-l-20 u-p-r-20">
 			<view class="item u-flex-1 u-p-b-10" @click="show = true">
 				<u-input 
-					placeholder="请选择" 
+					placeholder="请选择我的分销商品" 
 					v-model="pid_name" 
 					:showAction="false"
 					readonly
 					bgColor="#fff" 
-					suffixIcon="arrow-down-fill"
-					suffixIconStyle="color: #909399"
+					suffixIcon="arrow-down"
+					suffixIconStyle="color: #909399; font-size: 14px"
 				>
 				</u-input>
 			</view>
@@ -63,19 +63,19 @@
 				</template>
 			</u-list>
 		</view>
-		<menusPopupStandard
+		<menusPopupMyStandard
 			:show="show"
 			theme="white"
 			@close="show = false"
 			@confirm="menusConfirm"
-		></menusPopupStandard>
+		></menusPopupMyStandard>
 	</view>
 </template>
 
 <script>
 	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
 	import FxmpCard from '@/pages/my/components/FxmpCard/FxmpCard.vue'
-	import menusPopupStandard from '@/components/menusPopup/menusPopupStandard.vue'
+	import menusPopupMyStandard from '@/components/menusPopup/menusPopupMyStandard.vue'
 	export default {
 		data() {
 			return {
@@ -120,7 +120,7 @@
 		},
 		components: {
 			FxmpCard,
-			menusPopupStandard
+			menusPopupMyStandard
 		},
 		methods: {
 			...mapMutations({
@@ -206,7 +206,7 @@
 				})
 				if(res.code == 1) {
 					uni.showToast({
-						title: '删除成功'
+						title: res.msg
 					})
 					const index = this.indexList.findIndex(ele => ele.id == id)
 					this.indexList.splice(index, 1)
@@ -219,7 +219,8 @@
 				this.handleGoto({
 					url: '/pages/index/pan/panDetail',
 					params: {
-						id: data.id, 
+						id: data.sell_id, 
+						fxid: data.id, 
 						pan:'s',
 					}
 				}) 

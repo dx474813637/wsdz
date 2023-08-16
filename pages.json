@@ -906,13 +906,13 @@
 			}, {
 				"path": "fx/jyfw",
 				"style": {
-					"navigationBarTitleText": "经营范围详情",
+					"navigationBarTitleText": "分销商品详情",
 					"enablePullDownRefresh": false
 				}
 			}, {
 				"path": "fx/jyfw_list",
 				"style": {
-					"navigationBarTitleText": "经营范围",
+					"navigationBarTitleText": "分销商品",
 					"enablePullDownRefresh": false
 				}
 			}, {
