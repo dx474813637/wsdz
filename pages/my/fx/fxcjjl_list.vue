@@ -1,50 +1,35 @@
 <template>
-	<view class="w">
-		<view class="search-wrapper u-flex u-p-l-20 u-p-r-20">
-			<view class="item u-flex-1 u-p-b-10" @click="show = true">
-				<u-input 
-					placeholder="请选择" 
-					v-model="pid_name" 
-					:showAction="false"
-					readonly
-					bgColor="#fff" 
-					suffixIcon="arrow-down-fill"
-					suffixIconStyle="color: #909399"
-				>
-				</u-input>
-			</view>
+	<view class="w u-p-l-20 u-p-r-20"> 
+		<view class="bg-white u-radius-18 u-p-t-15" >
+			<view class="search-wrapper u-flex u-p-20">
+				<view class="item u-flex-1 u-p-b-10" @click="show = true">
+					<u-input 
+						placeholder="请选择" 
+						v-model="pid_name" 
+						:showAction="false"
+						readonly
+						bgColor="#fff" 
+						suffixIcon="arrow-down-fill"
+						suffixIconStyle="color: #909399"
+					>
+					</u-input>
+				</view>
+				
+			</view> 
 			
-		</view>
-		<!-- <view class="tabs-w">
-			<u-tabs
-				:list="tabs_list"
-				:current="tabs_current"
-				lineHeight="0"
-				:activeStyle="activeTabsStyle"
-				:itemStyle="itemTabsStyle"
-				@change="handleTabsChange"
-			> </u-tabs>
-		</view> -->
-		
-		<view class="list">
-			<u-list
-				height="100%"
-				enableBackToTop
-				@scrolltolower="scrolltolower"
-				:preLoadingScreen="100"
-			>
-				<u-list-item
+			<view class="list u-p-20"> 
+				<view
 					v-for="(item, index) in indexList"
 					:key="item"
 				>
-					<view class="u-p-10 u-p-l-20 u-p-r-20">
+					<view class="u-m-b-20">
 						<FxjlCard
 							:detailData="item" 
 							@detail="handleDetail"
 						></FxjlCard>
 					</view>
 					
-				</u-list-item>
+				</view>
 				
 				<template name="dataStatus">
 					<template v-if="indexList.length == 0">
@@ -59,8 +44,8 @@
 							:status="loadstatus"
 						/>
 					</template>
-				</template>
-			</u-list>
+				</template> 
+			</view>
 		</view>
 		<menusPopupMyStandard
 			:show="show"
@@ -113,6 +98,9 @@
 		components: {
 			FxjlCard,
 			menusPopupMyStandard
+		},
+		onReachBottom() {
+			this.scrolltolower()
 		},
 		methods: {
 			...mapMutations({
@@ -227,9 +215,13 @@
 		height: 100vh;
 	}
 </style>
-<style lang="scss" scoped>
+<style lang="scss" scoped> 
 	.w {
 		height: 100%;
+		padding-top: 120px; 
+		background-image: url('https://wx.rawmex.cn/Public/2023fenxiao/005.png');
+		background-size: 100% auto;
+		background-repeat: no-repeat;
 	}
 	.list {
 		height: calc(100% - 39px);

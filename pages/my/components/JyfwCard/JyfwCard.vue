@@ -1,38 +1,31 @@
 <template>
-	<view class="wrapper u-radius-10 uni-shadow-base bg-white u-p-15" @click="handleDetail">
-		<view class="card u-flex u-flex-items-center u-flex-between u-p-20 u-border-bottom">
-			<view class="item u-font-36">
-				{{detailData.name}}
+	<view class="wrapper u-radius-10 uni-shadow-base bg-white " @click="handleDetail">
+		<view class="card u-flex u-flex-items-center u-flex-between u-p-25 " style="background-color: #e6f2ff;">
+			<view class="item">
+				<view class="u-font-36">{{detailData.name}}</view>
+				<view class="u-info text-thin u-font-28">{{detailData.ctime}}</view>
 			</view>
-			<view class="item u-font-26" >
-				{{detailData.ctime}}
+			<view class="item u-font-26" @click.stop="handleGoto({
+				url: '/pages/my/fx/fxgx_add',
+				params: {
+					pid: detailData.pid
+				}
+			})">
+				<u-button type="primary" size="small" plain shape="circle">分销联盟申请分销</u-button>
 			</view>
 		</view>
 		<view class="main u-font-30 text-base">
-			<view class="rows u-flex u-flex-items-center u-flex-between u-p-30 u-m-b-10">
-				<view class="item" style="flex: 0 0 80px"> 
-					<!-- 排序：{{detailData.rank}} -->
-				</view>
-				<view class="item  u-flex u-flex-items-center" > 
-					<view class="u-m-l-15" @click.stop="handleGoto({
-						url: '/pages/my/fx/fxgx_add',
-						params: {
-							pid: detailData.pid
-						}
-					})"  >
-						<u-button type="primary" size="small" plain shape="circle">查看待分销</u-button>
+			 
+			<view class="rows u-flex u-flex-items-center u-flex-between u-p-15 " >
+				<view class="item u-flex u-flex-items-center">
+					<view class="u-flex u-flex-items-center u-info" @click.stop="handleDelete"  >
+						<u-icon name="trash" color="#ccc" size="22"></u-icon>
+						<view class="u-m-l-10">
+							删除
+						</view> 
 					</view>
-					<view class="u-m-l-15" @click.stop="handleGoto({
-						url: '/pages/my/fx/fxgx_list',
-						params: {
-							pid: detailData.pid
-						}
-					})"  >
-						<u-button type="primary" size="small" plain shape="circle">我的分销</u-button>
-					</view>
+					
 				</view>
-			</view>
-			<view class="rows u-flex u-flex-items-center u-flex-between u-p-30 u-border-top" style="border-top-style: dashed;">
 				<view class="item u-flex u-flex-items-center"> 
 					<view class="u-m-r-15" @click.stop="handleGoto({
 						url: '/pages/my/fx/fxmp_list',
@@ -40,7 +33,7 @@
 							pid: detailData.pid
 						}
 					})"  >
-						<u-button type="primary" size="small" plain shape="circle">分销卖盘</u-button>
+						<u-button type="info" size="small" plain shape="circle">分销卖盘</u-button>
 					</view>
 					<view class="u-m-r-15" @click.stop="handleGoto({
 						url: '/pages/my/fx/fxcjjl_list',
@@ -48,14 +41,8 @@
 							pid: detailData.pid
 						}
 					})" >
-						<u-button type="primary" size="small" plain shape="circle">已分销订单</u-button>
+						<u-button type="info" size="small" plain shape="circle">已分销订单</u-button>
 					</view>
-				</view>
-				<view class="item u-flex u-flex-items-center">
-					<view class="u-m-l-15" @click.stop="handleDelete"  >
-						<u-button type="error" size="small" plain shape="circle">删除</u-button>
-					</view>
-					
 				</view>
 			</view>
 		</view>
@@ -108,5 +95,8 @@
 </script>
 
 <style lang="scss" scoped>
+	.wrapper {
+		overflow: hidden;
+	}
 	
 </style>

@@ -1,7 +1,7 @@
 <template>
 	<view class="home"> 
 		<view class="home-header">
-			<view class="header-bg" :style="{ backgroundImage: `url(${homeData.bj})` }" v-if="homeData.bj"></view>
+			<view class="header-bg" :style="{ backgroundImage: `url(https://wx.rawmex.cn/Public/2023fenxiao/001.jpg)` }" v-if="homeData.bj"></view>
 			
 		</view>
 		<view class="home-main">
@@ -19,15 +19,15 @@
 					
 				</view>
 				<view class="item u-flex u-flex-items-center">
-					<view class="item-btn u-p-20 u-flex-column u-flex-items-center">
+					<view class="item-btn u-p-20 u-flex-column u-flex-items-center" @click="sendMsgBtn">
 						<u-icon name="chat" size="25" color="#666"></u-icon>
 						<view class="u-info u-font-28">私信</view>
 					</view>
-					<view class="item-btn u-p-20 u-flex-column u-flex-items-center">
+					<view class="item-btn u-p-20 u-flex-column u-flex-items-center" @click="dingyueShow = true">
 						<u-icon name="man-add" size="25" color="#666"></u-icon>
 						<view class="u-info u-font-28">订阅</view>
 					</view>
-					<view class="item-btn u-p-20 u-flex-column u-flex-items-center">
+					<view class="item-btn u-p-20 u-flex-column u-flex-items-center" @click="followBtn">
 						<u-icon name="eye" size="25" color="#666"></u-icon>
 						<view class="u-info u-font-28">关注</view>
 					</view>
@@ -43,7 +43,7 @@
 					
 					<view class="item u-flex-1 u-flex u-flex-items-end">
 						<view class="user-name u-line-1 u-m-l-20 u-m-r-20" v-if="homeData.infoa.list.detail.da_name">
-							{{homeData.infoa.list.detail.da_name }}
+							{{homeData.infoa.list.detail.da_name  }}
 						</view>
 						<view class="user-sub u-font-28  u-flex u-flex-items-center u-p-l-14 u-p-r-14 u-p-6 u-radius-6 text-base u-m-r-20 u-m-l-10" 
 							 v-else-if="homeData.me == 1" @click="handleGoto('/pages/my/home/home_edit')">
@@ -52,7 +52,7 @@
 								设置昵称
 							</view>	
 						</view>
-						<view 
+						<!-- <view 
 							@click="makephone(homeData.infoa.list.detail.mobile)"
 							class="user-sub u-font-28  u-flex u-flex-items-center u-p-l-14 u-p-r-14 u-p-6 u-radius-6 text-base" >
 							<view class="u-line-1">{{homeData.infoa.list.detail.contact}}</view>
@@ -60,7 +60,7 @@
 							<view class="u-m-l-10" >
 								<u-icon name="phone-fill" color="#87cfff"></u-icon>
 							</view> 
-						</view>
+						</view> -->
 					</view>
 					
 				</view>
@@ -160,7 +160,7 @@
 			<view class="home-list u-p-20">
 				<template v-if="activeTabsKey == 'fx_pan'">
 					<view class="list-item u-m-b-20" v-for="item in homeList" :key="item.id">
-						<cardA
+						<cardFx
 							:name="item.Sell.name"
 							:pid="item.Sell.id"
 							:amount="item.Sell.amount"
@@ -179,12 +179,12 @@
 							theme="white"
 							@tims="handleClickTims"
 							@detail="handleRouteTo"
-						></cardA>
+						></cardFx>
 					</view>
 				</template>
 				<template v-if="activeTabsKey == 'pan'">
 					<view class="list-item u-m-b-20" v-for="item in homeList" :key="item.id">
-						<cardA
+						<cardFx
 							:name="item.name"
 							:pid="item.id"
 							:amount="item.amount"
@@ -203,7 +203,7 @@
 							theme="white"
 							@tims="handleClickTims"
 							@detail="handleRouteTo"
-						></cardA>
+						></cardFx>
 					</view>
 				</template> 
 				 
@@ -216,7 +216,7 @@
 				</template> 
 			</view>
 		</view> 
-		
+		<wxDingyuePopup :show="dingyueShow" @dingyuebtn="dingyueBtn" @close="dingyueShow = false"></wxDingyuePopup>
 		<u-loadmore
 			v-if="homeList.length>0"
 			status="nomore"
@@ -228,6 +228,8 @@
 <script>
 	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex' 
 	import mixShareInfo from '@/config/mixShareInfo' 
+	import cardFx from '@/components/cardA/cardFx.vue'
+	import wxDingyuePopup from '@/components/wxDingyuePopup/wxDingyuePopup.vue'
 	export default {
 		mixins: [mixShareInfo],
 		data() {
@@ -247,9 +249,12 @@
 				tabs_list: [],
 				content: '',
 				fxImg: 'https://img-album.rawmex.cn/200-200/',
+				dingyueShow: false
 			};
 		},
 		components: { 
+			cardFx,
+			wxDingyuePopup
 		},
 		async onLoad(options) {
 			if(!options.hasOwnProperty('login')) {
@@ -259,6 +264,7 @@
 				})
 				return
 			}
+			this.sendDingyue()
 			this.login = options.login
 			uni.showLoading()
 			await this.getHomeData()
@@ -282,6 +288,9 @@
 		methods: {
 			...mapMutations({
 				handleGoto: 'user/handleGoto'
+			}),
+			...mapActions({ 
+				sendDingyue: 'user/sendDingyue',
 			}),
 			initTabsData() {
 				let arr = []
@@ -347,7 +356,8 @@
 					}
 				}) 
 			},
-			async follow() {  
+			async followBtn() {  
+				uni.showLoading()
 				const res = await this.$api.follow({
 					params: {
 						login: this.login,
@@ -365,7 +375,67 @@
 				uni.makePhoneCall({
 					phoneNumber: n+''
 				});
-			}
+			},
+			sendMsgBtn() {
+				uni.showModal({
+					title: '发送私信提醒大人立即联系您',
+					content: '达人需微信订阅后才能收到消息',
+					confirmText: '立即发送',
+					success:  async (res) => {
+						if (res.confirm) {
+							if(this.homeData.message == 1) {
+								this.handleGoto({
+									url: '/pages/my/msg/msgDetail',
+									params: { login: this.login }
+								}) 
+							}
+							else {
+								await this.sendMsg()
+							}
+							
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				});
+			},
+			async sendMsg() {
+				const res = await this.$api.message_xcx({params: {login: this.login}})
+				if(res.code == 1) {
+					uni.showToast({
+						title: res.msg
+					})
+				}
+			},
+			async dingyueBtn() {
+				uni.showLoading()
+				const res = await this.$api.tmp_id_list();
+				if(res.code == 1) { 
+					this.subApi(res.list) 
+				}
+				this.dingyueShow = false
+			},
+			subApi(list) {
+				wx.requestSubscribeMessage({
+					tmplIds: list,
+					success: async (res)=>{
+						if(res.KIRbQmobnZlPo5OTgaMq6kHRI_zhpwVphn0mY42NeW8 == 'reject') return
+						uni.showLoading()
+						const res2 = await this.$api.tmp_id_back({
+							params: {
+								str: JSON.stringify(res)
+							}
+						})
+						if(res2.code == 1) {
+							uni.showToast({
+								title: res2.msg,
+								icon: 'none'
+							})
+						}
+					}
+				})
+			},
+			
 		}
 	}
 </script>
@@ -423,7 +493,7 @@
 		z-index: 30;
 		top: -30px;
 		border-radius: 30px 30px 0 0;
-		box-shadow: 0 -5px 5px rgba(0,0,0,.3);
+		// box-shadow: 0 -5px 5px rgba(0,0,0,.3);
 		.main-header {
 			.item {
 				&.item-avatar {

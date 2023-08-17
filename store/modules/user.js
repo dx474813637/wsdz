@@ -37,11 +37,15 @@ let state = {
 			route: '/pages/index/index',
 			options: {}
 		},
-		share_other: ''
+		share_other: '',
+		fxhome_info: {}
 	},
 	getters = {
 	},
 	mutations = {
+		setFxHome(state, data) {
+			state.fxhome_info = data
+		},
 		setWdMenus(state, data) {
 			state.menus_wd = data;
 		},
@@ -277,6 +281,14 @@ let state = {
 					});
 				}
 			})
+		},
+		async getHomeInfo({commit, state}) {
+			const res = await this._vm.$api.homepage_info();
+			if(res.code == 1) {
+				let fxImg = res.list.detail.url_img
+				res.list.detail.da_pic = fxImg + res.list.detail.da_pic
+				commit('setFxHome', res.list.detail) 
+			}
 		}
 	}
 export default {

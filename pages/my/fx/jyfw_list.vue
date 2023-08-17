@@ -1,136 +1,123 @@
 <template>
-	<view class="w">
-		<!-- <view class="search-wrapper u-flex u-p-l-20 u-p-r-20">
-			<view class="item u-flex-1 u-p-b-10">
-				<u-search 
-					placeholder="检索名称" 
-					v-model="keyword"
-					clearabled
-					:showAction="false"
-					bgColor="#e8e8e8"
-					@search="handleSearch"
-				></u-search>
-			</view>
-			
-		</view> -->
-		<view class="tabs-w">
-			<u-tabs
-				:list="tabs_list"
-				:current="tabs_current"
-				lineHeight="0"
-				:activeStyle="activeTabsStyle"
-				:itemStyle="itemTabsStyle"
-				@change="handleTabsChange"
-			>
-				<view
-					@click="handleGoto({url: '/pages/my/fx/jyfw'})"
-					slot="right"
-					class="u-p-r-20 u-flex"
-				>
-					<u-icon
-						name="plus-circle"
-						size="16"
-					></u-icon>
-					<text class="u-p-l-8 u-font-30">添加分销商品</text>
+	<view class="w"> 
+		<view class="header-w u-p-20">
+			<view class="bg-white u-radius-10 u-p-20 u-flex u-flex-items-center u-flex-between">
+				<view class="item u-flex-1 page-bg2 u-m-r-6 u-radius-8 u-flex u-flex-items-center u-p-12 u-p-t-20 u-p-b-20" 
+					@click="nickShow = true" v-if="!fxhome_info.da_name">
+					<view class="icon-w u-m-r-10"  >
+						<u-icon name="edit-pen" color="#fff"></u-icon>
+					</view>
+					<view>
+						<view class="u-font-30">您还未设置昵称</view>
+						<view class="u-font-20 u-info ">设置昵称可以更好保护隐私</view>
+					</view>
 				</view>
-			</u-tabs>
+				<view class="item u-flex-1 page-bg2 u-m-l-6 u-radius-8 u-flex u-flex-items-center u-p-12 u-p-t-20 u-p-b-20" @click="dingyueShow = true">
+					<view class="icon-w u-m-r-10">
+						<u-icon name="man-add" color="#fff"></u-icon>
+					</view>
+					<view>
+						<view class="u-font-30">微信订阅</view>
+						<view class="u-font-20 u-info">订阅后可及时收发卖盘消息</view>
+					</view>
+				</view>
+			</view>
+		</view>
+		<view class="tabs-w u-flex u-flex-items-center u-flex-between u-p-30">
+			<view class="item u-flex u-flex-items-center">
+				<u-icon name="list" size="24" color="#f00"></u-icon>
+				<view class="u-m-l-10 u-font-34">我的分销商品</view>
+			</view>
+			<view class="item">
+				<u-button type="primary" shape="circle" size="small" @click="handleGoto({url: '/pages/my/fx/jyfw'})">
+					<u-icon
+						name="plus"
+						size="12"
+						color="#fff"
+					></u-icon>
+					<text class="u-p-l-8 u-font-28">添加分销商品</text>
+				</u-button>
+			</view> 
 		</view>
 		
-		<view class="list">
-			<u-list
-				height="100%"
-				enableBackToTop
-				@scrolltolower="scrolltolower"
-				:preLoadingScreen="100"
+		<view class="list"> 
+			<view
+				v-for="(item, index) in indexList"
+				:key="item.id"
 			>
-				<u-list-item
-					v-for="(item, index) in indexList"
-					:key="item.id"
-				>
-					<view class="u-p-10 u-p-l-20 u-p-r-20">
-						<JyfwCard
-							:detailData="item" 
-							@detail="handleDetail"
-							@delete="handleDelet"
-						></JyfwCard>
-					</view>
-					
-				</u-list-item>
+				<view class="u-p-10 u-p-l-20 u-p-r-20">
+					<JyfwCard
+						:detailData="item" 
+						@detail="handleDetail"
+						@delete="handleDelet"
+					></JyfwCard>
+				</view>
 				
-				<template name="dataStatus">
-					<template v-if="indexList.length == 0">
-						<u-empty
-							mode="data"
-							:icon="typeConfig.white.empty"
-						>
-						</u-empty>
-					</template>
-					<template v-else>
-						<u-loadmore
-							:status="loadstatus"
-						/>
-					</template>
+			</view>
+			
+			<template name="dataStatus">
+				<template v-if="indexList.length == 0">
+					<u-empty
+						mode="data"
+						:icon="typeConfig.white.empty"
+						text="请先添加分销商品再申请分销"
+					>
+					</u-empty>
 				</template>
-			</u-list>
+				<template v-else>
+					<u-loadmore
+						:status="loadstatus"
+					/>
+				</template>
+			</template> 
 		</view>
+		<wxDingyuePopup :show="dingyueShow" @dingyuebtn="dingyueBtn" @close="dingyueShow = false"></wxDingyuePopup>
+		<setNickPopup :show="nickShow" @confirmbtn="nickSuccess" @close="nickShow = false"></setNickPopup>
+		<u-safe-bottom></u-safe-bottom>
 	</view>
 </template>
 
 <script>
-	import {mapState, mapGetters, mapMutations} from 'vuex'
+	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
 	import JyfwCard from '@/pages/my/components/JyfwCard/JyfwCard.vue'
+	import wxDingyuePopup from '@/components/wxDingyuePopup/wxDingyuePopup.vue'
+	import setNickPopup from '@/components/setNickPopup/setNickPopup.vue'
 	export default {
 		data() {
-			return {
-				keyword: '',
-				tabs_current: 0,
-				activeTabsStyle: {
-					fontSize: '34rpx',
-					fontWeight: 'bold',
-					color: '#007aff'
-				},
-				itemTabsStyle: {
-					height: '44px',
-					padding: '0 13px'
-				},
-				tabs_list: [
-					{
-						name: '全部',
-						trade_type: 'bs',
-						disabled: false,
-					},
-					// {
-					// 	name: '买盘',
-					// 	trade_type: 'b',
-					// 	disabled: false,
-					// },
-					// {
-					// 	name: '卖盘',
-					// 	trade_type: 's',
-					// 	disabled: false,
-					// },
-				],
+			return { 
 				indexList: [],
 				curP: 1,
-				loadstatus: 'loadmore'
+				loadstatus: 'loadmore',
+				dingyueShow: false,
+				nickShow: false
 			};
 		},
 		async onLoad() {
+			this.getHomeInfo()
 			uni.showLoading()
 			await this.getData()
 		},
 		computed: {
 			...mapState({
 				typeConfig: state => state.theme.typeConfig,
+				fxhome_info: state => state.user.fxhome_info,
 			}),
-		},
+		}, 
 		components: {
-			JyfwCard
+			JyfwCard,
+			wxDingyuePopup,
+			setNickPopup
+		},
+		onReachBottom() {
+			this.scrolltolower()
 		},
 		methods: {
 			...mapMutations({
 				handleGoto: 'user/handleGoto'
 			}),
+			...mapActions({ 
+				getHomeInfo: 'user/getHomeInfo'
+			}),  
 			async refreshList() {
 				this.initParamas()
 				await this.getData()
@@ -139,25 +126,7 @@
 				this.curP = 1;
 				this.indexList = [];
 				this.loadstatus = 'loadmore'
-			},
-			handleSearch(v) {
-				this.refreshList()
-			},
-			changeTabsStatus(key, value) {
-				this.tabs_list = this.tabs_list.map(ele => {
-					ele[key] = value;
-					return ele
-				})
-			},
-			async handleTabsChange(value) {
-				this.keyword = ''
-				this.tabs_current = value.index
-				this.changeTabsStatus('disabled', true)
-				this.initParamas();
-				uni.showLoading();
-				await this.getData()
-				this.changeTabsStatus('disabled', false)
-			},
+			}, 
 			scrolltolower() {
 				this.getMoreData()
 			},
@@ -207,7 +176,38 @@
 				uni.navigateTo({
 					url: `/pages/my/fx/jyfw?id=${id}&rank=${rank}&pid=${pid}`
 				})
-			}
+			},
+			nickSuccess() {
+				this.nickShow = false
+			},
+			async dingyueBtn() {
+				uni.showLoading()
+				const res = await this.$api.tmp_id_list();
+				if(res.code == 1) { 
+					this.subApi(res.list) 
+				}
+				this.dingyueShow = false
+			},
+			subApi(list) {
+				wx.requestSubscribeMessage({
+					tmplIds: list,
+					success: async (res)=>{
+						if(res.KIRbQmobnZlPo5OTgaMq6kHRI_zhpwVphn0mY42NeW8 == 'reject') return
+						uni.showLoading()
+						const res2 = await this.$api.tmp_id_back({
+							params: {
+								str: JSON.stringify(res)
+							}
+						})
+						if(res2.code == 1) {
+							uni.showToast({
+								title: res2.msg,
+								icon: 'none'
+							})
+						}
+					}
+				})
+			},
 		}
 	}
 </script>
@@ -218,11 +218,26 @@
 	}
 </style>
 <style lang="scss" scoped>
+	.header-w {
+		.icon-w {
+			width: 25px;
+			height: 25px;
+			border-radius: 25px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			background-color: #0364d3;
+		}
+	}
 	.w {
+		padding-top: 120px;
 		height: 100%;
+		background-image: url('https://wx.rawmex.cn/Public/2023fenxiao/002.jpg');
+		background-size: 100% auto;
+		background-repeat: no-repeat;
 	}
 	.list {
-		height: calc(100% - 44px);
+		// height: calc(100% - 44px);
 		
 	}
 </style>

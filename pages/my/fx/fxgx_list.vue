@@ -1,56 +1,17 @@
 <template>
-	<view class="w">
-		<!-- <view class="search-wrapper u-flex u-p-l-20 u-p-r-20">
-			<view class="item u-flex-1 u-p-b-10" @click="show = true">
-				<u-input 
-					placeholder="请选择" 
-					v-model="keyword" 
-					:showAction="false"
-					readonly
-					bgColor="#fff"
-					@search="handleSearch"
-					suffixIcon="arrow-down-fill"
-					suffixIconStyle="color: #909399"
-				>
-				</u-input>
+	<view class="w u-p-l-20 u-p-r-20"> 
+		<view class="bg-white u-radius-18">
+			<view class="tabs-w u-flex u-flex-items-center u-flex-between">
+				<view class="item u-flex-1" @click="handleGoto({url: '/pages/my/fx/fxgx_add', type: 'redirect'})">分销联盟</view>
+				<view class="item bg-white text-primary u-flex-1">我的分销</view>
 			</view>
 			
-		</view> -->
-		<view class="tabs-w">
-			<u-tabs
-				:list="tabs_list"
-				:current="tabs_current"
-				lineHeight="0"
-				:activeStyle="activeTabsStyle"
-				:itemStyle="itemTabsStyle"
-				@change="handleTabsChange"
-			>
+			<view class="list u-p-20"> 
 				<view
-					@click="handleGoto({url: '/pages/my/fx/fxgx_add'})"
-					slot="right"
-					class="u-p-r-20 u-flex"
-				>
-					<u-icon
-						name="plus-circle"
-						size="16"
-					></u-icon>
-					<text class="u-p-l-8 u-font-30">添加分销关系</text>
-				</view>
-			</u-tabs>
-		</view>
-		
-		<view class="list">
-			<u-list
-				height="100%"
-				enableBackToTop
-				@scrolltolower="scrolltolower"
-				:preLoadingScreen="100"
-			>
-				<u-list-item
 					v-for="(item, index) in indexList"
 					:key="item"
 				>
-					<view class="u-p-10 u-p-l-20 u-p-r-20">
+					<view class="u-m-b-20">
 						<FxgxCard
 							:detailData="item" 
 							@detail="handleDetail"
@@ -58,7 +19,7 @@
 						></FxgxCard>
 					</view>
 					
-				</u-list-item>
+				</view>
 				
 				<template name="dataStatus">
 					<template v-if="indexList.length == 0">
@@ -73,9 +34,10 @@
 							:status="loadstatus"
 						/>
 					</template>
-				</template>
-			</u-list>
+				</template> 
+			</view>
 		</view>
+		
 		<menusPopupStandard
 			:show="show"
 			theme="white"
@@ -129,6 +91,9 @@
 		async onLoad() {
 			uni.showLoading()
 			await this.getData()
+		},
+		onReachBottom() {
+			this.scrolltolower()
 		},
 		computed: {
 			...mapState({
@@ -236,8 +201,22 @@
 	}
 </style>
 <style lang="scss" scoped>
+	.tabs-w {
+		background-color: #f8f8f8;
+		border-radius: 10px 10px 0 0;
+		color: #666;
+		overflow: hidden;
+		.item { 
+			line-height: 45px;
+			text-align: center;
+		}
+	}
 	.w {
 		height: 100%;
+		padding-top: 120px; 
+		background-image: url('https://wx.rawmex.cn/Public/2023fenxiao/003.png');
+		background-size: 100% auto;
+		background-repeat: no-repeat;
 	}
 	.list {
 		height: calc(100% - 83px);

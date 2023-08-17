@@ -1,59 +1,48 @@
 <template>
-	<view class="w">
-		<view class="search-wrapper u-flex u-p-l-20 u-p-r-20 u-p-b-10">
-			<view class="item u-flex-1 u-p-r-10" @click="show = true">
-				<u-input 
-					placeholder="请选择品类" 
-					v-model="pid_name" 
-					:showAction="false"
-					readonly
-					bgColor="#fff" 
-					suffixIcon="arrow-down"
-					suffixIconStyle="color: #909399; font-size: 14px"
-				>
-				</u-input>
+	<view class="w u-p-l-20 u-p-r-20"> 
+		<view class="bg-white u-radius-18">
+			<view class="tabs-w u-flex u-flex-items-center u-flex-between">
+				<view class="item bg-white text-primary u-flex-1">分销联盟</view>
+				<view class="item u-flex-1" @click="handleGoto({url: '/pages/my/fx/fxgx_list', type: 'redirect'})">我的分销</view>
 			</view>
-			<view class="item u-flex-1 u-p-l-10" > 
-				<uni-data-picker
-					placeholder="筛选所在地区" 
-					popup-title="请选择所在地区" 
-					:localdata="addressCity" 
-					v-model="addressData.regional" 
-					@change="handleValArea"
-				></uni-data-picker>
-			</view>
+			<view class="search-wrapper u-flex u-p-20">
+				<view class="item u-flex-1 u-p-r-10" @click="show = true">
+					<u-input 
+						placeholder="请选择品类" 
+						v-model="pid_name" 
+						:showAction="false"
+						readonly
+						bgColor="#fff" 
+						suffixIcon="arrow-down"
+						suffixIconStyle="color: #909399; font-size: 14px"
+					>
+					</u-input>
+				</view>
+				<view class="item u-flex-1 u-p-l-10" > 
+					<uni-data-picker
+						placeholder="筛选所在地区" 
+						popup-title="请选择所在地区" 
+						:localdata="addressCity" 
+						v-model="addressData.regional" 
+						@change="handleValArea"
+					></uni-data-picker>
+				</view>
+				
+			</view> 
 			
-		</view>
-		<!-- <view class="tabs-w">
-			<u-tabs
-				:list="tabs_list"
-				:current="tabs_current"
-				lineHeight="0"
-				:activeStyle="activeTabsStyle"
-				:itemStyle="itemTabsStyle"
-				@change="handleTabsChange"
-			> </u-tabs>
-		</view> -->
-		
-		<view class="list">
-			<u-list
-				height="100%"
-				enableBackToTop
-				@scrolltolower="scrolltolower"
-				:preLoadingScreen="100"
-			>
-				<u-list-item
+			<view class="list u-p-20"> 
+				<view
 					v-for="(item, index) in indexList"
 					:key="item"
 				>
-					<view class="u-p-10 u-p-l-20 u-p-r-20">
+					<view class=" u-m-b-20">
 						<FxgxCardAdd
 							:detailData="item" 
 							@add="handleAdd"
 						></FxgxCardAdd>
 					</view>
 					
-				</u-list-item>
+				</view>
 				
 				<template name="dataStatus">
 					<template v-if="indexList.length == 0">
@@ -68,9 +57,10 @@
 							:status="loadstatus"
 						/>
 					</template>
-				</template>
-			</u-list>
+				</template> 
+			</view>
 		</view>
+		
 		<menusPopupMyStandard
 			:show="show"
 			theme="white"
@@ -153,6 +143,9 @@
 		components: {
 			FxgxCardAdd,
 			menusPopupMyStandard
+		},
+		onReachBottom() {
+			this.scrolltolower()
 		},
 		methods: {
 			...mapMutations({
@@ -260,11 +253,25 @@
 	}
 </style>
 <style lang="scss" scoped>
+	.tabs-w {
+		background-color: #f8f8f8;
+		border-radius: 10px 10px 0 0;
+		color: #666;
+		overflow: hidden;
+		.item { 
+			line-height: 45px;
+			text-align: center;
+		}
+	}
 	.w {
 		height: 100%;
+		padding-top: 120px; 
+		background-image: url('https://wx.rawmex.cn/Public/2023fenxiao/003.png');
+		background-size: 100% auto;
+		background-repeat: no-repeat;
 	}
 	.list {
-		height: calc(100% - 83px);
+		// height: calc(100% - 83px);
 		
 	}
 </style>

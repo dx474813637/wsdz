@@ -913,7 +913,9 @@
 				"path": "fx/jyfw_list",
 				"style": {
 					"navigationBarTitleText": "分销商品",
-					"enablePullDownRefresh": false
+					"enablePullDownRefresh": false,
+					"onReachBottomDistance": 50,
+					"navigationBarBackgroundColor": "#fff"
 				}
 			}, {
 				"path": "fx/fxgx",
@@ -925,25 +927,33 @@
 				"path": "fx/fxgx_list",
 				"style": {
 					"navigationBarTitleText": "我的分销",
-					"enablePullDownRefresh": false
+					"enablePullDownRefresh": false,
+					"onReachBottomDistance": 50,
+					"navigationBarBackgroundColor": "#fff"
 				}
 			}, {
 				"path": "fx/fxgx_add",
 				"style": {
 					"navigationBarTitleText": "添加分销关系",
-					"enablePullDownRefresh": false
+					"enablePullDownRefresh": false,
+					"onReachBottomDistance": 50,
+					"navigationBarBackgroundColor": "#fff"
 				}
 			}, {
 				"path": "fx/fxmp_list",
 				"style": {
 					"navigationBarTitleText": "分销卖盘列表",
-					"enablePullDownRefresh": false
+					"enablePullDownRefresh": false,
+					"onReachBottomDistance": 50,
+					"navigationBarBackgroundColor": "#fff"
 				}
 			}, {
 				"path": "fx/fxcjjl_list",
 				"style": {
 					"navigationBarTitleText": "分销成交记录列表",
-					"enablePullDownRefresh": false
+					"enablePullDownRefresh": false,
+					"onReachBottomDistance": 50,
+					"navigationBarBackgroundColor": "#fff"
 				}
 			}, {
 				"path": "myFriend/myFriend",

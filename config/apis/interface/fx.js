@@ -40,6 +40,9 @@ export const fx_sell_list = (data = {}) => all_api(uni.$u.deepMerge({params: {AP
 // fx_sell_del 分销卖盘 删除
 export const fx_sell_del = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'DA_ALLIANCE_DA_SELL', Action: 'DELETE', token: 1}}, data))
 
+
+export const message_xcx = (data) => http.get('message_xcx', data)
+
 // fx_sell_suc 分销卖盘成交记录翻页 列表
 export const fx_sell_suc = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'DA_ALLIANCE_DA_SELL_LOG', Action: 'PAGE_LIST', token: 1}}, data))
 
