@@ -31,9 +31,14 @@
 						<u-icon name="eye" size="25" color="#666"></u-icon>
 						<view class="u-info u-font-28">关注</view>
 					</view>
-					<view class="item-btn u-p-20 u-flex-column u-flex-items-center">
-						<u-icon name="share-square" size="25" color="#666"></u-icon>
-						<view class="u-info u-font-28">分享</view>
+					<view class="item-btn u-p-t-20 u-p-b-20 u-flex-column u-flex-items-center">
+						<u-button open-type="share" :customStyle="{border: '0'}">
+							<view class="u-flex-column">
+								<u-icon name="share-square" size="25" color="#666"></u-icon>
+								<view class="u-info u-font-28">分享</view>
+							</view>
+						</u-button>
+						
 					</view>
 				</view>
 			</view>
@@ -52,15 +57,14 @@
 								设置昵称
 							</view>	
 						</view>
-						<!-- <view 
-							@click="makephone(homeData.infoa.list.detail.mobile)"
-							class="user-sub u-font-28  u-flex u-flex-items-center u-p-l-14 u-p-r-14 u-p-6 u-radius-6 text-base" >
-							<view class="u-line-1">{{homeData.infoa.list.detail.contact}}</view>
-							<view class="u-m-l-10" >{{homeData.infoa.list.detail.mobile}}</view> 
-							<view class="u-m-l-10" >
-								<u-icon name="phone-fill" color="#87cfff"></u-icon>
+						<view class="user-sub u-font-30  u-flex u-flex-items-center u-p-l-14 u-p-r-14 u-p-6 u-radius-6 text-base" v-if="homeData.info.list.attestation">
+							<view class="u-line-1">{{homeData.info.list.attestation}}</view> 
+							<view class="u-m-l-10">
+								<u-icon name="checkmark-circle" color="#007aff" v-if="homeData.info.list.rz == '1'"></u-icon>
+								<i class="custom-icon-bangzhu1 custom-icon u-error u-font-36" v-else ></i>
+								<!-- <u-icon name="phone-fill" color="#87cfff" v-else></u-icon> -->
 							</view> 
-						</view> -->
+						</view>
 					</view>
 					
 				</view>
@@ -112,7 +116,7 @@
 						size="small"
 						v-else
 						:customStyle="{borderRadius: '5px'}" 
-						@click="follow"
+						@click="followBtn"
 						>
 						关注
 					</u-button>
@@ -378,7 +382,7 @@
 			},
 			sendMsgBtn() {
 				uni.showModal({
-					title: '发送私信提醒大人立即联系您',
+					title: '发送私信提醒达人立即联系您',
 					content: '达人需微信订阅后才能收到消息',
 					confirmText: '立即发送',
 					success:  async (res) => {
@@ -482,7 +486,7 @@
 				font-size: 24px;
 			}
 			.user-sub {
-				background-color: #f3f9ff;
+				// background-color: #f3f9ff;
 			}
 			
 		}

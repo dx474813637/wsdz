@@ -66,13 +66,13 @@
 				</view>
 			</u-form-item>
 			<u-form-item
-				label="头像名称"
-				prop="da_pic_name"
-				ref="da_pic_name" 
+				label="认证信息"
+				prop="attestation"
+				ref="attestation" 
 			>
 				<u--input
-					v-model="model.da_pic_name" 
-					clearable
+					v-model="model.attestation" 
+					clearable 
 				></u--input>
 			</u-form-item>
 			<u-form-item
@@ -80,7 +80,8 @@
 				prop="da_intro"
 				ref="da_intro" 
 			>
-				<rich-text :nodes="model.da_intro"></rich-text> 
+				<!-- <rich-text :nodes="model.da_intro"></rich-text> -->
+				<u-textarea v-model="model.da_intro" height="120"></u-textarea>
 			</u-form-item>
 			
 			
@@ -101,10 +102,11 @@
 					da_name: '', 
 					mobile: '', 
 					tel: '', 
-					da_inro: '', 
+					da_intro: '', 
 					da_pic: '', 
 					da_pic_base64: '', 
 					da_pic_name: '头像.jpg',  
+					attestation: ''
 				},
 				fileList1: [], 
 				fxImg: 'https://img-album.rawmex.cn/200-200/',
@@ -130,6 +132,7 @@
 		},
 		async onLoad() { 
 			await this.myHomeInfo()
+			await this.myHomeInfo2()
 		},
 		onReady() {
 			this.$refs.userform.setRules(this.rules)
@@ -157,26 +160,47 @@
 					}
 				}
 			},
+			async myHomeInfo2() {
+				const res = await this.$api.page_info();
+				if(res.code == 1) { 
+					this.model.attestation = res.list.attestation
+				}
+			},
 			async submit() {
-				this.$refs.userform.validate().then(async res => { 
-					const list = await this.$api.save_page_info({
-						...this.model,
-					})
-					if(list.code == 1) { 
-						this.$utils.prePage()?.hasOwnProperty('getHomeData') && this.$utils.prePage().getHomeData();
-						uni.showToast({
-							title: list.msg
-						})
-						setTimeout(() => {
-							uni.navigateBack()
-						}, 800)
-						
-					}
+				this.$refs.userform.validate().then(async res => {  
+					this.submit2()
+					this.submit1()
+					
 				}).catch(errors => {
 					console.log(errors)
 					uni.$u.toast('请检查表单内容')
 				})
 			}, 
+			async submit1() {
+				const list = await this.$api.homepage_info_change({
+					...this.model,
+					da_pic: this.model.da_pic.replace(this.fxImg, ''),
+					da_inro: this.model.da_intro
+				})
+				if(list.code == 1) { 
+					this.$utils.prePage()?.hasOwnProperty('getHomeData') && this.$utils.prePage().getHomeData();
+					uni.showToast({
+						title: list.msg
+					})
+					setTimeout(() => {
+						uni.navigateBack()
+					}, 800)
+					
+				}
+			},
+			async submit2() {
+				const list = await this.$api.save_page_info({
+					name: this.model.da_name,
+					info:  this.model.da_intro,
+					attestation: this.model.attestation,
+				})
+				 
+			},
 			// 删除图片
 			deletePic(event) {
 				console.log(event)
@@ -205,12 +229,12 @@
 				for (let i = 0; i < lists.length; i++) {
 					const result = await this.getImageBase64_readFile(lists[i].url)
 					console.log(result)
-					this.model.da_pic_base64 = result.list[0].url
+					this.model.da_pic_base64 = result
 					let item = this[`fileList${event.name}`][fileListLen]
 					this[`fileList${event.name}`].splice(fileListLen, 1, Object.assign(item, {
 						status: 'success',
 						message: '',
-						url: result.list
+						url: result
 					}))
 					fileListLen++
 				} 

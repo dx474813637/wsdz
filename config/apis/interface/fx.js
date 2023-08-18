@@ -49,4 +49,5 @@ export const fx_sell_suc = (data = {}) => all_api(uni.$u.deepMerge({params: {API
 // homepage_info 信息查询
 export const homepage_info = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'DA_ALLIANCE_DA_COMPANY_FX', Action: 'DETAIL', token: 1}}, data))
 // homepage_info_change 修改 达人信息
-export const homepage_info_change = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'DA_ALLIANCE_DA_COMPANY_FX', Action: 'CHANGE'}}, data))
+export const homepage_info_change = (data = {}) => all_api(uni.$u.deepMerge({API: 'DA_ALLIANCE_DA_COMPANY_FX', Action: 'CHANGE', token: 1}, data), 'POST') 
+	

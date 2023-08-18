@@ -37,7 +37,7 @@
 			</view>
 			<view class="u-p-10 u-flex u-flex-items-center u-flex-between u-font-28 text-thin"> 
 				<view class="u-line-1">交易数量：{{detailData.amount}} {{detailData.da_product.unit}}</view>
-				<view class="u-line-1">分销佣金：{{detailData.da_product.price1}} 元/{{detailData.da_product.unit}}</view>
+				<view class="u-line-1">分销分成：{{detailData.price1_sum1}} 元</view>
 			</view>
 			<view class="u-p-10 u-flex u-flex-items-center u-flex-between u-font-28 text-thin">
 				<view class="item u-flex">
@@ -46,63 +46,6 @@
 				</view> 
 			</view>
 		</view>
-		<!-- <view class="card u-flex u-flex-items-center u-flex-between u-p-10 u-p-l-20 u-p-r-20 u-border-bottom">
-			<view class="item">
-				{{detailData.Sell.name}}
-			</view>
-			<view class="item u-font-24" >
-				状态
-			</view>
-		</view>
-		<view class="main u-p-10 u-p-l-20 u-p-r-20 u-font-30 text-base">
-			<view class="rows u-flex u-flex-items-start u-flex-between u-m-b-20">
-				<view class="item" > 
-					{{detailData.Company.name}}
-				</view>
-				<view class="item u-text-right" > 
-					{{detailData.Company.contact}}
-				</view>
-			</view>
-			<view class="rows u-flex u-flex-items-start u-flex-between u-m-b-20">
-				<view class="item" > 
-					联系方式
-				</view>
-				<view class="item u-text-right" > 
-					{{detailData.Company.mobile}}
-				</view>
-			</view>
-			<view class="rows u-flex u-flex-items-start u-flex-between u-m-b-20">
-				<view class="item" > 
-					交易数量
-				</view>
-				<view class="item u-text-right" > 
-					{{detailData.amount}} {{detailData.da_product.unit}}
-				</view>
-			</view>
-			<view class="rows u-flex u-flex-items-start u-flex-between u-m-b-20">
-				<view class="item" > 
-					分销佣金
-				</view>
-				<view class="item u-text-right" > 
-					{{detailData.da_product.price1}} 元/{{detailData.da_product.unit}}
-				</view>
-			</view>
-			<view class="rows u-flex u-flex-items-start u-flex-between u-m-b-20">
-				<view class="item" > 
-					分销分成
-				</view>
-				<view class="item u-text-right" > 
-					{{detailData.price1_sum1}} 元
-				</view>
-			</view>
-			<view class="rows u-flex u-flex-items-center u-flex-between u-m-t-10">
-				<view class="item u-flex u-flex-items-center u-info"> 
-					{{detailData.post_time}}
-				</view>
-				<view class="item u-flex u-flex-items-center"> 
-				</view>
-			</view>
-		</view> -->
 	</view>
 </template>
 

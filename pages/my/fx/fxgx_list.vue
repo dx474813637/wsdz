@@ -202,18 +202,19 @@
 </style>
 <style lang="scss" scoped>
 	.tabs-w {
-		background-color: #f8f8f8;
+		background-color: #eaf2ff;
 		border-radius: 10px 10px 0 0;
-		color: #666;
+		color: #333;
 		overflow: hidden;
+		font-weight: bold;
 		.item { 
 			line-height: 45px;
-			text-align: center;
+			text-align: center; 
 		}
 	}
 	.w {
 		height: 100%;
-		padding-top: 120px; 
+		padding-top: 140px; 
 		background-image: url('https://wx.rawmex.cn/Public/2023fenxiao/003.png');
 		background-size: 100% auto;
 		background-repeat: no-repeat;
