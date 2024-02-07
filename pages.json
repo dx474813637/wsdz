@@ -918,15 +918,22 @@
 					"navigationBarBackgroundColor": "#fff"
 				}
 			}, {
+				"path": "fx/fx_admin",
+				"style": {
+					"navigationBarTitleText": "管理中心",
+					"enablePullDownRefresh": false,
+					"navigationBarBackgroundColor": "#fff"
+				}
+			}, {
 				"path": "fx/fxgx",
 				"style": {
-					"navigationBarTitleText": "分销商品关系信息",
+					"navigationBarTitleText": "我的货源信息",
 					"enablePullDownRefresh": false
 				}
 			}, {
 				"path": "fx/fxgx_list",
 				"style": {
-					"navigationBarTitleText": "我的分销",
+					"navigationBarTitleText": "货源中心",
 					"enablePullDownRefresh": false,
 					"onReachBottomDistance": 50,
 					"navigationBarBackgroundColor": "#fff"
@@ -934,7 +941,7 @@
 			}, {
 				"path": "fx/fxgx_add",
 				"style": {
-					"navigationBarTitleText": "添加分销关系",
+					"navigationBarTitleText": "全部货源",
 					"enablePullDownRefresh": false,
 					"onReachBottomDistance": 50,
 					"navigationBarBackgroundColor": "#fff"
@@ -950,11 +957,19 @@
 			}, {
 				"path": "fx/fxcjjl_list",
 				"style": {
-					"navigationBarTitleText": "分销成交记录列表",
+					"navigationBarTitleText": "成交记录",
 					"enablePullDownRefresh": false,
 					"onReachBottomDistance": 50,
 					"navigationBarBackgroundColor": "#fff"
 				}
+			}, {
+				"path": "fx/fx_money",
+				"style": {
+					"navigationBarTitleText": "佣金收入",
+					"enablePullDownRefresh": false,
+					"navigationBarBackgroundColor": "#fff"
+				}
+
 			}, {
 				"path": "myFriend/myFriend",
 				"style": {
@@ -975,6 +990,92 @@
 				"path": "home/home_edit",
 				"style": {
 					"navigationBarTitleText": "主页信息编辑",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "fx_shop/fx_admin",
+				"style": {
+					"navigationBarTitleText": "分销联盟管理",
+					"enablePullDownRefresh": false,
+					"navigationBarBackgroundColor": "#fff"
+				}
+
+			}, {
+				"path": "fx_shop/fx_money",
+				"style": {
+					"navigationBarTitleText": "店铺分销佣金支出",
+					"enablePullDownRefresh": false,
+					"navigationBarBackgroundColor": "#fff"
+				}
+
+			}, {
+				"path": "fx_shop/fx_prod",
+				"style": {
+					"navigationBarTitleText": "店铺分销商品",
+					"enablePullDownRefresh": false,
+					"navigationBarBackgroundColor": "#fff"
+				}
+
+			}, {
+				"path": "fx_shop/fx_prod_list",
+				"style": {
+					"navigationBarTitleText": "我的货架",
+					"enablePullDownRefresh": false,
+					"navigationBarBackgroundColor": "#fff"
+				}
+
+			}, {
+				"path": "fx_shop/fxcjjl_list",
+				"style": {
+					"navigationBarTitleText": "店铺分销成交记录列表",
+					"enablePullDownRefresh": false,
+					"navigationBarBackgroundColor": "#fff"
+				}
+
+			}, {
+				"path": "fx_shop/fxgx",
+				"style": {
+					"navigationBarTitleText": "店铺分销关系",
+					"enablePullDownRefresh": false,
+					"navigationBarBackgroundColor": "#fff"
+				}
+
+			}, {
+				"path": "fx_shop/fx_all",
+				"style": {
+					"navigationBarTitleText": "联盟货架",
+					"enablePullDownRefresh": false,
+					"navigationBarBackgroundColor": "#fff"
+				}
+
+			}, {
+				"path": "fx_shop/fxgx_list",
+				"style": {
+					"navigationBarTitleText": "我的达人",
+					"enablePullDownRefresh": false,
+					"navigationBarBackgroundColor": "#fff"
+				}
+
+			}, {
+				"path": "fx_shop/shop_info",
+				"style": {
+					"navigationBarTitleText": "店铺信息",
+					"enablePullDownRefresh": false,
+					"navigationBarBackgroundColor": "#fff"
+				}
+
+			}, {
+				"path": "order/order_settle",
+				"style": {
+					"navigationBarTitleText": "订单结算列表",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "order/order_settle_detail",
+				"style": {
+					"navigationBarTitleText": "订单结算明细",
 					"enablePullDownRefresh": false
 				}
 

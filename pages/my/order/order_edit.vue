@@ -233,8 +233,8 @@
 						prop="pay_option1"
 						ref="pay_option1"
 						required
-						v-if="panRes.list.order_type == '1'"
 					>
+						<!-- v-if="panRes.list.order_type == '1'" -->
 						<u-radio-group
 							v-model="form.pay_option1"
 							placement="row"
@@ -254,9 +254,9 @@
 						label="支付工具"
 						prop="pay_option2"
 						ref="pay_option2"
-						v-if="panRes.list.order_type == '1'"
 						required
 					>
+						<!-- v-if="panRes.list.order_type == '1'" -->
 						<u-radio-group
 							v-model="form.pay_option2"
 							placement="row"
@@ -418,8 +418,8 @@
 					amount: '',
 					price: '',
 					total_price: '',
-					pay_option1: '',
-					pay_option2: '',
+					pay_option1: 'D_P',
+					pay_option2: 'NOPAY',
 					pyeeInfo: '',
 					settle_mode: '',
 					delivery_place: '',
@@ -471,16 +471,22 @@
 				],
 				pay_option2_radios: [
 					{
-						name: '现金',
-						value: 'FUNDPAY',
+						name: '线下支付凭证',
+						value: 'NOPAY',
 						disabled: false,
 					},
-					{
-						name: '票据-小程序端暂不支持',
-						value: 'BILLPAY',
-						disabled: true,
-					},
+					// {
+					// 	name: '现金',
+					// 	value: 'FUNDPAY',
+					// 	disabled: false,
+					// },
+					// {
+					// 	name: '票据-小程序端暂不支持',
+					// 	value: 'BILLPAY',
+					// 	disabled: true,
+					// },
 				],
+				trade_mode: '',
 			}
 		},
 		computed: {
@@ -506,10 +512,10 @@
 				let str = '单价'
 				if(this.panRes.list.trade_mode == '3') {
 					str = '现货成交单价(一口价)'
-					if(this.model.base_price_type == '1') {
+					if(this.form.base_price_type == '1') {
 						str = '现货价'
 					}
-					else if(this.model.base_price_type == '1') {
+					else if(this.form.base_price_type == '2') {
 						str = '期货价'
 					}
 				} 
@@ -580,21 +586,21 @@
 						
 					}
 				}
-				if(this.panRes.list?.order_type == '1') {
-					base = {
-						...base,
-						pay_option1: {
-							required: true, 
-							message: '请选择',
-							trigger: ['blur', 'change']
-						},
-						pay_option2: {
-							required: true, 
-							message: '请选择',
-							trigger: ['blur', 'change']
-						},
-					}
-				} 
+				// if(this.panRes.list?.order_type == '1') {
+				// 	base = {
+				// 		...base,
+				// 		pay_option1: {
+				// 			required: true, 
+				// 			message: '请选择',
+				// 			trigger: ['blur', 'change']
+				// 		},
+				// 		pay_option2: {
+				// 			required: true, 
+				// 			message: '请选择',
+				// 			trigger: ['blur', 'change']
+				// 		},
+				// 	}
+				// } 
 				if(this.form.pay_option2 == 'BILLPAY') {
 					base = {
 						...base,
@@ -664,6 +670,9 @@
 			}
 			if(options.hasOwnProperty('ordertype')) {
 				this.ordertype = options.ordertype
+			}
+			if(options.hasOwnProperty('trade_mode')) {
+				this.trade_mode = options.trade_mode
 			}
 			this.init()
 			
@@ -804,10 +813,10 @@
 					if(this.panRes.list.trade_mode != '3') this.form.price = this.panRes.list.price1
 					
 					this.form.delivery_place = this.panRes.list.delivery_place1
-					if(this.panRes.list.order_type == '1') {
-						this.form.pay_option1 = 'GRT'
-						this.form.pay_option2 = 'FUNDPAY'
-					}
+					// if(this.panRes.list.order_type == '1') {
+					// 	this.form.pay_option1 = 'GRT'
+					// 	this.form.pay_option2 = 'FUNDPAY'
+					// }
 				}else {
 					uni.setNavigationBarTitle({
 						title: '修改订单'
@@ -837,7 +846,8 @@
 				const res = await this.$api[func]({
 					params: { 
 						id: this.id,
-						fxid: this.fxid
+						fxid: this.fxid,
+						trade_mode: this.trade_mode
 					}
 				})
 				if(res.code == 1) {
@@ -908,6 +918,7 @@
 						const res = await this.$api[func]({
 							title: this.panRes.list.name,
 							fxid: this.fxid,
+							da_trade_mode: this.trade_mode,
 							...this.form
 						})
 						if(res.code == 1) {

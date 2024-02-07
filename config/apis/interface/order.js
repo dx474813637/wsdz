@@ -1,5 +1,6 @@
 const http = uni.$u.http
 
+import {all_api} from '@/config/apis/interface/base.js'
 // create_order 创建订单
 // 订单类型(修改无)： source *SELL-采购订单BUY-销售订单
 // 订单ID: source_id 买卖盘的id 
@@ -59,6 +60,8 @@ export const order_submit = (data) => http.get('order_submit', data)
 export const unsubmit_order = (data) => http.get('unsubmit_order', data)
 // order_pay 发起支付 id：订单id
 export const order_pay = (data) => http.get('order_pay', data)
+// order_pay 发起线下支付 order_id：订单id
+export const order_nopay = (data = {}) => all_api(uni.$u.deepMerge({API: 'PAYNO', Action: 'NOPAY_ORDER_CREATE', token: 1}, data), 'POST')  
 // order_audit  审核采购/销售订单
 // 订单类型：ordertype*B-我的采购订单S-我的销售订单
 // 订单ID: id 
@@ -69,6 +72,10 @@ export const order_audit = (data) => http.get('order_audit', data)
 
 // order_send 销售订单-发货 id：订单id remark_send：发货备注
 export const order_send = (data) => http.get('order_send', data)
+// get_order_nopay 获取线下支付
+export const get_order_nopay = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'PAYNO', Action: 'NOPAY_ORDER_QUERY', token: 1}}, data)) 
+// check_order_nopay 审核线下支付
+export const check_order_nopay = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'PAYNO', Action: 'NOPAY_ORDER_AUDIT', token: 1}}, data))
 
 // base_submit 基差待发送 -> 基差待审核
 // 订单类型：ordertype SELL-采购订单 BUY-销售订单
@@ -118,3 +125,32 @@ export const sino_bill_order_pay = (data) => http.get('sino_bill_order_pay', dat
 export const sino_bill_order_order_confirm = (data) => http.get('sino_bill_order_order_confirm', data)
 // sino_bill_order_confirm 票据担保支付-确认收货-解冻转账 支付ID： pay_id 支付密码：paypwd
 export const sino_bill_order_confirm = (data) => http.get('sino_bill_order_confirm', data)
+
+
+
+// order_settle_list 交收结算业务-列表
+export const order_settle_list = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ORDER_SETTLE', Action: 'LIST_ORDER_SETTLE', token: 1}}, data)) 
+// order_settle_detail 交收结算业务-明细
+export const order_settle_detail = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ORDER_SETTLE', Action: 'DETAIL_ORDER_SETTLE', token: 1}}, data)) 
+// order_settle_change 交收结算业务-修改交收结算
+export const order_settle_change = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ORDER_SETTLE', Action: 'CHANGE', token: 1}}, data)) 
+// order_settle_create 交收结算业务-发起交收结算
+export const order_settle_create = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ORDER_SETTLE', Action: 'CREATE', token: 1}}, data)) 
+// order_settle_cancel 交收结算业务-取消交收结算
+export const order_settle_cancel = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ORDER_SETTLE', Action: 'CANCEL', token: 1}}, data)) 
+// order_settle_send 交收结算业务-发送交收结算
+export const order_settle_send = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ORDER_SETTLE', Action: 'SEND', token: 1}}, data)) 
+// order_settle_audit 交收结算业务-审核 （买家操作）
+export const order_settle_audit = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ORDER_SETTLE', Action: 'AUDIT', token: 1}}, data)) 
+
+
+// order_nopay_settle_create 提交支付凭证（付款方操作）-交收结算业务订单
+export const order_nopay_settle_create = (data = {}) => all_api(uni.$u.deepMerge({API: 'PAYNO', Action: 'NOPAY_ORDER_SETTLE_CREATE', token: 1}, data), 'POST')
+// order_nopay_settle_audit 审核支付凭证（收款方审核时操作） - 交收结算业务订单
+export const order_nopay_settle_audit = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'PAYNO', Action: 'NOPAY_ORDER_SETTLE_AUDIT', token: 1}}, data))  
+
+
+// CREATE_END 发起尾款支付
+export const CREATE_END = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ORDER_END', Action: 'CREATE_END', token: 1}}, data))  
+// PAY_VOUCHER_END 提交支付凭证-尾款支付  
+export const PAY_VOUCHER_END = (data = {}) => all_api(uni.$u.deepMerge({API: 'ORDER_END', Action: 'PAY_VOUCHER_END', token: 1}, data), 'POST')

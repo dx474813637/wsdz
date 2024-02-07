@@ -38,7 +38,7 @@
 						<view class="u-m-l-8">{{detailData.post_time}}</view> 
 					</view>
 					<view class="item"> 
-						<view class="u-m-l-15" @click.stop="handleAdd"  >
+						<view class="u-m-l-15" @click.stop="handleAdd" v-if="!readonly" >
 							<u-button type="primary" size="small"  shape="circle">我要分销</u-button>
 						</view> 
 					</view>
@@ -59,6 +59,10 @@
 					return {}
 				}
 			}, 
+			readonly: {
+				type: Boolean,
+				default: false
+			}
 		},
 		data() {
 			return {

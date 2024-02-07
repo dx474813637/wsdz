@@ -3,54 +3,24 @@
 		<u--form
 			labelPosition="left"
 			:model="model"
-			ref="userform"
+			ref="shopform"
 			labelWidth="80"
-			>
+			> 
 			<u-form-item
-				label="联系人"
-				prop="contact"
-				ref="contact" 
-			>
-				<u--input
-					v-model="model.contact" 
-					clearable
-				></u--input>
-			</u-form-item>
-			<u-form-item
-				label="昵称"
-				prop="da_name"
-				ref="da_name"
+				label="店铺名称"
+				prop="name"
+				ref="name"
 				required
 			>
 				<u--input
-					v-model="model.da_name" 
+					v-model="model.name" 
 					clearable
 				></u--input>
-			</u-form-item>
+			</u-form-item> 
 			<u-form-item
-				label="手机"
-				prop="mobile"
-				ref="mobile" 
-			>
-				<u--input
-					v-model="model.mobile" 
-					clearable
-				></u--input>
-			</u-form-item>
-			<u-form-item
-				label="电话"
-				prop="tel"
-				ref="tel" 
-			>
-				<u--input
-					v-model="model.tel" 
-					clearable
-				></u--input>
-			</u-form-item>
-			<u-form-item
-				label="头像"
-				prop="da_pic"
-				ref="da_pic" 
+				label="logo"
+				prop="logo"
+				ref="logo" 
 			> 
 				<view>
 					<u-upload
@@ -64,58 +34,36 @@
 					></u-upload>
 					<view class="u-info u-font-28">建议上传2M以内的图片</view>
 				</view>
+			</u-form-item> 
+			<u-form-item
+				label="店铺简介"
+				prop="intro"
+				ref="intro" 
+			> 
+				<u-textarea v-model="model.intro" height="70"></u-textarea>
 			</u-form-item>
 			<u-form-item
-				label="认证信息"
-				prop="attestation"
-				ref="attestation" 
-			>
-				<u--input
-					v-model="model.attestation" 
-					clearable 
-				></u--input>
-			</u-form-item>
-			<u-form-item
-				label="展示分销"
-				prop="switch1"
-				ref="switch1" 
+				label="店铺状态"
+				prop="state"
+				ref="state" 
 			>
 				<u-switch 
-					v-model="model.switch1" 
+					v-model="model.state" 
 					activeValue="1"
 					inactiveValue="0"
 				></u-switch>
 			</u-form-item>
 			<u-form-item
-				label="展示卖盘"
-				prop="switch2"
-				ref="switch2" 
+				label="联盟状态"
+				prop="da_state"
+				ref="da_state" 
 			>
 				<u-switch 
-					v-model="model.switch2" 
+					v-model="model.da_state" 
 					activeValue="1"
 					inactiveValue="0"
 				></u-switch>
-			</u-form-item>
-			<u-form-item
-				label="展示名片"
-				prop="switch3"
-				ref="switch3" 
-			>
-				<u-switch 
-					v-model="model.switch3" 
-					activeValue="1"
-					inactiveValue="0"
-				></u-switch>
-			</u-form-item>
-			<u-form-item
-				label="达人简介"
-				prop="da_intro"
-				ref="da_intro" 
-			>
-				<!-- <rich-text :nodes="model.da_intro"></rich-text> -->
-				<u-textarea v-model="model.da_intro" height="70"></u-textarea>
-			</u-form-item>
+			</u-form-item> 
 			
 			
 		</u--form>
@@ -130,19 +78,14 @@
 	export default {
 		data() {
 			return { 
-				model: { 
-					contact: '',
-					da_name: '', 
-					mobile: '', 
-					tel: '', 
-					da_intro: '', 
-					da_pic: '', 
-					da_pic_base64: '', 
-					da_pic_name: '头像.jpg',  
-					attestation: '',
-					switch1: '1',
-					switch2: '1',
-					switch3: '1',
+				model: {  
+					name: '',  
+					intro: '', 
+					logo: '', 
+					logo_base64: '', 
+					logo_name: 'logo.jpg',   
+					state: '1',
+					da_state: '1', 
 				},
 				fileList1: [], 
 				fxImg: 'https://img-album.rawmex.cn/200-200/',
@@ -156,10 +99,10 @@
 			}),
 			rules() {
 				return {
-					'da_name': {
+					'name': {
 						type: 'string',
 						required: true,
-						message: '请填写昵称',
+						message: '请填写店铺名称',
 						trigger: ['blur', 'change']
 					},
 				}
@@ -167,14 +110,14 @@
 			}
 		},
 		async onLoad() { 
-			await this.myHomeInfo()
-			await this.myHomeInfo2()
+			await this.myShopInfo()
+			// await this.myShopInfo2()
 		},
 		onReady() {
-			this.$refs.userform.setRules(this.rules)
+			this.$refs.shopform.setRules(this.rules)
 		},
 		watch: { 
-			['model.da_pic'](n) { 
+			['model.logo'](n) { 
 				this.fileList1 = n ? [{url: n}] : []
 			}
 		},
@@ -185,29 +128,29 @@
 			...mapActions({ 
 				getImageBase64_readFile: 'user/getImageBase64_readFile'
 			}),  
-			async myHomeInfo() {
-				const res = await this.$api.homepage_info();
+			async myShopInfo() {
+				const res = await this.$api.shop_info();
 				if(res.code == 1) {
 					this.fxImg = res.list.detail.url_img
-					res.list.detail.da_pic = this.fxImg + res.list.detail.da_pic
+					res.list.detail.logo = this.fxImg + res.list.detail.logo
 					this.model = {
 						...this.model,
 						...res.list.detail
 					}
 				}
 			},
-			async myHomeInfo2() {
-				const res = await this.$api.page_info();
-				if(res.code == 1) { 
-					this.model.attestation = res.list.attestation
-					this.model.switch1 = res.list.switch1
-					this.model.switch2 = res.list.switch2
-					this.model.switch3 = res.list.switch3
-				}
-			},
+			// async myShopInfo2() {
+			// 	const res = await this.$api.page_info();
+			// 	if(res.code == 1) { 
+			// 		this.model.attestation = res.list.attestation
+			// 		this.model.switch1 = res.list.switch1
+			// 		this.model.switch2 = res.list.switch2
+			// 		this.model.switch3 = res.list.switch3
+			// 	}
+			// },
 			async submit() {
-				this.$refs.userform.validate().then(async res => {  
-					this.submit2()
+				this.$refs.shopform.validate().then(async res => {  
+					// this.submit2()
 					this.submit1()
 					
 				}).catch(errors => {
@@ -216,13 +159,12 @@
 				})
 			}, 
 			async submit1() {
-				const list = await this.$api.homepage_info_change({
+				const list = await this.$api.shop_info_change({
 					...this.model,
-					da_pic: this.model.da_pic.replace(this.fxImg, ''),
-					da_inro: this.model.da_intro
+					logo: this.model.logo.replace(this.fxImg, ''), 
 				})
 				if(list.code == 1) { 
-					this.$utils.prePage()?.hasOwnProperty('getHomeData') && this.$utils.prePage().getHomeData();
+					// this.$utils.prePage()?.hasOwnProperty('getShopData') && this.$utils.prePage().getShopData();
 					uni.showToast({
 						title: list.msg
 					})
@@ -232,23 +174,23 @@
 					
 				}
 			},
-			async submit2() {
-				const list = await this.$api.save_page_info({
-					name: this.model.da_name,
-					info:  this.model.da_intro,
-					attestation: this.model.attestation,
-					switch1: this.model.switch1,
-					switch2: this.model.switch2,
-					switch3: this.model.switch3,
-				})
+			// async submit2() {
+			// 	const list = await this.$api.save_page_info({
+			// 		name: this.model.da_name,
+			// 		info:  this.model.da_intro,
+			// 		attestation: this.model.attestation,
+			// 		switch1: this.model.switch1,
+			// 		switch2: this.model.switch2,
+			// 		switch3: this.model.switch3,
+			// 	})
 				 
-			},
+			// },
 			// 删除图片
 			deletePic(event) {
 				console.log(event)
 				this[`fileList${event.name}`].splice(event.index, 1)
-				this.model.da_pic = ''
-				this.model.da_pic_base64 = ''
+				this.model.logo = ''
+				this.model.logo_base64 = ''
 				 
 			},
 			handleoversize() {
@@ -271,7 +213,7 @@
 				for (let i = 0; i < lists.length; i++) {
 					const result = await this.getImageBase64_readFile(lists[i].url)
 					console.log(result)
-					this.model.da_pic_base64 = result
+					this.model.logo_base64 = result
 					let item = this[`fileList${event.name}`][fileListLen]
 					this[`fileList${event.name}`].splice(fileListLen, 1, Object.assign(item, {
 						status: 'success',

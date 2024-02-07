@@ -1,9 +1,11 @@
 <template>
-	<view class="w u-p-l-20 u-p-r-20"> 
-		<view class="bg-white u-radius-18">
-			<view class="tabs-w u-flex u-flex-items-center u-flex-between">
-				<view class="item u-flex-1" @click="handleGoto({url: '/pages/my/fx/fxgx_add', type: 'redirect'})">分销联盟</view>
-				<view class="item bg-white text-primary u-flex-1">我的分销</view>
+	<view class="w u-p-l-20 u-p-r-20" :style="{
+		backgroundImage: `url(https://wx.rawmex.cn/Public/2023fenxiao/daren-04.png?time=${new Date().getTime()})`
+	}"> 
+		<view class="bg-white u-radius-10 " style="position: relative; padding-top: 40px;">
+			<view class="tabs-w u-flex u-flex-items-end u-flex-between">
+				<view class="item u-flex-1" @click="handleGoto({url: '/pages/my/fx/fxgx_add', type: 'redirect'})">全部货源</view>
+				<view class="item bg-white text-primary u-flex-1 active">我的货源</view>
 			</view>
 			
 			<view class="list u-p-20"> 
@@ -201,21 +203,38 @@
 	}
 </style>
 <style lang="scss" scoped>
+	
 	.tabs-w {
-		background-color: #eaf2ff;
-		border-radius: 10px 10px 0 0;
-		color: #333;
-		overflow: hidden;
+		// background-color: #eaf2ff;
+		// border-radius: 10px 10px 0 0;
+		color: #666;
+		// overflow: hidden;
+		position: absolute; 
+		top: -10px;
+		left: 0;
+		width: 100%;
 		font-weight: bold;
 		.item { 
-			line-height: 45px;
-			text-align: center; 
+			line-height: 40px;
+			text-align: center;
+			background-color: #eaf2ff;
+			// border-radius: 15px 15px 0 0;
+			&:first-child {
+				border-top-left-radius: 15px;
+			}
+			&:last-child {
+				border-top-right-radius: 15px;
+			}
+			&.active {  
+				line-height: 50px;
+				border-radius: 15px 15px 0 0;
+			}
 		}
 	}
 	.w {
 		height: 100%;
 		padding-top: 140px; 
-		background-image: url('https://wx.rawmex.cn/Public/2023fenxiao/003.png');
+		// background-image: url('https://wx.rawmex.cn/Public/2023fenxiao/003.png');
 		background-size: 100% auto;
 		background-repeat: no-repeat;
 	}

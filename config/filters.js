@@ -322,30 +322,18 @@ const bidState2Str = (v, data, panData) => {
 	else return '失效' 
 }
 
-// <{if $pw_curr_page==1}>
-// 	<{if $Sell.Bid_role.is_darkmark}>
-// 	  <{if $Sell.Bid_role.left_etime<0}>
-// 		<{if $list_bid_items[sec].order_id}>
-// 		  <span class="tab-cj">成交</span>
-// 		<{else}>
-// 		  失效
-// 		<{/if}>
-// 	  <{else}>
-// 	  <span class="tab-lx">竞价中</span>
-// 	 <{/if}>
-// 	<{else}>
-// 	<{if $list_bid_items[sec].order_id}>
-// 	  <span class="tab-cj">成交</span>
-// 	<{else if $list_bid_items[sec].is_valid}>
-// 	  <span class="tab-lx">领先</span>
-// 	<{else}>
-// 		失效
-// 	<{/if}>
-// 	<{/if}>
-// <{else}>
-// 	失效
-// <{/if}>
 
+const order_settle_pay_user = v => {
+	if(v == '1') return '买方'
+	else if(v == '2')  return '卖方' 
+	else return v
+}
+
+const diffRes = v => {
+	if(v > 0) return '买方补交'
+	else if(v < 0)  return '卖方退还' 
+	return '无'
+}
 
 
 export default {
@@ -382,4 +370,6 @@ export default {
 	bid_join2Str,
 	bidTradeM2str,
 	bidState2Str,
+	order_settle_pay_user,
+	diffRes
 }

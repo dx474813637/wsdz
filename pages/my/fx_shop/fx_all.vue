@@ -1,12 +1,16 @@
 <template>
 	<view class="w u-p-l-20 u-p-r-20" :style="{
-		backgroundImage: `url(https://wx.rawmex.cn/Public/2023fenxiao/004.png?time=${new Date().getTime()})`
+		backgroundImage: `url(https://wx.rawmex.cn/Public/2023fenxiao/fxtop2.png?time=${new Date().getTime()})`
 	}"> 
-		<view class="bg-white u-radius-18 u-p-t-15" >
+		<view class="bg-white u-radius-10 " style="position: relative; padding-top: 40px;">
+			<view class="tabs-w u-flex u-flex-items-end u-flex-between">
+				<view class="item bg-white text-primary u-flex-1 active">联盟货架</view>
+				<view class="item u-flex-1" @click="handleGoto({url: '/pages/my/fx_shop/fx_prod_list', type: 'redirect'})">我的货架</view>
+			</view>
 			<view class="search-wrapper u-flex u-p-20">
-				<view class="item u-flex-1 u-p-b-10" @click="show = true">
+				<view class="item u-flex-1 u-p-r-10" @click="show = true">
 					<u-input 
-						placeholder="请选择我的分销商品" 
+						placeholder="请选择我的品类" 
 						v-model="pid_name" 
 						:showAction="false"
 						readonly
@@ -16,6 +20,15 @@
 					>
 					</u-input>
 				</view>
+				<view class="item u-flex-1 u-p-l-10" > 
+					<uni-data-picker
+						placeholder="筛选所在地区" 
+						popup-title="请选择所在地区" 
+						:localdata="addressCity" 
+						v-model="addressData.regional" 
+						@change="handleValArea"
+					></uni-data-picker>
+				</view>
 				
 			</view> 
 			
@@ -24,12 +37,11 @@
 					v-for="(item, index) in indexList"
 					:key="item"
 				>
-					<view class="u-m-b-20">
-						<FxmpCard
-							:detailData="item" 
-							@detail="handleDetail"
-							@delete="handleDelet"
-						></FxmpCard>
+					<view class=" u-m-b-20">
+						<FxgxCardAdd
+							:detailData="item"
+							readonly
+						></FxgxCardAdd>
 					</view>
 					
 				</view>
@@ -50,6 +62,7 @@
 				</template> 
 			</view>
 		</view>
+		
 		<menusPopupMyStandard
 			:show="show"
 			theme="white"
@@ -61,11 +74,11 @@
 
 <script>
 	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
-	import FxmpCard from '@/pages/my/components/FxmpCard/FxmpCard.vue'
+	import FxgxCardAdd from '@/pages/my/components/FxgxCard/FxgxCardAdd.vue'
 	import menusPopupMyStandard from '@/components/menusPopup/menusPopupMyStandard.vue'
 	export default {
 		data() {
-			return {
+			return { 
 				show: false,
 				tabs_current: 0,
 				activeTabsStyle: {
@@ -77,21 +90,43 @@
 					height: '44px',
 					padding: '0 13px'
 				},
+				addressData: {},
 				tabs_list: [
 					{
-						name: '全部',
-						value: '',
+						name: '按时间',
+						value: 'post_time',
 						disabled: false,
-					}, 
+					},
+					{
+						name: '按千分比',
+						value: 'pay_type1',
+						disabled: false,
+					},
+					{
+						name: '按每单位费率',
+						value: 'pay_type2',
+						disabled: false,
+					},
+					// {
+					// 	name: '买盘',
+					// 	trade_type: 'b',
+					// 	disabled: false,
+					// },
+					// {
+					// 	name: '卖盘',
+					// 	trade_type: 's',
+					// 	disabled: false,
+					// },
 				],
 				indexList: [],
-				curP: 1,
-				pid: '',
 				pid_name: '',
+				pid: '',
+				curP: 1,
 				loadstatus: 'loadmore'
 			};
 		},
 		async onLoad(opt) {
+			this.getAddressArea()
 			if(opt.hasOwnProperty('pid')) {
 				this.pid = opt.pid 
 				this.initNameByPid()
@@ -101,12 +136,14 @@
 		},
 		computed: {
 			...mapState({ 
+				addressArea: state => state.user.addressArea, 
+				addressCity: state => state.user.addressCity, 
 				fxStandard: state => state.user.fxStandard, 
 				typeConfig: state => state.theme.typeConfig,
 			}),
 		},
 		components: {
-			FxmpCard,
+			FxgxCardAdd,
 			menusPopupMyStandard
 		},
 		onReachBottom() {
@@ -118,7 +155,12 @@
 			}),
 			...mapActions({ 
 				getFxStandard: 'user/getFxStandard', 
+				getAddressArea: 'user/getAddressArea', 
 			}), 
+			async refreshList() {
+				this.initParamas()
+				await this.getData()
+			},
 			async initNameByPid() {
 				if(this.fxStandard.length == 0) {
 					uni.showLoading()
@@ -126,12 +168,9 @@
 				}
 				this.pid_name = this.fxStandard.filter(ele => ele.pid == this.pid)[0].name 
 			},
-			async refreshList() {
-				this.initParamas()
-				await this.getData()
-			},
 			async menusConfirm(data) {
 				console.log(data)
+				 
 				this.pid_name = data.name
 				this.pid = data.pid  
 				this.show = false;
@@ -168,9 +207,12 @@
 			async getData() {
 				if(this.loadstatus != 'loadmore') return
 				this.loadstatus = 'loading'
-				const res = await this.$api.fx_sell_list({params:{ 
+				const res = await this.$api.fxgx_wait_list({params:{ 
 					p: this.curP,
-					pid: this.pid, 
+					pid: this.pid,
+					orderby: this.tabs_list[this.tabs_current].value,
+					regional: this.addressData.regional,
+					fx: 1
 				}})
 				if(res.code == 1) {
 					this.indexList = [...this.indexList, ...res.list.list ]
@@ -186,34 +228,23 @@
 				this.curP ++
 				await this.getData()
 			},  
-			
-			async handleDelet({id}) {
+			handleValArea() {
+				this.refreshList()
+			},
+			async handleAdd({id, sign}) {
 				uni.showLoading()
-				const res = await this.$api.fx_sell_del({
+				const res = await this.$api.fxgx_add({
 					params: {  
-						id
+						id,
+						sign
 					}
 				})
 				if(res.code == 1) {
 					uni.showToast({
 						title: res.msg
-					})
-					const index = this.indexList.findIndex(ele => ele.id == id)
-					this.indexList.splice(index, 1)
-				}
+					})  
+				} 
 				
-				
-			},
-			handleDetail(data) {
-				
-				this.handleGoto({
-					url: '/pages/index/pan/panDetail',
-					params: {
-						id: data.sell_id, 
-						fxid: data.id, 
-						pan:'s',
-					}
-				}) 
 			}, 
 		}
 	}
@@ -224,16 +255,44 @@
 		height: 100vh;
 	}
 </style>
-<style lang="scss" scoped> 
+<style lang="scss" scoped>
+	
+	.tabs-w {
+		// background-color: #eaf2ff;
+		// border-radius: 10px 10px 0 0;
+		color: #666;
+		// overflow: hidden;
+		position: absolute; 
+		top: -10px;
+		left: 0;
+		width: 100%;
+		font-weight: bold;
+		.item { 
+			line-height: 40px;
+			text-align: center;
+			background-color: #eaf2ff;
+			// border-radius: 15px 15px 0 0;
+			&:first-child {
+				border-top-left-radius: 15px;
+			}
+			&:last-child {
+				border-top-right-radius: 15px;
+			}
+			&.active {  
+				line-height: 50px;
+				border-radius: 15px 15px 0 0;
+			}
+		}
+	}
 	.w {
 		height: 100%;
 		padding-top: 120px; 
-		// background-image: url('https://wx.rawmex.cn/Public/2023fenxiao/004.png');
+		// background-image: url('https://wx.rawmex.cn/Public/2023fenxiao/003.png');
 		background-size: 100% auto;
 		background-repeat: no-repeat;
 	}
 	.list {
-		height: calc(100% - 83px);
+		// height: calc(100% - 83px);
 		
 	}
 </style>

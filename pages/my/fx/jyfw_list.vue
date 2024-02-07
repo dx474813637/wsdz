@@ -1,7 +1,9 @@
 <template>
-	<view class="w"> 
+	<view class="w" :style="{
+		backgroundImage: `url(https://wx.rawmex.cn/Public/2023fenxiao/daren-02.jpg?time=${new Date().getTime()})`
+	}"> 
 		<view class="header-w u-p-20">
-			<view class="bg-white u-radius-10 u-p-20 u-flex u-flex-items-center u-flex-between">
+			<!-- <view class="bg-white u-radius-10 u-p-20 u-flex u-flex-items-center u-flex-between">
 				<view class="item u-flex-1 page-bg2 u-m-r-6 u-radius-8 u-flex u-flex-items-center u-p-12 u-p-t-20 u-p-b-20" 
 					@click="nickShow = true" v-if="!fxhome_info.da_name">
 					<view class="icon-w u-m-r-10"  >
@@ -21,56 +23,57 @@
 						<view class="u-font-20 u-info">订阅后可及时收发卖盘消息</view>
 					</view>
 				</view>
-			</view>
-		</view>
-		<view class="tabs-w u-flex u-flex-items-center u-flex-between u-p-30">
-			<view class="item u-flex u-flex-items-center">
-				<u-icon name="list" size="24" color="#f00"></u-icon>
-				<view class="u-m-l-10 u-font-34">我的分销商品</view>
-			</view>
-			<view class="item">
-				<u-button type="primary" shape="circle" size="small" @click="handleGoto({url: '/pages/my/fx/jyfw'})">
-					<u-icon
-						name="plus"
-						size="12"
-						color="#fff"
-					></u-icon>
-					<text class="u-p-l-8 u-font-28">添加分销商品</text>
-				</u-button>
-			</view> 
-		</view>
-		
-		<view class="list"> 
-			<view
-				v-for="(item, index) in indexList"
-				:key="item.id"
-			>
-				<view class="u-p-10 u-p-l-20 u-p-r-20">
-					<JyfwCard
-						:detailData="item" 
-						@detail="handleDetail"
-						@delete="handleDelet"
-					></JyfwCard>
+			</view> -->
+			<view class="bg-white u-radius-10 u-p-10">
+				<view class="tabs-w u-flex u-flex-items-center u-flex-between u-p-20">
+					<view class="item u-flex u-flex-items-center">
+						<u-icon name="list" size="24" color="#f00"></u-icon>
+						<view class="u-m-l-10 u-font-34">我的分销商品</view>
+					</view>
+					<view class="item">
+						<u-button type="primary" shape="circle" size="small" @click="handleGoto({url: '/pages/my/fx/jyfw'})">
+							<u-icon
+								name="plus"
+								size="12"
+								color="#fff"
+							></u-icon>
+							<text class="u-p-l-8 u-font-28">添加分销商品</text>
+						</u-button>
+					</view> 
 				</view>
 				
-			</view>
-			
-			<template name="dataStatus">
-				<template v-if="indexList.length == 0">
-					<u-empty
-						mode="data"
-						:icon="typeConfig.white.empty"
-						text="请先添加分销商品再申请分销"
+				<view class="list"> 
+					<view
+						v-for="(item, index) in indexList"
+						:key="item.id"
 					>
-					</u-empty>
-				</template>
-				<template v-else>
-					<u-loadmore
-						:status="loadstatus"
-					/>
-				</template>
-			</template> 
+						<view class="u-p-10 u-p-l-20 u-p-r-20">
+							<JyfwCard
+								:detailData="item" 
+								@detail="handleDetail"
+								@delete="handleDelet"
+							></JyfwCard>
+						</view>
+						
+					</view>
+					 
+					<template v-if="indexList.length == 0">
+						<u-empty
+							mode="data"
+							:icon="typeConfig.white.empty"
+							text="请先添加分销商品再申请分销"
+						>
+						</u-empty>
+					</template>
+					<template v-else>
+						<u-loadmore
+							:status="loadstatus"
+						/>
+					</template> 
+				</view>
+			</view>
 		</view>
+		
 		<wxDingyuePopup :show="dingyueShow" @dingyuebtn="dingyueBtn" @close="dingyueShow = false"></wxDingyuePopup>
 		<setNickPopup :show="nickShow" @confirmbtn="nickSuccess" @close="nickShow = false"></setNickPopup>
 		<u-safe-bottom></u-safe-bottom>
@@ -232,7 +235,7 @@
 	.w {
 		padding-top: 120px;
 		height: 100%;
-		background-image: url('https://wx.rawmex.cn/Public/2023fenxiao/002.jpg');
+		
 		background-size: 100% auto;
 		background-repeat: no-repeat;
 	}

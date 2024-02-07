@@ -111,7 +111,7 @@
 			cardClick({data}) {
 				// if(!this.isLimit()) return
 				this.handleGoto({
-					url: '/pages/index/frontCard/frontCard',
+					url: '/pages/my/home/home',
 					params: {
 						login: data.login
 					}

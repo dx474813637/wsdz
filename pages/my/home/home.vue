@@ -1,156 +1,118 @@
 <template>
 	<view class="home"> 
 		<view class="home-header">
+			<view class="zhuanfa-btn">
+				<u-button type="info" plain open-type="share" shape="circle" :customStyle="{background: 'transparent', height: '30px'}"  >
+					<view class="u-flex u-flex-items-center">
+						<u-icon name="share-square" color="#fff"></u-icon>
+						<view class="u-m-l-8 text-white">转发主页</view>
+					</view>
+					
+				</u-button>
+			</view>
 			<view class="header-bg" :style="{ backgroundImage: `url(https://wx.rawmex.cn/Public/2023fenxiao/001.jpg)` }" v-if="homeData.bj"></view>
 			
 		</view>
-		<view class="home-main">
-			<view class="main-header u-flex u-flex-items-start u-flex-between u-p-l-50 u-p-r-30">
-				<view class="item item-avatar">
-					<view class="avatar">
-						<u--image
-							showLoading
-							:src="`${homeData.infoa.list.detail.url_img}${homeData.infoa.list.detail.da_pic}`" 
-							width="80px" 
-							height="80px"
-							shape="circle"
-						></u--image>
-					</view>
-					
-				</view>
-				<view class="item u-flex u-flex-items-center">
-					<view class="item-btn u-p-20 u-flex-column u-flex-items-center" @click="sendMsgBtn">
-						<u-icon name="chat" size="25" color="#666"></u-icon>
-						<view class="u-info u-font-28">私信</view>
-					</view>
-					<view class="item-btn u-p-20 u-flex-column u-flex-items-center" @click="dingyueShow = true">
-						<u-icon name="man-add" size="25" color="#666"></u-icon>
-						<view class="u-info u-font-28">订阅</view>
-					</view>
-					<view class="item-btn u-p-20 u-flex-column u-flex-items-center" @click="followBtn">
-						<u-icon name="eye" size="25" color="#666"></u-icon>
-						<view class="u-info u-font-28">关注</view>
-					</view>
-					<view class="item-btn u-p-t-20 u-p-b-20 u-flex-column u-flex-items-center">
-						<u-button open-type="share" :customStyle="{border: '0'}">
-							<view class="u-flex-column">
-								<u-icon name="share-square" size="25" color="#666"></u-icon>
-								<view class="u-info u-font-28">分享</view>
-							</view>
-						</u-button>
+		<view class="home-main u-p-10 u-m-b-20">
+			<view class="bg-white u-radius-10 u-m-b-20 u-p-b-10" style="min-height: 60px;">
+				<view class="main-header u-flex u-flex-items-start u-flex-between u-p-l-50 u-p-r-30">
+					<view class="item item-avatar">
+						<view class="avatar">
+							<u--image
+								showLoading
+								:src="`${homeData.infoa.list.detail.url_img}${homeData.infoa.list.detail.da_pic}`" 
+								width="80px" 
+								height="80px"
+								shape="circle"
+							></u--image>
+						</view>
 						
 					</view>
-				</view>
-			</view>
-			<view class="home-main-info u-flex-column u-flex-between">
-				 
-				<view class="header-bottom u-flex u-flex-items-center u-p-20">
-					
-					<view class="item u-flex-1 u-flex u-flex-items-end">
-						<view class="user-name u-line-1 u-m-l-20 u-m-r-20" v-if="homeData.infoa.list.detail.da_name">
-							{{homeData.infoa.list.detail.da_name  }}
+					<view class="item u-flex-1 u-p-t-20 u-p-b-20"> 
+						<view>
+							<view class="user-name u-line-1 text-bold" v-if="homeData.infoa.list.detail.da_name">
+								{{homeData.infoa.list.detail.da_name  }}
+							</view>
+							<view class="user-sub u-font-28  u-flex u-flex-items-center u-p-l-14 u-p-r-14 u-p-6 u-radius-6 text-base u-m-r-20 u-m-l-10" 
+								 v-else-if="homeData.me == 1" @click="handleGoto('/pages/my/home/home_edit')">
+								<u-icon name="plus" size="14"></u-icon>
+								<view class="u-m-l-8">
+									设置昵称
+								</view>	
+							</view>
 						</view>
-						<view class="user-sub u-font-28  u-flex u-flex-items-center u-p-l-14 u-p-r-14 u-p-6 u-radius-6 text-base u-m-r-20 u-m-l-10" 
-							 v-else-if="homeData.me == 1" @click="handleGoto('/pages/my/home/home_edit')">
-							<u-icon name="plus" size="14"></u-icon>
-							<view class="u-m-l-8">
-								设置昵称
-							</view>	
+						
+						<view class="u-flex u-flex-items-center u-flex-between" style="height: 25px">
+							<view class="user-sub u-font-30  u-flex u-flex-items-center u-radius-6 text-base" v-if="homeData.info.list.attestation">
+								<view class="u-line-1">{{homeData.info.list.attestation}}</view> 
+								<view class="u-m-l-5">
+									<u-icon name="checkmark-circle" color="#007aff" v-if="homeData.info.list.rz == '1'"></u-icon>
+									<i class="custom-icon-bangzhu1 custom-icon u-error u-font-36" v-else ></i>
+									<!-- <u-icon name="phone-fill" color="#87cfff" v-else></u-icon> -->
+								</view> 
+							</view>
+							<view class="text-nowrap">
+								<u--text 
+									type="primary"
+									v-if="homeData.me == 1"
+									@click="handleGoto('/pages/my/home/home_edit')"
+									text="编辑资料"></u--text> 
+							</view>
 						</view>
-						<view class="user-sub u-font-30  u-flex u-flex-items-center u-p-l-14 u-p-r-14 u-p-6 u-radius-6 text-base" v-if="homeData.info.list.attestation">
-							<view class="u-line-1">{{homeData.info.list.attestation}}</view> 
-							<view class="u-m-l-10">
-								<u-icon name="checkmark-circle" color="#007aff" v-if="homeData.info.list.rz == '1'"></u-icon>
-								<i class="custom-icon-bangzhu1 custom-icon u-error u-font-36" v-else ></i>
-								<!-- <u-icon name="phone-fill" color="#87cfff" v-else></u-icon> -->
-							</view> 
-						</view>
-					</view>
-					
-				</view>
-			</view>
-			<view class="user-info u-p-l-30 u-p-r-30 u-m-b-20" v-if="homeData.infoa.list.detail.da_intro">
-				<view class="item u-p-15 u-radius-6">
-					<u-read-more 
-						ref="uReadMore" 
-						showHeight="150" 
-						toggle 
-						textIndent="0"
-						fontSize="12"
-						closeText="展开"
-						>
-						<rich-text :nodes="homeData.infoa.list.detail.da_intro"></rich-text> 
-					</u-read-more>
-				</view>
-			</view>
-			<view class="user-info u-p-l-30 u-p-r-30 u-m-b-20" v-else-if="homeData.me == 1">
-				<view class="item u-p-15 u-radius-6">
-					<view class="" @click="handleGoto('/pages/my/home/home_edit')">
-						留下你的个性签名让大家了解和关注你
-					</view>
-				</view>
-			</view>
-			<view class="u-flex u-flex-items-center u-flex-between u-m-b-20">
-				<view class="user-data u-flex u-flex-items-center u-p-20 u-p-l-30 u-p-r-30">
-					<view class="item u-flex u-flex-items-center">
-						<view class="data">{{homeData.info.follow}}</view>
-						<view class="data-label">关注</view>
-					</view>
-					<view class="item u-flex u-flex-items-center">
-						<view class="data">{{homeData.info.follow_me}}</view>
-						<view class="data-label">粉丝</view>
+						 
+						
 					</view>
 				</view> 
-				<view class="u-p-r-30">
-					<u-button
-						type="primary"
-						v-if="homeData.me == 1"
-						size="small"
-						:customStyle="{borderRadius: '5px'}" 
-						@click="handleGoto('/pages/my/home/home_edit')"
-						>
-						编辑资料
-					</u-button>
-					<u-button
-						type="primary" 
-						size="small"
-						v-else
-						:customStyle="{borderRadius: '5px'}" 
-						@click="followBtn"
-						>
-						关注
-					</u-button>
+				<view class="user-info u-p-l-30 u-p-r-30" v-if="homeData.infoa.list.detail.da_intro">
+					<view class="item u-p-15 u-radius-6">
+						<u-read-more 
+							ref="uReadMore" 
+							showHeight="150" 
+							toggle 
+							textIndent="0"
+							fontSize="12"
+							closeText="展开"
+							>
+							<rich-text :nodes="homeData.infoa.list.detail.da_intro"></rich-text> 
+						</u-read-more>
+					</view>
+				</view>
+				<view class="user-info u-p-l-30 u-p-r-30" v-else-if="homeData.me == 1">
+					<view class="item u-p-15 u-radius-6" @click="handleGoto('/pages/my/home/home_edit')"> 
+						留下你的个性签名让大家了解和关注你 
+					</view>
 				</view>
 			</view>
-			
-			<!-- <view class="user-tags u-flex u-flex-items-start u-flex-wrap u-p-l-30 u-p-r-30 u-m-b-20">
-				<u-button 
-					type="primary" 
-					:customStyle="{borderRadius: '5px'}" 
-					@click="handleGoto('/pages/my/home/home_edit')"
-					>
-					编辑资料
-				</u-button>
-			</view>
-			<view class="user-tags u-flex u-flex-items-start u-flex-wrap u-p-l-30 u-p-r-30 u-m-b-20" v-else>
-				<u-button 
-					type="primary" 
-					:customStyle="{borderRadius: '5px'}" 
-					@click="follow"
-					>
-					关注
-				</u-button>
-			</view> -->
-			<view class="home-tabs u-p-l-20 u-p-r-20 u-flex u-flex-items-center u-flex-between " v-if="tabs_list.length > 0">
-				<!-- <u-tabs
-					:list="tabs_list"
-					:current="tabs_current"
-					lineHeight="0"
-					:activeStyle="activeTabsStyle"
-					:itemStyle="itemTabsStyle"
-					@change="handleTabsChange"
-				> </u-tabs> -->
-				<view class="item-tabs u-flex-1 u-flex u-flex-center"
+			<view class="bg-white u-radius-10 u-p-t-10 u-p-b-10 u-m-b-30">
+				<view class="u-flex u-flex-items-center u-flex-between ">
+					<view class="user-data u-flex u-flex-items-center u-p-20 u-p-l-30 u-p-r-30 u-font-28">
+						<view class="item u-flex u-flex-items-center">
+							<view class="data">{{homeData.info.follow}}</view>
+							<view class="data-label">关注</view>
+						</view>
+						<view class="item u-flex u-flex-items-center">
+							<view class="data">{{homeData.info.follow_me}}</view>
+							<view class="data-label">粉丝</view>
+						</view>
+					</view>  
+					<view class="item u-flex u-flex-items-center u-p-r-10">
+						<view class="item-btn u-p-10 u-flex u-flex-items-center" @click="followBtn">
+							<u-icon name="eye" size="25" color="#333"></u-icon>
+							<view class="text-base u-font-28">关注</view>
+						</view>
+						<view class="item-btn u-p-10 u-flex u-flex-items-center" @click="sendMsgBtn">
+							<u-icon name="chat" size="25" color="#333"></u-icon>
+							<view class="text-base u-font-28">私信</view>
+						</view>
+						<view class="item-btn u-p-10 u-flex u-flex-items-center" @click="dingyueShow = true">
+							<u-icon name="man-add" size="25" color="#333"></u-icon>
+							<view class="text-base u-font-28">订阅</view>
+						</view> 
+					</view>
+				</view>
+			</view> 
+			<view class="home-tabs u-p-10 u-p-l-15 u-p-r-15 u-flex u-flex-items-center u-radius-8" v-if="tabs_list.length > 0"> 
+				<view class="item-tabs u-flex u-flex-center"
 					:class="{
 						active: index == tabs_current
 					}"
@@ -161,7 +123,7 @@
 					{{item.name}}
 				</view>
 			</view>
-			<view class="home-list u-p-20">
+			<view class="home-list u-p-t-30">
 				<template v-if="activeTabsKey == 'fx_pan'">
 					<view class="list-item u-m-b-20" v-for="item in homeList" :key="item.id">
 						<cardFx
@@ -181,6 +143,8 @@
 							:tims="item.Tims"
 							:origin="item"
 							theme="white"
+							:me="homeData.me"
+							isFx="1"
 							@tims="handleClickTims"
 							@detail="handleRouteTo"
 						></cardFx>
@@ -204,7 +168,7 @@
 							:pubDate="item.post_time"
 							:tims="item.Tims"
 							:origin="item"
-							theme="white"
+							theme="white" 
 							@tims="handleClickTims"
 							@detail="handleRouteTo"
 						></cardFx>
@@ -253,14 +217,15 @@
 				tabs_list: [],
 				content: '',
 				fxImg: 'https://img-album.rawmex.cn/200-200/',
-				dingyueShow: false
+				dingyueShow: false,
+				customShareParams: {}
 			};
 		},
 		components: { 
 			cardFx,
 			wxDingyuePopup
 		},
-		async onLoad(options) {
+		async onLoad(options) { 
 			if(!options.hasOwnProperty('login')) {
 				this.handleGoto({
 					type: 'reLaunch',
@@ -268,14 +233,25 @@
 				})
 				return
 			}
+			if(options.hasOwnProperty('tabs_current')) {
+				this.tabs_current = +options.tabs_current 
+			}
 			this.sendDingyue()
 			this.login = options.login
 			uni.showLoading()
 			await this.getHomeData()
 		},
+		watch: {
+			tabs_current: {
+				handler(n) {
+					this.customShareParams.tabs_current = n
+				},
+				immediate: true
+			}
+		},
 		computed: {
 			...mapState({ 
-				typeConfig: state => state.theme.typeConfig,
+				typeConfig: state => state.theme.typeConfig, 
 			}),
 			themeConfig() {
 				return this.typeConfig.white
@@ -289,6 +265,18 @@
 				return this.tabs_list[this.tabs_current].key
 			}
 		},
+		onShareAppMessage() {
+			console.log('share1')
+			this.$api.uid_share_index({params: {
+				login: this.login
+			}})
+		},
+		onShareTimeline() {
+			console.log('share2')
+			this.$api.uid_share_index({params: {
+				login: this.login
+			}})
+		},
 		methods: {
 			...mapMutations({
 				handleGoto: 'user/handleGoto'
@@ -298,13 +286,13 @@
 			}),
 			initTabsData() {
 				let arr = []
-				if(this.homeData.sell1_show == 1) {
+				if(this.homeData.sell1_show == 1 && this.homeData.info.list.switch1 == '1') {
 					arr.push({ name: this.homeData.sell1_name, list: this.homeData.sell1 || [], url: this.homeData.sell1_url, key: 'fx_pan'})
 				}
-				if(this.homeData.sell2_show == 1) {
+				if(this.homeData.sell2_show == 1 && this.homeData.info.list.switch2 == '1') {
 					arr.push({ name: this.homeData.sell2_name, list: this.homeData.sell2 || [], url: this.homeData.sell2_url, key: 'pan'})
 				}
-				if(this.homeData.sell3_show == 1) {
+				if(this.homeData.sell3_show == 1 && this.homeData.info.list.switch3 == '1') {
 					arr.push({ name: this.homeData.sell3_name, list: this.homeData.sell3 || [], url: this.homeData.sell3_url, key: 'card'})
 				}
 				this.tabs_list = arr
@@ -317,8 +305,8 @@
 					this.initTabsData()
 					 
 					this.$nextTick(() => {
-										this.$refs.uReadMore.init();
-									})
+						this.homeData.infoa?.list?.detail?.da_intro && this.$refs.uReadMore.init();
+					})
 				}
 			},
 			changeTabsStatus(key, value) {
@@ -356,7 +344,7 @@
 					url: '/pages/my/msg/msgDetail',
 					params: {
 						login: `${tims.login}`,
-						content: `咨询${this.pan=='s'? '卖盘': '买盘'}：${origin.name}，https://www.rawmex.cn/sell-${id}.html`
+						content: `咨询卖盘：${origin.name}，https://www.rawmex.cn/sell-${id}.html`
 					}
 				}) 
 			},
@@ -446,6 +434,7 @@
 <style lang="scss" >
 	page {
 		min-height: 100vh;
+		background-color: #f5f6fa;
 		/deep/ {
 			.card-w {
 				box-shadow: none!important;
@@ -458,6 +447,12 @@
 	.home-header {
 		position: relative;
 		height: 120px;
+		.zhuanfa-btn {
+			position: absolute;
+			right: 10px;
+			top: 18px;
+			z-index: 20;
+		}
 		.header-bg {
 			background-size: cover;
 			background-repeat: no-repeat;
@@ -481,27 +476,29 @@
 				border-radius: 50px;
 				border: 3px solid $u-primary;
 			}
-			.user-name {
-				font-weight: bold;
-				font-size: 24px;
-			}
+			
 			.user-sub {
 				// background-color: #f3f9ff;
 			}
 			
 		}
 	}
+	.user-name {
+		font-weight: bold;
+		font-size: 24px;
+	}
 	.home-main {
-		background-color: #fff;
+		// background-color: #fff;
 		position: relative;
 		z-index: 30;
-		top: -30px;
+		top: -40px;
 		border-radius: 30px 30px 0 0;
 		// box-shadow: 0 -5px 5px rgba(0,0,0,.3);
 		.main-header {
 			.item {
 				&.item-avatar {
 					position: relative;
+					flex: 0 0 100px;
 					.avatar {
 						position: absolute;
 						top: -20px;
@@ -521,12 +518,12 @@
 					margin-right: 0;
 				}
 				.data {
-					color: #333;
+					color: #000;
 					font-weight: bold;
 				}
 				.data-label {
 					margin-left: 6px;
-					color: #999;
+					color: #333;
 				}
 			}
 		}
@@ -541,38 +538,41 @@
 		}
 		.user-info {
 			.item {
-				background-color: #f2f0f1;
+				// background-color: #f2f0f1;
 			}
 		}
-		.home-tabs {
-			border-top: 6px solid #f8f8f8;
-			box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+		.home-tabs { 
+			background-color: #306ccc;
+			box-sizing: border-box;
 			.item-tabs {
-				font-size: 17px;
-				margin-right: 15px;
-				color: #999;
+				flex: 0 0 33%;
+				font-size: 14px;
+				// margin-right: 15px;
+				color: #fff;
 				position: relative;
-				line-height: 50px;
+				line-height: 25px;
+				border-radius: 5px;
 				&:last-child {
 					margin-right: 0;
 				}
-				&::after {
-					content: '';
-					position: absolute;
-					display: none;
-					width: 30px;
-					height: 3px;
-					background-color: #000;
-					bottom: 0;
-					left: 50%;
-					transform: translateX(-50%);
-				}
+				// &::after {
+				// 	content: '';
+				// 	position: absolute;
+				// 	display: none;
+				// 	width: 30px;
+				// 	height: 3px;
+				// 	background-color: #000;
+				// 	bottom: 0;
+				// 	left: 50%;
+				// 	transform: translateX(-50%);
+				// }
 				&.active {
 					color: #000;
-					font-weight: bold;
-					&:after {
-						display: blcok;
-					}
+					// font-weight: bold;
+					background-color: #fff;
+					// &:after {
+					// 	display: blcok;
+					// }
 				}
 			}
 		}

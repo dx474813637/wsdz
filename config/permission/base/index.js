@@ -3,7 +3,7 @@ import wx_permission from '@/config/permission/wx.js'
 import { PROJECT } from '@/utils/isProject.js' 
 
 const config = PROJECT
-export async function permissionBase (vm, e) {
+export function permissionBase (vm, e) {
 	const {whiteList, userStateList, sinopayWhiteList, sinoTiShiList} = config.base.permission
 	// 获取要跳转的页面路径（url去掉"?"和"?"后的参数）
 	const url = e.url.split('?')[0]
@@ -129,26 +129,26 @@ export async function permissionBase (vm, e) {
 	// }
 	
 	
-	if (sinoTiShiList) {
-		//sinopay页面 
-		if (url.includes('/pages/my/money/')) {
-			pass_sino = sinoTiShiList.some((item) => {
-				if (typeof(item) === 'object' && item.pattern) {
-					return item.pattern.test(url)
-				}
-				return url === item
-			})
-			if (pass_sino) {
-				try {
-					await store.dispatch('sinopay/getSinoTishi')
-				} catch (e) {
-					uni.$u.toast(e)
-					console.error('getSinoTishi error: ', res)
-					return false
-				}
-			}
-		}
-	}
+	// if (sinoTiShiList) {
+	// 	//sinopay页面 
+	// 	if (url.includes('/pages/my/money/')) {
+	// 		pass_sino = sinoTiShiList.some((item) => {
+	// 			if (typeof(item) === 'object' && item.pattern) {
+	// 				return item.pattern.test(url)
+	// 			}
+	// 			return url === item
+	// 		})
+	// 		if (pass_sino) {
+	// 			try {
+	// 				await store.dispatch('sinopay/getSinoTishi')
+	// 			} catch (e) {
+	// 				uni.$u.toast(e)
+	// 				console.error('getSinoTishi error: ', res)
+	// 				return false
+	// 			}
+	// 		}
+	// 	}
+	// }
 	// if(!store.state.sinopay.sino.hasOwnProperty('state')) {
 	// 	uni.showLoading({
 	// 		title: '正在获取资金账户'

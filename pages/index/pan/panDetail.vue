@@ -513,36 +513,39 @@
 				
 			</view>
 			
-			<view class="u-flex u-flex-items-center u-flex-center u-p-20 u-m-b-30"
-				:style="{
-					color: themeConfig.pan.lightcolor
-				}"
-			>{{`该${pan == 's'? '卖家的其他供应' : '买家的其他求购'}`}}</view>
-			
-			<view class="other-list">
-				<view class="item u-m-b-20"
-					v-for="(item, index) in indexList"
-					:key="item.id"
-				>
-					<cardA
-						:name="item.name"
-						:pid="item.id"
-						:amount="item.amount"
-						:color="item.color"
-						:price="item.price"
-						:unit="item.unit"
-						:spec="pan == 'b' ? item.spec : item.spec1"
-						:delivery_place="item.delivery_place"
-						:express_time="item.express_time"
-						:express_unit="item.express_unit"
-						:trade_type="item.trade_type"
-						:pubDate="item.post_time"
-						:origin="item"
-						@tims="handleClickTims"
-						@detail="handleRouteTo"
-					></cardA>
+			<template v-if="!fxid">
+				<view class="u-flex u-flex-items-center u-flex-center u-p-20 u-m-b-30"
+					:style="{
+						color: themeConfig.pan.lightcolor
+					}"
+				>{{`该${pan == 's'? '卖家的其他供应' : '买家的其他求购'}`}}</view>
+				
+				<view class="other-list">
+					<view class="item u-m-b-20"
+						v-for="(item, index) in indexList"
+						:key="item.id"
+					>
+						<cardA
+							:name="item.name"
+							:pid="item.id"
+							:amount="item.amount"
+							:color="item.color"
+							:price="item.price"
+							:unit="item.unit"
+							:spec="pan == 'b' ? item.spec : item.spec1"
+							:delivery_place="item.delivery_place"
+							:express_time="item.express_time"
+							:express_unit="item.express_unit"
+							:trade_type="item.trade_type"
+							:pubDate="item.post_time"
+							:origin="item"
+							@tims="handleClickTims"
+							@detail="handleRouteTo"
+						></cardA>
+					</view>
 				</view>
-			</view>
+			</template>
+			
 			
 					
 		</view>
@@ -804,6 +807,7 @@
 				orderBtnName: '立即下单',
 				jpBtnName: '预 约',
 				timeLeft: 0,
+				trade_mode: '',
 			};
 		},
 		async onLoad(options) {
@@ -820,10 +824,16 @@
 			if(options.hasOwnProperty('pan')) {
 				this.pan = options.pan
 			}
+			if(options.hasOwnProperty('trade_mode')) {
+				this.trade_mode = options.trade_mode
+			}
 			await this.getData()
 			this.pageLoading = false
 			// await this.getCpyData()
-			await this.getDataList()
+			if(!this.fxid) {
+				await this.getDataList()
+			}
+			
 		},
 		watch: {
 			timeLeft() {
@@ -953,7 +963,7 @@
 				
 			},
 			async getData() {
-				const res = await this.$api[this.pan == 's'? 'getSellDetail' : 'getBuyDetail']({params: {id: this.id, fxid: this.fxid, key: this.key}})
+				const res = await this.$api[this.pan == 's'? 'getSellDetail' : 'getBuyDetail']({params: {id: this.id, fxid: this.fxid, key: this.key, trade_mode: this.trade_mode}})
 				// console.log(res)
 				if(res.code == 1) {
 					this.list = res.list
@@ -1090,6 +1100,7 @@
 					params: { 
 						id: this.id,  
 						fxid: this.fxid, 
+						trade_mode: this.trade_mode
 					},
 				}
 				if(this.list.trade_mode != '5') {
@@ -1099,6 +1110,7 @@
 						id: this.id, 
 						fxid: this.fxid, 
 						type: 'add',
+						trade_mode: this.trade_mode
 					}
 				}
 				this.handleGoto(obj)

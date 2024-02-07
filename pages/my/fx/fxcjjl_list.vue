@@ -1,7 +1,19 @@
 <template>
-	<view class="w u-p-l-20 u-p-r-20"> 
+	<view class="w u-p-l-20 u-p-r-20" :style="{
+		backgroundImage: `url(https://wx.rawmex.cn/Public/2023fenxiao/daren-05.png?time=${new Date().getTime()})`
+	}"> 
 		<view class="bg-white u-radius-18 u-p-t-15" >
-			<view class="search-wrapper u-flex u-p-20">
+			<view>
+				<u-tabs
+					:list="tabs_list"
+					:current="tabs_current"
+					lineHeight="0"
+					:activeStyle="activeTabsStyle"
+					:itemStyle="itemTabsStyle"
+					@change="handleTabsChange"
+				></u-tabs>
+			</view>
+			<view class="search-wrapper u-flex u-p-l-20 u-p-r-20 u-p-b-20">
 				<view class="item u-flex-1 u-p-b-10" @click="show = true">
 					<u-input 
 						placeholder="请选择" 
@@ -16,7 +28,6 @@
 				</view>
 				
 			</view> 
-			
 			<view class="list u-p-20"> 
 				<view
 					v-for="(item, index) in indexList"
@@ -76,6 +87,23 @@
 					height: '44px',
 					padding: '0 13px'
 				}, 
+				tabs_list: [
+					{
+						name: '全部',
+						value: '',
+						disabled: false,
+					}, 
+					{
+						name: '未完成',
+						value: '0',
+						disabled: false,
+					}, 
+					{
+						name: '已完成',
+						value: '1',
+						disabled: false,
+					}, 
+				],
 				indexList: [],
 				curP: 1,
 				loadstatus: 'loadmore'
@@ -143,8 +171,8 @@
 				})
 			},
 			async handleTabsChange(value) {
-				this.pid = ''
-				this.pid_name = ''
+				// this.pid = ''
+				// this.pid_name = ''
 				this.tabs_current = value.index
 				this.changeTabsStatus('disabled', true)
 				this.initParamas();
@@ -161,6 +189,7 @@
 				const res = await this.$api.fx_sell_suc({params:{ 
 					p: this.curP,
 					pid: this.pid, 
+					order_state: this.tabs_list[this.tabs_current].value
 				}})
 				if(res.code == 1) {
 					this.indexList = [...this.indexList, ...res.list.list ]
@@ -183,7 +212,7 @@
 						API: 'DA_ALLIANCE_DA_PRODUCT_TO_MEMBER',
 						Action: 'DELETE',
 						token: 1,
-						id
+						id,
 					}
 				})
 				if(res.code == 1) {
@@ -219,7 +248,7 @@
 	.w {
 		height: 100%;
 		padding-top: 120px; 
-		background-image: url('https://wx.rawmex.cn/Public/2023fenxiao/005.png');
+		// background-image: url('https://wx.rawmex.cn/Public/2023fenxiao/005.png');
 		background-size: 100% auto;
 		background-repeat: no-repeat;
 	}

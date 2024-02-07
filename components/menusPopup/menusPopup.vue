@@ -507,7 +507,7 @@
 			async open() {
 				if(this.isMyProduct) {
 					this.loading = true
-					await this.getCompanyProduct({type: this.pan == 'b'? '1' : '2'})
+					await this.getCompanyProduct({type: this.pan == 'b'? '1' : '2', pr: 200})
 					this.loading = false;
 				}
 				else if(this.isMyAllCpy) {

@@ -1,18 +1,18 @@
 <template>
 	<view class="w u-p-l-20 u-p-r-20" :style="{
-		backgroundImage: `url(https://wx.rawmex.cn/Public/2023fenxiao/004.png?time=${new Date().getTime()})`
+		backgroundImage: `url(https://wx.rawmex.cn/Public/2023fenxiao/fxtop5.png?time=${new Date().getTime()})`
 	}"> 
 		<view class="bg-white u-radius-18 u-p-t-15" >
 			<view class="search-wrapper u-flex u-p-20">
 				<view class="item u-flex-1 u-p-b-10" @click="show = true">
 					<u-input 
-						placeholder="请选择我的分销商品" 
+						placeholder="请选择" 
 						v-model="pid_name" 
 						:showAction="false"
 						readonly
 						bgColor="#fff" 
-						suffixIcon="arrow-down"
-						suffixIconStyle="color: #909399; font-size: 14px"
+						suffixIcon="arrow-down-fill"
+						suffixIconStyle="color: #909399"
 					>
 					</u-input>
 				</view>
@@ -25,11 +25,10 @@
 					:key="item"
 				>
 					<view class="u-m-b-20">
-						<FxmpCard
+						<FxjlCard
 							:detailData="item" 
 							@detail="handleDetail"
-							@delete="handleDelet"
-						></FxmpCard>
+						></FxjlCard>
 					</view>
 					
 				</view>
@@ -50,22 +49,25 @@
 				</template> 
 			</view>
 		</view>
-		<menusPopupMyStandard
-			:show="show"
-			theme="white"
+		
+		<menusPopupMyProduct 
+			:show="show" 
+			theme="white"   
 			@close="show = false"
 			@confirm="menusConfirm"
-		></menusPopupMyStandard>
+		></menusPopupMyProduct>
 	</view>
 </template>
 
 <script>
 	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
-	import FxmpCard from '@/pages/my/components/FxmpCard/FxmpCard.vue'
+	import FxjlCard from '@/pages/my/components/FxjlCard/FxjlShopCard.vue'
 	import menusPopupMyStandard from '@/components/menusPopup/menusPopupMyStandard.vue'
 	export default {
 		data() {
 			return {
+				pid: '',
+				pid_name: '',
 				show: false,
 				tabs_current: 0,
 				activeTabsStyle: {
@@ -76,18 +78,9 @@
 				itemTabsStyle: {
 					height: '44px',
 					padding: '0 13px'
-				},
-				tabs_list: [
-					{
-						name: '全部',
-						value: '',
-						disabled: false,
-					}, 
-				],
+				}, 
 				indexList: [],
 				curP: 1,
-				pid: '',
-				pid_name: '',
 				loadstatus: 'loadmore'
 			};
 		},
@@ -106,7 +99,7 @@
 			}),
 		},
 		components: {
-			FxmpCard,
+			FxjlCard,
 			menusPopupMyStandard
 		},
 		onReachBottom() {
@@ -132,8 +125,8 @@
 			},
 			async menusConfirm(data) {
 				console.log(data)
-				this.pid_name = data.name
-				this.pid = data.pid  
+				this.pid_name = data.Standard.name
+				this.pid = data.Standard.pid  
 				this.show = false;
 				uni.showLoading()
 				this.refreshList()
@@ -153,8 +146,8 @@
 				})
 			},
 			async handleTabsChange(value) {
-				// this.pid = ''
-				// this.pid_name = ''
+				this.pid = ''
+				this.pid_name = ''
 				this.tabs_current = value.index
 				this.changeTabsStatus('disabled', true)
 				this.initParamas();
@@ -168,7 +161,7 @@
 			async getData() {
 				if(this.loadstatus != 'loadmore') return
 				this.loadstatus = 'loading'
-				const res = await this.$api.fx_sell_list({params:{ 
+				const res = await this.$api.shop_fx_suc_list({params:{ 
 					p: this.curP,
 					pid: this.pid, 
 				}})
@@ -186,17 +179,19 @@
 				this.curP ++
 				await this.getData()
 			},  
-			
 			async handleDelet({id}) {
 				uni.showLoading()
-				const res = await this.$api.fx_sell_del({
-					params: {  
+				const res = await this.$api.all_api({
+					params: {
+						API: 'DA_ALLIANCE_DA_PRODUCT_TO_MEMBER',
+						Action: 'DELETE',
+						token: 1,
 						id
 					}
 				})
 				if(res.code == 1) {
 					uni.showToast({
-						title: res.msg
+						title: '删除成功'
 					})
 					const index = this.indexList.findIndex(ele => ele.id == id)
 					this.indexList.splice(index, 1)
@@ -206,15 +201,14 @@
 			},
 			handleDetail(data) {
 				
-				this.handleGoto({
-					url: '/pages/index/pan/panDetail',
-					params: {
-						id: data.sell_id, 
-						fxid: data.id, 
-						pan:'s',
-					}
-				}) 
-			}, 
+				// this.handleGoto({
+				// 	url: '/pages/my/fx/fxgx',
+				// 	params: {
+				// 		id: data.id, 
+				// 		data: encodeURIComponent(JSON.stringify(data)),
+				// 	}
+				// })
+			}
 		}
 	}
 </script>
@@ -228,12 +222,12 @@
 	.w {
 		height: 100%;
 		padding-top: 120px; 
-		// background-image: url('https://wx.rawmex.cn/Public/2023fenxiao/004.png');
+		// background-image: url('https://wx.rawmex.cn/Public/2023fenxiao/005.png');
 		background-size: 100% auto;
 		background-repeat: no-repeat;
 	}
 	.list {
-		height: calc(100% - 83px);
+		height: calc(100% - 39px);
 		
 	}
 </style>

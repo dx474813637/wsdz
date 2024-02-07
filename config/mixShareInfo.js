@@ -1,4 +1,4 @@
-import { current_project } from '@/utils/isProject.js'
+import { current_project } from '@/utils/isProject.js' 
 export default {
 	data() {
 		return {
@@ -21,6 +21,10 @@ export default {
 		}
 	},
 	onShareTimeline(){
+		let url = this.getPath()
+		this.$api.uid_share_all({params: {
+			url
+		}}) 
 		return{
 			title: this.onlineControl.share_title,
 			query: this.getQuery(),
@@ -28,12 +32,16 @@ export default {
 		}
 	},
 	onShareAppMessage(res) {
+		let url = this.getPath()
+		this.$api.uid_share_all({params: {
+			url
+		}}) 
 		if(res.target && res.target.id && res.target.id.includes('diy_')) {
 			
 		}else {
 			return {
 				title: this.onlineControl.share_title,
-				path: this.onlineControl.path ? this.onlineControl.path :this.getPath(),
+				path: this.onlineControl.path ? this.onlineControl.path : url,
 				imageUrl: this.onlineControl.share_img
 			};
 		}
@@ -89,7 +97,7 @@ export default {
 			}).join('&')
 			console.log(query)
 			return query
-		},
+		}, 
 		// getShareTitle() {
 		// 	let title = uni.getStorageSync('home').title || '旺铺'
 		// 	return `${title} - ${this.onlineControl.pageName}`

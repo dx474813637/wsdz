@@ -9,7 +9,7 @@ import { current_project } from '@/utils/isProject.js'
 
  
 
-export default async function(vm) {
+export default function(vm) {
 	console.log(vm)
 	const list = ['navigateTo', 'redirectTo', 'reLaunch', 'switchTab']
 	// 用遍历的方式分别为,uni.navigateTo,uni.redirectTo,uni.reLaunch,uni.switchTab这4个路由方法添加拦截器
@@ -20,6 +20,7 @@ export default async function(vm) {
 				console.log(model_name)
 				if(model_name == 'base') {
 					let res = permissionBase(vm, e)
+					console.log('ceshi', res)
 					if(!res) return false
 				}
 				else if(model_name == 'chemnet') { 

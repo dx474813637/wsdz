@@ -64,7 +64,7 @@
 
 <script>
 	export default {
-		name: 'FxgxCard',
+		name: 'FxShopCard',
 		props: {
 			detailData: {
 				type: Object,

@@ -1,20 +1,20 @@
 <template>
-	<view class="wrapper u-radius-10 uni-shadow-base bg-white " @click="handleDetail">
-		<view class="card u-flex u-flex-items-center u-flex-between u-p-25 " style="background-color: #e6f2ff;">
+	<view class="wrapper u-radius-10  u-p-10  " style="background-color: #e6f2ff;" @click="handleDetail">
+		<view class="card u-flex u-flex-items-center u-flex-between u-p-10 u-p-l-25 u-p-r-25 ">
 			<view class="item">
 				<view class="u-font-36">{{detailData.name}}</view>
 				<view class="u-info text-thin u-font-28">{{detailData.ctime}}</view>
 			</view>
-			<view class="item u-font-26" @click.stop="handleGoto({
+			<!-- <view class="item u-font-26" @click.stop="handleGoto({
 				url: '/pages/my/fx/fxgx_add',
 				params: {
 					pid: detailData.pid
 				}
 			})">
-				<u-button type="primary" size="small" plain shape="circle">分销联盟申请分销</u-button>
-			</view>
+				<u-button type="primary" size="small" plain shape="circle">货源中心</u-button>
+			</view> -->
 		</view>
-		<view class="main u-font-30 text-base">
+		<view class="main u-font-30 text-base bg-white" >
 			 
 			<view class="rows u-flex u-flex-items-center u-flex-between u-p-15 " >
 				<view class="item u-flex u-flex-items-center">
@@ -27,21 +27,29 @@
 					
 				</view>
 				<view class="item u-flex u-flex-items-center"> 
-					<view class="u-m-r-15" @click.stop="handleGoto({
+					<!-- <view class="u-m-r-15" @click.stop="handleGoto({
 						url: '/pages/my/fx/fxmp_list',
 						params: {
 							pid: detailData.pid
 						}
 					})"  >
-						<u-button type="info" size="small" plain shape="circle">分销卖盘</u-button>
+						<u-button type="info" size="small" plain shape="circle">相关卖盘</u-button>
 					</view>
 					<view class="u-m-r-15" @click.stop="handleGoto({
-						url: '/pages/my/fx/fxcjjl_list',
+						url: '/pages/my/fx/fxmp_list',
 						params: {
 							pid: detailData.pid
 						}
 					})" >
-						<u-button type="info" size="small" plain shape="circle">已分销订单</u-button>
+						<u-button type="info" size="small" plain shape="circle">相关订单</u-button>
+					</view> -->
+					<view class="u-m-r-15" @click.stop="handleGoto({
+						url: '/pages/my/fx/fxgx_add',
+						params: {
+							pid: detailData.pid
+						}
+					})" >
+						<u-button type="primary" size="small" plain shape="circle">货源中心</u-button>
 					</view>
 				</view>
 			</view>

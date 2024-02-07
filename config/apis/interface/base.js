@@ -2,8 +2,15 @@
 const http = uni.$u.http
 // https://api.rawmex.cn/gw/demo/
 // all_api token=1需要login token
-export const all_api = (data) => http.request({url: 'all_api', method: 'GET', ...data})
+// export const all_api = (data) => http.request({url: 'all_api', method: 'GET', ...data})
 
+export const all_api = (data, methods = 'GET', config = {}) => {
+	if (methods == 'GET') {
+		return http.get('all_api', data)
+	} else if (methods == 'POST') {
+		return http.post('all_api', data, config)
+	}
+}
 //授权获取用户信息 ？
 export const login = (data, config = {}) => http.post('login', data, config)
 
@@ -177,4 +184,10 @@ export const homepage = (data) => http.get('homepage', data)
 export const page_info = (data) => http.get('page_info', data)
 // save_page_info 保存我的信息接口 参数pic 完整图片地址 name昵称  attestation认证信息 rz=0未认证 1认证 info个人介绍
 // 		rz=0未认证 1认证 这个只是字段说明，不接受参数的。这个是管理员审核的。
+//		switch1分销卖盘开关 switch2我的卖盘开关 switch3我的名片开关
 export const save_page_info = (data, config={}) => http.post('save_page_info', data, config)
+
+// uid_share_index 分享主页接口 参数login  必填
+export const uid_share_index = (data) => http.get('uid_share_index', data)
+// uid_share_all 分享记录接口 参数url  必填
+export const uid_share_all = (data) => http.get('uid_share_all', data)

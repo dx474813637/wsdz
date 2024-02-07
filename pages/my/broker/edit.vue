@@ -93,7 +93,7 @@
 						  </u-radio-group>
 					</u-form-item>
 					
-					<u-form-item
+					<!-- <u-form-item
 						label="订单类型"
 						prop="order_type"
 						ref="order_type"
@@ -113,7 +113,7 @@
 						    >
 						    </u-radio>
 						  </u-radio-group>
-					</u-form-item>
+					</u-form-item> -->
 					
 					
 					
@@ -839,7 +839,7 @@
 				model: {
 					product_id: '',
 					name: '',
-					order_type: '2',
+					// order_type: '2',
 					trade_type: '2',
 					trade_mode: '0',
 					settle_month_label: '',
@@ -884,18 +884,18 @@
 					base_afterday: '',
 				},
 				fileList1: [],
-				radiolist_order_type: [
-					{
-						name: '线上支付',
-						disabled: false,
-						value: "1"
-					},
-					{
-						name: '线下支付',
-						disabled: false,
-						value: "2"
-					},
-				],
+				// radiolist_order_type: [
+				// 	{
+				// 		name: '线上支付',
+				// 		disabled: false,
+				// 		value: "1"
+				// 	},
+				// 	{
+				// 		name: '线下支付',
+				// 		disabled: false,
+				// 		value: "2"
+				// 	},
+				// ],
 				radiolist_trade_type: [
 					{
 						name: '合约现货',
@@ -1439,7 +1439,7 @@
 					this.model.delivery_address = data.delivery_address
 					this.model.product_id = data.product_id
 					this.model.name = data.name
-					this.model.order_type = data.order_type
+					// this.model.order_type = data.order_type
 					this.model.trade_type = data.trade_type
 					this.model.trade_mode = data.trade_mode
 					this.model.price = data.price
@@ -1533,9 +1533,9 @@
 					// 		ele.disabled = n == '2' ? true : false;
 					// 	} 
 					// }) 
-					if(n == '2') {
-						this.model.trade_mode = '0'
-					}
+					// if(n == '2') {
+					// 	this.model.trade_mode = '0'
+					// }
 				},
 			},
 			['model.trade_mode'](n) {

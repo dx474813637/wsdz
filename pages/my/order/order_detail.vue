@@ -24,7 +24,12 @@
 			</view>
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.Source">
 				<view class="item text-light item-label">来源</view>
-				<view class="item text-primary" @click="handleGoto({url: '/pages/index/pan/panDetail', params: {id: list.source_id, pan: list.source == 'BUY'? 'b' : 's'}})">{{list.source | source2str}}：{{list.source_name}}</view>
+				<view class="item text-primary" @click="handleGoto({url: '/pages/index/pan/panDetail', params: {
+					id: list.source_id, 
+					pan: list.source == 'BUY'? 'b' : 's', 
+					fxid: list.fxid,
+					trade_mode: (list.settle_type == 'GRT' || list.fxid) ? 1 : ''
+					}})">{{list.source | source2str}}：{{list.source_name}}</view>
 			</view> 
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.intro">
 				<view class="item text-light item-label">商品详情</view>
@@ -52,6 +57,16 @@
 				<view class="item text-light item-label">商品总额</view>
 				<view class="item u-text-right">{{list.total_price2}} 元</view>
 			</view>
+			<template v-if="list.end_price1">
+				<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
+					<view class="item text-light item-label">首付款</view>
+					<view class="item u-text-right">{{list.begin_price1}} 元</view>
+				</view> 
+				<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
+					<view class="item text-light item-label">尾款</view>
+					<view class="item u-text-right">{{list.end_price1}} 元</view>
+				</view> 
+			</template>
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
 				<view class="item text-light item-label">订单类型</view>
 				<view class="item u-text-right">{{list.order_type | orderType2str}}</view>
@@ -111,19 +126,81 @@
 						{{list.state | orderState2Str(list.order_type)}}
 					</template>
 				</view>
-			</view>
+			</view> 
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.remark">
-				<view class="item text-light item-label">备注</view>
+				<view class="item text-light item-label">订单备注</view>
 				<view class="item u-text-right" style="word-break: break-all;">
 					<rich-text :nodes="list.remark"></rich-text>
 				</view>
 			</view>
+			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="nopay_info.id">
+				<view class="item text-light item-label">线下支付凭证</view>
+				<view class="item u-text-right" >
+					<u--image 
+					width="120px" 
+					height="120px" 
+					:src="`https://thumb-album.rawmex.cn/0-0/${nopay_info.pic1}`"
+					@click="previewImgBtn([`https://thumb-album.rawmex.cn/0-0/${nopay_info.pic1}`])"
+					></u--image>
+				</view>
+			</view>
+			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="nopay_info.remark">
+				<view class="item text-light item-label">线下支付备注</view>
+				<view class="item u-text-right" style="word-break: break-all;">
+					<rich-text :nodes="nopay_info.remark"></rich-text>
+				</view>
+			</view>
+			<template v-if="list.Order_settle && list.Order_settle[0]">
+				<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
+					<view class="item text-light item-label">交收结算状态</view>
+					<view class="item u-text-right">{{nopay_info.Order.Order_settle_active.State.name}}</view>
+				</view> 
+				<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.Order_settle[0].state != 3">
+					<view class="item text-light item-label"></view>
+					<view class="item u-text-right" @click="handleGoto({url: '/pages/my/order/order_settle_detail', params: {id: list.Order_settle[0].id}})">
+						<u-button size="small" type="primary">查看交收结算订单</u-button>
+					</view>
+				</view>
+			</template>
+			
+			
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.remark_audit">
 				<view class="item text-light item-label">审核备注</view>
 				<view class="item u-text-right" style="word-break: break-all;">
 					<rich-text :nodes="list.remark_audit"></rich-text>
 				</view>
 			</view>
+			<template v-if="list.Order_end.id && list.Order_end.pay_id">
+				<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="nopayEnd_info.pic1">
+					<view class="item text-light item-label">尾款支付凭证</view>
+					<view class="item u-text-right" >
+						<u--image 
+						width="120px" 
+						height="120px" 
+						:src="`https://thumb-album.rawmex.cn/0-0/${nopayEnd_info.pic1}`"
+						@click="previewImgBtn([`https://thumb-album.rawmex.cn/0-0/${nopayEnd_info.pic1}`])"
+						></u--image>
+					</view>
+				</view>
+				<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
+					<view class="item text-light item-label">尾款支付备注</view>
+					<view class="item u-text-right">{{nopayEnd_info.remark}}</view>
+				</view>  
+				<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
+					<view class="item text-light item-label">尾款状态</view>
+					<view class="item u-text-right">
+						<template v-if="nopayEnd_info.state == 1">
+							卖家同意
+						</template>
+						<template v-else-if="nopayEnd_info.state == 2">
+							卖家拒绝
+						</template>
+						<template v-else>
+							待审核
+						</template>
+					</view>
+				</view>  
+			</template>
 		</view>
 		<view class="main u-p-8 u-m-t-30">
 			<view class="btn-wrap u-flex u-flex-items-center u-flex-wrap">
@@ -166,6 +243,31 @@
 						v-if="btnList.button5"
 					> <!-- 现金发起支付 -->
 					<u-button type="primary" @click="handleShowPopup({mode:'create_pay', isBill: false })">{{btnList.button5_title}}</u-button>
+				</view>
+				<view class="item u-p-6"
+						v-if="btnList.button23"
+					> <!-- 提交线下支付凭证 -->
+					<u-button type="primary" @click="handleShowPopup({mode:'create_pay', isUnderLine: true })">{{btnList.button23_title}}</u-button>
+				</view>
+				<view class="item u-p-6"
+						v-if="btnList.button24"
+					> <!-- 审核线下支付凭证 -->
+					<u-button type="primary" @click="checkOrderNoPayBtn">{{btnList.button24_title}}</u-button>
+				</view>
+				<view class="item u-p-6"
+						v-if="btnList.button26"
+					> <!-- 发起尾款支付流程 -->
+					<u-button type="primary" @click="createEndPay">{{btnList.button26_title}}</u-button>
+				</view>
+				<view class="item u-p-6"
+						v-if="btnList.button27"
+					> <!-- 提交尾款支付凭证 -->
+					<u-button type="primary" @click="handleShowPopup({mode:'create_pay', isUnderLine: true, isEndPay: true})">{{btnList.button27_title}}</u-button>
+				</view>
+				<view class="item u-p-6"
+						v-if="btnList.button25"
+					> <!-- 发起结算 -->
+					<u-button type="primary" @click="checkBtnModal({mode:'create_settle', modalText: {content: '交收中若有多还少补，请确认继续'}})">{{btnList.button25_title}}</u-button>
 				</view>
 				<view class="item u-p-6"
 						v-if="btnList.button6"
@@ -221,8 +323,9 @@
 							<text class="u-font-34">
 								<template v-if="formActive.mode == 'send'">{{fahuo}}表单</template>
 								<template v-else-if="formActive.mode == 'audit'">审核表单</template>
-								<template v-else-if="formActive.mode == 'create_pay'">支付确认</template>
+								<template v-else-if="formActive.mode == 'create_pay'">支付订单</template>
 								<template v-else-if="formActive.mode == 'confirm'">收货确认</template>
+								<template v-else-if="formActive.mode == 'create_settle'">发起结算</template>
 							</text>
 						</view>
 						<view class="item u-flex-1 u-text-right">
@@ -235,6 +338,7 @@
 				}">
 					<u-list height="100%">
 						<view class="form-content u-p-20"> 
+						 
 							<template v-if="formActive.mode == 'audit'">
 								<u--form
 									labelPosition="left" 
@@ -423,8 +527,9 @@
 							<template v-if="formActive.mode == 'create_pay' || formActive.mode == 'confirm' ">
 								<u--form
 									labelPosition="left" 
-									labelWidth="80"
-									>
+									labelWidth="80" 
+									v-if="!formActive.isUnderLine"
+									> 
 										<u-form-item
 											label="交付方式" 
 											>
@@ -455,7 +560,156 @@
 								
 							</template>
 							
+							<template v-if="formActive.mode == 'create_settle'">
+								<u--form
+									labelPosition="left"
+									:model="form_create_settle"
+									ref="form_create_settle"
+									labelWidth="80"
+									>
+									<u-form-item
+										label="订单总额"  
+									>
+										<view>{{list.total_price2}} 元</view>
+									</u-form-item>
+									<u-form-item
+										label="订单单价"  
+									>
+										<view>{{list.price2}} 元/{{list.unit}}</view>
+									</u-form-item>
+									<u-form-item
+										label="订单数量"  
+									>
+										<view>{{list.amount}} {{list.unit}}</view>
+									</u-form-item>
+									<u-form-item
+										label="交收单价"
+										prop="price"
+									>
+										<view class="u-flex u-flex-items-center">
+											<view class="u-flex-1">
+												<u--input 
+													v-model="form_create_settle.price"
+													clearable 
+													:customStyle="{backgroundColor: '#fff'}"
+													type="digit" 
+												></u--input> 
+											</view>
+											<view class="u-p-l-10">元/{{list.unit}}</view>
+										</view> 
+									</u-form-item>  
+									<u-form-item
+										label="交收数量"
+										prop="amount"
+									>
+										<view class="u-flex u-flex-items-center">
+											<view class="u-flex-1">
+												<u--input 
+													v-model="form_create_settle.amount"
+													clearable 
+													:customStyle="{backgroundColor: '#fff'}"
+												></u--input> 
+											</view>
+											<view class="u-p-l-10">{{list.unit}}</view>
+										</view> 
+									</u-form-item>  
+									<u-form-item
+										label="差额处理" 
+									>
+										<view class="text-error">{{diff | diffRes}}</view>
+									</u-form-item> 
+									<u-form-item
+										label="交收差额" 
+									>
+										<view>{{diff2}} 元</view>
+									</u-form-item> 
+									<u-form-item
+										label="结算总额" 
+									>
+										<view>{{settleSum}} 元</view>
+									</u-form-item>  
+								</u--form>
+							</template>
 							<template v-if="formActive.mode == 'create_pay'">
+								<u--form
+									labelPosition="left"
+									:model="form_underLine"
+									ref="form_underLine"
+									labelWidth="100"
+									v-if="formActive.isUnderLine"
+									>
+									<template v-if="list.Order_end.id">
+										<u-form-item
+											label="订单尾款" 
+											>
+											<view>{{list.end_price1}} 元</view>
+										</u-form-item>
+									</template>
+									<template v-else-if="list.end_price1">
+										<u-form-item
+											label="订单首付" 
+											>
+											<view>{{list.begin_price1}} 元</view>
+										</u-form-item>
+									</template>
+									<template v-else>
+										<u-form-item
+											label="支付金额" 
+											>
+											<view>{{list.total_price2}} 元</view>
+										</u-form-item>
+									</template>
+									
+									<u-form-item
+										label="收款银行账户" 
+										v-if="list.pay.result.bank_accno"
+										>
+										<view>{{list.pay.result.bank_accno}}</view>
+									</u-form-item>
+									<u-form-item
+										label="银行账户名" 
+										v-if="list.pay.result.bank_accname"
+										>
+										<view>{{list.pay.result.bank_accname}}</view>
+									</u-form-item>
+									<u-form-item
+										label="开户行" 
+										v-if="list.pay.result.bank_name"
+										>
+										<view>{{list.pay.result.bank_code}} | {{list.pay.result.bank_name}}</view>
+									</u-form-item>
+									<u-form-item
+										label="开户行行号" 
+										v-if="list.pay.result.bank_no"
+										>
+										<view>{{list.pay.result.bank_no}}</view>
+									</u-form-item>
+									<u-form-item
+										label="支付凭证"
+										required
+										>
+										<view >
+											<u-upload
+												:fileList="fileList1"
+												@afterRead="afterRead"
+												@delete="deletePic"
+												name="1"
+												:maxCount="1"
+												:maxSize="2048000"
+												@oversize="handleoversize"
+											></u-upload>
+											<view class="u-info u-font-28">建议上传2M以内的图片</view>
+										</view>
+									</u-form-item>
+									<u-form-item
+										label="备注"  
+									>
+										<u--input 
+											v-model="form_underLine.remark"   
+											placeholder="备注" 
+										></u--input>
+									</u-form-item> 
+								</u--form>
 								<u--form
 									labelPosition="left"
 									:model="form_pay"
@@ -569,6 +823,7 @@
 </template>
 
 <script>
+	import {js2Fixed} from '@/utils'
 	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
 	export default { 
 		data() {
@@ -576,6 +831,8 @@
 				id: '',
 				ordertype: '',
 				list: {},
+				nopay_info: {},
+				nopayEnd_info: {},
 				paylist: {},
 				payOrderLoading: false,
 				show_billacc: false,
@@ -596,6 +853,20 @@
 				form_pay: {
 					paymode: '1',
 					paypwd: '',
+				},
+				form_create_settle: {
+					price: '',
+					amount: ''
+				},
+				form_end_pay: {
+					price: '',
+					amount: ''
+				},
+				fileList1: [],
+				form_underLine: {
+					pic1_base64: '',
+					pic1_name: '线下支付凭证.jpg',
+					remark: ''
 				},
 				form_confirm: {
 					paypwd: '',
@@ -677,10 +948,20 @@
 		computed: {
 			...mapState({
 				typeConfig: state => state.theme.typeConfig,
+				login: state => state.user.login,
 			}),
 			themeConfig() {
 				return this.typeConfig.white
 			},
+			settleSum() {
+				return js2Fixed(this.form_create_settle.price * this.form_create_settle.amount, 2)
+			},
+			diff() {
+				return js2Fixed((+this.settleSum) - (+this.list.total_price2), 2)
+			},
+			diff2() {
+				return Math.abs(+this.diff)
+			}, 
 		},
 		filters: {
 			source2pan: v => {
@@ -697,11 +978,27 @@
 			...mapMutations({
 				handleGoto: 'user/handleGoto'
 			}),
+			...mapActions({
+				getImageBase64_readFile: 'user/getImageBase64_readFile'
+			}),
 			showToast(params) {
 				this.$refs.uToast.show({
 					position: 'bottom',
 					...params, 
 				})
+			},
+			checkBtnModal(data) {
+				uni.showModal({
+					title: '提示',
+					...data.modalText, 
+					success: (res) => {
+						if (res.confirm) {
+							this.handleShowPopup(data);
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				});
 			},
 			async handleShowPopup(data) {
 				this.formActive = data; 
@@ -709,22 +1006,39 @@
 					//发起支付 如未发起过则先执行发起接口（仅1次），再弹窗；
 					if(this.list.state == '6') {
 						//state=6 为待支付
-						const res = await this.order_pay()
-						if(!res) return
+						if(this.list.order_type == '1') {
+							// 线上支付
+							const res = await this.order_pay()
+							if(!res) return
+						}
 					}else {
 						this.get_pay_order()
 					}
 					
 				}
 				if(data.mode == 'confirm') {
-					this.get_pay_order()
+					if(this.list.order_type == '2') {
+						uni.showLoading()
+						await this.confirm_shouhuo()
+						return
+					}else if(this.list.order_type == '1') {
+						this.get_pay_order()
+					}
+					
 				} 
 				if(data.mode == 'audit') {
 					if(this.list.pay_mode.includes('BILLPAY')) {
 						this.form_audit.pyeeInfo = this.list.payeeAccNm
 					}
 				}  
+				if(data.mode == 'create_settle') {
+					this.initSettleFormData()
+				}  
 				this.show = true
+			},
+			initSettleFormData() {
+				this.form_create_settle.price = this.list.price2
+				this.form_create_settle.amount = this.list.amount
 			},
 			menusConfirm(data) {
 				console.log(data)
@@ -744,6 +1058,48 @@
 					if(this.list.settle_type == 'GRT') {
 						this.zfgj[1].disabled = false
 					}
+					if(this.list.order_type == '2') {
+						if(this.list.pay_id) this.getNoPayData()
+						// if(this.list.Order_settle[0]?.id) this.getNoPayData()
+						
+					}
+					if(this.list.Order_end.pay_id) this.getNoPayEndData()
+				}
+			}, 
+			async getNoPayData() {
+				//获取线下支付凭证ID
+				uni.showLoading()
+				const res = await this.$api.get_order_nopay({
+					params: { 
+						// id: this.list.pay_id,
+						order_id: this.id,
+						order_type: 'ORDER',
+						role: this.list.b_login == this.login ? 'B' : 'S'
+					}
+				}) 
+				if(res.code == 1) {
+					if(res.list.State == 'ERROR') {
+						return
+					}
+					this.nopay_info = res.list.result
+				}
+			},
+			async getNoPayEndData() {
+				//获取尾款线下支付凭证ID
+				uni.showLoading()
+				const res = await this.$api.get_order_nopay({
+					params: {  
+						id: this.list.Order_end.pay_id,
+						// order_id: this.id,
+						order_type: 'ORDER_END',
+						role: this.list.b_login == this.login ? 'B' : 'S'
+					}
+				}) 
+				if(res.code == 1) {
+					if(res.list.State == 'ERROR') {
+						return
+					}
+					this.nopayEnd_info = res.list.result
 				}
 			},
 			async unsubmit_order() {
@@ -829,6 +1185,26 @@
 					await this.getData()
 				}
 			},
+			async createEndPay() {
+				uni.showLoading({
+					title: '发起尾款支付...'
+				})
+				const res = await this.$api.CREATE_END({
+					params: { 
+						order_id: this.id,
+					}
+				})
+				if(res.code == 1) {
+					this.showToast({
+						type: 'success',
+						message: res.msg, 
+					})
+					uni.showLoading({
+						title: '获取最新数据中'
+					})
+					await this.getData()
+				}
+			},
 			async order_submit() {
 				uni.showLoading({
 					title: '发送对方议价...'
@@ -873,6 +1249,83 @@
 					}
 				})
 				if(res.code == 1) { 
+					this.showToast({
+						type: 'success',
+						message: res.msg, 
+					})
+					uni.showLoading({
+						title: '获取最新数据中'
+					})
+					await this.getData()
+					return true
+				}else {
+					this.showToast({
+						type: 'error',
+						message: res.msg, 
+					})
+					return false
+				}
+			},
+			async order_nopay() {
+				if(this.form_underLine.pic1_base64 == '') {
+					uni.showToast({ 
+						title: '请先上传凭证', 
+						icon: 'none'
+					})
+					return false
+				}
+				uni.showLoading()
+				const res = await this.$api.order_nopay({
+					order_id: this.id,
+					pay_mode: 'NOPAY',
+					...this.form_underLine,
+				})
+				if(res.code == 1) { 
+					if(res.list.State == 'ERROR') {
+						uni.showToast({ 
+							title: res.list.errorMsg, 
+							icon: 'none'
+						})
+						return false
+					}
+					this.showToast({
+						type: 'success',
+						message: res.msg, 
+					})
+					uni.showLoading({
+						title: '获取最新数据中'
+					})
+					await this.getData()
+					return true
+				}else {
+					this.showToast({
+						type: 'error',
+						message: res.msg, 
+					})
+					return false
+				}
+			},
+			async order_nopay_end() {
+				if(this.form_underLine.pic1_base64 == '') {
+					uni.showToast({ 
+						title: '请先上传凭证', 
+						icon: 'none'
+					})
+					return false
+				}
+				uni.showLoading()
+				const res = await this.$api.PAY_VOUCHER_END({
+					id: this.list.Order_end.id, 
+					...this.form_underLine,
+				})
+				if(res.code == 1) { 
+					if(res.list.State == 'ERROR') {
+						uni.showToast({ 
+							title: res.list.errorMsg, 
+							icon: 'none'
+						})
+						return false
+					}
 					this.showToast({
 						type: 'success',
 						message: res.msg, 
@@ -1055,6 +1508,29 @@
 					throw new Error(res.msg)
 				}
 			},
+			async createSettle() {
+				uni.showLoading({
+					title: '提交中...'
+				})  
+				const res = await this.$api.order_settle_create({
+					params: { 
+						...this.form_create_settle,
+						order_id: this.id, 
+					}
+				})
+				if(res.code == 1) { 
+					this.showToast({
+						type: 'success',
+						message: res.msg, 
+					})
+					uni.showLoading({
+						title: '获取最新数据中'
+					})
+					await this.getData()
+				}else {
+					throw new Error(res.msg)
+				}
+			},
 			async handleConfirm() { 
 				if(this.formActive.mode == 'audit') {
 					await this.order_audit()
@@ -1067,13 +1543,122 @@
 				}
 				else if(this.formActive.mode == 'create_pay') {
 					//提交支付密码支付表单
-					await this.order_paying() 
+					if(this.list.order_type == '1') {
+						await this.order_paying() 
+					}
+					else if(this.list.order_type == '2') {
+						let res = false;
+						if(this.list.Order_end.id) {
+							res = await this.order_nopay_end() 
+						}else { 
+							res = await this.order_nopay() 
+						}
+						if(!res) return
+					}
 					
 				}
 				else if(this.formActive.mode == 'confirm') {
 					await this.confirm_shouhuo()
 				}
+				else if(this.formActive.mode == 'create_settle') {
+					if(this.diff == 0) {
+						this.showToast({
+							type: 'error',
+							message: '无差额，无法发起结算',
+							position: 'center'
+						}) 
+					}
+					else {
+						await this.createSettle()
+					}
+					
+				}
 				this.show = false
+			},
+			async checkOrderNoPayBtn() {
+				uni.showModal({
+					title: '提示',
+					content: '是否通过买家线下支付凭证',
+					cancelText: '拒绝',
+					confirmText: '同意',
+					success: async (res) => {
+						uni.showLoading()
+						await this.checkOrderNoPay(res.confirm ? '1' : '0')
+						if (res.confirm) {
+							console.log('用户点击确定');
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				});
+				
+			},
+			previewImgBtn(imgs) {
+				uni.previewImage({
+					urls: imgs, 
+				});
+			},
+			async checkOrderNoPay(audit) {
+				let id = this.list.pay_id;
+				let order_type = 'ORDER'
+				if(this.list.Order_end.id) {
+					id = this.list.Order_end.pay_id
+					order_type = 'ORDER_END'
+				}
+				const res = await this.$api.check_order_nopay({
+					params: { 
+						id,
+						audit,
+						order_type,
+						remark_audit: ' '
+					}
+				})
+				if(res.code == 1  ) {
+					if(res.list.State == 'ERROR') {
+						this.showToast({
+							type: 'error',
+							message: res.list.errorMsg, 
+						})
+						return
+					}
+					this.showToast({
+						type: 'success',
+						message: res.msg, 
+					})
+					uni.showLoading({
+						title: '获取最新数据中'
+					})
+					await this.getData()
+				}
+			},
+			// 删除图片
+			deletePic(event) {
+				this[`fileList${event.name}`].splice(event.index, 1)
+				 
+				this.form_underLine.pic1_base64 = ''
+				this.form_underLine.pic1_name = ''
+			},
+			handleoversize() {
+				uni.showToast({
+					title: '建议上传2M以内的图片',
+					icon: 'none'
+				})
+			},
+			async afterRead(event) {
+				console.log(event)
+				this.fileList1 = [{
+					url:  event.file.thumb,
+					status: 'uploading',
+					message: '上传中'
+				}]
+				const base64 = await this.getImageBase64_readFile(event.file.thumb)
+				this.fileList1 = [{
+					url: event.file.thumb,
+					status: 'success'
+				}] 
+				this.form_underLine.pic1_base64 = base64
+				this.form_underLine.pic1_name = event.file.thumb.split('//tmp/')[1]  
+				
 			},
 		}
 	}
@@ -1081,6 +1666,11 @@
 <style lang="scss">
 	page {
 		background-color: $page-bg2;
+		/deep/ {
+			.u-upload__button {
+				background-color: #fff!important;
+			}
+		}
 	}
 </style>
 <style lang="scss" scoped>
