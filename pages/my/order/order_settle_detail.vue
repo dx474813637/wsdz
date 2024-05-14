@@ -79,7 +79,7 @@
 				</view>
 			</view>
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
-				<view class="item text-light item-label">状态</view>
+				<view class="item text-light item-label">结算状态</view>
 				<view class="item u-text-right">{{list.State.name}}</view>
 			</view>
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
@@ -121,6 +121,14 @@
 				<view class="item text-light item-label">线下支付备注</view>
 				<view class="item u-text-right" style="word-break: break-all;">
 					<rich-text :nodes="nopay_info.remark"></rich-text>
+				</view>
+			</view>
+			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="nopay_info.state">
+				<view class="item text-light item-label">线下凭证状态</view>
+				<view class="item u-text-right" >
+					<template v-if="nopay_info.state == '3'">卖家拒绝</template>  
+					<template v-if="nopay_info.state == '1'">卖家同意</template>  
+					<template v-if="nopay_info.state == '0'">待审核</template>  
 				</view>
 			</view>
 		</view>
@@ -673,7 +681,8 @@
 					// if(this.list.settle_type == 'GRT') {
 					// 	this.zfgj[1].disabled = false
 					// }
-					if(this.list.pay_id && this.list.Order.order_type == '2') {
+					// if(this.list.pay_id && this.list.Order.order_type == '2') {
+					if(this.list.pay_id) {
 						this.getNoPayData()
 					}
 				}

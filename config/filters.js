@@ -10,14 +10,16 @@ const orderType2str = v => {
 }
 const settleType2str = v => {
 	if(v == 'D_P') return '款到发货'
-	else if(v == 'GRT') return '担保支付'
+	// else if(v == 'GRT') return '担保支付'
 	else if(v == 'COD') return '货到付款'
 	else return v
 }
 const paymode2str = v => {
 	if(!v) return v
-	else if(v.includes('FUNDPAY')) return '现金'
-	else if(v.includes('BILLPAY')) return '票据' 
+	else if(v.includes('NOPAY')) return '线下凭证' 
+	else if(v.includes('FUNDPAY')) return '银企付' 
+	else if(v.includes('LOANPAY')) return '融资' 
+	else if(v.includes('CREDITPAY')) return '赊账' 
 	else return v
 }
 const paystate2str = v => {
@@ -68,8 +70,9 @@ const orderState2Str = (v, order_type) => {
 	else if(v == '4') return '订立中'
 	else if(v == '5') return '已了结'
 	else if(v == '6') {
-		if(order_type == '1') return '待支付'
-		else return '已订立'
+		return '待支付'
+		// if(order_type == '1') return '待支付'
+		// else return '已订立'
 	}
 	else if(v == '7') return '支付中'
 	else if(v == '8') return '待发货'

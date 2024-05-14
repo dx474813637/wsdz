@@ -458,11 +458,11 @@
 						value: 'D_P',
 						disabled: false,
 					},
-					{
-						name: '担保支付',
-						value: 'GRT',
-						disabled: false,
-					},
+					// {
+					// 	name: '担保支付',
+					// 	value: 'GRT',
+					// 	disabled: false,
+					// },
 					{
 						name: '货到付款',
 						value: 'COD',
@@ -612,6 +612,7 @@
 					}
 				} 
 				// if(!this.qiehuan) {
+				if(this.ordertype == 'S') {
 					base = {
 						...base,
 						delivery_place: {
@@ -625,7 +626,7 @@
 							trigger: ['blur', 'change']
 						},
 					}
-				// } 
+				} 
 				if(this.panRes?.list?.trade_mode != '3') {
 					base = {
 						...base,

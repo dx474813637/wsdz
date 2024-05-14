@@ -144,6 +144,21 @@
 					></u--image>
 				</view>
 			</view>
+			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="nopay_info.type">
+				<view class="item text-light item-label">凭证类型</view>
+				<view class="item u-text-right" >
+					<template v-if="nopay_info.type == '1'">现金转账凭证</template> 
+					<template v-if="nopay_info.type == '2'">电票支付凭证</template> 
+				</view>
+			</view>
+			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="nopay_info.state">
+				<view class="item text-light item-label">线下凭证状态</view>
+				<view class="item u-text-right" >
+					<template v-if="nopay_info.state == '3'">卖家拒绝</template>  
+					<template v-if="nopay_info.state == '1'">卖家同意</template>  
+					<template v-if="nopay_info.state == '0'">待审核</template>  
+				</view>
+			</view>
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="nopay_info.remark">
 				<view class="item text-light item-label">线下支付备注</view>
 				<view class="item u-text-right" style="word-break: break-all;">
@@ -338,30 +353,28 @@
 				}">
 					<u-list height="100%">
 						<view class="form-content u-p-20"> 
-						 
-							<template v-if="formActive.mode == 'audit'">
-								<u--form
-									labelPosition="left" 
-									labelWidth="80"
-									v-if="list.order_type == '1'"
+							<u--form
+								labelPosition="left" 
+								labelWidth="80"
+								>
+								<u-form-item
+									label="交付方式" 
 									>
-									<u-form-item
-										label="交付方式" 
-										>
-										<view>{{list.settle_type | settleType2str}}</view>
-									</u-form-item>
-									<u-form-item
-										label="支付工具" 
-										>
-										<view>{{list.pay_mode | paymode2str}}</view>
-									</u-form-item>
-								</u--form>
+									<view>{{list.settle_type | settleType2str}}</view>
+								</u-form-item>
+								<u-form-item
+									label="支付工具" 
+									>
+									<view>{{list.pay_mode | paymode2str}}</view>
+								</u-form-item>
+							</u--form>
+							<template v-if="formActive.mode == 'audit'"> 
 								<u--form
 									labelPosition="left"
 									:model="form_audit"
 									ref="form_audit"
 									labelWidth="80"
-									>
+									> 
 									<!-- <u-form-item
 										label="交付方式" 
 										v-if="ordertype == 'B'"
@@ -442,29 +455,13 @@
 									 
 								</u--form>
 							</template>
-							<template v-if="formActive.mode == 'audit_base'">
-								<u--form
-									labelPosition="left" 
-									labelWidth="80"
-									v-if="list.order_type == '1'"
-									>
-									<u-form-item
-										label="交付方式" 
-										>
-										<view>{{list.settle_type | settleType2str}}</view>
-									</u-form-item>
-									<u-form-item
-										label="支付工具" 
-										>
-										<view>{{list.pay_mode | paymode2str}}</view>
-									</u-form-item>
-								</u--form>
+							<template v-if="formActive.mode == 'audit_base'"> 
 								<u--form
 									labelPosition="left"
 									:model="form_audit_base"
 									ref="form_audit_base"
 									labelWidth="80"
-									> 
+									>  
 									<u-form-item
 										label="审核意见" 
 									>
@@ -529,17 +526,7 @@
 									labelPosition="left" 
 									labelWidth="80" 
 									v-if="!formActive.isUnderLine"
-									> 
-										<u-form-item
-											label="交付方式" 
-											>
-											<view>{{list.settle_type | settleType2str}}</view>
-										</u-form-item>
-										<u-form-item
-											label="支付工具" 
-											>
-											<view>{{list.pay_mode | paymode2str}}</view>
-										</u-form-item>
+									>  
 										<u-form-item
 											label="支付订单" 
 											>
@@ -700,6 +687,24 @@
 											></u-upload>
 											<view class="u-info u-font-28">建议上传2M以内的图片</view>
 										</view>
+									</u-form-item> 
+									<u-form-item
+										label="凭证类型" 
+										required
+									>
+										<u-radio-group
+										    v-model="form_underLine.type"
+										    placement="row"
+										  >
+										    <u-radio
+										      :customStyle="{marginRight: '8px'}"
+										      v-for="(item, index) in outline_pay_type"
+										      :key="index"
+										      :name="item.value"
+										      :label="item.name"
+										    >
+										    </u-radio>
+										  </u-radio-group>
 									</u-form-item>
 									<u-form-item
 										label="备注"  
@@ -864,6 +869,7 @@
 				},
 				fileList1: [],
 				form_underLine: {
+					type: '1',
 					pic1_base64: '',
 					pic1_name: '线下支付凭证.jpg',
 					remark: ''
@@ -885,6 +891,18 @@
 					},
 					{
 						name: '废止订单',
+						value: '2',
+						disabled: false,
+					},
+				],
+				outline_pay_type: [ 
+					{
+						name: '现金转账凭证',
+						value: '1',
+						disabled: false,
+					},
+					{
+						name: '电票支付凭证',
 						value: '2',
 						disabled: false,
 					},
@@ -1071,8 +1089,8 @@
 				uni.showLoading()
 				const res = await this.$api.get_order_nopay({
 					params: { 
-						// id: this.list.pay_id,
-						order_id: this.id,
+						id: this.list.pay_id,
+						// order_id: this.id,
 						order_type: 'ORDER',
 						role: this.list.b_login == this.login ? 'B' : 'S'
 					}

@@ -1079,6 +1079,13 @@
 					"enablePullDownRefresh": false
 				}
 
+			},
+			{
+				"path": "esign/auth",
+				"style": {
+					"navigationBarTitleText": "认证",
+					"enablePullDownRefresh": false
+				}
 			}
 		]
 	}, {
