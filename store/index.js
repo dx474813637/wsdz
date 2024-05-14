@@ -1,6 +1,7 @@
 import user from '@/store/modules/user.js'
 import theme from '@/store/modules/theme.js'
 import sinopay from '@/store/modules/sinopay.js'
+import esign from '@/store/modules/esign.js'
 import chemnet from '@/store/modules/chemnet.js'
 
 // #ifndef VUE3
@@ -13,6 +14,7 @@ const store = new Vuex.Store({
 		theme,
 		sinopay,
 		chemnet,
+		esign
 	},
 	strict: true
 })
@@ -26,6 +28,7 @@ const store = createStore({
 		theme,
 		sinopay,
 		chemnet,
+		esign
 	}
 })
 // #endif

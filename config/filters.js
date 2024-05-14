@@ -338,6 +338,20 @@ const diffRes = v => {
 	return '无'
 }
 
+const esignAgentState = v => {
+	if(v == '1') return '未认证'
+	else if(v == '2')  return '已认证' 
+	else if(v == '4')  return '已失效' 
+	return v
+}
+
+const esignOrganizationsState = v => {
+	if(v == '1') return '未认证'
+	else if(v == '2')  return '已认证' 
+	else if(v == '4')  return '已失效' 
+	return v
+}
+
 
 export default {
 	type2str,
@@ -374,5 +388,7 @@ export default {
 	bidTradeM2str,
 	bidState2Str,
 	order_settle_pay_user,
-	diffRes
+	diffRes,
+	esignAgentState,
+	esignOrganizationsState
 }

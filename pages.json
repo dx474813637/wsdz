@@ -1083,10 +1083,10 @@
 			{
 				"path": "esign/auth",
 				"style": {
-					"navigationBarTitleText": "认证",
+					"navigationBarTitleText": "签约身份信息",
 					"enablePullDownRefresh": false
 				}
-			}
+			} 
 		]
 	}, {
 		"root": "pages/more",
