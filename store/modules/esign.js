@@ -25,6 +25,9 @@ let state = {
 		clearSino(state, data) { 
 			state.sign_info = {}
 			// uni.setStorageSync('sign_info', {})
+		},
+		updateSignState(state, data) {
+			state.sign_info.organizations_state = data
 		}
 	},
 	actions = {

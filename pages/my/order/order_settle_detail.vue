@@ -436,8 +436,7 @@
 									</u-form-item> 
 									<u-form-item
 										label="审核备注" 
-										prop="remark_audit"
-										required 
+										prop="remark_audit" 
 									>
 										<u--textarea
 											v-model="form_nopay_settle_audit.remark_audit" 
@@ -551,12 +550,7 @@
 						required: true,
 						message: '请选择',
 						trigger: ['blur', 'change']
-					},
-					remark_audit: {
-						required: true,
-						message: '不能为空',
-						trigger: ['blur', 'change']
-					},
+					}, 
 				},
 				nopay_settle_create_rules: { 
 					pic1_base64: {

@@ -62,7 +62,7 @@
 					<u-form-item label="认证状态" >
 						<view class="u-flex">
 							<view>{{ sign_info.organizations_state | esignOrganizationsState }}</view>
-							<view class="u-m-l-20" v-if="sign_info.organizations_state != '2'">
+							<view class="u-m-l-20" v-if="sign_info.organizations_state != '2' && sign_info.agent_state == '2'">
 								<u-button type="primary" size="mini"
 									@click="handleGoto('pages/my/esign/auth_organizations')"
 								>去认证</u-button>
