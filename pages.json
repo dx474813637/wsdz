@@ -1079,11 +1079,28 @@
 					"enablePullDownRefresh": false
 				}
 
-			},
-			{
+			}, {
 				"path": "esign/auth",
 				"style": {
 					"navigationBarTitleText": "签约身份信息",
+					"enablePullDownRefresh": false
+				}
+			}, {
+				"path": "esign/auth_agent",
+				"style": {
+					"navigationBarTitleText": "代理人认证",
+					"enablePullDownRefresh": false
+				}
+			} , {
+				"path": "esign/auth_organizations",
+				"style": {
+					"navigationBarTitleText": "企业认证",
+					"enablePullDownRefresh": false
+				}
+			}, {
+				"path": "esign/auth_organizations_verify",
+				"style": {
+					"navigationBarTitleText": "企业认证随即金额校验",
 					"enablePullDownRefresh": false
 				}
 			} 

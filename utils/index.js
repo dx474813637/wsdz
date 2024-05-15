@@ -4,11 +4,13 @@ export function js2Fixed(target, num) {
 }
 
 export function phoneHide(phone) {
+	if(!phone) return ''
 	let reg = /^(1[3-9][0-9])\d{4}(\d{4}$)/; // 定义手机号正则表达式
 	phone = phone.replace(reg, '$1****$2');
 	return phone; // 185****6696
 }
 export function emailHide(email) {
+	if(!email) return ''
     var avg;
     var splitted;
     var email1;
@@ -22,11 +24,13 @@ export function emailHide(email) {
 }
 
 export function cardHide(card) {
+	if(!card) return ''
     const reg = /^(.{6})(?:\d+)(.{4})$/; // 匹配身份证号前6位和后4位的正则表达式
     const maskedIdCard = card.replace(reg, '$1******$2'); // 身份证号脱敏，将中间8位替换为“*”
     return maskedIdCard; // 输出：371782******5896
 } 
 export function nameHide(name) {
+	if(!name) return ''
     if (name.length == 2) {
         name = name.substring(0, 1) + '*'; // 截取name 字符串截取第一个字符，
         return name; // 张三显示为张*
