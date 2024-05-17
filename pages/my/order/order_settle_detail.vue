@@ -822,13 +822,15 @@
 			},
 			async getNoPayData() {
 				//获取线下支付凭证ID
-				uni.showLoading()
+				uni.showLoading() 
+				let tar = this.list.type == 1? this.list.b_login : this.list.s_login
+				let role = tar == this.login ? 'B' : 'S'
 				const res = await this.$api.get_order_nopay({
 					params: { 
 						id: this.list.pay_id,
 						// order_id: this.id,
-						// order_type: this.list.order_type,
-						role: this.list.b_login == this.login ? 'B' : 'S'
+						// order_type: 'ORDER_END', 
+						role 
 					}
 				}) 
 				if(res.code == 1) {

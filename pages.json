@@ -1079,6 +1079,20 @@
 					"enablePullDownRefresh": false
 				}
 
+			},{
+				"path": "order/order_esign",
+				"style": {
+					"navigationBarTitleText": "订单签约列表",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
+				"path": "order/order_esign_detail",
+				"style": {
+					"navigationBarTitleText": "订单签约明细",
+					"enablePullDownRefresh": false
+				}
+
 			}, {
 				"path": "esign/auth",
 				"style": {

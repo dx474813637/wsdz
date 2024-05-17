@@ -352,8 +352,24 @@ const esignOrganizationsState = v => {
 	return v
 }
 
+const esignType2Str = v => {
+	if(v == '0') return '不允许签约'
+	else if(v == '1')  return '线上签约' 
+	else if(v == '2')  return '自动签约' 
+	return v
+}
+const esignState2Str = v => {
+	if(v == '0') return '未提交'
+	else if(v == '1')  return '已创建' 
+	else if(v == '2')  return '已开启' 
+	else if(v == '3')  return '已签约' 
+	else if(v == '4')  return '签约协商中' 
+	else if(v == '5')  return '协商失败'  
+	return v
+} 
 
 export default {
+	esignState2Str,
 	type2str,
 	expressUnit,
 	date2timestamp,
@@ -390,5 +406,6 @@ export default {
 	order_settle_pay_user,
 	diffRes,
 	esignAgentState,
-	esignOrganizationsState
+	esignOrganizationsState,
+	esignType2Str
 }

@@ -119,12 +119,13 @@
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
 				<view class="item text-light item-label">订单状态</view>
 				<view class="item u-text-right">
-					<template v-if="list.hasOwnProperty('toState') && list.toState">
+					{{list.State.name}}
+					<!-- <template v-if="list.hasOwnProperty('toState') && list.toState">
 						{{list.toState}}
 					</template>
 					<template v-else>
 						{{list.state | orderState2Str(list.order_type)}}
-					</template>
+					</template> -->
 				</view>
 			</view> 
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.remark">
@@ -133,6 +134,22 @@
 					<rich-text :nodes="list.remark"></rich-text>
 				</view>
 			</view>
+			<template v-if="esign_info.id">
+				<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
+					<view class="item text-light item-label">签约方式</view>
+					<view class="item u-text-right">{{list.esign_type | esignType2Str}}</view>
+				</view>
+				<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="esign_info.ContractNo">
+					<view class="item text-light item-label">合同编号</view>
+					<view class="item u-text-right">{{esign_info.ContractNo }}</view>
+				</view>
+				<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.State.value == '42'">
+					<view class="item text-light item-label">签约说明</view>
+					<view class="item u-text-right">
+						<u--text type="error" text="开启签约后，签约信息将以短信的形式发送至用户签约代理人手机上"></u--text>
+					</view>
+				</view>
+			</template>
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="nopay_info.id">
 				<view class="item text-light item-label">线下支付凭证</view>
 				<view class="item u-text-right" >
@@ -314,6 +331,36 @@
 					> <!-- 票据担保支付确认收货 -->
 					<u-button type="primary" @click="handleShowPopup({mode:'confirm', isBill: true, isGRT: false})">{{btnList.button11_title}}</u-button>
 				</view> 
+				<view class="item u-p-6"
+						v-if="btnList.button28"
+					> <!-- 款到发货-买方要求签约 -->
+					<u-button type="primary" @click="DPWantESignBtn">{{btnList.button28_title}}</u-button>
+				</view> 
+				<view class="item u-p-6"
+						v-if="btnList.button29"
+					> <!-- 款到发货-买方或卖方取消签约（发送要求签约后） -->
+					<u-button type="primary" @click="DPCancelESignBtn">{{btnList.button29_title}}</u-button>
+				</view> 
+				<view class="item u-p-6"
+						v-if="btnList.button30"
+					> <!-- 款到发货-卖方确认并发起签约 -->
+					<u-button type="primary" @click="handleShowPopup({mode:'esign', create_confirm: true})">{{btnList.button30_title || '卖方确认并发起签约'}}</u-button>
+				</view> 
+				<view class="item u-p-6"
+						v-if="btnList.button31"
+					> <!-- 卖方撤回签约 -->
+					<u-button type="primary" @click="cancelESignConfirmBtn">{{btnList.button31_title}}</u-button>
+				</view> 
+				<view class="item u-p-6"
+						v-if="btnList.button32"
+					> <!-- 买方确认协商结果 -->
+					<u-button type="primary" @click="handleShowPopup({mode:'esign', confirm: true})">{{btnList.button32_title}}</u-button>
+				</view> 
+				<view class="item u-p-6"
+						v-if="btnList.button33"
+					> <!-- 开启签约 -->
+					<u-button type="primary" @click="esignStartBtn">{{btnList.button33_title}}</u-button>
+				</view> 
 			</view>
 		</view>
 		<u-popup 
@@ -341,6 +388,7 @@
 								<template v-else-if="formActive.mode == 'create_pay'">支付订单</template>
 								<template v-else-if="formActive.mode == 'confirm'">收货确认</template>
 								<template v-else-if="formActive.mode == 'create_settle'">发起结算</template>
+								<template v-else-if="formActive.mode == 'esign'">签约订单</template>
 							</text>
 						</view>
 						<view class="item u-flex-1 u-text-right">
@@ -353,53 +401,30 @@
 				}">
 					<u-list height="100%">
 						<view class="form-content u-p-20"> 
-							<u--form
-								labelPosition="left" 
-								labelWidth="80"
-								>
-								<u-form-item
-									label="交付方式" 
+							<template v-if="formActive.mode != 'esign'"> 
+								<u--form
+									labelPosition="left" 
+									labelWidth="80" 
 									>
-									<view>{{list.settle_type | settleType2str}}</view>
-								</u-form-item>
-								<u-form-item
-									label="支付工具" 
-									>
-									<view>{{list.pay_mode | paymode2str}}</view>
-								</u-form-item>
-							</u--form>
+									<u-form-item
+										label="交付方式" 
+										>
+										<view>{{list.settle_type | settleType2str}}</view>
+									</u-form-item>
+									<u-form-item
+										label="支付工具" 
+										>
+										<view>{{list.pay_mode | paymode2str}}</view>
+									</u-form-item>
+								</u--form>
+							</template>
 							<template v-if="formActive.mode == 'audit'"> 
 								<u--form
 									labelPosition="left"
 									:model="form_audit"
 									ref="form_audit"
 									labelWidth="80"
-									> 
-									<!-- <u-form-item
-										label="交付方式" 
-										v-if="ordertype == 'B'"
-									>
-										<view>{{list.settle_type | settleType2str}}</view>
-									</u-form-item>
-									<u-form-item
-										label="支付工具" 
-										v-if="ordertype == 'B'"
-									>
-										<u-radio-group
-										    v-model="zfgjValue"
-										    placement="row"
-										  >
-										    <u-radio
-										      :customStyle="{marginRight: '8px'}"
-										      v-for="(item, index) in zfgj"
-										      :key="index"
-										      :name="item.value"
-										      :label="item.name"
-											  :disabled="item.disabled"
-										    >
-										    </u-radio>
-										  </u-radio-group>
-									</u-form-item> -->
+									>  
 									<u-form-item
 										label="审核意见" 
 									>
@@ -500,7 +525,6 @@
 									 
 								</u--form>
 							</template>
-							
 							<template v-if="formActive.mode == 'send'">
 								<u--form
 									labelPosition="left"
@@ -520,7 +544,6 @@
 									</u-form-item>
 								</u--form>
 							</template>
-							
 							<template v-if="formActive.mode == 'create_pay' || formActive.mode == 'confirm' ">
 								<u--form
 									labelPosition="left" 
@@ -546,7 +569,6 @@
 									</u--form>
 								
 							</template>
-							
 							<template v-if="formActive.mode == 'create_settle'">
 								<u--form
 									labelPosition="left"
@@ -772,7 +794,6 @@
 									
 								</u--form>
 							</template>
-							
 							<template v-if="formActive.mode == 'confirm'">
 								<u--form
 									labelPosition="left"
@@ -799,6 +820,117 @@
 									请财务登录sinopay平台完成确认付款。
 								</view>
 							</template>
+							<template v-if="formActive.mode == 'esign'"> 
+								<u--form
+									labelPosition="left" 
+									labelWidth="80"  
+									>
+									<u-form-item
+										label="签约方式" 
+										>
+										<view>{{list.esign_type | esignType2Str}}</view>
+									</u-form-item>
+									<u-form-item
+										label="交收方式" 
+										>
+										<view>{{list.settle_mode | settleMode}}</view>
+									</u-form-item>
+								</u--form>
+								<template v-if="formActive.create_confirm">
+									<u--form
+										labelPosition="left"
+										:model="form_esign_create_confirm"
+										ref="form_esign_create_confirm" 
+										labelWidth="80"  
+										> 
+										<u-form-item label="合同模板" required >
+											<view @click="show_contract = true">
+												<u--input
+													v-model="form_esign_create_confirm.contract_name"
+													readonly 
+													suffixIcon="arrow-down"
+													suffixIconStyle="color: #909399"
+													placeholder="点击选择合同模板"
+													clearable
+												></u--input>
+											</view>
+										</u-form-item> 
+										<template v-if="form_esign_create_confirm.contract_id == '1'">
+											<u-form-item
+												label="运费/元" 
+											>
+												<u--input
+													v-model="form_esign_create_confirm.trans_fee" 
+												></u--input>
+											</u-form-item> 
+											<u-form-item
+												label="补充条款" 
+											>
+												<u--textarea
+													v-model="form_esign_create_confirm.remark" 
+													placeholder="补充条款" 
+													height="90"
+													maxlength="-1"
+												></u--textarea>
+											</u-form-item>
+										</template> 
+									</u--form>
+								</template>
+								<template v-if="formActive.confirm">
+									<u--form
+										labelPosition="left"
+										:model="form_esign_confirm"
+										ref="form_esign_confirm" 
+										labelWidth="80"  
+										>
+										<template v-if="esign_info.contract_id == '1'">
+											<u-form-item
+												label="运费" 
+											>
+												<view class="">
+													{{esign_info.trans_fee / 100}} 元
+												</view>
+											</u-form-item>
+											<u-form-item
+												label="补充条款" 
+											>
+												<view class="">
+													{{esign_info.remark}} 
+												</view>
+											</u-form-item>
+										</template> 
+										<u-form-item
+											label="审核意见" 
+										>
+											<u-radio-group
+											    v-model="form_esign_confirm.confirm"
+											    placement="row"
+											  >
+											    <u-radio
+											      :customStyle="{marginRight: '8px'}"
+											      v-for="(item, index) in shyj_esign"
+											      :key="index"
+											      :name="item.value"
+											      :label="item.name"
+											    >
+											    </u-radio>
+											  </u-radio-group>
+										</u-form-item>
+										<u-form-item
+											label="退回签约备注"
+											v-if="form_esign_confirm.confirm != '1'"
+										>
+											<u--textarea
+												v-model="form_esign_confirm.audit_remark" 
+												placeholder="退回签约备注" 
+												height="90"
+												maxlength="-1"
+											></u--textarea>
+										</u-form-item> 
+									</u--form>
+								</template>
+								
+							</template>
 						</view>
 					</u-list>
 				</view>
@@ -812,7 +944,16 @@
 				</view>
 			</view>
 		</u-popup>
-	
+		
+		<menusPopupContract
+			:show="show_contract"
+			theme="white" 
+			:params="{
+				order_id: id
+			}"
+			@close="show_contract = false"
+			@confirm="contractConfirm"
+		></menusPopupContract>
 		<menusPopupBillAcc
 			:show="show_billacc" 
 			theme="white"  
@@ -830,7 +971,11 @@
 <script>
 	import {js2Fixed} from '@/utils'
 	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
+	import menusPopupContract from '@/pages/my/components/menusPopup/menusPopupContract.vue'
 	export default { 
+		components: {
+			menusPopupContract
+		},
 		data() {
 			return {
 				id: '',
@@ -838,9 +983,11 @@
 				list: {},
 				nopay_info: {},
 				nopayEnd_info: {},
+				esign_info: {},
 				paylist: {},
 				payOrderLoading: false,
 				show_billacc: false,
+				show_contract: false,
 				show: false,
 				formActive: {}, 
 				form_audit: {
@@ -877,7 +1024,30 @@
 				form_confirm: {
 					paypwd: '',
 				},
+				form_esign_create_confirm: {
+					sign_z: '',
+					contract_id: '',
+					contract_name: '',
+					trans_fee: '',
+					remark: '',
+				},
+				form_esign_confirm: {
+					confirm: '1',
+					audit_remark: ''
+				},
 				btnList: {},
+				shyj_esign: [
+					{
+						name: '退回协商',
+						value: '0',
+						disabled: false,
+					},
+					{
+						name: '同意签约',
+						value: '1',
+						disabled: false,
+					}, 
+				],
 				shyj: [
 					{
 						name: '退回订单',
@@ -1058,6 +1228,12 @@
 				this.form_create_settle.price = this.list.price2
 				this.form_create_settle.amount = this.list.amount
 			},
+			async contractConfirm(data) {
+				console.log(data)
+				this.form_esign_create_confirm.contract_id = data.contract_id
+				this.form_esign_create_confirm.contract_name = data.name
+				await this.LIST_ESIGN_CONTRACT_PARAMETERS()
+			}, 
 			menusConfirm(data) {
 				console.log(data)
 				this.form_audit.pyeeInfo = data.pyeeInfo
@@ -1073,17 +1249,22 @@
 					this.list = res.list.Order
 					this.btnList = res.button
 					this.fahuo = res.fahuo
+					this.esign_info = this.list.Esign_signflows || {}
+					if(this.esign_info.id) {
+						// this.LIST_ESIGN_CONTRACT_PARAMETERS(this.esign_info.id)
+					}
 					if(this.list.settle_type == 'GRT') {
 						this.zfgj[1].disabled = false
 					}
-					if(this.list.order_type == '2') {
-						if(this.list.pay_id) this.getNoPayData()
-						// if(this.list.Order_settle[0]?.id) this.getNoPayData()
+					if(this.list.pay_id) this.getNoPayData() 
+					// if(this.list.order_type == '2') {
+					// 	if(this.list.pay_id) this.getNoPayData()
+					// 	// if(this.list.Order_settle[0]?.id) this.getNoPayData()
 						
-					}
+					// }
 					if(this.list.Order_end.pay_id) this.getNoPayEndData()
 				}
-			}, 
+			},  
 			async getNoPayData() {
 				//获取线下支付凭证ID
 				uni.showLoading()
@@ -1591,8 +1772,26 @@
 					}
 					
 				}
+				else if(this.formActive.mode == 'esign') {
+					if(this.formActive.create_confirm) {
+						if(!this.form_esign_create_confirm.contract_id) {
+							this.showToast({
+								type: 'error',
+								message: '请先选择合同模板',
+								position: 'center'
+							})   
+						}
+						else {
+							await this.DP_ESIGN_CREATE_CONFIRM()
+						}
+					}
+					if(this.formActive.confirm) {
+						await this.ESIGN_CONFIRM()
+					}
+					
+				}
 				this.show = false
-			},
+			}, 
 			async checkOrderNoPayBtn() {
 				uni.showModal({
 					title: '提示',
@@ -1677,6 +1876,221 @@
 				this.form_underLine.pic1_base64 = base64
 				this.form_underLine.pic1_name = event.file.thumb.split('//tmp/')[1]  
 				
+			},
+			async LIST_ESIGN_CONTRACT_PARAMETERS(contract_id) {
+				//合同模板参数列表
+				uni.showLoading({
+					title: '提交中...'
+				})  
+				const res = await this.$api.LIST_ESIGN_CONTRACT_PARAMETERS({
+					params: {  
+						order_id: this.id, 
+						contract_id: contract_id || this.form_esign_create_confirm.contract_id, 
+					}
+				})
+				if(res.code == 1) { 
+					this.showToast({
+						type: 'success',
+						message: res.msg, 
+					}) 
+				}else {
+					throw new Error(res.msg)
+				}
+			},
+			async DP_ESIGN_CREATE_CONFIRM() {
+				//合同模板参数列表
+				uni.showLoading({
+					title: '提交中...'
+				})  
+				const res = await this.$api.DP_ESIGN_CREATE_CONFIRM({
+					...this.form_esign_create_confirm,
+					order_id: this.id, 
+				})
+				if(res.code == 1) { 
+					this.showToast({
+						type: 'success',
+						message: res.msg, 
+					})  
+					uni.showLoading({
+						title: '获取最新数据中'
+					})
+					await this.getData()
+				}else {
+					throw new Error(res.msg)
+				}
+			},
+			async ESIGN_CONFIRM() { 
+				uni.showLoading({
+					title: '提交中...'
+				})  
+				const res = await this.$api.ESIGN_CONFIRM({
+					...this.form_esign_confirm,
+					order_id: this.id, 
+				})
+				if(res.code == 1) { 
+					this.showToast({
+						type: 'success',
+						message: res.msg, 
+					})  
+					uni.showLoading({
+						title: '获取最新数据中'
+					})
+					await this.getData()
+				}else {
+					throw new Error(res.msg)
+				}
+			},
+			async DPWantESignBtn () {
+				uni.showModal({
+					title: '提示',
+					content: '是否要求签约，可忽略直接发起支付',
+					cancelText: '取消',
+					confirmText: '要求签约',
+					success: async (res) => { 
+						if (res.confirm) {
+							await this.DPWantESignEvent()
+							console.log('用户点击确定');
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				});
+			},
+			async DPWantESignEvent() {
+				uni.showLoading({
+					title: '提交中...'
+				})  
+				const res = await this.$api.DP_ESIGN_CREATE({
+					params: {  
+						order_id: this.id, 
+					}
+				})
+				if(res.code == 1) { 
+					this.showToast({
+						type: 'success',
+						message: res.msg, 
+					})
+					uni.showLoading({
+						title: '获取最新数据中'
+					})
+					await this.getData()
+				}else {
+					throw new Error(res.msg)
+				}
+			}, 
+			async DPCancelESignBtn () {
+				uni.showModal({
+					title: '提示',
+					content: '是否取消签约',
+					cancelText: '考虑一下',
+					confirmText: '确认取消',
+					success: async (res) => { 
+						if (res.confirm) {
+							await this.DPCancelESign()
+							console.log('用户点击确定');
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				});
+			},
+			async DPCancelESign() {
+				uni.showLoading({
+					title: '提交中...'
+				})  
+				const res = await this.$api.DP_ESIGN_CANCEL({
+					params: {  
+						order_id: this.id, 
+					}
+				})
+				if(res.code == 1) { 
+					this.showToast({
+						type: 'success',
+						message: res.msg, 
+					})
+					uni.showLoading({
+						title: '获取最新数据中'
+					})
+					await this.getData()
+				}else {
+					throw new Error(res.msg)
+				}
+			},
+			async cancelESignConfirmBtn () {
+				uni.showModal({
+					title: '提示',
+					content: '是否撤回签约',
+					cancelText: '考虑一下',
+					confirmText: '确认撤回',
+					success: async (res) => {
+						if (res.confirm) {
+							await this.cancelESignConfirm()
+							console.log('用户点击确定');
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				});
+			},
+			async cancelESignConfirm() {
+				uni.showLoading({
+					title: '提交中...'
+				})  
+				const res = await this.$api.ESIGN_CONFIRM_CANCEL({
+					params: {  
+						order_id: this.id, 
+					}
+				})
+				if(res.code == 1) { 
+					this.showToast({
+						type: 'success',
+						message: res.msg, 
+					})
+					uni.showLoading({
+						title: '获取最新数据中'
+					})
+					await this.getData()
+				}else {
+					throw new Error(res.msg)
+				}
+			},
+			async esignStartBtn () {
+				uni.showModal({
+					title: '提示',
+					content: '是否开启签约，开启后无法撤回',
+					cancelText: '考虑一下',
+					confirmText: '确认开启',
+					success: async (res) => {
+						if (res.confirm) {
+							await this.esignStart()
+							console.log('用户点击确定');
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				});
+			},
+			async esignStart() {
+				uni.showLoading({
+					title: '提交中...'
+				})  
+				const res = await this.$api.ESIGN_START({
+					params: {  
+						order_id: this.id, 
+					}
+				})
+				if(res.code == 1) { 
+					this.showToast({
+						type: 'success',
+						message: res.msg, 
+					})
+					uni.showLoading({
+						title: '获取最新数据中'
+					})
+					await this.getData()
+				}else {
+					throw new Error(res.msg)
+				}
 			},
 		}
 	}

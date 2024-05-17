@@ -42,3 +42,37 @@ export const ESIGN_TRANSFER_RANDOM_AMOUNT = (data = {}) => all_api(uni.$u.deepMe
  // 11-查询随机金额打款进度
  // * 单独查询，如果收不到随机金额打款，可通过此接口查询原因 
  export const ESIGN_QUERY_TRANSFER_PROCESS = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ESIGN', Action: 'QUERY_TRANSFER_PROCESS', token: 1}}, data))
+ 
+ 
+ // =======签约=======
+ // 流程说明： https://api.rawmex.cn/gw/demo/esign/esign.html
+ // 款到发货签约：01->02->05->07->08->09->10 
+ // 货到付款签约：06->07->08->09->10
+ 
+// 01-款到发货-买方要求签约
+export const DP_ESIGN_CREATE = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ESIGN', Action: 'DP_ESIGN_CREATE', token: 1}}, data))
+// 02-款到发货-买方或卖方取消签约（发送要求签约后）
+export const DP_ESIGN_CANCEL = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ESIGN', Action: 'DP_ESIGN_CANCEL', token: 1}}, data))
+// 03-合同模板列表
+export const LIST_ESIGN_CONTRACT = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ESIGN', Action: 'LIST_ESIGN_CONTRACT', token: 1}}, data))
+// 04-模板参数列表
+export const LIST_ESIGN_CONTRACT_PARAMETERS = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ESIGN', Action: 'LIST_ESIGN_CONTRACT_PARAMETERS', token: 1}}, data))
+// 05-款到发货-卖方确认并发起签约
+export const DP_ESIGN_CREATE_CONFIRM = (data = {}) => all_api(uni.$u.deepMerge({API: 'ESIGN', Action: 'DP_ESIGN_CREATE_CONFIRM', token: 1}, data), 'POST') 
+// 06-货到付款-卖方要求签约
+export const COM_ESIGN_CREATE = (data = {}) => all_api(uni.$u.deepMerge({API: 'ESIGN', Action: 'COM_ESIGN_CREATE', token: 1}, data), 'POST') 
+// 07-卖方撤回签约
+export const ESIGN_CONFIRM_CANCEL = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ESIGN', Action: 'ESIGN_CONFIRM_CANCEL', token: 1}}, data))
+// 08-买方确认协商结果
+export const ESIGN_CONFIRM = (data = {}) => all_api(uni.$u.deepMerge({API: 'ESIGN', Action: 'ESIGN_CONFIRM', token: 1}, data), 'POST') 
+// 09-开启签约
+export const ESIGN_START = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ESIGN', Action: 'ESIGN_START', token: 1}}, data))
+// 10-查询签约结果
+export const ESIGN_QUERY = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ESIGN', Action: 'ESIGN_QUERY', token: 1}}, data))
+// 11-签约列表
+export const LIST_ESIGN_SIGNFLOWS = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ESIGN', Action: 'LIST_ESIGN_SIGNFLOWS', token: 1}}, data))
+// 12-签约详细页
+export const DETAIL_ESIGN_SIGNFLOWS = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ESIGN', Action: 'DETAIL_ESIGN_SIGNFLOWS', token: 1}}, data))
+ 
+ 
+ 
