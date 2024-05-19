@@ -104,7 +104,7 @@
 			</view>
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="nopay_info.id">
 				<view class="item text-light item-label">线下支付凭证</view>
-				<view class="item u-text-right" >
+				<view class="item u-text-right" > 
 					<u--image 
 					width="120px" 
 					height="120px" 
