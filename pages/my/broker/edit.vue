@@ -657,6 +657,27 @@
 						></u--textarea>
 					</u-form-item>
 					<u-form-item
+						label="签约方式"
+						prop="esign_type"
+						ref="esign_type"
+					>
+						 <u-radio-group
+						    v-model="model.esign_type"
+						    placement="column"
+						  >
+						    <u-radio
+						      :customStyle="{marginBottom: '8px'}"
+						      v-for="(item, index) in radiolist_esign_type_filter"
+						      :key="item.value"
+						      :label="item.name"
+						      :disabled="item.disabled"
+						      :name="item.value"
+						    >
+						    </u-radio>
+						  </u-radio-group>
+					</u-form-item>
+					
+					<u-form-item
 						label="图片"
 						v-if="pan == 's'"
 					>
@@ -882,6 +903,7 @@
 					bid_settle_date: '',
 					base_contract: '',
 					base_afterday: '',
+					esign_type: '0'
 				},
 				fileList1: [],
 				// radiolist_order_type: [
@@ -896,6 +918,23 @@
 				// 		value: "2"
 				// 	},
 				// ],
+				radiolist_esign_type: [
+					{
+						name: '不允许签约',
+						disabled: false,
+						value: "0"
+					},
+					{
+						name: '在线手动签约',
+						disabled: false,
+						value: "1"
+					},
+					{
+						name: '在线自动签约',
+						disabled: false,
+						value: "2"
+					},
+				],
 				radiolist_trade_type: [
 					{
 						name: '合约现货',
@@ -1374,6 +1413,9 @@
 			radiolist_mdu_filter() {
 				return this.radiolist_mdu.filter(ele => ele.show.includes(this.pan))
 			},
+			radiolist_esign_type_filter() {
+				return this.radiolist_esign_type
+			},
 			radiolist_settle_mode_filter() {
 				// let data = uni.$u.deepClone(this.radiolist_settle_mode.filter(ele => ele.show.includes(this.pan)) )
 				// return data 
@@ -1439,6 +1481,7 @@
 					this.model.delivery_address = data.delivery_address
 					this.model.product_id = data.product_id
 					this.model.name = data.name
+					this.model.esign_type = data.esign_type
 					// this.model.order_type = data.order_type
 					this.model.trade_type = data.trade_type
 					this.model.trade_mode = data.trade_mode

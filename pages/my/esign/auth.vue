@@ -64,7 +64,7 @@
 							<view>{{ sign_info.organizations_state | esignOrganizationsState }}</view>
 							<view class="u-m-l-20" v-if="sign_info.organizations_state != '2' && sign_info.agent_state == '2'">
 								<u-button type="primary" size="mini"
-									@click="handleGoto('pages/my/esign/auth_organizations')"
+									@click="handleGoto(cpyUrlObj)"
 								>去认证</u-button>
 							</view> 
 						</view>  
@@ -137,6 +137,7 @@
 					color: '#666',
 					fontSize: '14px'
 				},
+				transferProcess: {},
 				model: {
 					organizations_name: '',
 					reg_no: '',
@@ -150,6 +151,7 @@
 		computed: {
 			...mapState({
 				sign_info: (state) => state.esign.sign_info,
+				myCpy: (state) => state.user.myCpy,
 			}),
 			...mapGetters({
 				themeConfig: 'theme/themeConfig',
@@ -157,6 +159,13 @@
 				sign_agent: 'esign/sign_agent',
 				sign_organizations: 'esign/sign_organizations',
 			}),
+			cpyUrlObj() {
+				return this.transferProcess.bizFlowNo? {
+					url: '/pages/my/esign/auth_organizations_verify'
+				} : {
+					url: '/pages/my/esign/auth_organizations'
+				}
+			},
 			paramsObj() {
 				return {
 					...this.model
@@ -211,19 +220,42 @@
 			uni.showLoading()
 			try{
 				await this.ESIGN_QUERY_ESIGN_ACCOUNT() 
+				if(this.sign_info.organizations_state == '1') {
+					await this.ESIGN_QUERY_TRANSFER_PROCESS()
+				}
+				
 			}catch(e){
 				//TODO handle the exception
 			}
 			this.pageLoading = false
-			
+			if(!this.myCpy.id) { 
+				this.myCompany()
+			}
+		},
+		watch: {
+			myCpy: {
+				handler(n) {
+					this.model.organizations_name = n.name
+					this.model.reg_no = n.credit_code
+				},
+				deep: true,
+				immediate: true
+			}
 		},
 		methods: {
 			...mapMutations({
 				handleGoto: 'user/handleGoto'
 			}),
 			...mapActions({
+				myCompany: 'user/myCompany',
 				ESIGN_QUERY_ESIGN_ACCOUNT: 'esign/ESIGN_QUERY_ESIGN_ACCOUNT'
 			}),
+			async ESIGN_QUERY_TRANSFER_PROCESS () {
+				const res = await this.$api.ESIGN_QUERY_TRANSFER_PROCESS()
+				if(res.code == 1) {
+					this.transferProcess = res.list?.result || {}
+				}
+			},
 			showToast(params) {
 				this.$refs.uToast.show({
 					position: 'bottom',

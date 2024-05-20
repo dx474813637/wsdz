@@ -57,7 +57,7 @@
 					<u-form-item label="校验金额/元" prop="amount" ref="amount" required >
 						<view>
 							<u--input
-								type="number"
+								type="digit"
 								v-model="model.amount" 
 								clearable
 							></u--input>
@@ -195,6 +195,7 @@
 						type: 'success',
 						message: '更新企业认证状态成功', 
 					})
+					this.ESIGN_QUERY_ESIGN_ACCOUNT()
 				}
 				
 			},
@@ -205,6 +206,7 @@
 					type: 'success',
 					message: '查询随机金额打款进度成功', 
 				})
+				this.ESIGN_QUERY_ESIGN_ACCOUNT()
 			},
 			async init(){
 				this.pageLoading = true
@@ -244,7 +246,8 @@
 							type: 'success',
 							message: r.msg, 
 						})
-						this.is_submit = true
+						this.is_submit = true;
+						this.ESIGN_QUERY_ESIGN_ACCOUNT() 
 					}
 				}).catch(errors => {
 					console.log(errors)

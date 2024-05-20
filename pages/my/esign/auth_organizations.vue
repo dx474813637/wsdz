@@ -64,7 +64,7 @@
 					></u--input>
 				</u-form-item> 
 				<view>
-					<u-button type="primary" @click="submit">提 交</u-button>
+					<u-button type="primary" @click="submit">提交并申请打款</u-button>
 				</view>
 			</view>
 				
@@ -196,8 +196,7 @@
 			if(!this.sign_info.id) {
 				await this.init()
 			} 
-			this.getAddressArea()
-			// this.getBankData()
+			this.getAddressArea() 
 		},
 		methods: {
 			...mapMutations({

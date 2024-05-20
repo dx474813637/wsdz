@@ -273,6 +273,12 @@
 						</u-radio-group>
 					</u-form-item>
 					<u-form-item
+						label="签约方式"
+						v-if="panRes.list.esign_type == '1'"
+					>	
+						{{ panRes.list.esign_type | esignType2Str}}
+					</u-form-item>
+					<u-form-item
 						label="卖方票据" 
 						prop="pyeeInfo"
 						ref="pyeeInfo"

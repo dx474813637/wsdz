@@ -44,11 +44,19 @@
 				<view class="item u-text-right">{{list.state | esignState2Str}}</view>
 			</view> 
 		</view> 
+		
+		<view class="main u-p-30" v-if="params_list.length > 0"> 
+			<DiyForm
+				:form="params_list"
+				:showSure="false"
+				:isView="true"
+			></DiyForm>
+		</view> 
 	</view>
 </template>
 
 <script> 
-	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex'
+	import {mapState, mapGetters, mapMutations, mapActions} from 'vuex' 
 	export default {
 		data() {
 			return {
@@ -57,6 +65,7 @@
 				role: '',
 				list: {},
 				order: {}, 
+				params_list: []
 			};
 		},
 		onLoad(options) {
@@ -106,8 +115,27 @@
 				if(res.code == 1) {
 					this.list = res.list.Result 
 					this.order = res.list.Result.Order 
+					
+					if(this.list.contract_id) {
+						this.LIST_ESIGN_CONTRACT_PARAMETERS(this.list.contract_id)
+					}
 				}
 			},  
+			async LIST_ESIGN_CONTRACT_PARAMETERS(contract_id) {
+				//合同模板参数列表
+				uni.showLoading({
+					title: '提交中...'
+				})  
+				const res = await this.$api.LIST_ESIGN_CONTRACT_PARAMETERS({
+					params: {  
+						order_id: this.list.origin_id, 
+						contract_id: contract_id , 
+					}
+				})
+				if(res.code == 1) {  
+					this.params_list = res.list.List || []
+				} 
+			},
 		}
 	}
 </script>

@@ -1250,8 +1250,8 @@
 					this.btnList = res.button
 					this.fahuo = res.fahuo
 					this.esign_info = this.list.Esign_signflows || {}
-					if(this.esign_info.id) {
-						// this.LIST_ESIGN_CONTRACT_PARAMETERS(this.esign_info.id)
+					if(this.esign_info.contract_id) {
+						this.LIST_ESIGN_CONTRACT_PARAMETERS(this.esign_info.contract_id)
 					}
 					if(this.list.settle_type == 'GRT') {
 						this.zfgj[1].disabled = false
