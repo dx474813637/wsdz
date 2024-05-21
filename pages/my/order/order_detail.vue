@@ -105,6 +105,10 @@
 				<view class="item text-light item-label">支付工具</view>
 				<view class="item u-text-right">{{list.pay_mode | paymode2str}}</view>
 			</view>
+			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
+				<view class="item text-light item-label">签约方式</view>
+				<view class="item u-flex u-flex-end u-flex-items-center">{{list.esign_type | esignType2Str}}</view>
+			</view>
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.pay_state && list.order_type == '1'">
 				<view class="item text-light item-label">支付状态</view>
 				<view class="item u-text-right" v-if="list.pay_mode"> 
@@ -136,8 +140,10 @@
 			</view>
 			<template v-if="esign_info.id">
 				<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
-					<view class="item text-light item-label">签约方式</view>
-					<view class="item u-text-right">{{list.esign_type | esignType2Str}}</view>
+					<view class="item text-light item-label">签约订单</view>
+					<view class="item u-flex u-flex-end u-flex-items-center">
+						<u-button size="small" type="primary" @click="handleGoto({url: '/pages/my/order/order_esign_detail', params: {id: esign_info.id}})">查看签约详情</u-button>
+					</view>
 				</view>
 				<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="esign_info.ContractNo">
 					<view class="item text-light item-label">合同编号</view>
@@ -838,10 +844,10 @@
 								</u--form>
 								<template v-if="formActive.create_confirm">
 									<u--form
-										labelPosition="left"
+										labelPosition="top"
 										:model="form_esign_create_confirm"
 										ref="form_esign_create_confirm" 
-										labelWidth="80"  
+										labelWidth="100%"  
 										> 
 										<u-form-item label="合同模板" required >
 											<view @click="show_contract = true">
@@ -875,6 +881,15 @@
 											</u-form-item>
 										</template> 
 									</u--form>
+									<view v-if="params_list.length > 0">
+										<DiyForm
+											:form="params_list"
+											:showSure="false"
+											:isView="false"
+											@updateFormData="handleUpdateFormData"
+										></DiyForm>
+									</view>
+									
 								</template>
 								<template v-if="formActive.confirm">
 									<u--form
@@ -984,6 +999,7 @@
 				nopay_info: {},
 				nopayEnd_info: {},
 				esign_info: {},
+				params_list: [],
 				paylist: {},
 				payOrderLoading: false,
 				show_billacc: false,
@@ -1024,6 +1040,7 @@
 				form_confirm: {
 					paypwd: '',
 				},
+				form_esign_create_confirm_validate: false,
 				form_esign_create_confirm: {
 					sign_z: '',
 					contract_id: '',
@@ -1251,7 +1268,7 @@
 					this.fahuo = res.fahuo
 					this.esign_info = this.list.Esign_signflows || {}
 					if(this.esign_info.contract_id) {
-						this.LIST_ESIGN_CONTRACT_PARAMETERS(this.esign_info.contract_id)
+						// this.LIST_ESIGN_CONTRACT_PARAMETERS(this.esign_info.contract_id)
 					}
 					if(this.list.settle_type == 'GRT') {
 						this.zfgj[1].disabled = false
@@ -1781,6 +1798,13 @@
 								position: 'center'
 							})   
 						}
+						else if(!this.form_esign_create_confirm_validate) {
+							this.showToast({
+								type: 'error',
+								message: '请检查合同表单',
+								position: 'center'
+							})  
+						}
 						else {
 							await this.DP_ESIGN_CREATE_CONFIRM()
 						}
@@ -1889,10 +1913,11 @@
 					}
 				})
 				if(res.code == 1) { 
-					this.showToast({
-						type: 'success',
-						message: res.msg, 
-					}) 
+					// this.showToast({
+					// 	type: 'success',
+					// 	message: res.msg, 
+					// }) 
+					this.params_list = res.list.List || [] 
 				}else {
 					throw new Error(res.msg)
 				}
@@ -2092,6 +2117,15 @@
 					throw new Error(res.msg)
 				}
 			},
+			handleUpdateFormData(data) {
+				let {formData, validate} = data
+				this.form_esign_create_confirm = {
+					...this.form_esign_create_confirm,
+					...formData
+				}
+				console.log(data)
+				this.form_esign_create_confirm_validate = validate
+			}
 		}
 	}
 </script>

@@ -1,53 +1,59 @@
 <template>
 	<view class="els-container">
-		<u-form-item
-			:label="el.name"
-			:prop="el.parameter_name"
-			:ref="el.parameter_name"
-			:required="el.required == '1' ? true : false"
-		>
-			<view class="">
-				<template v-if="el.type == 'text'">
-					<u-input 
-						v-model="idata[el.parameter_name]"
-						:placeholder="`请输入${el.placeholder || el.name}`"
-						:maxlength="el.max || -1"
-						:type="el.type || 'text'"
-						:disabled="el.disabled || isView || el.hidden" 
-						@change="handleInput"
-						clearable 
-					></u-input>
-				</template>
-				<template v-else-if="el.type == 'text-area'">
-					<u--textarea 
-						v-model="idata[el.parameter_name]"
-						:placeholder="`请输入${el.placeholder || el.name}`"
-						:height="el.height || '70'"
-						:disabled="el.disabled || isView || el.hidden"
-						:count="el.count"
-						:autoHeight="el.autoHeight" 
-					></u--textarea>
-				</template>
-				<template v-else-if="el.type == 'select'">
-					<view @click="picker_show = true">
-						<u-input
-							v-model="idata[el.parameter_name]"
-							:placeholder="`请选择${el.placeholder || el.name}`"
-							type="text"
-							readonly  
-						></u-input>
-					</view>
-				</template>
-				
-				<template v-if="el.remark">
-					<u--text type="info" :text="el.remark"></u--text>
-				</template>
-				
+		<template v-if="isView ">
+			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="el.parameter_value">
+				<view class="item text-light item-label">{{ el.name }}</view>
+				<view class="item u-text-right">{{ el.parameter_value }}</view>
 			</view>
-			
-		</u-form-item>
-		
-		
+		</template>
+		<template v-else>
+			<u-form-item
+				:label="`${el.name}${el.unit? '/'+el.unit : ''}${el.nochange == '1'? '(不可修改)': ''}`"
+				:prop="el.parameter_name"
+				:ref="el.parameter_name"
+				:required="el.required == '1'"
+			>
+				<view class="">
+					<template v-if="el.type == 'text'">
+						<u-input 
+							v-model="idata[el.parameter_name]"
+							:placeholder="`请输入${el.placeholder || el.name}`"
+							:maxlength="el.max || -1"
+							:type="el.type || 'text'"
+							:readonly="disabled" 
+							@change="handleInput"
+							clearable 
+						></u-input>
+					</template>
+					<template v-else-if="el.type == 'text-area'">
+						<u--textarea 
+							v-model="idata[el.parameter_name]"
+							:placeholder="`请输入${el.placeholder || el.name}`"
+							:height="el.height || '70'"
+							:readonly="disabled"
+							:count="el.count"
+							:autoHeight="el.autoHeight" 
+						></u--textarea>
+					</template>
+					<template v-else-if="el.type == 'select'">
+						<view @click="handleShowSelect">
+							<u-input
+								v-model="idata[el.parameter_name]"
+								:placeholder="`请选择${el.placeholder || el.name}`"
+								type="text"
+								readonly  
+							></u-input>
+						</view>
+					</template>
+					
+					<template v-if="el.remark">
+						<u--text type="info" :text="el.remark"></u--text>
+					</template>
+					
+				</view>
+				
+			</u-form-item>
+		</template> 
 		
 		<u-picker 
 			v-if="el.type == 'select'"
@@ -95,8 +101,8 @@
 		},
 		computed: {
 			disabled(){ 
-				return this.isView || this.el.disabled || this.el.hidden;
-			}
+				return this.isView || this.el.disabled || this.el.hidden || this.el.nochange == '1';
+			}, 
 		},
 		created() {
 			
@@ -119,9 +125,16 @@
 			},
 			handleInput(e) {
 				this.$emit('change', { res: e, el: this.el })
+			},
+			handleShowSelect() {
+				if(this.isView) return
+				this.picker_show = true
 			}
 		}
 	};
 </script> 
 <style scoped lang="scss">
+	.item {
+		color: #444;
+	}
 </style>

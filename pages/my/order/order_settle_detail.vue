@@ -398,7 +398,7 @@
 									labelWidth="100"
 									> 
 									<u-form-item
-										label="买家支付凭证"  
+										label="支付凭证"  
 										>
 										<view>
 											<u--image
@@ -410,7 +410,7 @@
 										</view>
 									</u-form-item>
 									<u-form-item
-										label="买家支付备注" 
+										label="支付备注" 
 										v-if="nopay_info.remark"
 										>
 										<view>{{nopay_info.remark}}</view>

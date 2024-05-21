@@ -273,8 +273,7 @@
 						</u-radio-group>
 					</u-form-item>
 					<u-form-item
-						label="签约方式"
-						v-if="panRes.list.esign_type == '1'"
+						label="签约方式" 
 					>	
 						{{ panRes.list.esign_type | esignType2Str}}
 					</u-form-item>
@@ -874,13 +873,16 @@
 						list: res.list.Order.Source
 					}
 					this.order = res.list.Order  
+					this.left_amount = this.order.left_amount
 					this.form.id = this.id
+					// this.form.source = res.list.Order.source
 					this.form.source_id = res.list.Order.source_id
 					this.form.amount = res.list.Order.amount
 					this.form.price = res.list.Order.price1
 					this.form.total_price = res.list.Order.total_price1
 					this.form.pay_option1 = res.list.Order.settle_type
-					this.form.pay_option2 = res.list.Order.pay_mode.includes == 'BILLPAYGUARANTE' ? 'BILLPAY' : 'FUNDPAY'
+					// this.form.pay_option2 = res.list.Order.pay_mode.includes == 'BILLPAYGUARANTE' ? 'BILLPAY' : 'FUNDPAY'
+					this.form.pay_option2 = 'NOPAY' 
 					this.form.pyeeInfo = res.list.Order.payeeAccNm || ''
 					this.form.settle_mode = res.list.Order.settle_mode
 					this.form.delivery_place = res.list.Order.delivery_place

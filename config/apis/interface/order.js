@@ -32,6 +32,7 @@ import {all_api} from '@/config/apis/interface/base.js'
 export const create_order = (data, config={}) => http.post('create_order', data, config)
 // change_order 修改订单
 export const change_order = (data, config={}) => http.post('change_order', data, config)
+// export const change_order = (data = {}) => all_api(uni.$u.deepMerge({API: 'ORDER', Action: 'CHANGE', token: 1}, data), 'POST')
 
 // order_query_amount_active 修改订单
 export const order_query_amount_active = (data ) => http.get('order_query_amount_active', data )

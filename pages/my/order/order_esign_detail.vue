@@ -27,14 +27,17 @@
 				<view class="item text-light item-label">交易商品</view>
 				<view class="item u-text-right">{{order.title}} * {{order.amount}}</view>
 			</view> 
-			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
-				<view class="item text-light item-label">补充条款</view>
-				<view class="item u-text-right">{{list.remark}}</view>
-			</view> 
-			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
-				<view class="item text-light item-label">运费</view>
-				<view class="item u-text-right">{{list.trans_fee}}</view>
-			</view> 
+			<template v-if="list.contract_id == '1'">
+				<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
+					<view class="item text-light item-label">补充条款</view>
+					<view class="item u-text-right">{{list.remark}}</view>
+				</view> 
+				<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
+					<view class="item text-light item-label">运费</view>
+					<view class="item u-text-right">{{list.trans_fee}}</view>
+				</view> 
+			</template>
+			
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
 				<view class="item text-light item-label">创建时间</view>
 				<view class="item u-text-right">{{list.ctime}}</view>
@@ -45,7 +48,7 @@
 			</view> 
 		</view> 
 		
-		<view class="main u-p-30" v-if="params_list.length > 0"> 
+		<view class="main u-p-l-30 u-p-r-30 u-p-b-30" v-if="params_list.length > 0"> 
 			<DiyForm
 				:form="params_list"
 				:showSure="false"

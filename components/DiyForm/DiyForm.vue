@@ -94,7 +94,23 @@
 		mounted() { 
 		},
 		watch: {
-			
+			formData: {
+				handler(n) {  
+					this.$nextTick(() => {
+						this.$refs[this.refName]
+							.validate()
+							.then(async r => { 
+								this.$emit('updateFormData', {formData: n, validate: r}) 
+							})
+							.catch(errors => {
+								this.$emit('updateFormData', {formData: n, validate: false, errors}) 
+							})
+					})
+					 
+					
+				},
+				deep: true
+			}
 		},
 		computed: {
 			
