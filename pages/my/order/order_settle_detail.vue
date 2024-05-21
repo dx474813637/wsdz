@@ -112,7 +112,7 @@
 					@click="previewImgBtn([`https://thumb-album.rawmex.cn/0-0/${nopay_info.pic1}`])"
 					></u--image>
 				</view>
-			</view>
+			</view> 
 			<!-- <view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="nopay_info.id">
 				<view class="item text-light item-label">线下支付状态</view>
 				<view class="item u-text-right">{{list.state}}</view>
