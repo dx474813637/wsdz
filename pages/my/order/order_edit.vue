@@ -333,7 +333,7 @@
 					>
 						<view>
 							<u--input
-								v-if="!qiehuan ||  panRes.list.trade_mode == '3'"
+								v-if="!qiehuan ||  panRes.list.trade_mode == '3' || !panRes.list.delivery_address"
 								v-model="form.settle_address"
 								placeholder="填写地址" 
 								clearable
@@ -529,7 +529,7 @@
 			qiehuan() {
 				let qiehuan
 				if(this.panRes?.list?.trade_mode == '3') {
-					console.log('ddd')
+					// console.log('ddd')
 					if(this.ordertype == 'S') {
 						qiehuan = true
 					}else {

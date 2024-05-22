@@ -73,6 +73,25 @@ export const ESIGN_QUERY = (data = {}) => all_api(uni.$u.deepMerge({params: {API
 export const LIST_ESIGN_SIGNFLOWS = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ESIGN', Action: 'LIST_ESIGN_SIGNFLOWS', token: 1}}, data))
 // 12-签约详细页
 export const DETAIL_ESIGN_SIGNFLOWS = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ESIGN', Action: 'DETAIL_ESIGN_SIGNFLOWS', token: 1}}, data))
+// 13-提交自动签约授权申请 
+export const AUTH_Z = (data = {}) => all_api(uni.$u.deepMerge({API: 'ESIGN', Action: 'AUTH_Z', token: 1}, data), 'POST') 
+// 14-应用平台选择列表
+export const LIST_MANCUSTS = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ESIGN', Action: 'LIST_MANCUSTS', token: 1}}, data))
+// 15-开启授权
+export const AUTH_Z_START = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ESIGN', Action: 'v', token: 1}}, data))
+// 16-查询授权信息
+export const AUTH_Z_QUERY = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ESIGN', Action: 'AUTH_Z_QUERY', token: 1}}, data))
+// 17-申请重新发起授权申请
+export const AUTH_Z_RE = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ESIGN', Action: 'AUTH_Z_RE', token: 1}}, data))
+// 18-修改应用场景授权
+export const AUTH_Z_SCENE = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ESIGN', Action: 'AUTH_Z_SCENE', token: 1}}, data))
+ 
+ 
+ // 19-合同预览（选择合同模板时）
+ export const VIEW_CONTRACT = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ESIGN', Action: 'VIEW_CONTRACT', token: 1}}, data))
+  
+  
+  
  
  
  

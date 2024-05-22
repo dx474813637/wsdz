@@ -146,8 +146,14 @@
 					</view>
 				</view>
 				<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="esign_info.ContractNo">
-					<view class="item text-light item-label">合同编号</view>
-					<view class="item u-text-right">{{esign_info.ContractNo }}</view>
+					<view class="item text-light item-label">合同编号</view> 
+				<view class="item u-text-right" >
+					<u--text 
+						:type="esign_info.file_rawmex ? 'primary' : ''" 
+						@click="handleViewPdf(esign_info.file_rawmex)" 
+						:text="esign_info.ContractNo" 
+					></u--text>
+				</view>
 				</view>
 				<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.State.value == '42'">
 					<view class="item text-light item-label">签约说明</view>
@@ -861,6 +867,12 @@
 												></u--input>
 											</view>
 										</u-form-item> 
+										<u-form-item label="合同预览" >
+											<view class="u-flex u-flex-items-center">
+												<view>如签约前确认合同，请</view>
+												<view class="text-primary" @click="handleViewContract(form_esign_create_confirm.contract_id)">预览</view>
+											</view>
+										</u-form-item> 
 										<template v-if="form_esign_create_confirm.contract_id == '1'">
 											<u-form-item
 												label="运费/元" 
@@ -931,6 +943,12 @@
 											    </u-radio>
 											  </u-radio-group>
 										</u-form-item>
+										<u-form-item label="合同预览" >
+											<view class="u-flex u-flex-items-center">
+												<view>如签约前确认合同，请</view>
+												<view class="text-primary" @click="handleViewContract(esign_info.contract_id)">预览</view>
+											</view>
+										</u-form-item> 
 										<u-form-item
 											label="退回签约备注"
 											v-if="form_esign_confirm.confirm != '1'"
@@ -1181,7 +1199,8 @@
 		},
 		methods: { 
 			...mapMutations({
-				handleGoto: 'user/handleGoto'
+				handleGoto: 'user/handleGoto',
+				handleViewPdf: 'esign/handleViewPdf'
 			}),
 			...mapActions({
 				getImageBase64_readFile: 'user/getImageBase64_readFile'
@@ -2125,7 +2144,16 @@
 				}
 				console.log(data)
 				this.form_esign_create_confirm_validate = validate
-			}
+			},
+			handleViewContract(contract_id) {
+				this.handleGoto({
+					url: '/pages/my/esign/contractView',
+					params: {
+						contract_id: contract_id || this.form_esign_create_confirm.contract_id,
+						order_id: this.id
+					}
+				})
+			},
 		}
 	}
 </script>

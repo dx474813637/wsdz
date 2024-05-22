@@ -660,6 +660,7 @@
 						label="签约方式"
 						prop="esign_type"
 						ref="esign_type"
+						v-if="esign_type_show"
 					>
 						 <u-radio-group
 						    v-model="model.esign_type"
@@ -1121,12 +1122,16 @@
 		},
 		computed: {
 			...mapState({
+				sign_auto_info: (state) => state.esign.sign_auto_info,
 				myCpy: state => state.user.myCpy,
 				addressArea: state => state.user.addressArea,
 				login: state => state.user.login,
 				auth: state => state.user.auth,
 				maxSize: state => state.user.maxSize,
 			}),
+			esign_type_show() {
+				return this.sign_auto_info.state == '3' && this.pan == 's'
+			},
 			tradeType2Label() {
 				if(this.pan == 's' ) {
 					if(this.model.settle_mode == 'B') {
@@ -1246,8 +1251,7 @@
 						trigger: ['blur', 'change']
 					},
 				}
-				let sRules = {
-				} 
+				let sRules = { } 
 				let jpRules = {
 					'bid_settle_date': {
 						type: 'string',
@@ -1466,7 +1470,7 @@
 			}else {
 				this.getAddressArea()
 			}
-			
+			this.AUTH_Z_QUERY()
 			
 			if(options.hasOwnProperty('pan')) {
 				this.pan = options.pan
@@ -1645,6 +1649,7 @@
 				handleGoto: 'user/handleGoto'
 			}),
 			...mapActions({
+				AUTH_Z_QUERY: 'esign/AUTH_Z_QUERY',
 				getAddressArea: 'user/getAddressArea',
 				getImageBase64_readFile: 'user/getImageBase64_readFile'
 			}),

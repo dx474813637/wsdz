@@ -46,6 +46,16 @@
 				<view class="item text-light item-label">签约状态</view>
 				<view class="item u-text-right">{{list.state | esignState2Str}}</view>
 			</view> 
+			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
+				<view class="item text-light item-label">合同编号</view>
+				<view class="item u-text-right" > 
+					<u--text 
+						:type="list.file_rawmex ? 'primary' : ''" 
+						@click="handleViewPdf(list.file_rawmex)" 
+						:text="list.ContractNo" 
+					></u--text>
+				</view>
+			</view> 
 		</view> 
 		
 		<view class="main u-p-l-30 u-p-r-30 u-p-b-30" v-if="params_list.length > 0"> 
@@ -98,7 +108,8 @@
 		},
 		methods: {
 			...mapMutations({
-				handleGoto: 'user/handleGoto'
+				handleGoto: 'user/handleGoto',
+				handleViewPdf: 'esign/handleViewPdf'
 			}),
 			...mapActions({
 				getImageBase64_readFile: 'user/getImageBase64_readFile'
@@ -138,7 +149,7 @@
 				if(res.code == 1) {  
 					this.params_list = res.list.List || []
 				} 
-			},
+			}, 
 		}
 	}
 </script>

@@ -374,8 +374,18 @@ const esignState2Str = v => {
 	else if(v == '5')  return '协商失败'  
 	return v
 } 
+const esignAutoState2Str = v => {
+	if(v == '0') return '待确认'
+	else if(v == '1')  return '待开启' 
+	else if(v == '2')  return '授权中' 
+	else if(v == '3')  return '已授权' 
+	else if(v == '4')  return '失败' 
+	else if(v == '5')  return '已过期'  
+	return v
+} 
 
 export default {
+	esignAutoState2Str,
 	esignState2Str,
 	type2str,
 	expressUnit,

@@ -1117,6 +1117,20 @@
 					"navigationBarTitleText": "企业认证随即金额校验",
 					"enablePullDownRefresh": false
 				}
+			},
+			{
+				"path" : "esign/auth_auto",
+				"style": {
+					"navigationBarTitleText": "自动签约授权",
+					"enablePullDownRefresh": false
+				}
+			},
+			{
+				"path" : "esign/contractView",
+				"style": {
+					"navigationBarTitleText": "合同预览",
+					"enablePullDownRefresh": false
+				}
 			} 
 		]
 	}, {
