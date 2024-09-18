@@ -1,6 +1,7 @@
 
 let state = {
 		sign_info: {},
+		sign_organizations_apply_state: '',
 		sign_auto_info: {},
 		bank: []
 	},
@@ -16,6 +17,9 @@ let state = {
 		},
 		sign_organizations(state) { 
 			return state.sign_info.organizations_state
+		},
+		is_sign(state) { 
+			return state.sign_info.organizations_state == 2 && state.sign_info.agent_state == 2
 		},
 	},
 	mutations = {
@@ -34,7 +38,7 @@ let state = {
 			// uni.setStorageSync('sign_info', {})
 		},
 		updateSignState(state, data) {
-			state.sign_info.organizations_state = data
+			state.sign_organizations_apply_state = data
 		}, 
 		handleViewPdf(state, url) {
 			if(!url) return
@@ -58,6 +62,12 @@ let state = {
 			const res = await this._vm.$api.ESIGN_QUERY_ESIGN_ACCOUNT();
 			if(res.code == 1) {
 				commit('setSignInfo', res.list)
+			}
+		}, 
+		async ESIGN_QUERY_VERIFY_ORGANIZATIONS({commit, state}, data={}) {
+			const res = await this._vm.$api.ESIGN_QUERY_VERIFY_ORGANIZATIONS();
+			if(res.code == 1) {
+				commit('updateSignState', res.list.organizations_auth_state)
 			}
 		}, 
 		async ESIGN_GET_BANK_CODE({commit, state}, data={}) {

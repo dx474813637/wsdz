@@ -1,5 +1,5 @@
 <template>
-	<view class="u-p-20">
+	<view class="u-p-20 w">
 		<u--form
 			labelPosition="top"  
 			labelWidth="100%"
@@ -18,8 +18,8 @@
 							<view>{{ sign_auto_info.state | esignAutoState2Str }}</view> 
 						</view>
 					</u-form-item>
-					<u-form-item label="授权模板" v-if="list.file_rawmex">
-						<view class="text-primary" @click="handleViewPdf(list.file_rawmex)">查看</view>
+					<u-form-item label="授权模板" v-if="sign_auto_info.file_rawmex">
+						<view class="text-primary" @click="handleViewPdf(sign_auto_info.file_rawmex)">查看</view>
 					</u-form-item>
 					<u-form-item label="委托方" >
 						<view class="u-flex">
@@ -43,7 +43,7 @@
 								<view :class="{
 									'u-success': scene_1
 								}">{{ scene_1_text }}</view>
-								<view class="u-m-l-20">
+								<view class="u-m-l-20" v-if="sign_auto_info.state == '3'">
 									<u--text type="primary" :text="scene_1_btn" @click="shouquanBtn('scene_1')"></u--text>
 								</view>
 							</view> 
@@ -52,7 +52,7 @@
 								<view :class="{
 									'u-success': scene_0
 								}">{{ scene_0_text }}</view>
-								<view class="u-m-l-20">
+								<view class="u-m-l-20" v-if="sign_auto_info.state == '3'">
 									<u--text type="primary" :text="scene_0_btn" @click="shouquanBtn('scene_0')"></u--text>
 								</view>
 							</view> 
@@ -67,6 +67,12 @@
 			</template>
 			<template v-else-if="!pageLoading">
 				<view class="u-p-20">
+					<u-form-item label="通用授权模板" v-if="auth_z_view.company_name"> 
+						<view class="text-primary" @click="handleViewContract">预览</view>
+					</u-form-item>
+					<u-form-item label="委托方" v-if="auth_z_view.company_name"> 
+						<view>{{auth_z_view.company_name}}</view>
+					</u-form-item>
 					<u-form-item label="联系地址" prop="address" ref="address" required > 
 						<u--textarea
 							v-model="model.address" 
@@ -152,6 +158,10 @@
 				mancust_show: false,
 				mancust_list: [],
 				transferProcess: {},
+				auth_z_view: {
+					company_name: '',
+					html_view: ''
+				},
 				model: {
 					address: '',
 					auth_date: '1', 
@@ -264,6 +274,7 @@
 		async onLoad() {
 			await this.init()
 			this.LIST_MANCUSTS() 
+			this.AUTH_Z_VIEW()
 		},
 		watch: {
 			sign_auto_info: {
@@ -319,6 +330,13 @@
 				const res = await this.$api.LIST_MANCUSTS()
 				if(res.code == 1) {
 					this.mancust_list = [res.list?.list_mancusts || []]
+				}
+			}, 
+			async AUTH_Z_VIEW() {
+				const res = await this.$api.AUTH_Z_VIEW()
+				if(res.code == 1) {
+					this.auth_z_view.company_name = res.list.company_name
+					this.auth_z_view.html_view = res.list.html_view
 				}
 			}, 
 			showToast(params) {
@@ -384,11 +402,18 @@
 					await this.submit()
 				}
 			}, 
+			handleViewContract() {
+				this.handleGoto({
+					url: '/pages/my/esign/contractView2',
+				})
+			},
 			
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
-
+.w {
+	padding-bottom: 100px!important;
+}
 </style>

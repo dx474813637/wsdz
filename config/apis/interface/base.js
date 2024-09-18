@@ -191,3 +191,6 @@ export const save_page_info = (data, config={}) => http.post('save_page_info', d
 export const uid_share_index = (data) => http.get('uid_share_index', data)
 // uid_share_all 分享记录接口 参数url  必填
 export const uid_share_all = (data) => http.get('uid_share_all', data)
+
+// WEB_COMPANY_DETAIL 分享记录接口 参数url  必填
+export const WEB_COMPANY_DETAIL =  (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'WEB_COMPANY', Action: 'DETAIL' }}, data))

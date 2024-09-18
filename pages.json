@@ -1114,7 +1114,7 @@
 			}, {
 				"path": "esign/auth_organizations_verify",
 				"style": {
-					"navigationBarTitleText": "企业认证随即金额校验",
+					"navigationBarTitleText": "企业认证随机金额校验",
 					"enablePullDownRefresh": false
 				}
 			},
@@ -1129,6 +1129,13 @@
 				"path" : "esign/contractView",
 				"style": {
 					"navigationBarTitleText": "合同预览",
+					"enablePullDownRefresh": false
+				}
+			} ,
+			{
+				"path" : "esign/contractView2",
+				"style": {
+					"navigationBarTitleText": "通用授权模板预览",
 					"enablePullDownRefresh": false
 				}
 			} 

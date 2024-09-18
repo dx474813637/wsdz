@@ -28,7 +28,9 @@ export const ESIGN_TRANSFER_RANDOM_AMOUNT = (data = {}) => all_api(uni.$u.deepMe
  export const ESIGN_GET_BANK_CODE = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ESIGN', Action: 'GET_BANK_CODE', token: 1}}, data))
  
  // 07-获取开户行所在地列表
- // 对外接口：https://www.rawmex.cn/cate/api/index.php?_a=regional&f=json
+ // 对外接口：https://www.rawmex.cn/cate/api/index.php?_a=regional&f=json 
+ export const ESIGN_regional_json = (data) => http.get('regional_json', data) 
+ 
  
  // 08-获取开户行支行名称列表
  export const ESIGN_GET_BANK_NAME = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ESIGN', Action: 'GET_BANK_NAME', token: 1}}, data))
@@ -42,6 +44,9 @@ export const ESIGN_TRANSFER_RANDOM_AMOUNT = (data = {}) => all_api(uni.$u.deepMe
  // 11-查询随机金额打款进度
  // * 单独查询，如果收不到随机金额打款，可通过此接口查询原因 
  export const ESIGN_QUERY_TRANSFER_PROCESS = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ESIGN', Action: 'QUERY_TRANSFER_PROCESS', token: 1}}, data))
+ 
+ // 12-企业认证申请记录 
+ export const ESIGN_QUERY_LOGIN_VERIFY_ORGANIZATIONS_RECORD = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ESIGN', Action: 'QUERY_LOGIN_VERIFY_ORGANIZATIONS_RECORD', token: 1}}, data))
  
  
  // =======签约=======
@@ -78,7 +83,7 @@ export const AUTH_Z = (data = {}) => all_api(uni.$u.deepMerge({API: 'ESIGN', Act
 // 14-应用平台选择列表
 export const LIST_MANCUSTS = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ESIGN', Action: 'LIST_MANCUSTS', token: 1}}, data))
 // 15-开启授权
-export const AUTH_Z_START = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ESIGN', Action: 'v', token: 1}}, data))
+export const AUTH_Z_START = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ESIGN', Action: 'AUTH_Z_START', token: 1}}, data))
 // 16-查询授权信息
 export const AUTH_Z_QUERY = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ESIGN', Action: 'AUTH_Z_QUERY', token: 1}}, data))
 // 17-申请重新发起授权申请
@@ -91,6 +96,9 @@ export const AUTH_Z_SCENE = (data = {}) => all_api(uni.$u.deepMerge({params: {AP
  export const VIEW_CONTRACT = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ESIGN', Action: 'VIEW_CONTRACT', token: 1}}, data))
   
   
+// 20-自动签约授权合同预览
+export const AUTH_Z_VIEW = (data = {}) => all_api(uni.$u.deepMerge({params: {API: 'ESIGN', Action: 'AUTH_Z_VIEW', token: 1}}, data))
+   
   
  
  

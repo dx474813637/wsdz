@@ -45,7 +45,7 @@
 						color: themeConfig.baseText,
 						width: '90px'
 					}">
-						<view class="tims-btn"
+						<!-- <view class="tims-btn"
 							:style="{
 								borderColor: themeConfig.pageTextSub,
 								backgroundColor: themeConfig.pageBg
@@ -57,6 +57,16 @@
 									color: typeActive == 'dark'? '#bfc5e4' : '#777'
 								}"
 							></i>
+						</view> -->
+						<view class="tims-btn"
+							:style="{
+								borderColor: themeConfig.pageTextSub,
+								backgroundColor: themeConfig.pageBg
+							}"
+							v-if="origin.weixin_pic"
+							@click.stop="handleWxImgBtn"
+						> 
+							<u-icon name="weixin-fill" :color="typeActive == 'dark'? '#bfc5e4' : '#777'" size="24"></u-icon>
 						</view>
 						
 					</view>
@@ -121,7 +131,7 @@
 				</view>
 			</view>
 			
-		</view>
+		</view> 
 	</view>
 </template>
 
@@ -210,7 +220,7 @@
 		},
 		data() {
 			return {
-				
+				wxImgShow: false,
 			};
 		},
 		methods: {
@@ -221,6 +231,9 @@
 				this.$emit('detail', {id: this.pid, origin: this.origin})
 				
 			},
+			handleWxImgBtn() { 
+				this.$emit('showWxImg', { wx_img: this.origin.weixin_pic })
+			},
 			handleTimesBtn() {
 				this.$emit('tims', {tims: this.tims, id: this.pid, origin: this.origin})
 			}
@@ -230,7 +243,7 @@
 
 <style lang="scss" scoped>
 	.tims-btn {
-		border: 1rpx solid #e7e7e7;
+		// border: 1rpx solid #e7e7e7;
 		border-radius: 20rpx;
 		padding: 3px 10px;
 		

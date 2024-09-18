@@ -7,7 +7,7 @@
 			</view>
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
 				<view class="item text-light item-label">签约方式</view>
-				<view class="item u-text-right">{{order.esign_type}}</view>
+				<view class="item u-text-right">{{order.esign_type == '1'? '手动签约' : '自动签约'}}</view>
 			</view> 
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
 				<view class="item text-light item-label">来源订单</view>
@@ -51,7 +51,7 @@
 				<view class="item u-text-right" > 
 					<u--text 
 						:type="list.file_rawmex ? 'primary' : ''" 
-						@click="handleViewPdf(list.file_rawmex)" 
+						@click="handleViewPdf(list.file_rawmex_auto || list.file_rawmex)" 
 						:text="list.ContractNo" 
 					></u--text>
 				</view>

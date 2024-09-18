@@ -142,7 +142,7 @@
 				<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
 					<view class="item text-light item-label">签约订单</view>
 					<view class="item u-flex u-flex-end u-flex-items-center">
-						<u-button size="small" type="primary" @click="handleGoto({url: '/pages/my/order/order_esign_detail', params: {id: esign_info.id}})">查看签约详情</u-button>
+						<u-button size="small" type="primary" @click="handleGoto({url: '/pages/my/order/order_esign_detail', params: {id: esign_info.id, role: ordertype}})">查看签约详情</u-button>
 					</view>
 				</view>
 				<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="esign_info.ContractNo">
@@ -150,7 +150,7 @@
 				<view class="item u-text-right" >
 					<u--text 
 						:type="esign_info.file_rawmex ? 'primary' : ''" 
-						@click="handleViewPdf(esign_info.file_rawmex)" 
+						@click="handleViewPdf(esign_info.file_rawmex_auto || esign_info.file_rawmex)" 
 						:text="esign_info.ContractNo" 
 					></u--text>
 				</view>
@@ -355,7 +355,7 @@
 				</view> 
 				<view class="item u-p-6"
 						v-if="btnList.button30"
-					> <!-- 款到发货-卖方确认并发起签约 -->
+					> <!-- 卖方确认并发起签约 -->
 					<u-button type="primary" @click="handleShowPopup({mode:'esign', create_confirm: true})">{{btnList.button30_title || '卖方确认并发起签约'}}</u-button>
 				</view> 
 				<view class="item u-p-6"
@@ -855,6 +855,22 @@
 										ref="form_esign_create_confirm" 
 										labelWidth="100%"  
 										> 
+										<u-form-item label="签署方式" >
+											<u-radio-group
+											    v-model="form_esign_create_confirm.sign_z"
+											    placement="row" 
+											  >
+											    <u-radio
+											      :customStyle="{marginRight: '8px'}"
+											      v-for="(item, index) in sign_z_list_filter"
+											      :key="item.value"
+											      :label="item.name"
+												  :disabled="item.disabled"
+											      :name="item.value" 
+											    >
+											    </u-radio>
+											  </u-radio-group>
+										</u-form-item> 
 										<u-form-item label="合同模板" required >
 											<view @click="show_contract = true">
 												<u--input
@@ -867,7 +883,7 @@
 												></u--input>
 											</view>
 										</u-form-item> 
-										<u-form-item label="合同预览" >
+										<u-form-item label="合同预览" v-if="form_esign_create_confirm.contract_id">
 											<view class="u-flex u-flex-items-center">
 												<view>如签约前确认合同，请</view>
 												<view class="text-primary" @click="handleViewContract(form_esign_create_confirm.contract_id)">预览</view>
@@ -1071,6 +1087,18 @@
 					audit_remark: ''
 				},
 				btnList: {},
+				sign_z_list: [
+					{
+						name: '自动签署',
+						value: '1',
+						disabled: false,
+					},
+					{
+						name: '手动签署',
+						value: '',
+						disabled: false,
+					}, 
+				],
 				shyj_esign: [
 					{
 						name: '退回协商',
@@ -1170,6 +1198,7 @@
 		},
 		computed: {
 			...mapState({
+				sign_auto_info: state => state.esign.sign_auto_info,
 				typeConfig: state => state.theme.typeConfig,
 				login: state => state.user.login,
 			}),
@@ -1185,6 +1214,14 @@
 			diff2() {
 				return Math.abs(+this.diff)
 			}, 
+			sign_z_list_filter() {
+				return this.sign_z_list.map(ele => {
+					if(ele.value == 1 &&  this.sign_auto_info.state != '3') {
+						ele.disabled = false
+					}
+					return {...ele}
+				})
+			}
 		},
 		filters: {
 			source2pan: v => {
@@ -1817,7 +1854,7 @@
 								position: 'center'
 							})   
 						}
-						else if(!this.form_esign_create_confirm_validate) {
+						else if(!this.form_esign_create_confirm_validate && this.params_list.length != 0) {
 							this.showToast({
 								type: 'error',
 								message: '请检查合同表单',
@@ -1825,7 +1862,9 @@
 							})  
 						}
 						else {
-							await this.DP_ESIGN_CREATE_CONFIRM()
+							let func = 'DP_ESIGN_CREATE_CONFIRM'
+							if(this.list.settle_type == 'COD') func = 'COM_ESIGN_CREATE'
+							await this.esign_create(func)
 						}
 					}
 					if(this.formActive.confirm) {
@@ -1941,12 +1980,13 @@
 					throw new Error(res.msg)
 				}
 			},
-			async DP_ESIGN_CREATE_CONFIRM() {
+			async esign_create(func='DP_ESIGN_CREATE_CONFIRM') {
 				//合同模板参数列表
+				
 				uni.showLoading({
 					title: '提交中...'
 				})  
-				const res = await this.$api.DP_ESIGN_CREATE_CONFIRM({
+				const res = await this.$api[func]({
 					...this.form_esign_create_confirm,
 					order_id: this.id, 
 				})

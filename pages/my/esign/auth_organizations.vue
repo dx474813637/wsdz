@@ -31,7 +31,7 @@
 					<uni-data-picker 
 						placeholder="所在地" 
 						popup-title="请选择所在地区" 
-						:localdata="addressArea" 
+						:localdata="addressAreaAuth" 
 						v-model="model.regional"
 					></uni-data-picker>
 				</u-form-item> 
@@ -111,6 +111,7 @@
 					cardNo: '',
 					mobile: '',
 				},
+				organizations: {},
 				pageLoading: true, 
 			};
 		},
@@ -120,14 +121,15 @@
 		},
 		computed: {
 			...mapState({
-				addressArea: state => state.user.addressArea,
+				addressAreaAuth: state => state.user.addressAreaAuth,
 				sign_info: (state) => state.esign.sign_info,
+				sign_organizations_apply_state: (state) => state.esign.sign_organizations_apply_state,
 			}),
 			...mapGetters({
 				themeConfig: 'theme/themeConfig',
 				is_sign_apply: 'esign/is_sign_apply',
 				sign_agent: 'esign/sign_agent',
-				sign_organizations: 'esign/sign_organizations',
+				// sign_organizations: 'esign/sign_organizations',
 			}),
 			paramsObj() {
 				return {
@@ -192,11 +194,12 @@
 		onReady() { 
 			this.$refs.form.setRules(this.rules)
 		},
-		async onLoad() {
+		async onLoad() {  
 			if(!this.sign_info.id) {
 				await this.init()
 			} 
-			this.getAddressArea() 
+			await this.getLastData()
+			this.getAddressAreaAuth() 
 		},
 		methods: {
 			...mapMutations({
@@ -204,7 +207,8 @@
 			}),
 			...mapActions({
 				ESIGN_QUERY_ESIGN_ACCOUNT: 'esign/ESIGN_QUERY_ESIGN_ACCOUNT',
-				getAddressArea: 'user/getAddressArea'
+				ESIGN_QUERY_VERIFY_ORGANIZATIONS: 'esign/ESIGN_QUERY_VERIFY_ORGANIZATIONS',
+				getAddressAreaAuth: 'user/getAddressAreaAuth'
 			}),
 			async getBankData () {
 				const res = await this.$api.ESIGN_GET_BANK_CODE()
@@ -218,6 +222,21 @@
 					//TODO handle the exception
 				}
 				this.pageLoading = false
+			},
+			async getLastData() {
+				const res = await this.$api.ESIGN_QUERY_LOGIN_VERIFY_ORGANIZATIONS_RECORD();
+				if(res.code == 1) {
+					const list = res.list.Channel_esign_verify_organizations || {}; 
+					this.organizations = list
+					if(list.id) {
+						this.model.bank = list.bank 
+						this.model.regional = list.regional 
+						this.model.subbranch = list.subbranch 
+						this.model.cardNo = list.cardNo 
+						this.model.mobile = list.mobile
+					}
+					
+				}
 			},
 			showToast(params) {
 				this.$refs.uToast.show({
@@ -241,16 +260,29 @@
 					const r = await this.$api.ESIGN_TRANSFER_RANDOM_AMOUNT({
 						...this.paramsObj
 					})
-					if(r.code == 1) {
-						uni.showToast({
-							title: r.msg,
-							icon: 'success'
-						})
-						setTimeout(() => {
-							uni.redirectTo({
-								url: '/pages/my/esign/auth_organizations_verify'
+					if(r.code == 1 && r.list.State == 'SUCCESS') {
+						await this.ESIGN_QUERY_VERIFY_ORGANIZATIONS() 
+						if(this.sign_organizations_apply_state == '1') { 
+							//申请成功，跳转打款验证
+							this.showToast({
+								type: 'success',
+								message: r.msg, 
 							})
-						}, 1000)
+							setTimeout(() => {
+								uni.redirectTo({
+									url: '/pages/my/esign/auth_organizations_verify'
+								})
+							}, 1000)
+						}
+						else if(this.sign_organizations_apply_state == '0') {
+							//申请失败，重新递交
+							this.showToast({
+								type: 'error',
+								message: '申请失败' || r.list.errorMsg, 
+							})
+							await this.getLastData()
+						}
+						
 					}
 				}).catch(errors => {
 					console.log(errors)

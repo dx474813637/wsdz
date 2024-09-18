@@ -81,6 +81,7 @@ const orderState2Str = (v, order_type) => {
 	else if(v == '21') return '合同废止中' 
 	else if(v == '22') return '合同已废止' 
 	else if(v == '31') return '过期未支付取消' 
+	else if(v == '40') return '签约待协商'
 	else if(v == '41') return '签约协商中'
 	else if(v == '42') return '待签约'
 	else if(v == '43') return '签约中'

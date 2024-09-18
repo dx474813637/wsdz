@@ -20,7 +20,7 @@
 						label="商品" 
 					>
 						<view class="">
-							{{type == 'edit' ? order.source_name : panRes.list.name}}
+							{{type == 'edit' ? order.Product.name : panRes.list.Product.name}} 
 						</view>
 					</u-form-item>
 					<u-form-item
@@ -127,17 +127,8 @@
 						ref="total_price"
 						required
 					>
-						<view class="u-flex u-flex-items-center">
-							<view class="u-flex-1">
-								<u--input
-									v-model="form.total_price"
-									clearable
-									:disabled="panRes.list.trade_mode == '2'"
-									type="digit"
-									@focus="tar = 'total_price'"
-								></u--input>
-							</view>
-							<view class="u-p-l-10">元</view>
+						<view class="u-flex u-flex-items-center"> 
+							{{form.total_price}}元 
 						</view>
 						
 					</u-form-item>
@@ -329,11 +320,11 @@
 						:label="form.settle_mode == 'S' ? '收货地址' : '提货地址' "
 						prop="settle_address"
 						ref="settle_address"
-						required
+						:required="form.settle_mode == 'S'"
 					>
 						<view>
 							<u--input
-								v-if="!qiehuan ||  panRes.list.trade_mode == '3' || !panRes.list.delivery_address"
+								v-if="!qiehuan ||  panRes.list.trade_mode == '3' "
 								v-model="form.settle_address"
 								placeholder="填写地址" 
 								clearable
@@ -421,8 +412,8 @@
 					source: '',
 					source_id: '',
 					amount: '',
-					price: '',
-					total_price: '',
+					price: '0',
+					total_price: '0',
 					pay_option1: 'D_P',
 					pay_option2: 'NOPAY',
 					pyeeInfo: '',
@@ -435,7 +426,7 @@
 					base_btimestamp: '',
 					base_etime: '',
 					base_etimestamp: '',
-					base_price_type: '',
+					base_price_type: '1',
 				},
 				base_price_type_radios: [
 					{
@@ -518,10 +509,10 @@
 				if(this.panRes.list.trade_mode == '3') {
 					str = '现货成交单价(一口价)'
 					if(this.form.base_price_type == '1') {
-						str = '现货价'
+						str = '现货单价'
 					}
 					else if(this.form.base_price_type == '2') {
-						str = '期货价'
+						str = '期货盘面价'
 					}
 				} 
 				return str
@@ -624,12 +615,17 @@
 							required: true,
 							message: '请选择所在区域',
 							trigger: ['blur', 'change']
-						},
-						settle_address: {
-							required: true,
-							message: '请填写地址',
-							trigger: ['blur', 'change']
-						},
+						}, 
+					}
+					if(this.form.settle_mode == 'S') {
+						base = {
+							...base, 
+							settle_address: {
+								required: true,
+								message: '请填写地址',
+								trigger: ['blur', 'change']
+							},
+						}
 					}
 				} 
 				if(this.panRes?.list?.trade_mode != '3') {
@@ -689,16 +685,17 @@
 		},
 		watch: {
 			['form.pay_option1'](n, o) {
-				if(n == 'GRT') {
-					if(this.sinoBillAccount && this.sinoBillAccountList.length > 0) { 
-						this.pay_option2_radios[1].disabled = false
-					}
-				}else {
-					this.pay_option2_radios[1].disabled = true
-					if(o == 'GRT') {
-						this.form.pay_option2 = this.pay_option2_radios[0].value
-					}
-				}
+				console.log(n)
+				// if(n == 'GRT') {
+				// 	if(this.sinoBillAccount && this.sinoBillAccountList.length > 0) { 
+				// 		this.pay_option2_radios[1].disabled = false
+				// 	}
+				// }else {
+				// 	this.pay_option2_radios[1].disabled = true
+				// 	if(o == 'GRT') {
+				// 		this.form.pay_option2 = this.pay_option2_radios[0].value
+				// 	}
+				// }
 			}, 
 			['form.settle_mode']: {
 				immediate: true,
@@ -712,7 +709,7 @@
 						}
 						return false
 					})
-					if(this.form.pay_option1 == 'COD') this.form.pay_option1 = 'D_P'
+					if(this.form.pay_option1 == 'COD' && n == 'B') this.form.pay_option1 = 'D_P'
 						
 					if(this.type == 'add') { 
 						if(this.panRes.list.trade_mode == '3') {
@@ -761,20 +758,24 @@
 			}, 
 			['form.amount'](n, o) {
 				if(this.form.price === '') return
-				this.form.total_price =  Number((this.form.price * n).toFixed(2))
+				this.sumPrice()
 			}, 
 			['form.price'](n, o) {
 				if(this.panRes.list.trade_mode == '2') {
 					this.form.price = this.panRes.list.price1
 					return 
 				}
-				if(this.form.amount === '' || this.tar == 'total_price') return
-				this.form.total_price =  Number((this.form.amount * n).toFixed(2))
+				if(this.form.amount === '' || this.tar == 'total_price') return 
+				this.sumPrice()
 			}, 
-			['form.total_price'](n, o) {
-				if(o === '' || this.tar == 'price') return
-				this.form.price = Number((n / this.form.amount).toFixed(2))
+			['form.base_price_type'](n, o) {
+				console.log(n)
+				this.sumPrice()
 			}, 
+			// ['form.total_price'](n, o) {
+			// 	if(o === '' || this.tar == 'price') return
+			// 	// this.form.price = Number((n / this.form.amount).toFixed(2))
+			// }, 
 		},
 		methods: {
 			...mapMutations({
@@ -790,6 +791,13 @@
 				this.form.pyeeInfo = data.pyeeInfo
 				this.$refs.form.validateField('pyeeInfo')
 			}, 
+			sumPrice() {
+				let total_price = Number((this.form.amount * this.form.price).toFixed(2))
+				if(this.form.base_price_type == '2') {
+					total_price = Number((this.form.amount * this.form.price + this.panRes.list.price).toFixed(2))
+				} 
+				this.form.total_price = total_price
+			},
 			async init() {
 				this.getAddressArea()
 				if(this.ordertype == 'B') {
@@ -799,6 +807,7 @@
 						}
 					})
 					this.left_amount = res.list?.left_amount
+					this.form.amount = this.left_amount
 				}
 				if(this.type == 'add') {
 					uni.setNavigationBarTitle({
@@ -831,7 +840,7 @@
 						title: '获取订单信息'
 					})
 					await this.getOrder()
-					
+					this.settle_mode_radios = this.settle_mode_radios.filter(ele => this.panRes.list.settle_mode.includes(ele.value) )
 				}
 				
 				this.pageLoading = false
@@ -880,11 +889,11 @@
 					this.form.amount = res.list.Order.amount
 					this.form.price = res.list.Order.price1
 					this.form.total_price = res.list.Order.total_price1
-					this.form.pay_option1 = res.list.Order.settle_type
 					// this.form.pay_option2 = res.list.Order.pay_mode.includes == 'BILLPAYGUARANTE' ? 'BILLPAY' : 'FUNDPAY'
 					this.form.pay_option2 = 'NOPAY' 
 					this.form.pyeeInfo = res.list.Order.payeeAccNm || ''
 					this.form.settle_mode = res.list.Order.settle_mode
+					this.form.pay_option1 = res.list.Order.settle_type
 					this.form.delivery_place = res.list.Order.delivery_place
 					this.form.settle_address = res.list.Order.settle_address
 					this.form.intro = res.list.Order.intro

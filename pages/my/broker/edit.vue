@@ -659,12 +659,12 @@
 					<u-form-item
 						label="签约方式"
 						prop="esign_type"
-						ref="esign_type"
-						v-if="esign_type_show"
+						ref="esign_type" 
 					>
 						 <u-radio-group
 						    v-model="model.esign_type"
 						    placement="column"
+							v-if="is_sign"
 						  >
 						    <u-radio
 						      :customStyle="{marginBottom: '8px'}"
@@ -676,6 +676,9 @@
 						    >
 						    </u-radio>
 						  </u-radio-group>
+						  <view class="u-error" @click="handleGoto({
+										url: '/pages/my/esign/auth'
+									})">如需开通签约功能，请先认证身份（点击跳转）</view>
 					</u-form-item>
 					
 					<u-form-item
@@ -780,13 +783,24 @@
 							    v-model="checkbox_broker_login"
 								@change="checkboxChange">
 								<view style="width: 100%;">
-									<u-checkbox :name="myCpy.Broker.login" label="委托客户经理撮合，同时报盘中显示撮合员的联系方式。"></u-checkbox>
+									<u-checkbox :name="myCpy.Broker.login" label="委托客户经理撮合，同时报盘中显示撮合员的联系方式"></u-checkbox>
 								</view>
 								
 							</u-checkbox-group>
 						</u-form-item>
 					</template>
-					
+					<u-form-item
+						label="生意社报价"
+						v-if="pan == 's' && !pid"
+					>
+						<u-checkbox-group v-model="checkbox_to_100ppi"
+								@change="checkboxChange2">
+							<view style="width: 100%;">
+								<u-checkbox name="1" label="同时发布到生意社报价"></u-checkbox>
+							</view>
+							
+						</u-checkbox-group>
+					</u-form-item>
 					<u-form-item
 						label="详细需求"
 						prop="intro"
@@ -904,7 +918,8 @@
 					bid_settle_date: '',
 					base_contract: '',
 					base_afterday: '',
-					esign_type: '0'
+					esign_type: '0',
+					to_100ppi: '1'
 				},
 				fileList1: [],
 				// radiolist_order_type: [
@@ -1116,12 +1131,14 @@
 					]
 				],
 				checkbox_broker_login:[],
+				checkbox_to_100ppi:['1'],
 				create_sell_info: ``,
 				origin: {}
 			}
 		},
 		computed: {
 			...mapState({
+				is_sign: (state) => state.esign.is_sign,
 				sign_auto_info: (state) => state.esign.sign_auto_info,
 				myCpy: state => state.user.myCpy,
 				addressArea: state => state.user.addressArea,
@@ -1129,7 +1146,7 @@
 				auth: state => state.user.auth,
 				maxSize: state => state.user.maxSize,
 			}),
-			esign_type_show() {
+			esign_auto() {
 				return this.sign_auto_info.state == '3' && this.pan == 's'
 			},
 			tradeType2Label() {
@@ -1418,7 +1435,11 @@
 				return this.radiolist_mdu.filter(ele => ele.show.includes(this.pan))
 			},
 			radiolist_esign_type_filter() {
-				return this.radiolist_esign_type
+				return this.radiolist_esign_type.filter(ele => {
+					if(ele.value != 2) return true
+					else if(this.esign_auto) return true
+					else return false
+				})
 			},
 			radiolist_settle_mode_filter() {
 				// let data = uni.$u.deepClone(this.radiolist_settle_mode.filter(ele => ele.show.includes(this.pan)) )
@@ -1669,6 +1690,10 @@
 				console.log(v)
 				this.model.broker_login = v[0] ? v[0]: ''
 			}, 
+			checkboxChange2(v) {
+				console.log(v)
+				this.model.to_100ppi = v[0] ? v[0]: ''
+			}, 
 			async getCompanyProductDetail() {
 				const res = await this.$api.getCompanyProductDetail({params: {id: this.model.product_id}})
 				if(res.code == 1) {
@@ -1816,7 +1841,13 @@
 				})
 			},
 			submit() {
-				
+				if(this.origin.state == '1') {
+					uni.showToast({
+						title: '激活状态下的卖盘信息不能修改！',
+						icon: 'none'
+					})
+					return
+				}
 				this.$refs.from.validate().then(async res => {
 					uni.showLoading()
 					
@@ -1872,7 +1903,7 @@
 						}
 					}
 					if(this.pid) params.id = this.pid
-					console.log(params)
+					console.log(params) 
 					const r = await this.$api[func](params)
 					if(r.code == 1) {
 						const p = uni.$u.pages();

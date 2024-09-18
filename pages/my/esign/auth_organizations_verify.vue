@@ -123,12 +123,13 @@
 			...mapState({
 				addressArea: state => state.user.addressArea,
 				sign_info: (state) => state.esign.sign_info,
+				sign_organizations_apply_state: (state) => state.esign.sign_organizations_apply_state,
 			}),
 			...mapGetters({
 				themeConfig: 'theme/themeConfig',
 				is_sign_apply: 'esign/is_sign_apply',
 				sign_agent: 'esign/sign_agent',
-				sign_organizations: 'esign/sign_organizations',
+				// sign_organizations: 'esign/sign_organizations',
 			}),
 			paramsObj() {
 				return {
@@ -178,6 +179,7 @@
 			}),
 			...mapActions({
 				ESIGN_QUERY_ESIGN_ACCOUNT: 'esign/ESIGN_QUERY_ESIGN_ACCOUNT',
+				ESIGN_QUERY_VERIFY_ORGANIZATIONS: 'esign/ESIGN_QUERY_VERIFY_ORGANIZATIONS',
 				getAddressArea: 'user/getAddressArea'
 			}), 
 			async ESIGN_QUERY_TRANSFER_PROCESS () {
@@ -188,15 +190,12 @@
 			},
 			async refresh2() {
 				uni.showLoading()
-				const res = await this.$api.ESIGN_QUERY_VERIFY_ORGANIZATIONS()
-				if(res.code == 1) { 
-					this.updateSignState(res.list.organizations_auth_state)
-					this.showToast({
-						type: 'success',
-						message: '更新企业认证状态成功', 
-					})
-					this.ESIGN_QUERY_ESIGN_ACCOUNT()
-				}
+				await this.ESIGN_QUERY_VERIFY_ORGANIZATIONS()
+				this.showToast({
+					type: 'success',
+					message: '更新企业认证状态成功', 
+				})
+				this.ESIGN_QUERY_ESIGN_ACCOUNT()
 				
 			},
 			async refresh() {

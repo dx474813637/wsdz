@@ -278,6 +278,23 @@
 							height="90"
 						></u--textarea>
 					</u-form-item>
+					<u-form-item
+						label="微信二维码"
+						prop="cpyInfo.pic_wx"
+						ref="cpyInfo_pic_wx" 
+					>
+						<!-- <u-image width="150px" height="150px" :src="myCpy.pic1" radius="8"></u-image> -->
+						<u-upload
+							:fileList="fileList2"
+							@afterRead="afterRead2"
+							@delete="deletePic2"
+							name="2"
+							:maxCount="1"
+						></u-upload> 
+					</u-form-item>
+					<u-form-item label=" ">
+						<view class="u-error">微信二维码名片的获取，可在微信中点击：我 --> 微信号**** --> 二维码名片 -->保存图片</view>
+					</u-form-item> 
 					<template v-if="myCpy.state == 1">
 						<u-form-item
 							label="信用代码"
@@ -367,10 +384,14 @@
 						pic1: '',
 						pic1_base64: '',
 						pic1_name: '',
+						pic_wx: '',
+						pic_wx_base64: '',
+						pic_wx_name: '',
 						intro: ''
 					}
 				},
 				fileList1: [],
+				fileList2: [],
 				moreShow: false,
 			}
 		},
@@ -477,6 +498,13 @@
 						url: n
 					}]
 				}
+			},
+			['model.cpyInfo.weixin_pic'](n) {
+				if(n) {
+					this.fileList2 = [{
+						url: n
+					}]
+				}
 			}
 		},
 		methods: {
@@ -565,6 +593,32 @@
 				
 			},
 			
+			// 删除图片
+			deletePic2(event) {
+				this[`fileList${event.name}`].splice(event.index, 1)
+				this.model.cpyInfo.pic_wx = ''
+				this.model.cpyInfo.pic_wx_base64 = ''
+				this.model.cpyInfo.pic_wx_name = ''
+				
+			},
+			// 新增图片
+			async afterRead2(event) {
+				console.log(event)
+				this.fileList2 = [{
+					url:  event.file.thumb,
+					status: 'uploading',
+					message: '上传中'
+				}]
+				const base64 = await this.getImageBase64_readFile(event.file.thumb)
+				
+				this.fileList2 = [{
+					url: event.file.thumb,
+					status: 'success'
+				}]
+				this.model.cpyInfo.pic_wx_base64 = base64
+				this.model.cpyInfo.pic_wx_name = event.file.thumb.split('//tmp/')[1]
+				
+			},
 			
 		}
 	}

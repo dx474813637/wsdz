@@ -627,7 +627,7 @@
 					obj = {...this.form_nopay_settle_create, order_settle_id: this.list.id}
 				}  
 				if(this.formActive.mode == 'nopay_settle_audit') { 
-					obj.params = {...obj.params, id: this.list.pay_id, ...this.form_nopay_settle_audit }
+					obj.params = {...obj.params, id: this.list.pay_id, ...this.form_nopay_settle_audit, order_id: '' }
 				}  
 				return obj
 			},

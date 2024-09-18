@@ -56,7 +56,7 @@
 					</view>	
 					
 				</view>
-				<view class="u-p-l-20 u-flex u-flex-items-center u-font-28 u-p-t-6" :style="{
+				<!-- <view class="u-p-l-20 u-flex u-flex-items-center u-font-28 u-p-t-6" :style="{
 						color: themeConfig.warn
 					}"
 					@click="handleTimesBtn('broker43', `投诉${pan=='s'? '卖盘': '买盘'}：${list.name}，https://www.rawmex.cn/${pan=='s'? 'sell': 'buy'}-${id}.html`)"
@@ -66,7 +66,7 @@
 						:color="themeConfig.warn"
 						></u-icon>
 					<text class="u-p-l-5">举报</text>
-				</view>
+				</view> -->
 			</view>
 			
 			<view class="u-p-10 u-p-l-30 u-p-r-30 u-flex u-flex-items-center u-flex-between u-flex-wrap">
@@ -715,11 +715,17 @@
 					<text>首页</text>
 				</view>
 				<u-line direction="col" :color="themeConfig.pageTextSub" length="30%"></u-line>
-				<view @click="handleTimesBtn('', `咨询${pan=='s'? '卖盘': '买盘'}：${list.name}，https://www.rawmex.cn/${pan=='s'? 'sell': 'buy'}-${id}.html`)" class="item-btn  u-flex u-flex-items-center u-flex-center">
+				<!-- <view @click="handleTimesBtn('', `咨询${pan=='s'? '卖盘': '买盘'}：${list.name}，https://www.rawmex.cn/${pan=='s'? 'sell': 'buy'}-${id}.html`)" class="item-btn  u-flex u-flex-items-center u-flex-center">
 					<i class="custom-icon-tims custom-icon"></i>
 					<text>在线联系</text>
-				</view>
-				<u-line direction="col" :color="themeConfig.pageTextSub" length="30%"></u-line>
+				</view> -->
+				<template v-if="cpy.weixin_pic"> 
+					<view @click="wxImgShow = true" class="item-btn  u-flex u-flex-items-center u-flex-center">
+						<u-icon name="weixin-fill" :color="themeConfig.tabText" size="20"></u-icon>
+						<text>加我微信</text>
+					</view>
+					<u-line direction="col" :color="themeConfig.pageTextSub" length="30%"></u-line>
+				</template>
 				
 				<template v-if="orderBtnShow == 1">
 					<view class="item-btn u-flex u-flex-items-center u-flex-center"
@@ -759,6 +765,11 @@
 			:color="themeConfig.pageTextSub"
 		></u-loading-page>
 		<u-toast ref="uToast"></u-toast>
+		<menusPopupImg 
+			:show="wxImgShow"  
+			:wx_img="`${baseWebImg}${cpy.weixin_pic}`"
+			@close="wxImgShow = false"
+		></menusPopupImg>
 	</view>
 </template>
 
@@ -773,6 +784,7 @@
 				fxid: '',
 				pan: '',
 				key: '',
+				wxImgShow: false,
 				imgWrapShow: false,
 				jpListShow: false,
 				jpSubmitShow: false,
@@ -845,6 +857,7 @@
 		},
 		computed: {
 			...mapState({
+				baseWebImg: state => state.user.baseWebImg,
 				typeActive: state => state.theme.typeActive,
 				sh: state => state.user.sh,
 			}),

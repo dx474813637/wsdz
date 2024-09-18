@@ -151,20 +151,26 @@
 		computed: {
 			...mapState({
 				sign_info: (state) => state.esign.sign_info,
+				sign_organizations_apply_state: (state) => state.esign.sign_organizations_apply_state,
 				myCpy: (state) => state.user.myCpy,
 			}),
 			...mapGetters({
 				themeConfig: 'theme/themeConfig',
 				is_sign_apply: 'esign/is_sign_apply',
-				sign_agent: 'esign/sign_agent',
-				sign_organizations: 'esign/sign_organizations',
+				sign_agent: 'esign/sign_agent', 
 			}),
 			cpyUrlObj() {
-				return this.transferProcess.bizFlowNo? {
-					url: '/pages/my/esign/auth_organizations_verify'
-				} : {
-					url: '/pages/my/esign/auth_organizations'
+				let r = this.sign_organizations_apply_state
+				if(r == '0' || r == '3') {
+					return {
+						url: '/pages/my/esign/auth_organizations'
+					}
 				}
+				if(r == '1' || r == '4') {
+					return {
+						url: '/pages/my/esign/auth_organizations_verify'
+					}
+				} 
 			},
 			paramsObj() {
 				return {
@@ -222,7 +228,11 @@
 				await this.ESIGN_QUERY_ESIGN_ACCOUNT() 
 				if(this.sign_info.organizations_state == '1') {
 					await this.ESIGN_QUERY_TRANSFER_PROCESS()
-				}
+				} 
+				if(this.sign_info.organizations_state != '2') {
+					await this.ESIGN_QUERY_VERIFY_ORGANIZATIONS() 
+				} 
+				
 				
 			}catch(e){
 				//TODO handle the exception
@@ -248,7 +258,8 @@
 			}),
 			...mapActions({
 				myCompany: 'user/myCompany',
-				ESIGN_QUERY_ESIGN_ACCOUNT: 'esign/ESIGN_QUERY_ESIGN_ACCOUNT'
+				ESIGN_QUERY_ESIGN_ACCOUNT: 'esign/ESIGN_QUERY_ESIGN_ACCOUNT',
+				ESIGN_QUERY_VERIFY_ORGANIZATIONS: 'esign/ESIGN_QUERY_VERIFY_ORGANIZATIONS'
 			}),
 			async ESIGN_QUERY_TRANSFER_PROCESS () {
 				const res = await this.$api.ESIGN_QUERY_TRANSFER_PROCESS()

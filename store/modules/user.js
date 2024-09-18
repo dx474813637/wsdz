@@ -1,6 +1,6 @@
 
 // import * as apis from '@/config/api'
-
+ 
 let state = {
 		configBaseURL: 'https://wx.rawmex.cn/Api/',
 		configHeader: {
@@ -9,6 +9,7 @@ let state = {
 			'appsecret': '5406NzMVC6CCMYaDwHzN9pg/fhFF6uaeKwVTbMmNFqHA29dLE78VFJU',
 		},
 		addressArea: [],
+		addressAreaAuth: [],
 		addressCity: [],
 		menusList: [],
 		wode: {},
@@ -38,7 +39,8 @@ let state = {
 			options: {}
 		},
 		share_other: '',
-		fxhome_info: {}
+		fxhome_info: {},
+		baseWebImg: 'https://img-album.rawmex.cn/view/'
 	},
 	getters = {
 	},
@@ -67,6 +69,9 @@ let state = {
 		setAddressArea(state, data) {
 			state.addressArea = data
 		},
+		setAddressAreaAuth(state, data) {
+			state.addressAreaAuth = data
+		},
 		setAddressCity(state, data) {
 			state.addressCity = data
 		},
@@ -93,6 +98,8 @@ let state = {
 		},
 		setMyCpy(state, data={}) {
 			state.myCpy = data;
+			if(state.myCpy.pic1) state.myCpy.pic1 = `https://img-album.rawmex.cn/view/${state.myCpy.pic1}` 
+			if(state.myCpy.weixin_pic) state.myCpy.weixin_pic = `https://img-album.rawmex.cn/view/${state.myCpy.weixin_pic}` 
 			uni.setStorageSync('myCpy', data)
 		},
 		setAllCpy(state, data) {
@@ -225,6 +232,18 @@ let state = {
 			commit('setAddressCity', data2)
 		
 		},
+		async getAddressAreaAuth({commit, state}) {
+			//获取地区toCode 数据 存入vuex
+			if (state.addressAreaAuth.length != 0) {
+				return
+			}
+			const res = await this._vm.$api.ESIGN_regional_json()
+			// const resList = JSON.parse(res.list)
+			const list = listMethods(res.list)
+			// console.log(list)
+			commit('setAddressAreaAuth', list) 
+		
+		},
 		async getMenusList({commit, state}) {
 			
 			const res = await this._vm.$api.getCategory()
@@ -318,4 +337,37 @@ function filterQuYuData(data) {
 	}) 
 	return arr
 	
+}
+function listMethods(list) {
+	return list.items.map(ele => {
+		let obj = {
+			value: ele.code,
+			text: ele.name,
+		}
+		let children = list[`items${ele.code}`]
+		if (children && children.length > 0) {
+			obj.children = children.map(item => {
+				let obj2 = {
+					value: item.code,
+					text: item.name
+				}
+				let children2 = list[`items${item.code}`]
+				if (children2 && children2.length > 0) {
+					obj2.children = children2.map(item2 => {
+						return {
+							value: item2.code,
+							text: item2.name
+						}
+					})
+				} else {
+					obj2.children = [{
+						value: item.code,
+						text: item.name,
+					}]
+				}
+				return obj2
+			})
+		}
+		return obj
+	})
 }

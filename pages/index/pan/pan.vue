@@ -128,6 +128,7 @@
 								:tims="item.Tims"
 								:origin="item"
 								@tims="handleClickTims"
+								@showWxImg="handleClickWxImg"
 								@detail="handleRouteTo"
 							></cardA>
 						</view>
@@ -159,6 +160,12 @@
 			@close="show = false"
 			@confirm="menusConfirm"
 		></menusPopup>
+		<menusPopupImg 
+			:show="wxImgShow"  
+			:theme="typeActive"
+			:wx_img="wx_img"
+			@close="wxImgShow = false"
+		></menusPopupImg>
 		<menusBar tabbar :activeIndex="pageConfig[pan].menuIndex" :theme="typeActive" ></menusBar>
 	</view>
 </template>
@@ -171,6 +178,8 @@
 		data() {
 			return {
 				show: false,
+				wxImgShow: false,
+				wx_img: '',
 				pan: 's',
 				skeletonLoading: true,
 				pageConfig: {
@@ -364,6 +373,12 @@
 				uni.navigateTo({
 					url: `/pages/index/pan/panDetail?id=${id}&pan=${this.pan}`
 				})
+			},
+			handleClickWxImg({wx_img}) { 
+				this.wx_img = ''
+				if(!wx_img) return
+				this.wx_img = wx_img
+				this.wxImgShow = true
 			},
 			handleClickTims({tims, id, origin}) {
 				this.handleGoto({

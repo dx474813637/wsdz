@@ -295,7 +295,7 @@
 					content: `是否重发${this.name}`,
 					success: (res) => {
 						if (res.confirm) {
-							this.$emit('resubmit', {data: this.origin})
+							this.$emit('resubmit', {data: {...this.origin, to_100ppi: '1'}})
 						} else if (res.cancel) {
 							console.log('用户点击取消');
 						}
