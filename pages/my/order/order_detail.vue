@@ -51,11 +51,26 @@
 			</view>
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
 				<view class="item text-light item-label">单价</view>
-				<view class="item u-text-right">{{list.price2}} 元/{{list.unit}}</view>
+				<view class="item u-text-right">
+					{{list.price2}} 元/{{list.unit}}
+					<template v-if="list.had_tran == '1'">(含运费)</template>
+					<template v-else-if="list.had_tran == '0'">(不含运费)</template>
+				</view>
 			</view>
 			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
 				<view class="item text-light item-label">商品总额</view>
 				<view class="item u-text-right">{{list.total_price2}} 元</view>
+			</view>
+			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="!(ordertype == 'B' && list.had_tran == '1')">
+				<view class="item text-light item-label">
+					<template v-if="list.had_tran == '1' && ordertype == 'S'">其中运费</template>
+					<template v-else>运费</template>
+				</view>
+				<view class="item u-text-right">{{list.tran_price2}} 元</view>
+			</view>
+			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="list.trade_mode == '0'">
+				<view class="item text-light item-label">议价总额</view>
+				<view class="item u-text-right">{{list.bargain_price2}} 元</view>
 			</view>
 			<template v-if="list.end_price1">
 				<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between">
@@ -162,7 +177,7 @@
 					</view>
 				</view>
 			</template>
-			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="nopay_info.id">
+			<view class="main-row u-m-b-30 u-flex u-flex-items-start u-flex-between" v-if="nopay_info.id && nopay_info.pic1">
 				<view class="item text-light item-label">线下支付凭证</view>
 				<view class="item u-text-right" >
 					<u--image 
@@ -379,6 +394,7 @@
 			:show="show" 
 			mode="bottom"  
 			@close="show = false"  
+			@open="open"
 			round="25"
 			bgColor="#fff"
 			>
@@ -455,16 +471,100 @@
 										  </u-radio-group>
 									</u-form-item>
 									<u-form-item
+										label="数量" 
+									>
+										{{list.amount}}{{list.unit}}
+									</u-form-item>
+									<template v-if="list.settle_mode == 'S' && ordertype == 'B'">
+										<u-form-item
+											label="议价单价" 
+										>
+											<u--input
+												:value="list.price2" 
+												disabled 
+											></u--input>
+										</u-form-item>
+										<u-form-item
+											label="单价包含运费" 
+										>
+											{{list.had_tran == '1' ? '是' : '否'}}
+										</u-form-item>
+										<u-form-item
+											v-if="list.had_tran != '1'"
+											label="运费" 
+										>
+											{{list.tran_price2}}
+										</u-form-item>
+									</template>
+									
+									<u-form-item
 										label="议价总额" 
 									>
 										<u--input
-											:value="list.total_price2" 
+											:value="list.bargain_price2" 
 											disabled 
 										></u--input>
 									</u-form-item>
+									<template v-if="list.settle_mode == 'S' && ordertype == 'S'">
+										<u-form-item
+											label="单价包含运费"
+											prop="had_tran"
+											ref="had_tran" 
+											required
+										>
+											<u-radio-group
+												v-model="form_audit.had_tran"
+												placement="row"
+											  >
+												<u-radio
+												  :customStyle="{marginRight: '8px'}"
+												  v-for="(item, index) in had_tran_radios"
+												  :key="index"
+												  :name="item.value"
+												  :label="item.name"
+												  :disabled="item.disabled"
+												>
+												</u-radio>
+											</u-radio-group>
+											
+										</u-form-item>
+										<u-form-item
+											:label="tranPriceLabelStr"
+											prop="tran_price"
+											ref="tran_price"
+											required 
+										>
+											<view class="u-flex u-flex-items-center">
+												<view class="u-flex-1">
+													<u--input 
+														v-model="form_audit.tran_price"
+														clearable 
+														:customStyle="{background: '#fff'}"
+														type="digit" 
+													></u--input> 
+												</view>
+												<view class="u-p-l-10">元</view>
+											</view>
+											
+										</u-form-item>
+										<u-form-item
+											label="商品单价" 
+										>
+											<view class="u-flex u-flex-items-center">
+												<view class="u-flex-1">
+													<u--input
+														:value="form_audit.price" 
+														disabled 
+													></u--input>
+												</view>
+												<view class="u-p-l-10">元/{{list.unit}}</view>
+											</view>
+											
+										</u-form-item>
+									</template>
 									<u-form-item
 										label="收款票据" 
-										 required
+										required
 										v-if="list.pay_mode.includes('BILLPAY')"
 									>
 										<view class="" @click="show_billacc = true">
@@ -706,8 +806,7 @@
 										<view>{{list.pay.result.bank_no}}</view>
 									</u-form-item>
 									<u-form-item
-										label="支付凭证"
-										required
+										label="支付凭证" 
 										>
 										<view >
 											<u-upload
@@ -989,7 +1088,9 @@
 					v-if="!paylist.hasOwnProperty('Sino_fund_order') || paylist.Sino_fund_order.paymode == '0' || paylist.Sino_fund_order.paymode == '1' "
 					>
 					<u-button :customStyle="{backgroundColor: themeConfig.badgeBg, color: '#fff', border: 'none'}" shape="circle" 
-					@click="handleConfirm">确认并提交</u-button>
+					@click="handleConfirm">
+						确认并提交
+					</u-button>
 				</view>
 			</view>
 		</u-popup>
@@ -1043,6 +1144,9 @@
 				form_audit: {
 					audit: '1',
 					pyeeInfo: '',
+					had_tran: '0',
+					tran_price: '0',
+					price: '0',
 					remark_audit: '',
 				},
 				form_audit_base: {
@@ -1110,6 +1214,16 @@
 						value: '1',
 						disabled: false,
 					}, 
+				],
+				had_tran_radios: [
+					{
+						name: '是',
+						value: '1'
+					},
+					{
+						name: '否',
+						value: '0'
+					},
 				],
 				shyj: [
 					{
@@ -1221,7 +1335,14 @@
 					}
 					return {...ele}
 				})
-			}
+			},
+			tranPriceLabelStr() {
+				let str = '运费'
+				if(this.form_audit.had_tran == '1') {
+					str = '其中运费' 
+				} 
+				return str
+			} 
 		},
 		filters: {
 			source2pan: v => {
@@ -1234,6 +1355,14 @@
 				return '卖盘'
 			}
 		},
+		watch: {
+			['form_audit.had_tran'](n) {
+				this.sumPrice()
+			},
+			['form_audit.tran_price'](n) {
+				this.sumPrice()
+			},
+		},
 		methods: { 
 			...mapMutations({
 				handleGoto: 'user/handleGoto',
@@ -1242,6 +1371,21 @@
 			...mapActions({
 				getImageBase64_readFile: 'user/getImageBase64_readFile'
 			}),
+			sumPrice() { 
+				let price = 0
+				if(this.form_audit.had_tran == '1') {
+					price = Number((this.list.bill_price1 / this.list.amount).toFixed(2))
+				} 
+				else {
+					price = Number(((this.list.bill_price1 - this.form_audit.tran_price) / this.list.amount).toFixed(2))
+				}  
+				this.form_audit.price = price
+			},
+			open() {
+				if(this.list.settle_mode == 'S' && this.ordertype == 'S') {
+					this.sumPrice()
+				}
+			},
 			showToast(params) {
 				this.$refs.uToast.show({
 					position: 'bottom',
@@ -1539,13 +1683,13 @@
 				}
 			},
 			async order_nopay() {
-				if(this.form_underLine.pic1_base64 == '') {
-					uni.showToast({ 
-						title: '请先上传凭证', 
-						icon: 'none'
-					})
-					return false
-				}
+				// if(this.form_underLine.pic1_base64 == '') {
+				// 	uni.showToast({ 
+				// 		title: '请先上传凭证', 
+				// 		icon: 'none'
+				// 	})
+				// 	return false
+				// }
 				uni.showLoading()
 				const res = await this.$api.order_nopay({
 					order_id: this.id,
@@ -1683,6 +1827,17 @@
 					})
 					throw new Error('票据账户不能为空')
 				}
+				if(this.list.settle_mode == 'S' && this.ordertype == 'S') {
+					this.form_audit.tran_price = Number(this.form_audit.tran_price)
+					this.sumPrice()
+					if(!uni.$u.test.number(this.form_audit.tran_price) ) {
+						uni.showToast({
+							title: '请输入运费',
+							icon: 'none'
+						})
+						throw new Error('请输入运费')
+					}
+				}  
 				const res = await this.$api.order_audit({
 					params: { 
 						...this.form_audit,
@@ -1804,7 +1959,10 @@
 				}
 			},
 			async handleConfirm() { 
-				if(this.formActive.mode == 'audit') {
+				if(this.formActive.mode == 'audit') { 
+					this.form_audit.had_tran = this.list.had_tran
+					this.form_audit.tran_price = this.list.tran_price1 
+					this.sumPrice()
 					await this.order_audit()
 				}
 				else if(this.formActive.mode == 'audit_base') {

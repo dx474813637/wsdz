@@ -20,7 +20,7 @@
 						label="商品" 
 					>
 						<view class="">
-							{{type == 'edit' ? order.Product.name : panRes.list.Product.name}} 
+							{{type == 'edit' ? order.Product.name : panRes.list.name}} 
 						</view>
 					</u-form-item>
 					<u-form-item
@@ -121,6 +121,50 @@
 						</view>
 						
 					</u-form-item>
+					<template v-if="ordertype == 'S' && form.settle_mode == 'S'">
+						<u-form-item
+							label="单价包含运费"
+							prop="had_tran"
+							ref="had_tran" 
+							required
+						>
+							<u-radio-group
+								v-model="form.had_tran"
+								placement="row"
+							  >
+								<u-radio
+								  :customStyle="{marginRight: '8px'}"
+								  v-for="(item, index) in had_tran_radios"
+								  :key="index"
+								  :name="item.value"
+								  :label="item.name"
+								  :disabled="item.disabled"
+								>
+								</u-radio>
+							</u-radio-group>
+							
+						</u-form-item>
+						<u-form-item
+							:label="tranPriceLabelStr"
+							prop="tran_price"
+							ref="tran_price"
+							required 
+						>
+							<view class="u-flex u-flex-items-center">
+								<view class="u-flex-1">
+									<u--input 
+										v-model="form.tran_price"
+										clearable 
+										type="digit"
+										@focus="tar = 'tran_price'"
+									></u--input> 
+								</view>
+								<view class="u-p-l-10">元</view>
+							</view>
+							
+						</u-form-item>
+					</template>
+					
 					<u-form-item
 						label="商品总额"
 						prop="total_price"
@@ -427,6 +471,8 @@
 					base_etime: '',
 					base_etimestamp: '',
 					base_price_type: '1',
+					had_tran: '1',
+					tran_price: '0'
 				},
 				base_price_type_radios: [
 					{
@@ -436,6 +482,16 @@
 					{
 						name: '期货价',
 						value: '2'
+					},
+				],
+				had_tran_radios: [
+					{
+						name: '是',
+						value: '1'
+					},
+					{
+						name: '否',
+						value: '0'
 					},
 				],
 				settle_mode_radios: [
@@ -503,6 +559,13 @@
 					company = this.panRes?.login_company?.name
 				} 
 				return company 
+			},
+			tranPriceLabelStr() {
+				let str = '运费'
+				if(this.form.had_tran == '1') {
+					str = '其中运费' 
+				} 
+				return str
 			},
 			priceLabelStr() {
 				let str = '单价'
@@ -625,6 +688,11 @@
 								message: '请填写地址',
 								trigger: ['blur', 'change']
 							},
+							tran_price: {
+								required: true,
+								message: '请填写运费',
+								trigger: ['blur', 'change']
+							},
 						}
 					}
 				} 
@@ -710,7 +778,7 @@
 						return false
 					})
 					if(this.form.pay_option1 == 'COD' && n == 'B') this.form.pay_option1 = 'D_P'
-						
+					if(n == 'B') this.form.tran_price = '0' 
 					if(this.type == 'add') { 
 						if(this.panRes.list.trade_mode == '3') {
 							this.form.delivery_place = this.panRes.list.delivery_place1 
@@ -754,6 +822,7 @@
 						}
 						
 					}
+					this.sumPrice()
 				}
 			}, 
 			['form.amount'](n, o) {
@@ -768,8 +837,13 @@
 				if(this.form.amount === '' || this.tar == 'total_price') return 
 				this.sumPrice()
 			}, 
-			['form.base_price_type'](n, o) {
-				console.log(n)
+			['form.base_price_type'](n, o) { 
+				this.sumPrice()
+			}, 
+			['form.had_tran'](n, o) { 
+				this.sumPrice()
+			}, 
+			['form.tran_price'](n, o) { 
 				this.sumPrice()
 			}, 
 			// ['form.total_price'](n, o) {
@@ -796,6 +870,11 @@
 				if(this.form.base_price_type == '2') {
 					total_price = Number((this.form.amount * this.form.price + this.panRes.list.price).toFixed(2))
 				} 
+				if(this.ordertype == 'S') {
+					if(this.form.had_tran == '0' && this.form.settle_mode == 'S') {
+						total_price += Number(this.form.tran_price)
+					}
+				}
 				this.form.total_price = total_price
 			},
 			async init() {

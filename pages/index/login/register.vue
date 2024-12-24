@@ -53,6 +53,18 @@
 						placeholder="确认密码"
 					 />
 				</u-form-item> -->
+				<u-form-item >
+					<view class="item" @click="roleShow = true" >
+						<u--input 
+							:value="roleLable"
+							prefixIcon="account-fill"
+							readonly
+							suffixIcon="arrow-down" 
+							fontSize="14" 
+						></u--input>
+					</view>
+				</u-form-item>
+				
 				<u-form-item prop="captcha" >
 					<u-input 
 						v-model="form.captcha" 
@@ -98,6 +110,14 @@
 			</view> 
 			
 		</view>
+		<u-picker 
+			:show="roleShow" 
+			:columns="columns" 
+			closeOnClickOverlay 
+			keyName="label"
+			@confirm="confirm" 
+			@cancel="roleShow = false" 
+			@close="roleShow = false"></u-picker>
 		<!-- <view class="buttom safe-area-inset-bottom ">
 			<view class="u-flex u-flex-items-center u-p-20 u-p-l-40">
 				<u-checkbox-group 
@@ -135,12 +155,30 @@
 				},
 				tips: '获取验证码',
 				searching: false,
+				roleShow: false,
 				searchRes: 0,
 				timer: null,
 				agree: [],
 				denglu_info: {
 					info3: ''
-				}
+				},
+				roleIndex: 0,
+				columns: [
+					[
+						{
+							label: '交易商账户',
+							value: ''
+						},
+						{
+							label: '分销账户',
+							value: 'fx'
+						},
+						{
+							label: '撮合员',
+							value: 'obro'
+						}
+					]
+				]
 			}
 		},
 		onReady() {
@@ -154,6 +192,9 @@
 					'backgroundColor': '#007aff',
 					'marginTop': '40rpx'
 				}
+			},
+			roleLable() {
+				return this.columns[0][this.roleIndex].label
 			},
 			rules() {
 				return {
@@ -263,6 +304,11 @@
 			...mapActions({
 				wode: 'user/wode'
 			}),
+			confirm(e) {
+				console.log('confirm', e)
+				this.roleIndex = e.indexs[0]
+				this.roleShow = false
+			},
 			handleSetRules() {
 				this.$refs.uForm.setRules(this.rules)
 			},
@@ -322,7 +368,8 @@
 				let res = await this.$api.register({
 					params: {
 						...this.form,
-						flag: 2
+						flag: 2,
+						role: this.columns[0][this.roleIndex].value
 					}
 				})
 				if(res.code == 1) {
